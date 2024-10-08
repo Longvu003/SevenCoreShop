@@ -5,7 +5,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 
 
-const SignInScreen = () => {
+const Forgot = ({ navigation }) => {
   const [enteremailaddress, setEnteremailaddress] = useState('');
 
 
@@ -72,6 +72,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
     fontSize: 16,
+    fontWeight: 'bold',
+    color: '#272727',
   },
   
   loginButton: {
@@ -110,4 +112,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignInScreen;
+export default Forgot;

@@ -1,45 +1,98 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, FlatList } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Modal from 'react-native-modal';
+import axios from 'axios';
 
-
-
-const SignInScreen = () => {
+const Create = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
+  const [username, setUsername] = useState('');
+  const [numberphone, setNumberphone] = useState('');
+  const [birthday, setBirthday] = useState('');
+  const [role, setRole] = useState('Buyer'); // Selected role
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false); // Show modal to select role
 
+  const roles = ['Admin', 'Seller', 'Buyer']; // List of roles
 
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
- 
+  const selectRole = (role) => {
+    setRole(role);
+    toggleModal(); // Close modal after selecting role
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      const date = selectedDate.toISOString().split('T')[0]; // Format date
+      setBirthday(date);
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    const formData = {
+      email,
+      password,
+      username,
+      numberphone,
+      birthday,
+      role,
+    };
+
+    // Basic validation for form inputs
+    if (!email || !password || !username || !numberphone || !birthday || !role) {
+      Alert.alert('Please fill out all fields');
+      return;
+    }
+
+    try {
+      // Send POST request to API
+      const response = await axios.post('http://10.0.2.2:3000/api/add-user', formData);
+      
+      // Handle response
+      if (response.status === 200) {
+        Alert.alert('Registration successful');
+        navigation.navigate('Signin'); // Navigate to sign-in page
+      } else {
+        Alert.alert('Registration failed, please try again');
+      }
+    } catch (error) {
+      console.error('Error during request:', error);
+      Alert.alert('Network error or server issue');
+    }
+  };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-      <Image source={require('../../src/assets/back.png')} style={styles.back} />
+        <Image source={require('../../src/assets/back.png')} style={styles.back} />
       </TouchableOpacity>
       <Text style={styles.title}>Create Account</Text>
+
       <TextInput
         style={styles.input}
-        placeholder="Firstname"
-        value={firstname}
-        onChangeText={setFirstname}
-        keyboardType="default"
-      />
-        <TextInput
-        style={styles.input}
-        placeholder="Lastname"
-        value={lastname}
-        onChangeText={setLastname}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
         keyboardType="default"
       />
       <TextInput
         style={styles.input}
-        placeholder="Number Phone"
-        value={firstname}
-        onChangeText={setFirstname}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        value={numberphone}
+        onChangeText={setNumberphone}
         keyboardType="default"
       />
       <TextInput
@@ -49,18 +102,53 @@ const SignInScreen = () => {
         onChangeText={setEmail}
         keyboardType="email-address"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      
-      <TouchableOpacity style={styles.loginButton}>
-        <Text style={styles.loginText}>Continue</Text>
+      {/* Birthday Input */}
+      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+        <TextInput
+          style={[styles.input, birthday ? styles.boldText : null]}
+          placeholder="Birthday"
+          value={birthday}
+          editable={false} // Disable direct editing
+        />
       </TouchableOpacity>
 
+      {showDatePicker && (
+        <DateTimePicker
+          style={styles.input}
+          value={new Date()}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+
+      {/* Role Input */}
+      <TouchableOpacity onPress={toggleModal}>
+        <TextInput
+          style={[styles.input, role ? styles.boldText : null]}
+          placeholder="Select Role"
+          value={role}
+          editable={false} // Disable direct editing
+        />
+      </TouchableOpacity>
+
+      <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
+        <View style={styles.modalContent}>
+          <FlatList
+            data={roles}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => selectRole(item)}>
+                <Text style={styles.roleText}>{item}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      </Modal>
+
+      <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
+        <Text style={styles.loginText}>Continue</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -74,16 +162,16 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40, 
-    left: 15, 
+    top: 40,
+    left: 15,
     zIndex: 1,
   },
-  back:{
+  back: {
     fontSize: 0,
-    marginLeft: 15, 
-    backgroundColor: 'black', 
+    marginLeft: 15,
+    backgroundColor: 'black',
     padding: 10,
-    borderRadius: 50, 
+    borderRadius: 50,
   },
   title: {
     fontSize: 30,
@@ -100,17 +188,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
     fontSize: 16,
+    fontWeight: 'bold',
+    color: '#272727',
   },
-  reset: {
-    alignItems: 'flex-start',
-    marginBottom: 20,
-  },
-  resetText: {
-    color: 'black',
-    textAlign: 'left',
+  boldText: {
+    fontWeight: 'bold',
+    color: '#272727',
   },
   loginButton: {
-    
     height: 50,
     backgroundColor: '#000',
     justifyContent: 'center',
@@ -121,32 +206,21 @@ const styles = StyleSheet.create({
   loginText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight:'regular'
+    fontWeight: 'regular',
   },
-  orText: {
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#8e8e8e',
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    fontWeight: 'bold',
+    color: '#272727',
   },
-  socialButtons: {
-    alignItems: 'center',
-  },
-  socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-    marginBottom: 10,
-    width: '100%',
-    justifyContent: 'center',
-  },
-  socialButtonText: {
-    marginLeft: 10,
-    fontSize: 16,
- 
+  roleText: {
+    fontSize: 18,
+    paddingVertical: 10,
+    fontWeight: 'bold',
+    color: '#272727',
   },
 });
 
-export default SignInScreen;
+export default Create;

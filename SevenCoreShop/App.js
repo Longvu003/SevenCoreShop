@@ -8,7 +8,7 @@ import Forgot from './src/login/Forgot';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Create />
+      <AppNavigation />
     </View>
   );
 }

@@ -1,16 +1,22 @@
 import { Button, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 
-const Screen2 = () => {
+const Screen2 = ({ navigation }) => {
   return (
     <View style={styles.container}>
        <ImageBackground source={require('../../src/assets/bg.png')} style={styles.bg2}>
        <View style={styles.buttonContainer}>
-       <TouchableOpacity style={styles.login}>
+
+       <TouchableOpacity
+        style={styles.login}
+        onPress={() => navigation.navigate('Signin')}
+      >
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.signup}>
+      <TouchableOpacity style={styles.signup}
+        onPress={() => navigation.navigate('Create')}
+        >
         <Text style={styles.buttonText1}>Sign Up</Text>
       </TouchableOpacity>
       </View>
