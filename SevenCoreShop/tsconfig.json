@@ -1,3 +1,17 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json"
+  "compilerOptions": {
+    "target": "es5",                          // Có thể thay đổi thành "es6" hoặc "esnext" tùy theo yêu cầu
+    "module": "commonjs",                     // Hoặc "es6", tùy thuộc vào cách bạn quản lý module
+    "strict": true,                           // Bật kiểm tra nghiêm ngặt
+    "esModuleInterop": true,                  // Cho phép sử dụng import từ CommonJS
+    "skipLibCheck": true,                     // Bỏ qua kiểm tra loại các file trong thư viện
+    "forceConsistentCasingInFileNames": true // Bắt buộc sử dụng casing nhất quán
+  },
+  "include": [
+    "src/**/*" // Thay đổi theo cấu trúc thư mục của bạn
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
+

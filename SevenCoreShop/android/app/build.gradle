@@ -76,7 +76,7 @@ android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
-
+     compileSdkVersion compileSdkVersion
     namespace "com.sevencoreshop"
     defaultConfig {
         applicationId "com.sevencoreshop"
@@ -113,6 +113,8 @@ dependencies {
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
+            implementation 'com.facebook.react:react-native:+'
+
     } else {
         implementation jscFlavor
     }
