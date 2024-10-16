@@ -2,9 +2,8 @@ const userModel = require("./UserModel");
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../helpers/Mailer");
 const httml = require("../helpers/MailContent");
-
 // register a new user
-const register = async (email, password, name) => {
+const register = async (email, password, username, numberphone, birthday) => {
   try {
     //tìm kiếm email trong database
     let user = await userModel.findOne({ email: email });
@@ -18,7 +17,9 @@ const register = async (email, password, name) => {
     user = new userModel({
       email: email,
       password: password,
-      name: name,
+      username: username,
+      numberphone: numberphone,
+      birthday: birthday,
     });
     //lưu user
     const result = await user.save();

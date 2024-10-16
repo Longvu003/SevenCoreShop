@@ -5,11 +5,13 @@ const CategoryController = require("../controllers/CategoryController");
 // http://localhost:7777/categories
 
 /**
- * lấy danh sách tất cả các danh mục
+ * lấy danh sách tất cả các danh mục 
+>>>>>>> 8b8f49455d06ec1c65fa3ae68001c06749ed3d32
  * method: GET
  * url: http://localhost:7777/categories
  * response: trả về danh sách các danh mục
  */
+
 router.get("/", async (req, res, next) => {
   try {
     const categories = await CategoryController.getCategoryList();

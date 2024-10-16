@@ -1,6 +1,5 @@
 var express = require("express");
 var router = express.Router();
-
 const userController = require("../controllers/UserController");
 // http://localhost:7777/users
 
@@ -15,10 +14,16 @@ const userController = require("../controllers/UserController");
 router.post("/register", async (req, res, next) => {
   try {
     //lấy thông tin từ body
-    const { email, password, name } = req.body;
+    const { email, password, username, numberphone, birthday } = req.body;
     console.log(req.body);
     //gọi hàm register từ userController
-    const result = await userController.register(email, password, name);
+    const result = await userController.register(
+      email,
+      password,
+      username,
+      numberphone,
+      birthday
+    );
     return res.status(200).json({ status: true, data: result });
   } catch (error) {
     console.log("Register error", error.message);
@@ -33,6 +38,7 @@ router.post("/register", async (req, res, next) => {
  * body: {email: 'admin@gmail.com', password: 1}
  * response: trả về thông tin user nếu đăng nhập thành công, trả về lỗi nếu đăng nhập thất bại
  */
+
 router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -55,6 +61,7 @@ router.post("/login", async (req, res, next) => {
 // method: post
 // url: http://localhost:7777/users/cap-nhat-tai-khoan
 // kết quả: cập nhật thành công hoặc thất bại
+
 router.post("/cap-nhat-tai-khoan", async (req, res, next) => {
   try {
     const { email, password, name } = req.body;
@@ -70,6 +77,7 @@ router.post("/cap-nhat-tai-khoan", async (req, res, next) => {
 // method: get
 // url: http://localhost:7777/users/xac-thuc-email?email=taitan1922004@gmail.com&code=1
 // kết quả: xác thực thành công hoặc thất bại
+
 router.get("/xac-thuc-email", async (req, res, next) => {
   try {
     const { email, code } = req.query;
