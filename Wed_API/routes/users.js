@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+
 const userController = require("../controllers/UserController");
 // http://localhost:7777/users
 
@@ -74,6 +75,25 @@ router.get("/xac-thuc-email", async (req, res, next) => {
     const { email, code } = req.query;
     const result = await userController.verify(email, code);
     return res.status(200).json({ status: true, data: result });
+  } catch (error) {
+    console.log("Verify error", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// url: http://localhost:7777/users/getUserid?id=
+// Lấy user qua id
+router.get("/getUserid", async (req, res, next) => {
+  const { id } = req.query;
+
+  try {
+    const result = await userController.getUserByid(id);
+    console.log(result);
+    if (result) {
+      return res.status(200).json({ status: true, data: result });
+    } else {
+      res.status(404);
+    }
   } catch (error) {
     console.log("Verify error", error.message);
     res.status(500).json({ message: error.message });
