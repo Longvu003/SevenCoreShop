@@ -8,6 +8,7 @@ const LoginBoxed = lazy(() => import('../pages/LoginBoxed'));
 const Error = lazy(() => import('../components/Error'));
 const HospitalApproval = lazy(() => import('../pages/HospitalApproval'));
 const ProductUpdate = lazy(() => import('../pages/ProductUpdate'));
+const UserManagent = lazy(() => import('../pages/UsersManagent'));
 const routes = [
     // dashboard (protected)
     {
@@ -57,6 +58,14 @@ const routes = [
         element: (
             <PrivateRoute>
                 <ProductManagent />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/usersmanagent',
+        element: (
+            <PrivateRoute>
+                <UserManagent />
             </PrivateRoute>
         ),
     },
