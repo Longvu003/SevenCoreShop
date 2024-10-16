@@ -2,6 +2,7 @@ const userModel = require("./UserModel");
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../helpers/Mailer");
 const httml = require("../helpers/MailContent");
+
 // register a new user
 const register = async (email, password, name) => {
   try {
@@ -132,4 +133,11 @@ const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
 
-module.exports = { register, login, update, verify };
+// Lấy thông tin user bằng id
+
+const getUserByid = async (id) => {
+  const user = await userModel.findById(id);
+  return user;
+};
+
+module.exports = { register, login, update, verify, getUserByid };
