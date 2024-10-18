@@ -2,9 +2,8 @@ const userModel = require("./UserModel");
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../helpers/Mailer");
 const httml = require("../helpers/MailContent");
-
 // register a new user
-const register = async (email, password, name) => {
+const register = async (email, password, username, numberphone, birthday) => {
   try {
     //tìm kiếm email trong database
     let user = await userModel.findOne({ email: email });
@@ -18,7 +17,9 @@ const register = async (email, password, name) => {
     user = new userModel({
       email: email,
       password: password,
-      name: name,
+      username: username,
+      numberphone: numberphone,
+      birthday: birthday,
     });
     //lưu user
     const result = await user.save();
@@ -42,7 +43,7 @@ const register = async (email, password, name) => {
 const login = async (email, password) => {
   try {
     //tìm kiếm user trong db theo email
-    const user = await userModel.findOne({ email: email });
+    const user = await userModel.findOne({ email });
     if (!user) {
       throw new Error("Email không tồn tại");
     } else {
@@ -50,13 +51,15 @@ const login = async (email, password) => {
       //const check = user.password.toString() === password.toString();//so sánh password
       const check = bcrypt.compareSync(password, user.password); //so sánh password
       //nếu password đúng thì trả về user
+
       if (check) {
         // xóa field password trc khi trả về
         // delete user._doc.password;
+
         return {
-          _id: user._id,
+          // _id: user._id,
           email: user.email,
-          name: user.name,
+          username: user.username,
           role: user.role,
         };
       }
@@ -69,7 +72,7 @@ const login = async (email, password) => {
 };
 
 //update user
-const update = async (email, password, name) => {
+const updateUser = async (email, password, username, numberphone, birthday) => {
   try {
     //tìm kiếm user trong db theo email
     const user = await userModel.findOne({ email: email });
@@ -77,11 +80,16 @@ const update = async (email, password, name) => {
       throw new Error("Email không tồn tại");
     }
     // mã hóa password
-    const salt = bcrypt.genSaltSync(10); //tạo muối
-    password = bcrypt.hashSync(password, salt); //mã hóa password
+    // const salt = bcrypt.genSaltSync(10); //tạo muối
+    // password = bcrypt.hashSync(password, salt); //mã hóa password
+    let updatedPassword = user.password; // Giữ nguyên mật khẩu cũ nếu không đổi
+    if (password && password !== user.password) {
+      updatedPassword = await bcrypt.hash(password, 10);
+    }
     //cập nhật user
-    user.password = password;
-    user.name = name;
+    user.password = updatedPassword;
+    user.username = username;
+    user.numberphone = numberphone;
     user.updateAt = Date.now();
     //lưu user
     const result = await user.save();
@@ -135,9 +143,9 @@ const isValidEmail = (email) => {
 
 // Lấy thông tin user bằng id
 
-const getUserByid = async (id) => {
-  const user = await userModel.findById(id);
+const getUserByEmail = async (email) => {
+  const user = await userModel.findOne(email);
   return user;
 };
 
-module.exports = { register, login, update, verify, getUserByid };
+module.exports = { register, login, updateUser, verify, getUserByEmail };
