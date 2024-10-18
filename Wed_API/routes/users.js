@@ -42,10 +42,10 @@ router.post("/register", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     const result = await userController.login(email, password);
     if (result) {
-      return res.status(200).json({ status: true, data: result });
+      return res.status(200).json(result);
     } else {
       return res
         .status(400)
@@ -59,13 +59,19 @@ router.post("/login", async (req, res, next) => {
 
 //API cập nhật tài khoản
 // method: post
-// url: http://localhost:7777/users/cap-nhat-tai-khoan
+// url: http://:7777/users/updateUser
 // kết quả: cập nhật thành công hoặc thất bại
 
-router.post("/cap-nhat-tai-khoan", async (req, res, next) => {
+router.put("/updateUser", async (req, res, next) => {
   try {
-    const { email, password, name } = req.body;
-    const result = await userController.update(email, password, name);
+    const { email, password, username, numberphone, birthday } = req.body;
+    const result = await userController.updateUser(
+      email,
+      password,
+      username,
+      numberphone,
+      birthday
+    );
     return res.status(200).json({ status: true, data: result });
   } catch (error) {
     console.log("Update error", error.message);
@@ -89,16 +95,16 @@ router.get("/xac-thuc-email", async (req, res, next) => {
   }
 });
 
-// url: http://localhost:7777/users/getUserid?id=
-// Lấy user qua id
-router.get("/getUserid", async (req, res, next) => {
-  const { id } = req.query;
+// url: http://localhost:7777/users/getUserEmail?email=
+// Lấy user qua email
+router.get("/getUserEmail", async (req, res, next) => {
+  const email = req.query;
 
   try {
-    const result = await userController.getUserByid(id);
-    console.log(result);
+    const result = await userController.getUserByEmail(email);
+    // console.log(result);
     if (result) {
-      return res.status(200).json({ status: true, data: result });
+      return res.status(200).json({ result });
     } else {
       res.status(404);
     }
