@@ -8,11 +8,6 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    }
 });
 
 // Tạo Model từ Schema

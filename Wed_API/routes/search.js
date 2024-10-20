@@ -4,11 +4,11 @@ const User = require('../controllers/UserModel'); // Đảm bảo import đúng 
 
 // Định nghĩa route tìm kiếm
 router.get('/', async (req, res) => {
-    const { name, email } = req.body; // Lấy tham số từ query
+    const { name,} = req.body; // Lấy tham số từ query
 
     // Kiểm tra xem có ít nhất một tham số tìm kiếm không
-    if (!name && !email) {
-        return res.status(400).json({ message: 'Please provide a name or email to search.' });
+    if (!name) {
+        return res.status(400).json({ message: 'Please provide a name to search.' });
     }
 
     try {
@@ -17,11 +17,6 @@ router.get('/', async (req, res) => {
         // Thêm điều kiện tìm kiếm theo tên nếu có
         if (name) {
             query.name = new RegExp(name, 'i'); // Tìm kiếm tên không phân biệt chữ hoa chữ thường
-        }
-        
-        // Thêm điều kiện tìm kiếm theo email nếu có
-        if (email) {
-            query.email = new RegExp(email, 'i'); // Tìm kiếm email không phân biệt chữ hoa chữ thường
         }
 
         const users = await User.find(query); // Tìm kiếm theo điều kiện
