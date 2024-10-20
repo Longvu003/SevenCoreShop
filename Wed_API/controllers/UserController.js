@@ -2,25 +2,31 @@ const userModel = require("./UserModel");
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../helpers/Mailer");
 const httml = require("../helpers/MailContent");
-// register a new user
-const register = async (email, password, name) => {
+
+// đăng ký người dùng mới
+const register = async (email, password, name, phone) => {
   try {
-    //tìm kiếm email trong database
+    // tìm kiếm email trong database
     let user = await userModel.findOne({ email: email });
     if (user) {
       throw new Error("Email đã tồn tại");
     }
+    
     // mã hóa password
-    const salt = bcrypt.genSaltSync(10); //tạo muối
-    password = bcrypt.hashSync(password, salt); //mã hóa password
-    //tạo mới user
+    const salt = bcrypt.genSaltSync(10); // tạo muối
+    password = bcrypt.hashSync(password, salt); // mã hóa password
+
+    // tạo mới user
     user = new userModel({
       email: email,
       password: password,
       name: name,
+      phone: phone, // thêm trường số điện thoại
     });
-    //lưu user
+
+    // lưu user
     const result = await user.save();
+    
     // gửi email xác thực tài khoản
     // setTimeout(async () => {
     //     const data = {
@@ -29,7 +35,8 @@ const register = async (email, password, name) => {
     //         conten: httml.html(name)
     //     }
     //     await sendMail(data)
-    // },0);
+    // }, 0);
+    
     return "Đăng kí thành công";
   } catch (error) {
     console.log("Register error", error.message);
@@ -37,18 +44,17 @@ const register = async (email, password, name) => {
   }
 };
 
-//login
+// đăng nhập
 const login = async (email, password) => {
   try {
-    //tìm kiếm user trong db theo email
+    // tìm kiếm user trong db theo email
     const user = await userModel.findOne({ email: email });
     if (!user) {
       throw new Error("Email không tồn tại");
     } else {
-      //so sánh password
-      //const check = user.password.toString() === password.toString();//so sánh password
-      const check = bcrypt.compareSync(password, user.password); //so sánh password
-      //nếu password đúng thì trả về user
+      // so sánh password
+      const check = bcrypt.compareSync(password, user.password); // so sánh password
+      // nếu password đúng thì trả về user
       if (check) {
         // xóa field password trc khi trả về
         // delete user._doc.password;
@@ -56,35 +62,41 @@ const login = async (email, password) => {
           _id: user._id,
           email: user.email,
           name: user.name,
+          phone: user.phone, // thêm số điện thoại vào kết quả trả về
           role: user.role,
         };
       }
     }
-    return null; //nếu không tìm thấy user
+    return null; // nếu không tìm thấy user
   } catch (error) {
     console.log("Login error", error.message);
     throw new Error("Login error");
   }
 };
 
-//update user
-const update = async (email, password, name) => {
+// cập nhật thông tin người dùng
+const update = async (email, password, name, phone) => {
   try {
-    //tìm kiếm user trong db theo email
+    // tìm kiếm user trong db theo email
     const user = await userModel.findOne({ email: email });
     if (!user) {
       throw new Error("Email không tồn tại");
     }
-    // mã hóa password
-    const salt = bcrypt.genSaltSync(10); //tạo muối
-    password = bcrypt.hashSync(password, salt); //mã hóa password
-    //cập nhật user
-    user.password = password;
+    
+    // mã hóa password nếu được cung cấp
+    if (password) {
+      const salt = bcrypt.genSaltSync(10); // tạo muối
+      password = bcrypt.hashSync(password, salt); // mã hóa password
+      user.password = password;
+    }
+    
+    // cập nhật thông tin
     user.name = name;
-    user.updateAt = Date.now();
-    //lưu user
+    user.phone = phone; // thêm trường số điện thoại
+    user.updatedAt = Date.now();
+
+    // lưu user
     const result = await user.save();
-    // câp nhật thành công
 
     return "Cập nhật thành công";
   } catch (error) {
@@ -93,8 +105,7 @@ const update = async (email, password, name) => {
   }
 };
 
-// xác thực email
-// kết quả: xác thực thành công hoặc thất bại
+// xác thực email
 const verify = async (email) => {
   try {
     // Kiểm tra xem email có hợp lệ không
