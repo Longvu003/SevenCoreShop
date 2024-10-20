@@ -1,4 +1,6 @@
 export interface UserModel{
     email:String,
-    password:String
+    password:String,
+    phone:String,
+    address:String
 }
