@@ -44,6 +44,8 @@ app.use('/categories', categoriesRouter);
 // http://localhost:7777/carts
 app.use('/carts', cartsRouter)
 
+app.use('/search', require('./routes/search'));
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
