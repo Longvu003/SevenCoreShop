@@ -1,9 +1,9 @@
-const User = require('../models/UserModel');
+const User = require('../controllers/UserModel');
 
 // Tìm kiếm người dùng dựa trên tên và email
 const searchUsers = async (req, res) => {
     try {
-        const { name, email } = req.query; // Lấy từ khóa tìm kiếm từ query params
+        const { name, email } = req.body; // Lấy từ khóa tìm kiếm từ query params
 
         let searchCriteria = {};
 
