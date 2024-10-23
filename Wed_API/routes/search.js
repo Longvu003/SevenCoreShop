@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../controllers/UserModel'); // Đảm bảo import đúng mô hình người dùng
+const User = require('../model/UserModel'); // Đảm bảo import đúng mô hình người dùng
 
 // Định nghĩa route tìm kiếm
 router.get('/', async (req, res) => {

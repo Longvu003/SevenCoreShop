@@ -1,4 +1,4 @@
-const User = require('../controllers/UserModel');
+const User = require('../model/UserModel');
 
 // Tìm kiếm người dùng dựa trên tên và email
 const searchUsers = async (req, res) => {

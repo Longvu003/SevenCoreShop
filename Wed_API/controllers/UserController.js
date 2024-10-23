@@ -1,33 +1,34 @@
-const userModel = require("./UserModel");
+const userModel = require("../model/UserModel");
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../helpers/Mailer");
 const httml = require("../helpers/MailContent");
 
-// đăng ký người dùng mới
-const register = async (email, password, name, phone) => {
+// Đăng ký người dùng mới
+const register = async (email, password, name, phone, address) => {
   try {
-    // tìm kiếm email trong database
+    // Tìm kiếm email trong database
     let user = await userModel.findOne({ email: email });
     if (user) {
       throw new Error("Email đã tồn tại");
     }
     
-    // mã hóa password
-    const salt = bcrypt.genSaltSync(10); // tạo muối
-    password = bcrypt.hashSync(password, salt); // mã hóa password
+    // Mã hóa password
+    const salt = bcrypt.genSaltSync(10); // Tạo muối
+    password = bcrypt.hashSync(password, salt); // Mã hóa password
 
-    // tạo mới user
+    // Tạo mới user
     user = new userModel({
-      email: email,
+      email: email,      // Thêm trường email
       password: password,
-      name: name,
-      phone: phone, // thêm trường số điện thoại
+      name: name,        // Thêm trường tên
+      phone: phone,      // Thêm trường số điện thoại
+      address: address,  // Thêm trường địa chỉ
     });
 
-    // lưu user
-    const result = await user.save();
+    // Lưu user
+    await user.save();
     
-    // gửi email xác thực tài khoản
+    // Gửi email xác thực tài khoản (tùy chọn)
     // setTimeout(async () => {
     //     const data = {
     //         email: email,
@@ -37,66 +38,66 @@ const register = async (email, password, name, phone) => {
     //     await sendMail(data)
     // }, 0);
     
-    return "Đăng kí thành công";
+    return "Đăng ký thành công";
   } catch (error) {
     console.log("Register error", error.message);
     throw new Error("Register error");
   }
 };
 
-// đăng nhập
+// Đăng nhập
 const login = async (email, password) => {
   try {
-    // tìm kiếm user trong db theo email
+    // Tìm kiếm user trong db theo email
     const user = await userModel.findOne({ email: email });
     if (!user) {
       throw new Error("Email không tồn tại");
     } else {
-      // so sánh password
-      const check = bcrypt.compareSync(password, user.password); // so sánh password
-      // nếu password đúng thì trả về user
+      // So sánh password
+      const check = bcrypt.compareSync(password, user.password); // So sánh password
+      // Nếu password đúng thì trả về user
       if (check) {
-        // xóa field password trc khi trả về
-        // delete user._doc.password;
         return {
           _id: user._id,
-          email: user.email,
-          name: user.name,
-          phone: user.phone, // thêm số điện thoại vào kết quả trả về
+          email: user.email,      // Trả về email
+          name: user.name,        // Trả về tên
+          phone: user.phone,      // Trả về số điện thoại
+          address: user.address,  // Trả về địa chỉ
           role: user.role,
         };
       }
     }
-    return null; // nếu không tìm thấy user
+    return null; // Nếu không tìm thấy user
   } catch (error) {
     console.log("Login error", error.message);
     throw new Error("Login error");
   }
 };
 
-// cập nhật thông tin người dùng
-const update = async (email, password, name, phone) => {
+// Cập nhật thông tin người dùng
+const update = async (email, password, name, phone, address) => {
   try {
-    // tìm kiếm user trong db theo email
+    // Tìm kiếm user trong db theo email
     const user = await userModel.findOne({ email: email });
     if (!user) {
       throw new Error("Email không tồn tại");
     }
     
-    // mã hóa password nếu được cung cấp
+    // Mã hóa password nếu được cung cấp
     if (password) {
-      const salt = bcrypt.genSaltSync(10); // tạo muối
-      password = bcrypt.hashSync(password, salt); // mã hóa password
+      const salt = bcrypt.genSaltSync(10); // Tạo muối
+      password = bcrypt.hashSync(password, salt); // Mã hóa password
       user.password = password;
     }
     
-    // cập nhật thông tin
-    user.name = name;
-    user.phone = phone; // thêm trường số điện thoại
+    // Cập nhật thông tin
+    user.name = name;            // Cập nhật tên
+    user.phone = phone;          // Cập nhật số điện thoại
+    user.address = address;      // Cập nhật địa chỉ
     user.updatedAt = Date.now();
 
-    // lưu user
-    const result = await user.save();
+    // Lưu user
+    await user.save();
 
     return "Cập nhật thành công";
   } catch (error) {
@@ -105,7 +106,7 @@ const update = async (email, password, name, phone) => {
   }
 };
 
-// xác thực email
+// Xác thực email
 const verify = async (email) => {
   try {
     // Kiểm tra xem email có hợp lệ không
@@ -129,7 +130,7 @@ const verify = async (email) => {
     user.updatedAt = Date.now();
 
     // Lưu user
-    const result = await user.save();
+    await user.save();
     return "Xác thực thành công";
   } catch (error) {
     console.log("Verify error:", error.message);
@@ -142,5 +143,51 @@ const isValidEmail = (email) => {
   const emailRegex = /\S+@\S+\.\S+/;
   return emailRegex.test(email);
 };
+// delete user
+const deleteUser = async (email) => {
+  try {
+    // Tìm kiếm user trong db theo email
+    const user = await userModel.findOne({ email: email });
+    if (!user) {
+      throw new Error("Email không tồn tại");
+    }
 
-module.exports = { register, login, update, verify };
+    // Xóa user
+    await userModel.deleteOne({ email: email });
+
+    return "Xóa người dùng thành công";
+  } catch (error) {
+    console.log("Delete error", error.message);
+    throw new Error("Delete error");
+  }
+};
+
+// get all user
+const getAllUser = async () => {
+  try {
+    // Lấy danh sách user
+    const users = await userModel.find();
+    return users;
+  } catch (error) {
+    console.log("Get all user error", error.message);
+    throw new Error("Get all user error");
+  }
+};
+//delete user by id
+const deleteUserById = async (id) => {
+  try {
+    // Tìm kiếm user trong db theo id
+    const user
+      = await userModel.findByIdAndDelete(id);
+    if (!user) {
+      throw new Error("User không tồn tại");
+    }
+  } catch (error) {
+    console.log("Delete user by id error", error.message);
+    throw new Error("Delete user by id error");
+  }
+}
+
+
+
+module.exports = { register, login, update, verify, deleteUser, getAllUser,deleteUserById };

@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors')
 const mongoose = require('mongoose')
-require('./controllers/UserModel')
+require('./model/UserModel')
 
 
 //okokok

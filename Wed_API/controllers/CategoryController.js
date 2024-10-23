@@ -1,4 +1,4 @@
-const CategoryModel = require("./CategoryModel");
+const CategoryModel = require("../model/CategoryModel");
 
 // lấy danh sách danh mục
 

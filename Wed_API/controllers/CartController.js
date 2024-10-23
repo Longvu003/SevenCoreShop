@@ -1,6 +1,6 @@
-const CartModel = require('./CartModel');
-const UserModel = require('./UserModel');
-const ProductModel = require('./ProductModel');
+const CartModel = require('../model/CartModel');
+const UserModel = require('../model/UserModel');
+const ProductModel = require('../model/ProductModel');
 
 const add = async (user, products) => {
     try {

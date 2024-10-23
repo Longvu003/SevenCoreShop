@@ -1,5 +1,5 @@
-const ProductModel = require("./ProductModel")
-const CategoryModel = require("./CategoryModel")
+const ProductModel = require("../model/ProductModel")
+const CategoryModel = require("../model/CategoryModel")
 
 
 // lấy danh sách sản phẩm
