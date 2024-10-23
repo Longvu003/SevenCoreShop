@@ -21,7 +21,7 @@ const EditUser = () => {
     try {
       const user = await AsyncStorage.getItem('userEmail');
       const newUser = JSON.parse(user);
-      const url = `http://192.168.2.59:7777/users/getUserEmail?email=${newUser}`;
+      const url = `http://192.168.1.9:7777/users/getUserEmail?email=${newUser}`;
       if (user) {
         const respone = await axios.get(url);
         const userInformation = Object.values(respone.data);
@@ -45,21 +45,11 @@ const EditUser = () => {
     try {
       const userEmail_2 = await AsyncStorage.getItem('userEmail');
       const userString = JSON.parse(userEmail_2);
-      const url = `http://192.168.2.59:7777/users/updateUser?email=${userString}`;
+      const url = `http://192.168.1.9:7777/users/updateUser?email=${userString}`;
       await axios.put(url, userData, {
         headers: 'application/x-www-form-urlencoded',
       });
       // console.log(url);
-      const newDataUpdate = {
-        ...userData[0],
-        username: userData.username,
-        numberphone: userData.numberphone,
-      };
-
-      await AsyncStorage.setItem(
-        'newDataUpdate',
-        JSON.stringify(newDataUpdate),
-      );
 
       Alert.alert('Cập nhật thành công');
     } catch (error) {

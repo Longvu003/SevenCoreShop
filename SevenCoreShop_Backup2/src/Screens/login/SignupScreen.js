@@ -52,7 +52,7 @@ const SignupScreen = ({navigation}) => {
     try {
       // Send POST request to API
       const response = await axios.post(
-        'http://192.168.2.59:7777/users/register',
+        'http://192.168.1.9:7777/users/register',
         formData,
       );
 

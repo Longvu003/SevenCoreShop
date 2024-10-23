@@ -20,6 +20,7 @@ const register = async (email, password, username, numberphone, birthday) => {
       username: username,
       numberphone: numberphone,
       birthday: birthday,
+      address: address,
     });
     //lưu user
     const result = await user.save();
@@ -72,7 +73,14 @@ const login = async (email, password) => {
 };
 
 //update user
-const updateUser = async (email, password, username, numberphone, birthday) => {
+const updateUser = async (
+  email,
+  password,
+  username,
+  numberphone,
+  birthday,
+  address
+) => {
   try {
     //tìm kiếm user trong db theo email
     const user = await userModel.findOne({ email: email });
@@ -90,6 +98,7 @@ const updateUser = async (email, password, username, numberphone, birthday) => {
     user.password = updatedPassword;
     user.username = username;
     user.numberphone = numberphone;
+    user.address = address;
     user.updateAt = Date.now();
     //lưu user
     const result = await user.save();
