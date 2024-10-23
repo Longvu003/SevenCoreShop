@@ -7,11 +7,12 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 import axios from 'axios';
 import {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserStyleSheet from '../../StyleSheets/UserStyleSheet';
+import {useFocusEffect} from '@react-navigation/native';
 const User = ({navigation}) => {
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ const User = ({navigation}) => {
   const renderUser = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     const newUserEmail = JSON.parse(userEmail);
-    const url = `http://192.168.2.59:7777/users/getUserEmail?email=${newUserEmail}`;
+    const url = `http://192.168.1.9:7777/users/getUserEmail?email=${newUserEmail}`;
     try {
       if (newUserEmail) {
         const response = await axios.get(url);
@@ -40,22 +41,11 @@ const User = ({navigation}) => {
     await AsyncStorage.removeItem('userEmail');
     navigation.replace('LoginScreen');
   };
-  useEffect(() => {
-    renderUser();
-  }, []);
-  const getAllDataUpdate = async () => {
-    const userUpdate = await AsyncStorage.getItem('newDataUpdate');
-    const newUserUpdate = JSON.parse(userUpdate);
-    console.log(newUserUpdate);
-    setUserName(newUserUpdate.username);
-    setNumberPhone(newUserUpdate.numberphone);
-    console.log('data sau update', userName);
-    console.log('data sau update', numberPhone);
-  };
-  useEffect(() => {
-    getAllDataUpdate();
-  }, []);
-
+  useFocusEffect(
+    useCallback(() => {
+      renderUser();
+    }, []),
+  );
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={UserStyleSheet.layout__Img}>
@@ -83,7 +73,7 @@ const User = ({navigation}) => {
           />
 
           <Text
-            onPress={() => navigation.navigate('EditUser', {dataUser: user})}
+            onPress={() => navigation.navigate('EditUser')}
             style={UserStyleSheet.btn__Edit}>
             Sửa
           </Text>
@@ -98,9 +88,7 @@ const User = ({navigation}) => {
             style={UserStyleSheet.txt__container}
             source={require('../../../assets/imgs/Vector.png')}
           />
-          <Text>{userName}</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={UserStyleSheet.container__layout}>
           <Text style={UserStyleSheet.txt__container}>Danh sách yêu thích</Text>
           <Image

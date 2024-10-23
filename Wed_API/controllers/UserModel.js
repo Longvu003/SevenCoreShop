@@ -12,7 +12,7 @@ const UserSchema = new Schema({
   role: { type: String, default: 1 }, //1 là user, 2 là admin
   numberphone: { type: String },
   birthday: { type: String },
-
+  address: { type: String },
   // lịch sử mua hàng
   carts: { type: Array, default: [] },
   //xác thực tài khoản
