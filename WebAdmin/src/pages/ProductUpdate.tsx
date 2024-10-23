@@ -59,37 +59,37 @@ export default function ProductUpdate() {
     return (
         <form className="space-y-5" onSubmit={clickUpdate}>
             <div>
-                <label htmlFor="productName">Product Name</label>
+                <label htmlFor="productName">Tên Sản Phẩm</label>
                 <input id="productName" type="text" name="name" className="form-input" required />
             </div>
 
             <div>
-                <label htmlFor="productPrice">Product Price</label>
+                <label htmlFor="productPrice">Giá Sản Phẩm</label>
                 <input id="productPrice" type="text" name="price" className="form-input" required />
             </div>
 
             <div>
-                <label htmlFor="productQuantity">Product Quantity</label>
+                <label htmlFor="productQuantity">Số Lượng Sản Phẩm</label>
                 <input id="productQuantity" type="text" name="quantity" className="form-input" required />
             </div>
 
             <div>
-                <label htmlFor="productDescription">Product Description</label>
+                <label htmlFor="productDescription">Mô tả Sản Phẩm</label>
                 <input id="productDescription" type="text" name="description" className="form-input" required />
             </div>
 
             <div>
-                <label htmlFor="productCategory">Product Categories</label>
+                <label htmlFor="productCategory">Danh Mục Sản Phẩm</label>
                 <select id="productCategory" name="category.category_name" className="form-select" required>
-                    <option value="">Open this select menu</option>
-                    <option value="One">One</option>
-                    <option value="Two">Two</option>
-                    <option value="Three">Three</option>
+                    <option value="">Mở để chọn danh mục</option>
+                    <option value="One">Một</option>
+                    <option value="Two">Hai</option>
+                    <option value="Three">Ba</option>
                 </select>
             </div>
 
             <div>
-                <label htmlFor="productImages">Images</label>
+                <label htmlFor="productImages">Hình Ảnh</label>
                 <input id="productImages" type="file" name="images" multiple className="form-input" required />
             </div>
 
