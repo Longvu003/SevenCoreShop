@@ -629,7 +629,6 @@ const Analytics = () => {
                         </PerfectScrollbar>
                     </div>
                 </div>
-
                 {/* <div className="grid sm:grid-cols-3 xl:grid-cols-5 gap-6 mb-6">
                     <div className="panel h-full sm:col-span-3 xl:col-span-2">
                         <div className="flex items-start justify-between mb-5">

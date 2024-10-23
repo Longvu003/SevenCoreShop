@@ -8,10 +8,6 @@ import i18next from 'i18next';
 import IconCaretDown from '../components/Icon/IconCaretDown';
 import IconMail from '../components/Icon/IconMail';
 import IconLockDots from '../components/Icon/IconLockDots';
-import IconInstagram from '../components/Icon/IconInstagram';
-import IconFacebookCircle from '../components/Icon/IconFacebookCircle';
-import IconTwitter from '../components/Icon/IconTwitter';
-import IconGoogle from '../components/Icon/IconGoogle';
 import { loginUser } from '../service/UserService'; // Sử dụng hook quản lý 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -88,7 +84,7 @@ const LoginBoxed = () => {
 
                 <div className="relative w-full max-w-[870px] rounded-md ">
                     <div className="relative flex flex-col justify-center rounded-md bg-white/60 backdrop-blur-lg dark:bg-black/50 px-6 lg:min-h-[758px] py-20">
-                        <div className="absolute top-6 end-6">
+                        {/* <div className="absolute top-6 end-6">
                             <div className="dropdown">
                                 <Dropdown
                                     offset={[0, 8]}
@@ -128,17 +124,17 @@ const LoginBoxed = () => {
                                     </ul>
                                 </Dropdown>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="mx-auto w-full max-w-[440px]">
                             <div className="mb-10">
-                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Đăng Nhập</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Nhập email và mật khẩu để đăng nhập</p>
+                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Đăng nhập</h1>
+                                <p className="text-base font-bold leading-normal text-white-dark">Nhập Email và mật khẩu để đăng nhập</p>
                             </div>
                             <form className="space-y-5 dark:text-white" onSubmit={submitForm}>
                                 <div>
                                     <label htmlFor="Email">Email</label>
                                     <div className="relative text-white-dark">
-                                        <input id="username" type="text" placeholder="Nhập Email"
+                                        <input id="username" type="text" placeholder="Enter Username"
                                             onChange={(e) => setdatauser({ ...datauser, email: e.target.value })}
 
                                             className="form-input ps-10 placeholder:text-white-dark" />
@@ -148,9 +144,9 @@ const LoginBoxed = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="Password">Mật Khẩu</label>
+                                    <label htmlFor="Password">Mật khẩu</label>
                                     <div className="relative text-white-dark">
-                                        <input id="Password" type="password" placeholder="Nhập Mật Khẩu"
+                                        <input id="Password" type="password" placeholder="Enter Password"
                                             onChange={(e) => setdatauser({ ...datauser, password: e.target.value })}
 
                                             className="form-input ps-10 placeholder:text-white-dark" />
