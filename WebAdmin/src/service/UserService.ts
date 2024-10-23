@@ -17,10 +17,3 @@ export const loginUser = async  (user:UserModel):Promise<UserModel>=>{
       // Chuyển đổi phản hồi thành JSON và trả về đối tượng kiểu 
       return data;  // Trả về đối tượng 
 }
-
-// get all users
-export const getUsers = async ():Promise<UserModel[]>=>{
-    const response = await fetch(`${API_URL}/users`);
-    const data: UserModel[] = await response.json();
-    return data;
-}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Products } from '../model/ProductModel';
-import { GetProduct, DeleteProduct,UpdateProductByid } from '../service/ProducService';
+import { GetProduct, DeleteProduct,EditProductByid,CreateProduct, GetProductById } from '../service/ProducService';
 
 export const userProducts = () => {
 
@@ -8,13 +8,9 @@ export const userProducts = () => {
     const getProduct = async () => {
         try {
             const getProducts = await GetProduct();
-
-            // Cập nhật danh sách bệnh viện khi tạo thành công
-
-            // Thông báo thành công
             return getProducts;
         } catch (error) {
-            console.error('Failed to create hospital', error);
+            console.error('Failed to get product', error);
             return error
         }
     };
@@ -22,32 +18,45 @@ export const userProducts = () => {
     const deleteProduct = async (id: string) => {
         try {
             const deleteProducts = await DeleteProduct(id);
-
-
-            // Cập nhật danh sách bệnh viện khi tạo thành công
-
-            // Thông báo thành công
             return deleteProducts;
         } catch (error) {
-            console.error('Failed to create hospital', error);
+            console.error('Failed to delete produc', error);
             return error
         }
     };
 
-    const updateProduct = async (id: string,product:Products) => {
+    const editProduct = async (id: string,product:Products) => {
         try {
-            const updateProduct = await UpdateProductByid(id,product);
-            // Thông báo thành công
+            const updateProduct = await EditProductByid(id,product);
             return updateProduct;
+        } catch (error) {
+            console.error('Failed to update product', error);
+            return error
+        }
+    }
+
+    const createProduct = async (product: Products) => {
+        try {
+            const createProducts = await CreateProduct(product);
+            return createProducts;
         } catch (error) {
             console.error('Failed to create product', error);
             return error
         }
     }
 
+    const getProductById = async (id: string) => {
+        try {
+            const getProducts = await GetProductById(id);
+            return getProducts;
+        } catch (error) {
+            console.error('Failed to get product', error);
+            return error
+        }
+    }
+
 
     return {
-
-        getProduct, deleteProduct, updateProduct
+        getProduct, deleteProduct, editProduct,createProduct,getProductById
     };
 };
