@@ -9,7 +9,7 @@ export interface Products {
     name: string;
     price: number;
     quantity: number;
-    images: string;
+    images: string[];
     description: string;
     category: Category;
     avaialble: boolean;

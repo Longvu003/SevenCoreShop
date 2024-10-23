@@ -92,8 +92,8 @@ const LoginBoxed = () => {
                         </div>
                         <div className="mx-auto w-full max-w-[440px]">
                             <div className="mb-10">
-                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign in</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p>
+                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Đăng nhập</h1>
+                                <p className="text-base font-bold leading-normal text-white-dark">Nhập email và mật khẩu để đăng nhập</p>
                             </div>
                             <form className="space-y-5 dark:text-white" onSubmit={submitForm}>
                                 <div>
@@ -106,7 +106,7 @@ const LoginBoxed = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="Password">Password</label>
+                                    <label htmlFor="Password">Mật Khẩu</label>
                                     <div className="relative text-white-dark">
                                         <input id="Password" type="password" placeholder="Enter Password" className="form-input ps-10 placeholder:text-white-dark" />
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2">
@@ -121,7 +121,7 @@ const LoginBoxed = () => {
                                     </label>
                                 </div>
                                 <button type="submit" className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]">
-                                    Sign in
+                                    ĐĂNG NHẬP
                                 </button>
                             </form>
                             <div className="relative my-7 text-center md:mb-9">
@@ -169,9 +169,9 @@ const LoginBoxed = () => {
                                 </ul>
                             </div>
                             <div className="text-center dark:text-white">
-                                Don't have an account ?&nbsp;
+                                Chưa có tài khoản ở SevenCore ?&nbsp;
                                 <Link to="/auth/boxed-signup" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
-                                    SIGN UP
+                                    ĐĂNG KÝ
                                 </Link>
                             </div>
                         </div>

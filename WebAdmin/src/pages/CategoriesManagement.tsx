@@ -4,18 +4,16 @@ import 'tippy.js/dist/tippy.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import { setPageTitle } from '../store/themeConfigSlice';
-import { Category } from '../model/CategoriesModel';
-import { categoryController } from '../controller/CategoryController';
+import { userProducts } from '../controller/ProductController';
+import { Products, Category } from '../model/ProductModel';
+import IconTrashLines from '../components/Icon/IconTrashLines';
 
 
 
 const Tables = () => {
-    const { getCategories, deleteCategoriesById,  } = categoryController();
-    const [dataCategorie, setDataCategorie] = useState<Category[]>([]);
-
-
-    const DeleteCategoriesById = async (id: string) => {
-        const result: any = await deleteCategoriesById(id);
+    const { getProduct, deleteProduct } = userProducts();
+    const deleteProductById = async (id: string) => {
+        const result: any = await deleteProduct(id);
 
         console.log(result.status);
         if (result.status === true) {
@@ -27,15 +25,17 @@ const Tables = () => {
 
     };
 
+    // Sử dụng useState để lưu trữ dữ liệu từ API
+    const [dataProduct, setDataProduct] = useState<Products[]>([]);
+
     // Hàm showData lấy dữ liệu từ API và lưu vào state
     const showData = async () => {
-        const data: any = await getCategories();
+        const data: any = await getProduct();
         console.log(data.data);
-        setDataCategorie(data.data);
+        setDataProduct(data.data);
     };
 
     const dispatch = useDispatch();
-
 
     useEffect(() => {
         showData();
@@ -52,34 +52,33 @@ const Tables = () => {
             {/* Simple Table */}
             <div className="panel">
                 <div className="flex items-center justify-between mb-12">
-                    <h5 className="font-semibold text-lg dark:text-white-light">Quản lí danh mục sản phẩm</h5>
-                    <a href="/categoriesmanagent/categories-update" className="btn btn-success">+ Thêm</a>
+                    <h5 className="font-semibold text-lg dark:text-white-light">Danh Mục</h5>
+                    <button type="button" className="btn btn-success">Thêm Danh Mục</button>
                 </div>
                 <div className="table-responsive mb-5">
                     <table>
                         <thead>
                             <tr>
-                                <th>Tên danh mục sản phẩm</th>
-                                <th>Mô tả</th>
-                                <th className="text-center">Hành động</th>
+                                <th>Tên Danh Mục</th>
+                                <th>Mô Tả</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {/* Hiển thị dữ liệu từ cate */}
-                            {dataCategorie.map((Category) => (
-                                <tr key={Category._id}>
-                                    <td>{Category.name}</td>
-                                    <td>{Category.description}</td>
-                                    <td>
-                                        <div className="flex gap-4 items-center justify-center">
-                                            <a href={`/categoriesmanagent/categories-edit?id=${Category._id}`} className="btn btn-sm btn-outline-primary">
-                                                Chỉnh sửa
-                                            </a>
+                            {/* Hiển thị dữ liệu từ dataProduct */}
+                            {dataProduct.map((product) => (
+                                <tr key={product._id}>
+                                    <td>{product.name}</td>
+                                    <td>{product.price}</td>
+                                    <td>{product.quantity}</td>
+                                    <td>{product.category.category_name}</td>
+                                    <td className="text-center">
+                                        {product.avaialble ? "Yes" : "No"}
+                                    </td>
+                                    <td className="text-center">
+                                        <button type="button" onClick={() => deleteProductById(product._id)}>
+                                            <IconTrashLines className="m-auto" />
+                                        </button>
 
-                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => DeleteCategoriesById(Category._id)}>
-                                                Xóa
-                                            </button>
-                                        </div>
                                     </td>
                                 </tr>
                             ))}

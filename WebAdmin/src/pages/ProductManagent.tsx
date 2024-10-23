@@ -5,27 +5,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import { setPageTitle } from '../store/themeConfigSlice';
 import { userProducts } from '../controller/ProductController';
-import { Products, Category } from '../model/ProductModel';
+import { Products ,Category} from '../model/ProductModel';
+import IconTrashLines from '../components/Icon/IconTrashLines';
 
 
 
 const Tables = () => {
-    const { getProduct, deleteProduct } = userProducts();
-    // Sử dụng useState để lưu trữ dữ liệu từ API
-    const [dataProduct, setDataProduct] = useState<Products[]>([]);
-
-    const deleteProductById = async (id: string) => {
-        const result: any = await deleteProduct(id);
+    const { getProduct,deleteProduct } = userProducts();
+    const deleteProductById = async (id:string) => {
+        const result:any = await deleteProduct(id);
 
         console.log(result.status);
-        if (result.status === true) {
+        if(result.status === true){
             alert("Xóa Thành Công");
-        } else {
-            alert("Xóa Thất Bại");
-        }
-        showData();
+    }else{
+        alert("Xóa Thất Bại");
+    }
+    showData();
 
     };
+
+    // Sử dụng useState để lưu trữ dữ liệu từ API
+    const [dataProduct, setDataProduct] = useState<Products[]>([]);
 
     // Hàm showData lấy dữ liệu từ API và lưu vào state
     const showData = async () => {
@@ -51,19 +52,19 @@ const Tables = () => {
             {/* Simple Table */}
             <div className="panel">
                 <div className="flex items-center justify-between mb-12">
-                    <h5 className="font-semibold text-lg dark:text-white-light">Quản lý sản phẩm</h5>
-                    <a href="/product/product-createnew" className="btn btn-success">+ Thêm sản phẩm mới</a>
+                    <h5 className="font-semibold text-lg dark:text-white-light">Simple Table</h5>
+                    <button type="button" className="btn btn-success">Thêm Sản Phẩm Mới</button>
                 </div>
                 <div className="table-responsive mb-5">
                     <table>
                         <thead>
                             <tr>
-                                <th>Tên sản phẩm</th>
-                                <th>Giá bán</th>
-                                <th>Số lượng</th>
-                                <th>Danh mục sản phẩm</th>
-                                <th className="text-center">Hoạt động</th>
-                                <th className="text-center">Hành động</th>
+                                <th>Tên Sản Phẩm</th>
+                                <th>Giá Thành</th>
+                                <th>Số Lượng</th>
+                                <th>Danh Mục</th>
+                                <th className="text-center">Có Sẵn</th>
+                                <th className="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -75,18 +76,13 @@ const Tables = () => {
                                     <td>{product.quantity}</td>
                                     <td>{product.category.category_name}</td>
                                     <td className="text-center">
-                                        {product.avaialble ? "Đang hoạt động" : "Chưa hoạt động"}
+                                        {product.avaialble ? "Yes" : "No"}
                                     </td>
-                                    <td>
-                                        <div className="flex gap-4 items-center justify-center">
-                                            <a href={`/product/product-update?id=${product._id}`} className="btn btn-sm btn-outline-primary">
-                                                Chỉnh sửa
-                                            </a>
+                                    <td className="text-center">
+                                    <button type="button" onClick={() => deleteProductById(product._id)}>
+    <IconTrashLines className="m-auto" />
+</button>
 
-                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteProductById(product._id)}>
-                                                Xóa
-                                            </button>
-                                        </div>
                                     </td>
                                 </tr>
                             ))}
