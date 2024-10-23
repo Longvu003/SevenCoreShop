@@ -5,23 +5,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import { setPageTitle } from '../store/themeConfigSlice';
 import { userProducts } from '../controller/ProductController';
-import { Products ,Category} from '../model/ProductModel';
+import { Products, Category } from '../model/ProductModel';
 import IconTrashLines from '../components/Icon/IconTrashLines';
 
 
 
 const Tables = () => {
-    const { getProduct,deleteProduct } = userProducts();
-    const deleteProductById = async (id:string) => {
-        const result:any = await deleteProduct(id);
+    const { getProduct, deleteProduct } = userProducts();
+    const deleteProductById = async (id: string) => {
+        const result: any = await deleteProduct(id);
 
         console.log(result.status);
-        if(result.status === true){
+        if (result.status === true) {
             alert("Xóa Thành Công");
-    }else{
-        alert("Xóa Thất Bại");
-    }
-    showData();
+        } else {
+            alert("Xóa Thất Bại");
+        }
+        showData();
 
     };
 
@@ -52,18 +52,18 @@ const Tables = () => {
             {/* Simple Table */}
             <div className="panel">
                 <div className="flex items-center justify-between mb-12">
-                    <h5 className="font-semibold text-lg dark:text-white-light">Simple Table</h5>
-                    <button type="button" className="btn btn-success">Thêm Sản Phẩm Mới</button>
+                    <h5 className="font-semibold text-lg dark:text-white-light">Quản lý sản phẩm</h5>
+                    <a href="/product/product-createnew" className="btn btn-success">+ Thêm sản phẩm mới</a>
                 </div>
                 <div className="table-responsive mb-5">
                     <table>
                         <thead>
                             <tr>
-                                <th>Tên Sản Phẩm</th>
-                                <th>Giá Thành</th>
-                                <th>Số Lượng</th>
-                                <th>Danh Mục</th>
-                                <th className="text-center">Có Sẵn</th>
+                                <th>Name Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Category</th>
+                                <th className="text-center">Available</th>
                                 <th className="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -79,10 +79,22 @@ const Tables = () => {
                                         {product.avaialble ? "Yes" : "No"}
                                     </td>
                                     <td className="text-center">
-                                    <button type="button" onClick={() => deleteProductById(product._id)}>
-    <IconTrashLines className="m-auto" />
-</button>
+                                        <button type="button" onClick={() => deleteProductById(product._id)}>
+                                            <IconTrashLines className="m-auto" />
+                                        </button>
 
+                                    </td>
+
+                                    <td>
+                                        <div className="flex gap-4 items-center justify-center">
+                                            <a href={`/categoriesmanagent/categories-edit?id=${product._id}`} className="btn btn-sm btn-outline-primary">
+                                                Chỉnh sửa
+                                            </a>
+
+                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteProductById(product._id)}>
+                                                Xóa 
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

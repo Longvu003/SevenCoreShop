@@ -116,7 +116,7 @@ const Sidebar = () => {
                             <li className="nav-item">
                                 <ul>
                                     <li className="nav-item">
-                                        <NavLink to="/product/productmanagent" className="group">
+                                        <NavLink to="/product/product-managent" className="group">
                                             <div className="flex items-center">
                                                 <IconMenuChat className="group-hover:!text-primary shrink-0" />
                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Product Management')}</span>
@@ -131,16 +131,16 @@ const Sidebar = () => {
                                             </div>
                                         </NavLink>
                                     </li>
-                                    <li className="nav-item">
+                                    {/* <li className="nav-item">
                                         <NavLink to="/hospital-approval" className="group">
                                             <div className="flex items-center">
                                                 <IconMenuChat className="group-hover:!text-primary shrink-0" />
                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Vocher Management')}</span>
                                             </div>
                                         </NavLink>
-                                    </li>
+                                    </li> */}
                                     <li className="nav-item">
-                                        <NavLink to="/usersmanagent" className="group">
+                                        <NavLink to="/usermanagent" className="group">
                                             <div className="flex items-center">
                                                 <IconMenuChat className="group-hover:!text-primary shrink-0" />
                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('User Account')}</span>

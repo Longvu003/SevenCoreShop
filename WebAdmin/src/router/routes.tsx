@@ -7,8 +7,11 @@ const CategoriesManagent = lazy(() => import('../pages/CategoriesManagement'));
 const LoginBoxed = lazy(() => import('../pages/LoginBoxed'));
 const Error = lazy(() => import('../components/Error'));
 const HospitalApproval = lazy(() => import('../pages/HospitalApproval'));
-const ProductUpdate = lazy(() => import('../pages/ProductUpdate'));
-const UserManagent = lazy(() => import('../pages/UsersManagent'));
+const ProductCreateNew = lazy(() => import('../pages/ProductCreatNew'));
+const ProductUpdate = lazy(() => import('../pages/ProductEdit'));
+const CategoriesUpdate = lazy(() => import('../pages/CategoriesNew'));
+const CategoryEdit = lazy(() => import('../pages/CategoriesEdit'));
+const Usermanagent = lazy(() => import('../pages/UsersManagent'));
 const routes = [
     // dashboard (protected)
     {
@@ -28,11 +31,28 @@ const routes = [
             </PrivateRoute>
         ),
     },
+    // user (protected)
+    {
+        path: '/usermanagent',
+        element: (
+            <PrivateRoute>
+                <Usermanagent />
+            </PrivateRoute>
+        ),
+    },
     {
         path: '/categoriesmanagent',
         element: (
             <PrivateRoute>
                 <CategoriesManagent />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/categoriesmanagent/categories-edit',
+        element: (
+            <PrivateRoute>
+                <CategoryEdit />
             </PrivateRoute>
         ),
     },
@@ -45,27 +65,18 @@ const routes = [
         ),
     },
     {
+        path: '/product/product-createnew',
+        element: (
+            <PrivateRoute>
+                <ProductCreateNew />
+            </PrivateRoute>
+        ),
+    },
+    {
         path: '/product/product-update',
         element: (
             <PrivateRoute>
                 <ProductUpdate />
-            </PrivateRoute>
-        ),
-    },
-    // New product (protected)
-    {
-        path: '/product/productmanagent',
-        element: (
-            <PrivateRoute>
-                <ProductManagent />
-            </PrivateRoute>
-        ),
-    },
-    {
-        path: '/usersmanagent',
-        element: (
-            <PrivateRoute>
-                <UserManagent />
             </PrivateRoute>
         ),
     },

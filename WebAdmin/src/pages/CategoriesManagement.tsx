@@ -5,16 +5,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import { setPageTitle } from '../store/themeConfigSlice';
 import { userProducts } from '../controller/ProductController';
-import { Products, Category } from '../model/ProductModel';
+import { Category } from '../model/CategoriesModel';
 import IconTrashLines from '../components/Icon/IconTrashLines';
+import { categoryController } from '../controller/CategoryController';
 
 
 
 const Tables = () => {
-    const { getProduct, deleteProduct } = userProducts();
-    const deleteProductById = async (id: string) => {
-        const result: any = await deleteProduct(id);
+    const { createCategories, getCategories, deleteCategoriesById, updateCategories } = categoryController();
+    const [dataCategorie, setDataCategorie] = useState<Category[]>([]);
 
+    const showData = async () => {
+        const data: any = await getCategories();
+        console.log(data['data']);
+        setDataCategorie(data['data']);
+    };
+    useEffect(() => {
+        showData();
+    }, []);
+
+    const deleteCategories = async (id: string) => {
+        const result: any = await deleteCategoriesById(id);
         console.log(result.status);
         if (result.status === true) {
             alert("Xóa Thành Công");
@@ -25,15 +36,8 @@ const Tables = () => {
 
     };
 
-    // Sử dụng useState để lưu trữ dữ liệu từ API
-    const [dataProduct, setDataProduct] = useState<Products[]>([]);
+    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
-    // Hàm showData lấy dữ liệu từ API và lưu vào state
-    const showData = async () => {
-        const data: any = await getProduct();
-        console.log(data.data);
-        setDataProduct(data.data);
-    };
 
     const dispatch = useDispatch();
 
@@ -45,40 +49,44 @@ const Tables = () => {
         dispatch(setPageTitle('Tables'));
     });
 
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
-
     return (
         <div className="grid xl:grid-cols-1 gap-12 grid-cols-1">
             {/* Simple Table */}
             <div className="panel">
                 <div className="flex items-center justify-between mb-12">
-                    <h5 className="font-semibold text-lg dark:text-white-light">Danh Mục</h5>
-                    <button type="button" className="btn btn-success">Thêm Danh Mục</button>
+                    <h5 className="font-semibold text-lg dark:text-white-light">Categories</h5>
+                    <a href="/categoriesmanagent/categories-update" className="btn btn-success">New Categories</a>
                 </div>
                 <div className="table-responsive mb-5">
                     <table>
                         <thead>
                             <tr>
-                                <th>Tên Danh Mục</th>
-                                <th>Mô Tả</th>
+                                <th>Name Categories</th>
+                                <th>description</th>
+                                <th className="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {/* Hiển thị dữ liệu từ dataProduct */}
-                            {dataProduct.map((product) => (
-                                <tr key={product._id}>
-                                    <td>{product.name}</td>
-                                    <td>{product.price}</td>
-                                    <td>{product.quantity}</td>
-                                    <td>{product.category.category_name}</td>
-                                    <td className="text-center">
-                                        {product.avaialble ? "Yes" : "No"}
-                                    </td>
-                                    <td className="text-center">
-                                        <button type="button" onClick={() => deleteProductById(product._id)}>
+                            {/* Hiển thị dữ liệu từ cate */}
+                            {dataCategorie.map((Category) => (
+                                <tr key={Category._id}>
+                                    <td>{Category.name}</td>
+                                    <td>{Category.description}</td>
+                                    {/* <td className="text-center">
+                                        <button type="button" onClick={() => (Category._id)}>
                                             <IconTrashLines className="m-auto" />
                                         </button>
+                                    </td> */}
+                                    <td>
+                                        <div className="flex gap-4 items-center justify-center">
+                                            <a href={`/categoriesmanagent/categories-edit?id=${Category._id}`} className="btn btn-sm btn-outline-primary">
+                                                Chỉnh sửa Danh mục
+                                            </a>
 
+                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteCategoriesById(Category._id)}>
+                                                Delete
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

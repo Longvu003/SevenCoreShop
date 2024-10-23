@@ -131,14 +131,14 @@ const LoginBoxed = () => {
                         </div>
                         <div className="mx-auto w-full max-w-[440px]">
                             <div className="mb-10">
-                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Đăng Nhập</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Nhập email và mật khẩu để đăng nhập</p>
+                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign in</h1>
+                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p>
                             </div>
                             <form className="space-y-5 dark:text-white" onSubmit={submitForm}>
                                 <div>
                                     <label htmlFor="Email">Email</label>
                                     <div className="relative text-white-dark">
-                                        <input id="username" type="text" placeholder="Nhập Email"
+                                        <input id="username" type="text" placeholder="Enter Username"
                                             onChange={(e) => setdatauser({ ...datauser, email: e.target.value })}
 
                                             className="form-input ps-10 placeholder:text-white-dark" />
@@ -148,9 +148,9 @@ const LoginBoxed = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="Password">Mật Khẩu</label>
+                                    <label htmlFor="Password">Password</label>
                                     <div className="relative text-white-dark">
-                                        <input id="Password" type="password" placeholder="Nhập Mật Khẩu"
+                                        <input id="Password" type="password" placeholder="Enter Password"
                                             onChange={(e) => setdatauser({ ...datauser, password: e.target.value })}
 
                                             className="form-input ps-10 placeholder:text-white-dark" />
@@ -164,7 +164,7 @@ const LoginBoxed = () => {
                                     type="submit"
                                     className="btn w-full !mt-6 border-0 uppercase bg-[#2196F3] text-white shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)] hover:bg-[#1976D2]"
                                 >
-                                    Đăng Nhập
+                                    Sign in
                                 </button>
 
                             </form>

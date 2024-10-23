@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { userProducts } from '../controller/ProductController';
 
 export default function ProductUpdate() {
-    const { updateProduct } = userProducts();
+    const { editProduct } = userProducts();
     const [dataProduct, setDataProduct] = useState<any>({
         name: '',
         price: '',
