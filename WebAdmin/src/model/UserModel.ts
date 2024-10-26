@@ -1,4 +1,5 @@
 export interface UserModel{
+    isLocked: any;
     _id:String,
     email:String,
     password:String,

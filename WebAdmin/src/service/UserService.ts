@@ -115,3 +115,48 @@ export const UpdateUserById = async (id: string, user: UserModel): Promise<UserM
       throw error;  // Ném lại lỗi để xử lý ở nơi khác nếu cần
   }
 }
+
+//lockuser by id
+export const LockUserById = async (id: string): Promise<UserModel> => {
+  try {
+      const response = await fetch(`${API_URL}/users/${id}/lockuserbyid`, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+      });
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to lock user');
+      }
+
+      const data: UserModel = await response.json();
+      return data;  // Trả về đối tượng 
+  } catch (error) {
+      console.error('Error locking user:', error);
+      throw error;  // Ném lại lỗi để xử lý ở nơi khác nếu cần
+  }
+}
+//unlock user by id
+export const UnlockUserById = async (id: string): Promise<UserModel> => {
+  try {
+      const response = await fetch(`${API_URL}/users/${id}/unlockuserbyid`, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+      });
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to unlock user');
+      }
+
+      const data: UserModel = await response.json();
+      return data;  // Trả về đối tượng 
+  } catch (error) {
+      console.error('Error unlocking user:', error);
+      throw error;  // Ném lại lỗi để xử lý ở nơi khác nếu cần
+  }
+}

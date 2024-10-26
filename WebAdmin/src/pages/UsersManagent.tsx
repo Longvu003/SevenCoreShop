@@ -1,15 +1,13 @@
 import { useState, Fragment, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import Swal from 'sweetalert2';
-import IconSearch from '../components/Icon/IconSearch';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../store/themeConfigSlice';
-import IconX from '../components/Icon/IconX';
 import { useloginUser } from '../controller/UserController';
 import { UserModel } from '../model/UserModel';
 
 const Contacts = () => {
-    const { getAllUser, deleteUserbyId, updateUserbyId } = useloginUser();
+    const { getAllUser, deleteUserbyId, updateUserbyId, lockUserbyId, unlockUserbyId } = useloginUser();
     const [dataUser, setDataUser] = useState<UserModel[]>([]);
     const [editModal, setEditModal] = useState(false);
     const [params, setParams] = useState<UserModel | any>({
@@ -29,8 +27,6 @@ const Contacts = () => {
     useEffect(() => {
         showData();
     }, []);
-
-    const [search, setSearch] = useState<any>('');
 
     const deleteUser = async (id: string) => {
         const result = await Swal.fire({
@@ -59,13 +55,12 @@ const Contacts = () => {
     };
 
     const handleUpdateUser = async () => {
-        // Kiểm tra đầu vào
         if (!params.name || !params.email) {
             showMessage('Tên và Email không được để trống', 'error');
             return;
         }
 
-        const result: any = await updateUserbyId(params._id, params); // Gọi hàm updateUser với params
+        const result: any = await updateUserbyId(params._id, params);
 
         if (result.status === true) {
             showMessage('Cập Nhật Thành Công', 'success');
@@ -100,20 +95,59 @@ const Contacts = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(setPageTitle('Contacts'));
+        dispatch(setPageTitle('Quản Lý Người Dùng'));
     }, [dispatch]);
+
+    // Hàm khóa người dùng
+    const handleLockUser = async (id: string) => {
+        const result = await Swal.fire({
+            title: 'Bạn có chắc chắn muốn khóa người dùng này không?',
+            text: "Hành động này không thể hoàn tác!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Khóa',
+            cancelButtonText: 'Hủy'
+        });
+
+        if (result.isConfirmed) {
+            const lockResult: any = await lockUserbyId(id);
+            if (lockResult.status === true) {
+                showMessage('Khóa Thành Công', 'success');
+            } else {
+                showMessage('Khóa Thất Bại', 'error');
+            }
+            showData(); // Cập nhật danh sách người dùng
+        }
+    };
+
+    // Hàm mở khóa người dùng
+    const handleUnlockUser = async (id: string) => {
+        const result = await Swal.fire({
+            title: 'Bạn có chắc chắn muốn mở khóa người dùng này không?',
+            text: "Hành động này không thể hoàn tác!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Mở Khóa',
+            cancelButtonText: 'Hủy'
+        });
+
+        if (result.isConfirmed) {
+            const unlockResult: any = await unlockUserbyId(id);
+            if (unlockResult.status === true) {
+                showMessage('Mở Khóa Thành Công', 'success');
+            } else {
+                showMessage('Mở Khóa Thất Bại', 'error');
+            }
+            showData(); // Cập nhật danh sách người dùng
+        }
+    };
 
     return (
         <div>
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <h2 className="text-xl">Quản Lý Người Dùng</h2>
                 <div className="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
-                    {/* <div className="relative">
-                        <input type="text" placeholder="Tìm Kiếm" className="form-input py-2 ltr:pr-11 rtl:pl-11 peer" value={search} onChange={(e) => setSearch(e.target.value)} />
-                        <button type="button" className="absolute ltr:right-[11px] rtl:left-[11px] top-1/2 -translate-y-1/2 peer-focus:text-primary">
-                            <IconSearch className="mx-auto" />
-                        </button>
-                    </div> */}
+                    {/* Vùng tìm kiếm nếu cần */}
                 </div>
             </div>
             <div className="mt-5 panel p-0 border-0 overflow-hidden">
@@ -151,6 +185,22 @@ const Contacts = () => {
                                             >
                                                 Xóa
                                             </button>
+                                            {/* Nút khóa */}
+                                            <button
+                                                type="button"
+                                                className="btn btn-sm btn-outline-danger"
+                                                onClick={() => handleLockUser(String(user._id))}
+                                            >
+                                                Khóa
+                                            </button>
+                                            {/* Nút mở khóa */}
+                                            <button
+                                                type="button"
+                                                className="btn btn-sm btn-outline-success"
+                                                onClick={() => handleUnlockUser(String(user._id))}
+                                            >
+                                                Mở Khóa
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -185,80 +235,33 @@ const Contacts = () => {
                                 leaveFrom="opacity-100 scale-100"
                                 leaveTo="opacity-0 scale-95"
                             >
-                                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
-                                    <button
-                                        type="button"
-                                        onClick={() => setEditModal(false)}
-                                        className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none"
-                                    >
-                                        <IconX />
-                                    </button>
-                                    <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] px-5 py-3">
-                                        Cập Nhật Thông Tin Người Dùng
+                                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all">
+                                    <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">Chỉnh Sửa Thông Tin Người Dùng</Dialog.Title>
+                                    <div className="mt-2">
+                                        <div className="form-group">
+                                            <label htmlFor="name">Tên:</label>
+                                            <input type="text" id="name" value={params.name} onChange={handleChange} className="form-control" />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="email">Email:</label>
+                                            <input type="email" id="email" value={params.email} onChange={handleChange} className="form-control" />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="phone">Điện Thoại:</label>
+                                            <input type="text" id="phone" value={params.phone} onChange={handleChange} className="form-control" />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="address">Địa Chỉ:</label>
+                                            <textarea id="address" value={params.address} onChange={handleChange} className="form-control" />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="role">Vai Trò:</label>
+                                            <input type="text" id="role" value={params.role} onChange={handleChange} className="form-control" />
+                                        </div>
                                     </div>
-                                    <div className="p-5">
-                                        <form>
-                                            <div className="mb-5">
-                                                <label htmlFor="name">Tên</label>
-                                                <input
-                                                    id="name"
-                                                    type="text"
-                                                    placeholder="Nhập tên"
-                                                    className="form-input"
-                                                    value={params.name}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className="mb-5">
-                                                <label htmlFor="email">Email</label>
-                                                <input
-                                                    id="email"
-                                                    type="email"
-                                                    placeholder="Nhập email"
-                                                    className="form-input"
-                                                    value={params.email}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className="mb-5">
-                                                <label htmlFor="phone">Số Điện Thoại</label>
-                                                <input
-                                                    id="phone"
-                                                    type="text"
-                                                    placeholder="Nhập số điện thoại"
-                                                    className="form-input"
-                                                    value={params.phone}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className="mb-5">
-                                                <label htmlFor="address">Địa Chỉ</label>
-                                                <textarea
-                                                    id="address"
-                                                    rows={3}
-                                                    placeholder="Nhập địa chỉ"
-                                                    className="form-textarea resize-none min-h-[130px]"
-                                                    value={params.address}
-                                                    onChange={handleChange}
-                                                ></textarea>
-                                            </div>
-                                            <div className="flex justify-end items-center mt-8">
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-outline-danger"
-                                                    onClick={() => setEditModal(false)}
-                                                >
-                                                    Hủy
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-primary ml-4"
-                                                    onClick={handleUpdateUser} // Gọi hàm cập nhật trực tiếp
-                                                >
-                                                    Lưu Thay Đổi
-                                                </button>
-                                            </div>
-                                        </form>
+                                    <div className="mt-4">
+                                        <button type="button" className="btn btn-primary" onClick={handleUpdateUser}>Cập Nhật</button>
+                                        <button type="button" className="btn btn-secondary ml-2" onClick={() => setEditModal(false)}>Hủy</button>
                                     </div>
                                 </Dialog.Panel>
                             </Transition.Child>

@@ -14,7 +14,6 @@ const userController = require("../controllers/UserController");
 router.post("/register", async (req, res, next) => {
   try {
     const { email, password, name, phone, address } = req.body;
-    console.log(req.body);
     const result = await userController.register(email, password, name, phone, address);
     return res.status(201).json({ status: true, message: "Đăng ký thành công", data: result });
   } catch (error) {
@@ -33,7 +32,6 @@ router.post("/register", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
     const result = await userController.login(email, password);
     if (result) {
       return res.status(200).json({ status: true, message: "Đăng nhập thành công", data: result });
@@ -48,10 +46,10 @@ router.post("/login", async (req, res, next) => {
 
 // API cập nhật tài khoản
 // method: POST
-// url: http://localhost:7777/users/cap-nhat-tai-khoan
+// url: http://localhost:7777/users/update
 // body: {email: 'admin@gmail.com', password: 'newpassword', name: 'New Name', phone: '0987654321', address: '456 Avenue'}
 // response: cập nhật thành công hoặc thất bại
-router.post("/updateuser", async (req, res, next) => {
+router.post("/update", async (req, res, next) => {
   try {
     const { email, password, name, phone, address } = req.body;
     const result = await userController.update(email, password, name, phone, address);
@@ -64,12 +62,12 @@ router.post("/updateuser", async (req, res, next) => {
 
 // API xác thực email
 // method: GET
-// url: http://localhost:7777/users/xac-thuc-email?email=taitan1922004@gmail.com&code=1
+// url: http://localhost:7777/users/verify?email=taitan1922004@gmail.com
 // response: xác thực thành công hoặc thất bại
-router.get("/xac-thuc-email", async (req, res, next) => {
+router.get("/verify", async (req, res, next) => {
   try {
-    const { email, code } = req.query;
-    const result = await userController.verify(email, code);
+    const { email } = req.query;
+    const result = await userController.verify(email);
     return res.status(200).json({ status: true, message: "Xác thực thành công", data: result });
   } catch (error) {
     console.log("Verify error", error.message);
@@ -77,17 +75,19 @@ router.get("/xac-thuc-email", async (req, res, next) => {
   }
 });
 
-router.get("/delete", async (req, res, next) => {
+// Xóa người dùng theo email
+router.delete("/delete", async (req, res, next) => {
   try {
     const { email } = req.query;
-    const result = await userController.delete(email);
+    const result = await userController.deleteUser(email);
     return res.status(200).json({ status: true, message: "Xóa tài khoản thành công", data: result });
   } catch (error) {
     console.log("Delete error", error.message);
     res.status(500).json({ status: false, message: error.message });
   }
 });
-//get user by id
+
+// Lấy người dùng theo ID
 router.get("/getuserbyid", async (req, res, next) => {
   try {
     const { id } = req.query;
@@ -99,7 +99,7 @@ router.get("/getuserbyid", async (req, res, next) => {
   }
 });
 
-//get all user
+// Lấy tất cả người dùng
 router.get("/getalluser", async (req, res, next) => {
   try {
     const result = await userController.getAllUser();
@@ -110,8 +110,8 @@ router.get("/getalluser", async (req, res, next) => {
   }
 });
 
-//delete user by id
-router.post("/:id/deleteuserbyid", async (req, res, next) => {
+// Xóa người dùng theo ID
+router.delete("/:id/deleteuserbyid", async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await userController.deleteUserById(id);
@@ -120,10 +120,10 @@ router.post("/:id/deleteuserbyid", async (req, res, next) => {
     console.log("Delete user by id error", error.message);
     res.status(500).json({ status: false, message: error.message });
   }
-}
-);
-//update user by id
-router.post("/:id/updateuserbyid", async (req, res, next) => {
+});
+
+// Cập nhật người dùng theo ID
+router.put("/:id/updateuserbyid", async (req, res, next) => {
   try {
     const { id } = req.params;
     const { email, password, name, phone, address } = req.body;
@@ -133,9 +133,30 @@ router.post("/:id/updateuserbyid", async (req, res, next) => {
     console.log("Update user by id error", error.message);
     res.status(500).json({ status: false, message: error.message });
   }
-}
-);
+});
 
+// Khóa người dùng theo ID
+router.post("/:id/lockuserbyid", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await userController.lockUserById(id);
+    return res.status(200).json({ status: true, message: "Khóa tài khoản thành công", data: result });
+  } catch (error) {
+    console.log("Lock user by id error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
+
+// Mở khóa người dùng theo ID
+router.post("/:id/unlockuserbyid", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await userController.unlockUserById(id);
+    return res.status(200).json({ status: true, message: "Mở khóa tài khoản thành công", data: result });
+  } catch (error) {
+    console.log("Unlock user by id error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
 
 module.exports = router;
-
