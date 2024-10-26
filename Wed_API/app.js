@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Cấu hình CORS
 app.use(cors({
-  origin: ['http://192.168.1.3', 'http://localhost:3000'], // Địa chỉ của frontend, có thể thay đổi theo ứng dụng của bạn
+  origin: ['http://192.168.1.9', 'http://localhost:3000'], // Địa chỉ của frontend, có thể thay đổi theo ứng dụng của bạn
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức được phép sử dụng
   credentials: true // Cho phép truyền cookie nếu cần thiết
 }));

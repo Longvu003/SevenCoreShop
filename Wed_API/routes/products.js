@@ -76,17 +76,18 @@ router.post('/:id/update', async (req, res, next) => {
     }
 })
 
-//API tìm kiếm sản phẩm theo từ khóa
-// method: get
-// url: http://localhost:7777/products/tim-kiem?key=Product 1
-// kết quả: danh sách sản phẩm có tên hoặc mô tả chứa từ khóa tìm kiếm
-router.get('/tim-kiem', async (req, res, next) => {
+
+router.get('/tim-kiem', async (req, res) => {
     try {
         const { key } = req.query;
+        if (!key) {
+            return res.status(400).json({ status: false, message: "Keyword is required" });
+        }
+        
         const products = await ProductController.searchProduct(key);
-        return res.status(200).json({ status: true, data: products })
+        return res.status(200).json({ status: true, data: products });
     } catch (error) {
-        return res.status(500).json({ status: false, data: error.message })
+        return res.status(500).json({ status: false, message: error.message });
     }
 });
 
