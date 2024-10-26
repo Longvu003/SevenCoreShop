@@ -14,12 +14,14 @@ import LoginScreen from '../Screens/login/LoginScreen';
 import SignupScreen from '../Screens/login/SignupScreen';
 import Welcome1 from '../Screens/login/Welcome1';
 import Welcome2 from '../Screens/login/Welcome2';
+import ProductDetail from '../Screens/DetailScreens/ProductDetail';
+
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Tab"
+        initialRouteName="ProductDetail"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Welcome1" component={Welcome1} />
         <Stack.Screen name="Welcome2" component={Welcome2} />
@@ -32,6 +34,7 @@ const Stacknavigation = () => {
         <Stack.Screen name="EditPayment" component={EditPayment} />
         <Stack.Screen name="ListPayment" component={ListPayment} />
         <Stack.Screen name="EditUser" component={EditUser} />
+        <Stack.Screen name="ProductDetail" component={ProductDetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );
