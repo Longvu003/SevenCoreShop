@@ -1,24 +1,17 @@
-//khai báo 1 schema cho product
-//(_id, email, password, name, role, carts, creatAt, updateAt, avaialble)
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
 
-const ProductSchema = new Schema({
-    name: { type: String, required: true },
-    price: { type: Number, required: true , default: 0 },
-    quantity: { type: Number, default: 0  },
-    images: { type: Array, default: [] },
-    description: { type: String, default: '' },
-    category: { type: Object, default: {} },
-    // ngày giờ tạo
-    creatAt: { type: Date, default: Date.now },//Date.now để lấy thời gian hiện tại
-    // ngày giờ cập nhật
-    updateAt: { type: Date, default: Date.now },
-    // tài khoản còn hoạt động hay không
-    available: { type: Boolean, default: true } 
-    //true là còn hoạt động, false là không hoạt động
+const productSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true, min: 0 },
+  quantity: { type: Number, required: true, min: 0 },
+  images: [String],
+  description: String,
+  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true }, // category là ObjectId
+  color: String,
+  size: String,
+  status: { type: String, enum: ['Available', 'Out of stock', 'Discontinued'], default: 'Available' },
+  inventory: { type: Number, default: 0, min: 0 }
 });
-// tiếng anh, số ít, chữ thường, không dấu, không cách  
-//  //tạo model user từ schema UserSchema chưa có thì tạo mới, có rồi thì sử dụng lại
-module.exports = mongoose.model('product', ProductSchema); 
+
+const Product = mongoose.model('Product', productSchema);
+module.exports = Product;

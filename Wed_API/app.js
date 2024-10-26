@@ -1,75 +1,68 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const cors = require('cors')
-const mongoose = require('mongoose')
-require('./model/UserModel')
+var createError = require("http-errors");
+var express = require("express");
+var path = require("path");
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
+const cors = require("cors");
+const mongoose = require("mongoose");
+require("./controllers/UserModel");
 
-
-//okokok
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const productsRouter = require('./routes/products');
-const categoriesRouter = require('./routes/categories');
-const cartsRouter = require('./routes/carts')
-const Order = require("./routes/Order");
-const PayOnline = require("./routes/PayOnline");
-const Transaction = require("./routes/crontransaction");
-
-//okokok
+var indexRouter = require("./routes/index");
+var usersRouter = require("./routes/users");
+const productsRouter = require("./routes/products");
+const categoriesRouter = require("./routes/categories");
+const cartsRouter = require("./routes/carts");
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
-
-app.use(logger('dev'));
+// View engine setup
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "hbs");
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public'))); 
+app.use(express.static(path.join(__dirname, "public")));
+
+// Cấu hình CORS
 app.use(cors({
-  origin: 'http://localhost:5173' // Thay đổi địa chỉ này nếu cần thiết
-}));// kết nối database mongodb
+  origin: ['http://192.168.1.3', 'http://localhost:3000'], // Địa chỉ của frontend, có thể thay đổi theo ứng dụng của bạn
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức được phép sử dụng
+  credentials: true // Cho phép truyền cookie nếu cần thiết
+}));
 
-mongoose.connect('mongodb://localhost:27017/TonsTai')
-  .then(() => console.log('Connected to MongoDB...'))
-  .catch(err => console.error('Could not connect to MongoDB...')); 
+// Kết nối database mongodb
+mongoose
+  .connect("mongodb://localhost:27017/TonsTai")
+  .then(() => console.log("Connected to MongoDB..."))
+  .catch((err) => console.error("Could not connect to MongoDB...", err));
 
+// Định nghĩa các router
 // http://localhost:7777/
-app.use('/', indexRouter);
+app.use("/", indexRouter);
 // http://localhost:7777/users
-app.use('/users', usersRouter);
+app.use("/users", usersRouter);
 // http://localhost:7777/products
-app.use('/products', productsRouter);
+app.use("/products", productsRouter);
 // http://localhost:7777/categories
-app.use('/categories', categoriesRouter);
+app.use("/categories", categoriesRouter); 
 // http://localhost:7777/carts
-app.use('/carts', cartsRouter)
-// http://localhost:7777/orders
-app.use("/orders", Order);
-// http://localhost:7777/payonline
-app.use("/payonline", PayOnline);
-// http://localhost:7777/cron
-app.use("/cron", Transaction);
+app.use("/carts", cartsRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+// Catch 404 and forward to error handler
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+// Error handler
+app.use(function (err, req, res, next) {
+  // Set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
+  // Render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render("error");
 });
 
 module.exports = app;
