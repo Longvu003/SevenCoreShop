@@ -1,32 +1,34 @@
 const ProductModel = require("./ProductModel");
 const CategoryModel = require("./CategoryModel");
 
-// lấy danh sách sản phẩm
+// Lấy danh sách sản phẩm (có thể lọc theo danh mục)
 const getProducts = async (category = "") => {
   try {
+    let products;
     if (category) {
-      const products = await ProductModel.find({ category });
-      return products;
+      products = await ProductModel.find({ category });
     } else {
-      const products = await ProductModel.find();
-      return products;
+      products = await ProductModel.find();
     }
+    return products;
   } catch (error) {
     console.log("Lỗi", error);
+    throw new Error("Error while getting products");
   }
 };
 
+// Lấy tất cả sản phẩm
 const getAllProducts = async () => {
   try {
     const products = await ProductModel.find();
     return products;
-    log(products);
   } catch (error) {
     console.log("Lỗi", error);
+    throw new Error("Error while getting all products");
   }
 };
 
-// tìm kiếm sản phẩm theo từ khóa
+// Tìm kiếm sản phẩm theo từ khóa
 const searchProduct = async (key) => {
   try {
     const products = await ProductModel.find({
@@ -42,11 +44,11 @@ const searchProduct = async (key) => {
   }
 };
 
-//lấy danh sách sản phẩm theo danh mục
+// Lấy danh sách sản phẩm theo danh mục
 const getProductByCategory = async (category_id) => {
   try {
     const products = await ProductModel.find({
-      "category.category_id": category_id,
+      category: category_id, // Chỉ dùng category như ObjectId
     });
     return products;
   } catch (error) {
@@ -55,8 +57,7 @@ const getProductByCategory = async (category_id) => {
   }
 };
 
-//lấy danh sách sản phẩm có giá trong khoảng min, max
-// và có số lượng lớn hơn 0
+// Lấy danh sách sản phẩm theo khoảng giá và số lượng lớn hơn 0
 const getProductByPrice = async (min, max) => {
   try {
     const products = await ProductModel.find({
@@ -70,45 +71,39 @@ const getProductByPrice = async (min, max) => {
   }
 };
 
-// thêm mới sản phẩm
+// Thêm mới sản phẩm
 const addProduct = async (
   name,
   price,
   quantity,
   images,
-  decription,
-  category
+  description,
+  category,
+  color,
+  size,
+  status,
+  inventory
 ) => {
   try {
-    console.log("category: ", category);
-    // lấy category theo id
     const categoryInDB = await CategoryModel.findById(category);
     if (!categoryInDB) {
       throw new Error("Category không tồn tại");
     }
 
-    // tạo object category
-    category = {
-      category_id: categoryInDB._id,
-      category_name: categoryInDB.name,
-    };
-
-    // chưa bắt lỗi
-    const product = {
+    const product = new ProductModel({
       name,
       price,
       quantity,
       images,
-      decription,
+      description,
       category,
-    };
-    const newProduct = new ProductModel(product);
-    // lưu vào db
-    const result = await newProduct.save();
-    // setTimeout(() => {
-    //     console.log('result: ', result);
-    //     //thêm 1 sp vào danh sách poducts của category
-    // }, 0);
+      color,
+      size,
+      status,
+      inventory, // Lưu category dưới dạng ObjectId
+    });
+
+    const result = await product.save();
     return result;
   } catch (error) {
     console.log("Add product error", error.message);
@@ -116,96 +111,77 @@ const addProduct = async (
   }
 };
 
-// cập nhật sản phẩm
+// Cập nhật sản phẩm
 const updateProduct = async (
   id,
   name,
   price,
   quantity,
   images,
-  decription,
+  description,
   category
 ) => {
   try {
-    // tìm sp theo id
     const productInDb = await ProductModel.findById(id);
     if (!productInDb) {
       throw new Error("Sản phẩm không tồn tại");
     }
 
-    if (!category) {
-      throw new Error("Category không tồn tại");
-    }
-    // lấy category theo id
     const categoryInDB = await CategoryModel.findById(category);
     if (!categoryInDB) {
       throw new Error("Category không tồn tại");
     }
 
-    // tạo object category
-    category = {
-      category_id: categoryInDB._id,
-      category_name: categoryInDB.name,
-    };
-
-    // cập nhật sản phẩm
     productInDb.name = name || productInDb.name;
     productInDb.price = price || productInDb.price;
     productInDb.quantity = quantity || productInDb.quantity;
     productInDb.images = images || productInDb.images;
-    productInDb.description = decription || productInDb.description;
-    productInDb.updateAt = Date.now();
+    productInDb.description = description || productInDb.description;
+    productInDb.category = category; // Cập nhật lại category như ObjectId
+    productInDb.updatedAt = Date.now();
 
     await productInDb.save();
-    return true;
+    return productInDb;
   } catch (error) {
     console.log("Update product error", error.message);
     throw new Error("Update product error");
   }
 };
 
-// xóa sp
+// Xóa sản phẩm
 const deleteProduct = async (id) => {
   try {
-    // tìm sản phẩm theo id
     const productInDb = await ProductModel.findById(id);
-    // delete  sản phẩm
+    if (!productInDb) {
+      throw new Error("Sản phẩm không tồn tại");
+    }
+
     await ProductModel.deleteOne({ _id: id });
-
-    // // Xóa sản phẩm dựa trên ID
-    // const deletedProduct = await ProductModel.deleteOne({ _id: id });
-    // if (deletedProduct.deletedCount === 0) {
-    //     throw new Error('Sản phẩm không tồn tại');
-    // }
-
     return true;
   } catch (error) {
-    console.log("delete product error", error.message);
+    console.log("Delete product error", error.message);
     throw new Error("Server error! Can not delete product");
   }
 };
 
-// lấy chi tiết sản phẩm theo id
+// Lấy chi tiết sản phẩm theo id
 const getById = async (id) => {
   try {
-    // tìm sản phẩm theo id
-    const productInDb = await ProductModel.findOne({ _id: id });
+    const productInDb = await ProductModel.findById(id);
     if (!productInDb) {
       throw new Error("Sản phẩm không tồn tại");
     }
-    // trả ra sản phẩm
     return productInDb;
   } catch (error) {
-    console.log("Get detail of product error", error.message);
+    console.log("Get product by id error", error.message);
     throw new Error("Server error! Can not find product");
   }
 };
 
-//thống kê số lượng sản phẩm có số lượng nhiều nhất trong kho
+// Thống kê sản phẩm có số lượng lớn nhất
 const getTopProduct = async () => {
   try {
-    let query = {};
-    const products = await ProductModel.find(query, "name price quantity")
+    const products = await ProductModel.find({}, "name price quantity")
       .sort({ quantity: -1 })
       .limit(10);
     return products;
@@ -217,13 +193,13 @@ const getTopProduct = async () => {
 
 module.exports = {
   getProducts,
-  deleteProduct,
-  getById,
-  updateProduct,
+  getAllProducts,
   searchProduct,
   getProductByCategory,
   getProductByPrice,
   addProduct,
+  updateProduct,
+  deleteProduct,
+  getById,
   getTopProduct,
-  getAllProducts,
 };
