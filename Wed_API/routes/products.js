@@ -172,11 +172,37 @@ router.get('/top/top-10', async (req, res) => {
 });
 
 
+//huy: Routes for adding and updating products
 
+// Add a new product
+// method: POST
+// url: http://localhost:7777/products/add
+// body: {name, price, quantity, images, description, category, color, size, status, inventory}
+// response: Returns the newly created product
+router.post('/add', async (req, res) => {
+    try {
+        const { name, price, quantity, images, description, category, color, size, status, inventory } = req.body;
+        const product = await ProductController.addProduct(name, price, quantity, images, description, category, color, size, status, inventory);
+        res.status(200).json({ success: true, product });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
 
-
-
-
-
+// Update an existing product
+// method: PUT
+// url: http://localhost:7777/products/update/:id
+// body: {name, price, quantity, images, description, category, color, size, status, inventory}
+// response: Returns the updated product
+router.put('/update/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, price, quantity, images, description, category, color, size, status, inventory } = req.body;
+        const updatedProduct = await ProductController.updateProduct(id, name, price, quantity, images, description, category, color, size, status, inventory);
+        res.status(200).json({ success: true, data: updatedProduct });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
 
 module.exports = router;
