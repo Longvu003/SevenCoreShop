@@ -1,21 +1,16 @@
-
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Stacknavigation from './src/Navigation/Stacknavigation';
+import HomeScreen from './src/Screens/HomeSceen/HomeScreen';
+
 export default function App() {
   return (
-    <View style={{ flex: 1 }}>
-      <Stacknavigation />
-
-    </View>
-
-  )
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      {/* <Stacknavigation /> */}
+      <HomeScreen />
+    </GestureHandlerRootView>
+  );
 }
 
-const styles = StyleSheet.create({
-
-});
-
+const styles = StyleSheet.create({});
