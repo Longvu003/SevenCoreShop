@@ -1,4 +1,3 @@
-import { ex } from '@fullcalendar/core/internal-common';
 import {UserModel} from '../model/UserModel';
 const API_URL = 'http://localhost:7777'; // Cập nhật URL chính xác
 export const loginUser = async  (user:UserModel):Promise<UserModel>=>{

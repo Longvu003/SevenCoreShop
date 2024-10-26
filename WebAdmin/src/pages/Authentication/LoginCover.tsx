@@ -63,7 +63,7 @@ const LoginCover = () => {
                                 <img src="/assets/images/logo.svg" alt="Logo" className="mx-auto w-10" />
                             </Link>
                             <div className="dropdown ms-auto w-max">
-                                <Dropdown
+                                {/* <Dropdown
                                     offset={[0, 8]}
                                     placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
                                     btnClassName="flex items-center gap-2.5 rounded-lg border border-white-dark/30 bg-white px-2 py-1.5 text-white-dark hover:border-primary hover:text-primary dark:bg-black"
@@ -99,7 +99,7 @@ const LoginCover = () => {
                                             );
                                         })}
                                     </ul>
-                                </Dropdown>
+                                </Dropdown> */}
                             </div>
                         </div>
                         <div className="w-full max-w-[440px] lg:mt-16">
