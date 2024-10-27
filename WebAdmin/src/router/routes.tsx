@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import PrivateRoute from './PrivateRoute';  // Import the PrivateRoute component
+import Scrumboard from '../pages/Scrumboard';
 
 const Index = lazy(() => import('../pages/Analytics'));
 const ProductManagent = lazy(() => import('../pages/ProductManagent'));
@@ -81,6 +82,14 @@ const routes = [
         path: '*',
         element: <Error />,
         layout: 'blank',
+    },
+    {
+        path: '/advertising-management',
+        element: (
+            <PrivateRoute>
+                <Scrumboard />
+            </PrivateRoute>
+        ),
     },
 ];
 

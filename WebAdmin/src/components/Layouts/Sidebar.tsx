@@ -133,19 +133,19 @@ const Sidebar = () => {
                                             </div>
                                         </NavLink>
                                     </li>
-                                    {/* <li className="nav-item">
-                                        <NavLink to="/hospital-approval" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuChat className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Vocher Management')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li> */}
                                     <li className="nav-item">
                                         <NavLink to="/usermanagent" className="group">
                                             <div className="flex items-center">
                                                 <IconUser className="group-hover:!text-primary shrink-0" />
                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Tài Khoản Người Dùng')}</span>
+                                            </div>
+                                        </NavLink>
+                                    </li>
+                                    <li className="nav-item">
+                                        <NavLink to="/advertising-management" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuScrumboard className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Vocher Management')}</span>
                                             </div>
                                         </NavLink>
                                     </li>

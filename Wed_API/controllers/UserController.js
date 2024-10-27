@@ -50,16 +50,17 @@ const register = async (email, password, name, phone, address) => {
 const login = async (email, password) => {
   try {
     const user = await userModel.findOne({ email: email });
+    console.log("User found:", user); // Thêm log để kiểm tra thông tin người dùng
     if (!user) {
       throw new Error("Email không tồn tại");
     }
 
-    // Kiểm tra trạng thái khóa của người dùng
     if (!user.available) {
       throw new Error("Tài khoản của bạn đã bị khóa");
     }
 
     const check = bcrypt.compareSync(password, user.password);
+    console.log("Password check:", check); // Thêm log để kiểm tra kết quả so sánh mật khẩu
     if (check) {
       return {
         _id: user._id,
@@ -77,6 +78,7 @@ const login = async (email, password) => {
     throw new Error("Login error");
   }
 };
+
 
 // Cập nhật thông tin người dùng
 const update = async (email, password, name, phone, address) => {
@@ -182,30 +184,33 @@ const deleteUserById = async (id) => {
 // Cập nhật người dùng theo ID
 const updateUserById = async (id, email, password, name, phone, address) => {
   try {
-    const user = await userModel.findById(id);
-    if (!user) {
-      throw new Error("User không tồn tại");
-    }
+      const user = await userModel.findById(id);
+      if (!user) {
+          throw new Error("User không tồn tại");
+      }
 
-    if (password) {
-      const salt = bcrypt.genSaltSync(10);
-      password = bcrypt.hashSync(password, salt);
-      user.password = password;
-    }
+      if (password) {
+          const salt = bcrypt.genSaltSync(10);
+          password = bcrypt.hashSync(password, salt);
+          user.password = password;
+      }
 
-    user.email = email;
-    user.name = name;
-    user.phone = phone;
-    user.address = address;
-    user.updatedAt = Date.now();
+      user.email = email;
+      user.name = name;
+      user.phone = phone;
+      user.address = address;
+      user.updatedAt = Date.now();
 
-    await user.save();
-    return "Cập nhật người dùng thành công";
+      await user.save();
+      console.log("User updated successfully:", user); // Thêm log
+      return "Cập nhật người dùng thành công";
   } catch (error) {
-    console.log("Update user by id error", error.message);
-    throw new Error("Update user by id error");
+      console.log("Update user by id error", error.message);
+      throw new Error("Update user by id error");
   }
 };
+
+
 
 // Khóa người dùng theo ID
 const lockUserById = async (id) => {

@@ -235,33 +235,82 @@ const Contacts = () => {
                                 leaveFrom="opacity-100 scale-100"
                                 leaveTo="opacity-0 scale-95"
                             >
-                                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left shadow-xl transition-all">
-                                    <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">Chỉnh Sửa Thông Tin Người Dùng</Dialog.Title>
-                                    <div className="mt-2">
-                                        <div className="form-group">
-                                            <label htmlFor="name">Tên:</label>
-                                            <input type="text" id="name" value={params.name} onChange={handleChange} className="form-control" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="email">Email:</label>
-                                            <input type="email" id="email" value={params.email} onChange={handleChange} className="form-control" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="phone">Điện Thoại:</label>
-                                            <input type="text" id="phone" value={params.phone} onChange={handleChange} className="form-control" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="address">Địa Chỉ:</label>
-                                            <textarea id="address" value={params.address} onChange={handleChange} className="form-control" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="role">Vai Trò:</label>
-                                            <input type="text" id="role" value={params.role} onChange={handleChange} className="form-control" />
-                                        </div>
+                                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
+                                    {/* Nút Đóng Modal */}
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditModal(false)}
+                                        className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none"
+                                    >
+                                    </button>
+                                    {/* Tiêu Đề Modal */}
+                                    <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] px-5 py-3">
+                                        Cập Nhật Thông Tin Người Dùng
                                     </div>
-                                    <div className="mt-4">
-                                        <button type="button" className="btn btn-primary" onClick={handleUpdateUser}>Cập Nhật</button>
-                                        <button type="button" className="btn btn-secondary ml-2" onClick={() => setEditModal(false)}>Hủy</button>
+                                    {/* Nội Dung Modal */}
+                                    <div className="p-5">
+                                        <form>
+                                            <div className="mb-5">
+                                                <label htmlFor="name">Tên</label>
+                                                <input
+                                                    id="name"
+                                                    type="text"
+                                                    placeholder="Nhập tên"
+                                                    className="form-input"
+                                                    value={params.name}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                            <div className="mb-5">
+                                                <label htmlFor="email">Email</label>
+                                                <input
+                                                    id="email"
+                                                    type="email"
+                                                    placeholder="Nhập email"
+                                                    className="form-input"
+                                                    value={params.email}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                            <div className="mb-5">
+                                                <label htmlFor="phone">Số Điện Thoại</label>
+                                                <input
+                                                    id="phone"
+                                                    type="text"
+                                                    placeholder="Nhập số điện thoại"
+                                                    className="form-input"
+                                                    value={params.phone}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                            <div className="mb-5">
+                                                <label htmlFor="address">Địa Chỉ</label>
+                                                <textarea
+                                                    id="address"
+                                                    rows={3}
+                                                    placeholder="Nhập địa chỉ"
+                                                    className="form-textarea resize-none min-h-[130px]"
+                                                    value={params.address}
+                                                    onChange={handleChange}
+                                                ></textarea>
+                                            </div>
+                                            <div className="flex justify-end items-center mt-8">
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-danger"
+                                                    onClick={() => setEditModal(false)}
+                                                >
+                                                    Hủy
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary ml-4"
+                                                    onClick={handleUpdateUser}
+                                                >
+                                                    Cập nhật
+                                                </button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </Dialog.Panel>
                             </Transition.Child>
@@ -269,6 +318,7 @@ const Contacts = () => {
                     </div>
                 </Dialog>
             </Transition>
+
         </div>
     );
 };
