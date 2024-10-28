@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   Image,
   StyleSheet,
@@ -6,34 +7,86 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import Customheader from '../../CustomHeader/Customheader';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect} from '@react-navigation/native';
 import {useState} from 'react';
+
+import API__URL from '../../../config';
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
-const ProductDetail = ({navigation}) => {
+const ProductDetail = ({navigation, route}) => {
+  const [quantityProduct, setQuantityProduct] = useState(1);
+  const [priceProduct, setPriceProduct] = useState(0);
+  const increaseQuantity = () => {
+    setQuantityProduct(prev => prev + 1);
+  };
+
+  // Hàm giảm số lượng
+  const decreaseQuantity = () => {
+    if (quantityProduct > 1) {
+      setQuantityProduct(prev => prev - 1);
+    } else {
+      Alert.alert('Sản phẩm không được dưới 1');
+    }
+  };
+  const {item} = route.params;
+  // const getPriceProduct = async () => {
+  //   const priceProduct = item.price.reduce(
+  //     (total, index) => total + index.price * quantityProduct,
+  //   );
+  //   setPriceProduct(priceProduct);
+  //   console.log(priceProduct);
+  // };
+  const addProductCart = async item => {
+    const userId = await AsyncStorage.getItem('userId');
+    const newUserId = JSON.parse(userId);
+    const product = {
+      userId: newUserId,
+      productId: item._id,
+      images: item.images[0],
+      nameProduct: item.name,
+      quantity: quantityProduct,
+      price: item.price,
+    };
+    try {
+      const respone = await axios.post(
+        `${API__URL}/carts/addItemcart`,
+        product,
+        {
+          headers: {'Content-Type': 'application/json'},
+        },
+      );
+      if (respone.data) {
+        Alert.alert('Thêm sản phẩm thành công');
+      }
+    } catch (error) {
+      console.log('Lỗi ', error);
+    }
+  };
+
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
         <Customheader leftIcon={require('../../../assets/imgs/back3.png')} />
       </View>
-      <View style={{flex: 5}}>
+      <View style={{flex: 6}}>
         <Image
           style={styles.img__product}
-          source={require('../../../assets/imgs/profile.png')}
+          // source={require('../../../assets/imgs/profile.png')}
+          source={{uri: item.images[0]}}
         />
-        <Text style={styles.txt__nameProduct}>Áo khoác mùa đông</Text>
-        <Text style={styles.txt__priceProduct}>12300vnd</Text>
+        <Text style={styles.txt__nameProduct}>{item.name}</Text>
+        <Text style={styles.txt__priceProduct}>{item.price}</Text>
         <View style={{flexDirection: 'column', flex: 2}}>
           <TouchableOpacity disabled style={styles.btn__container}>
             <View style={styles.quantity__Container}>
               <Text>kích cỡ</Text>
             </View>
 
-            <Text style={styles.txt__nameProduct}>s</Text>
+            <Text style={styles.txt__nameProduct}>{item.size}</Text>
             <TouchableOpacity>
               <Image
                 style={{marginHorizontal: 30}}
@@ -45,15 +98,14 @@ const ProductDetail = ({navigation}) => {
             <View style={styles.quantity__Container}>
               <Text>Số lượng</Text>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={increaseQuantity}>
               <Image
                 style={styles.icon}
                 source={require('../../../assets/imgs/add.png')}
               />
             </TouchableOpacity>
-
-            <Text style={{marginHorizontal: 5}}>s</Text>
-            <TouchableOpacity>
+            <Text style={{marginHorizontal: 5}}>{quantityProduct}</Text>
+            <TouchableOpacity onPress={decreaseQuantity}>
               <Image
                 style={styles.icon}
                 source={require('../../../assets/imgs/minus2.png')}
@@ -63,11 +115,13 @@ const ProductDetail = ({navigation}) => {
         </View>
       </View>
       <View style={{flex: 1}}>
-        <Text style={styles.txt__description}>Đây là sản phẩm chất lượng</Text>
+        <Text style={styles.txt__description}>{item.description}</Text>
       </View>
       <View style={{flex: 1}}>
-        <TouchableOpacity style={styles.btn__buy}>
-          <Text style={styles.txt__btnbuy}>123.000vnđ</Text>
+        <TouchableOpacity
+          style={styles.btn__buy}
+          onPress={() => addProductCart(item)}>
+          <Text style={styles.txt__btnbuy}></Text>
           <Text style={styles.txt__btnbuy}>Thêm vào giỏ</Text>
         </TouchableOpacity>
       </View>
@@ -90,7 +144,7 @@ const styles = StyleSheet.create({
   },
   btn__buy: {
     width: WIDTH__SCREEN * 1,
-    height: HEIGHT__SCREEN * 0.09,
+    height: HEIGHT__SCREEN * 0.08,
     backgroundColor: 'black',
     borderRadius: 20,
     flexDirection: 'row',
@@ -109,7 +163,7 @@ const styles = StyleSheet.create({
   },
   btn__container: {
     width: WIDTH__SCREEN * 1,
-    height: HEIGHT__SCREEN * 0.09,
+    height: HEIGHT__SCREEN * 0.08,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',

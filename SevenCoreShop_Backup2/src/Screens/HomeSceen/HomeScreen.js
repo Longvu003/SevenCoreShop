@@ -1,47 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  FlatList,
+} from 'react-native';
 import axios from 'axios';
-import { FlatList } from 'react-native-gesture-handler';
-import { screensEnabled } from 'react-native-screens';
+import API__URL from '../../../config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     // Gọi API lấy sản phẩm từ MongoDB
-    axios.get('http://192.168.1.3:7777/products')
+    axios
+      .get(`${API__URL}/products`)
       .then(response => {
-        
-        setProducts(response.data.data); // Lưu sản phẩm vào state, sử dụng response.data.data
+        // const getidProduct = JSON.stringify(response.data);
+        const ArrayProduct = response.data.checkListProducts;
+        setProducts(ArrayProduct);
       })
       .catch(error => {
         console.error('Error fetching products:', error);
       });
 
     // Gọi API lấy danh mục từ MongoDB
-    axios.get('http://192.168.1.3:7777/categories')
+    axios
+      .get(`${API__URL}/categories/getAllCategory`)
       .then(response => {
         const fixResponse = Object.values(response.data);
         setCategories(fixResponse[1]);
-        
       })
       .catch(error => {
         console.error('Error fetching categories:', error);
       });
-   
   }, []);
 
-    // console.log("category fetched:", products);
+  // console.log("category fetched:", products);
 
   return (
-    <ScrollView  style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.avatar} />
-      
-        <TouchableOpacity >
-          <Image source={{ uri: 'https://via.placeholder.com/24' }} style={styles.cartIcon} />
+        <Image
+          source={{uri: 'https://via.placeholder.com/50'}}
+          style={styles.avatar}
+        />
+        <TouchableOpacity onPress={() => navigation.navigate('CartScreen')}>
+          <Image
+            source={require('../../../assets/imgs/cart2.png')}
+            style={styles.cartIcon}
+          />
         </TouchableOpacity>
       </View>
 
@@ -58,90 +73,68 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.categoryContainer}>
- 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-  {categories.length > 0 ? categories.map((category, index) => {
-    console.log(category.images); // Kiểm tra giá trị của images
-    return (
-      <TouchableOpacity key={index} style={styles.categoryItem}>
-        <Image 
-          source={{ uri: category.images && category.images.length > 0 ? category.images[0] : 'https://via.placeholder.com/50' }}
-          style={styles.categoryImage} 
-        />
-        <Text>{category.name}</Text>
-      </TouchableOpacity>
-    );
-  }) : (
-    <Text>No categories available</Text>
-  )}
-</ScrollView>
-
-
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {categories.length > 0 ? (
+            categories.map((category, index) => {
+              return (
+                <TouchableOpacity key={index} style={styles.categoryItem}>
+                  <Image
+                    source={{
+                      uri:
+                        category.images && category.images.length > 0
+                          ? category.images[0]
+                          : 'https://via.placeholder.com/50',
+                    }}
+                    style={styles.categoryImage}
+                  />
+                  <Text>{category.name}</Text>
+                </TouchableOpacity>
+              );
+            })
+          ) : (
+            <Text>No categories available</Text>
+          )}
+        </ScrollView>
       </View>
 
       {/* Top Selling */}
       <View style={styles.productHeader}>
         <Text style={styles.sectionTitle}>Top Selling</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('CategoryScreen')}>
-  <Text style={styles.seeAllText}>See All</Text>
+        <TouchableOpacity>
+          <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.productSection}>
-      
         <FlatList
           data={products}
-          keyExtractor={(item) => item._id}
-          numColumns={2} // Thay đổi ở đây để hiển thị nằm ngang
+          keyExtractor={item => item._id}
+          numColumns={2}
           showsHorizontalScrollIndicator={true}
           scrollEnabled={false}
-          renderItem={({ item }) =>{
-           
-            return(
-            <View style={styles.productCard}>
-             {/* <Image 
-          source={{ uri: item.images.length > 0 ? item.images[0] : <Image source={require('../../../assets/imgs/abc.png')} />}} // Lấy ảnh đầu tiên hoặc ảnh mặc định
-          style={styles.productImage}
-        /> */}
-        <TouchableOpacity>
-        <Image 
-  source={item.images.length > 0 && item.images[0] ? { uri: item.images[0] } : require('../../../assets/imgs/abc.png')}
-  style={styles.productImage}
-/>
-              <Text style={styles.productName}>{item.name}</Text>
-              <Text style={styles.productPrice}>${item.price}</Text>
-            </TouchableOpacity>
-        </View>
-       
-          )}}
+          renderItem={({item}) => {
+            return (
+              <View style={styles.productCard}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('ProductDetail', {item})}>
+                  <Image
+                    // source={
+                    //   item.images.length > 0 && item.images[0]
+                    //     ? {uri: item.images[0]}
+                    //     : require('../../../assets/imgs/profile.png')
+                    // }
+                    source={{uri: item.images[0]}}
+                    style={styles.productImage}
+                  />
+                  <Text style={styles.productName}>{item.name}</Text>
+                  <Text style={styles.productPrice}>${item.price}</Text>
+                </TouchableOpacity>
+              </View>
+            );
+          }}
         />
       </View>
 
-      {/* New In */}
-      {/* <View style={styles.productHeader}>
-        <Text style={styles.sectionTitle}>New In</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('CategoryScreen')}>
-  <Text style={styles.seeAllText}>See All</Text>
-    </TouchableOpacity>
-      </View> */}
-      <View style={styles.productSection}>
-        {/* Hiển thị sản phẩm mới */}
-        {/* <FlatList
-          data={products.slice(2, 5)} // Hiển thị sản phẩm từ 3 đến 5
-          keyExtractor={(item) => item._id}
-          horizontal // Thay đổi ở đây để hiển thị nằm ngang
-          renderItem={({ item }) => (
-            <View style={styles.productCard}>
-              <Image
-                source={{ uri: item.images[0] || 'https://via.placeholder.com/150' }}
-                style={styles.productImage}
-              />
-              <Text style={styles.productName}>{item.name}</Text>
-              <Text style={styles.productPrice}>${item.price}</Text>
-            </View>
-          )}
-        /> */}
-        
-      </View>
+      <View style={styles.productSection}></View>
     </ScrollView>
   );
 };
@@ -175,8 +168,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   cartIcon: {
-    width: 24,
-    height: 24,
+    width: 50,
+    height: 50,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -238,7 +231,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#F4F4F4',
     marginRight: 10,
-    padding: 10,
+    marginTop: 10,
   },
   productImage: {
     width: 160,
@@ -247,16 +240,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   productName: {
-    fontWeight: "bold",
-    fontSize: 18, 
+    fontWeight: 'bold',
+    fontSize: 18,
     marginBottom: 4,
-    textAlign: 'center', 
-    color: '#000', 
+    textAlign: 'center',
+    color: '#000',
   },
   productPrice: {
-    fontSize: 16, 
-    color: '#ff5722', 
-    marginTop: 2, 
+    fontSize: 16,
+    color: '#ff5722',
+    marginTop: 2,
     textAlign: 'center',
   },
 });

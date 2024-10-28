@@ -13,6 +13,7 @@ import {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserStyleSheet from '../../StyleSheets/UserStyleSheet';
 import {useFocusEffect} from '@react-navigation/native';
+import API__URL from '../../../config';
 const User = ({navigation}) => {
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ const User = ({navigation}) => {
   const renderUser = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     const newUserEmail = JSON.parse(userEmail);
-    const url = `http://192.168.1.9:7777/users/getUserEmail?email=${newUserEmail}`;
+    const url = `${API__URL}/users/getUserEmail?email=${newUserEmail}`;
     try {
       if (newUserEmail) {
         const response = await axios.get(url);

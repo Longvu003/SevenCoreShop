@@ -2,16 +2,19 @@ import {Image} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import User from '../Screens/User/User';
-import Home from '../Screens/Home';
+
 import Notification from '../Screens/Notification/Notification';
 import Order from '../Screens/Order/Order';
+import HomeScreen from '../Screens/HomeSceen/HomeScreen';
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
   return (
-    <Tab.Navigator initialRouteName="User" screenOptions={{headerShown: false}}>
+    <Tab.Navigator
+      initialRouteName="HomeSceen"
+      screenOptions={{headerShown: false}}>
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="HomeScreen"
+        component={HomeScreen}
         options={{
           tabBarLabel: 'Trang chủ',
           tabBarIcon: () => (

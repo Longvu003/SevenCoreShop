@@ -2,14 +2,15 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Stacknavigation from './src/Navigation/Stacknavigation';
-import HomeScreen from './src/Screens/HomeSceen/HomeScreen';
+import store from './src/ReduxTookit/Store';
+import { Provider } from 'react-redux';
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      {/* <Stacknavigation /> */}
-      <HomeScreen />
-    </GestureHandlerRootView>
+    <Provider store={store}>
+      <Stacknavigation />
+    
+    </Provider>
   );
 }
 
