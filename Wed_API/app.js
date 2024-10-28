@@ -1,22 +1,32 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const cors = require('cors')
-const mongoose = require('mongoose')
-require('./model/UserModel')
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const multer = require('multer'); // thêm multer ở đây
+const Ad = require('./model/AdModel'); // import model nếu cần
 
+// Cấu hình multer để lưu ảnh
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage: storage });
 
-//okokok
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 const productsRouter = require('./routes/products');
 const categoriesRouter = require('./routes/categories');
-const cartsRouter = require('./routes/carts')
-//okokok
+const cartsRouter = require('./routes/carts');
+const adsRouter = require('./routes/ads')(upload); // Chỉ khai báo một lần
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,38 +36,31 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public'))); 
-app.use(cors());// cho phép các api khác gọi vào
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors()); // cho phép các API khác gọi vào
+
 // kết nối database mongodb
 mongoose.connect('mongodb://localhost:27017/TonsTai')
   .then(() => console.log('Connected to MongoDB...'))
-  .catch(err => console.error('Could not connect to MongoDB...')); 
+  .catch(err => console.error('Could not connect to MongoDB...'));
 
-// http://localhost:7777/
+// Đăng ký router
 app.use('/', indexRouter);
-// http://localhost:7777/users
 app.use('/users', usersRouter);
-// http://localhost:7777/products
 app.use('/products', productsRouter);
-// http://localhost:7777/categories
 app.use('/categories', categoriesRouter);
-// http://localhost:7777/carts
-app.use('/carts', cartsRouter)
-
-app.use('/search', require('./routes/search'));
+app.use('/carts', cartsRouter);
+app.use('/ads', adsRouter); // Đăng ký router quảng cáo
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
