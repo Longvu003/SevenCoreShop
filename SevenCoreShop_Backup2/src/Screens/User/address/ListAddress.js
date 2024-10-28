@@ -8,13 +8,14 @@ import axios from 'axios';
 import {useFocusEffect} from '@react-navigation/native';
 const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
+import API__URL from '../../../../config';
 const ListAddress = ({navigation}) => {
   const [listAddress, setListAddress] = useState(null);
   const getAddress = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     // tách "" ra khỏi email
     const newuserEmail = JSON.parse(userEmail);
-    const baseUrl = `http://192.168.1.9:7777/users/getUserEmail?email=${newuserEmail}`;
+    const baseUrl = `${API__URL}/users/getUserEmail?email=${newuserEmail}`;
     // console.log('url', baseUrl);
     try {
       if (newuserEmail) {

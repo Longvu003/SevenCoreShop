@@ -12,7 +12,7 @@ import {useState, useEffect} from 'react';
 import {Dimensions} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import API__URL from '../../../../config';
 const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const EditAddress = () => {
@@ -21,7 +21,7 @@ const EditAddress = () => {
     try {
       const userEmail = await AsyncStorage.getItem('userEmail');
       const newUserEmail = JSON.parse(userEmail);
-      const url = `http://192.168.1.9:7777/users/getUserEmail?email=${newUserEmail}`;
+      const url = `${API__URL}/users/getUserEmail?email=${newUserEmail}`;
       if (newUserEmail) {
         const respone = await axios.get(url);
         // ep vao data vao mang chua json
@@ -43,7 +43,7 @@ const EditAddress = () => {
   const updateUser = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     const newUserEmail = JSON.parse(userEmail);
-    const url2 = `http://192.168.1.9:7777/users/updateUser?email=${newUserEmail}`;
+    const url2 = `${API__URL}/users/updateUser?email=${newUserEmail}`;
 
     try {
       if (newUserEmail) {

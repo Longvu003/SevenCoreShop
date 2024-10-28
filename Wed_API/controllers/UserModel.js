@@ -7,14 +7,13 @@ const ObjectId = Schema.ObjectId;
 const UserSchema = new Schema({
   email: { type: String, required: true, unique: true }, //unique: true để đảm bảo không có email trùng nhau
   password: { type: String, required: true },
-
   username: { type: String },
   role: { type: String, default: 1 }, //1 là user, 2 là admin
   numberphone: { type: String },
   birthday: { type: String },
   address: { type: String },
   // lịch sử mua hàng
-  carts: { type: Array, default: [] },
+  // carts: { type: Array, default: [] },
   //xác thực tài khoản
   // 1: chưa xác thực, 2: đã xác thực
   isVerify: { type: Number, default: 1 },

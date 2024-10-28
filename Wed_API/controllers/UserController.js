@@ -58,7 +58,7 @@ const login = async (email, password) => {
         // delete user._doc.password;
 
         return {
-          // _id: user._id,
+          _id: user._id,
           email: user.email,
           username: user.username,
           role: user.role,
@@ -157,4 +157,17 @@ const getUserByEmail = async (email) => {
   return user;
 };
 
-module.exports = { register, login, updateUser, verify, getUserByEmail };
+const getUserById = async (_id) => {
+  const user = await userModel.findById(_id);
+
+  return user;
+};
+
+module.exports = {
+  register,
+  login,
+  updateUser,
+  verify,
+  getUserByEmail,
+  getUserById,
+};

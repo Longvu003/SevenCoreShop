@@ -12,7 +12,7 @@ import {
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import axios from 'axios'; // Import axios
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import API__URL from '../../../config';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,7 +28,7 @@ const LoginScreen = ({navigation}) => {
     try {
       // Gửi yêu cầu đăng nhập tới API
       const response = await axios.post(
-        'http://192.168.1.9:7777/users/login',
+        `${API__URL}/users/login`,
         {
           email: email,
           password: password,
@@ -37,11 +37,14 @@ const LoginScreen = ({navigation}) => {
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         },
       );
+      // console.log(response.data);
       // Kiểm tra phản hồi từ API
       if (response.status === 200) {
         const user = JSON.stringify(response.data.email);
+        const userId = JSON.stringify(response.data._id);
         await AsyncStorage.setItem('userEmail', user);
-        Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
+        await AsyncStorage.setItem('userId', userId);
+        // Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
         navigation.navigate('Tab');
       } else {
         Alert.alert('Đăng nhập thất bại', 'Nhập đúng email và mật khẩu');

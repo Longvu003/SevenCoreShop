@@ -15,13 +15,13 @@ import SignupScreen from '../Screens/login/SignupScreen';
 import Welcome1 from '../Screens/login/Welcome1';
 import Welcome2 from '../Screens/login/Welcome2';
 import ProductDetail from '../Screens/DetailScreens/ProductDetail';
-
+import CartScreen from '../Screens/Cart/CartScreen';
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="ProductDetail"
+        initialRouteName="Tab"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Welcome1" component={Welcome1} />
         <Stack.Screen name="Welcome2" component={Welcome2} />
@@ -35,6 +35,7 @@ const Stacknavigation = () => {
         <Stack.Screen name="ListPayment" component={ListPayment} />
         <Stack.Screen name="EditUser" component={EditUser} />
         <Stack.Screen name="ProductDetail" component={ProductDetail} />
+        <Stack.Screen name="CartScreen" component={CartScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
