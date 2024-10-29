@@ -3,11 +3,15 @@ const Ad = require('../model/AdModel');
 // Tạo quảng cáo mới
 exports.createAd = async (req, res) => {
   try {
-    const { title, tag, description, image } = req.body;
-    const newAd = new Ad({ title, tag, description, image });
+    const { title, tag, description} = req.body;
+    const image = req.file.path
+    console.log(image)
+    const newAd = new Ad({ title, tag, description,image});
     const savedAd = await newAd.save();
-    res.status(201).json(savedAd);
+    const json = {...savedAd, status:true}
+    res.status(201).json(json);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Không thể thêm quảng cáo.' });
   }
 };
@@ -46,8 +50,8 @@ exports.updateAdById = async (req, res) => {
     if (!updatedAd) {
       return res.status(404).json({ error: 'Không tìm thấy quảng cáo.' });
     }
-
-    res.status(200).json(updatedAd);
+    const json = {...updatedAd, status:true}
+    res.status(200).json(json);
   } catch (error) {
     res.status(500).json({ error: 'Không thể cập nhật quảng cáo.' });
   }

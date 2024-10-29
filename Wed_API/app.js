@@ -11,7 +11,7 @@ const Ad = require('./model/AdModel'); // import model nếu cần
 // Cấu hình multer để lưu ảnh
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, 'images/');
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -51,6 +51,7 @@ app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
 app.use('/carts', cartsRouter);
 app.use('/ads', adsRouter); // Đăng ký router quảng cáo
+app.use("/images", express.static("images")); // Đăng ký router ảnh
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

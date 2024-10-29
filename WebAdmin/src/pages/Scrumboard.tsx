@@ -1,124 +1,122 @@
 import Dropdown from '../components/Dropdown';
-import { useDispatch, useSelector } from 'react-redux';
-import { ReactSortable } from 'react-sortablejs';
-import { IRootState } from '../store';
+import { useDispatch } from 'react-redux';
 import { useState, Fragment, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import Swal from 'sweetalert2';
 import { setPageTitle } from '../store/themeConfigSlice';
 import IconPlus from '../components/Icon/IconPlus';
-import IconPlusCircle from '../components/Icon/IconPlusCircle';
 import IconHorizontalDots from '../components/Icon/IconHorizontalDots';
-import IconTag from '../components/Icon/IconTag';
+import { useAdController } from '../controller/AdController';
+import { AdModel } from '../model/AdModel';
+import IconX from '../components/Icon/IconX';
 import IconCalendar from '../components/Icon/IconCalendar';
+import IconTag from '../components/Icon/IconTag';
 import IconEdit from '../components/Icon/IconEdit';
 import IconTrashLines from '../components/Icon/IconTrashLines';
-import IconX from '../components/Icon/IconX';
 
-const Scrumboard = () => {
+const Advertisement = () => {
     const dispatch = useDispatch();
+    const { getAllAds, deleteAdbyid, createAd, updateAd } = useAdController();
+    const [ads, setAds] = useState<AdModel[]>([]);
+    const [editModal, setEditModal] = useState(false);
+    const [adParams, setAdParams] = useState<AdModel>({
+        _id: '',
+        title: '',
+        tag: '',
+        description: '',
+        image: null,
+        createdAt: '',
+        updatedAt: '',
+    });
+
+    // Fetch ads
+    const fetchAds = async () => {
+        try {
+            const response = await fetch('http://localhost:7777/ads');
+            const data = await response.json();
+            if (data) {
+                setAds(Array.isArray(data) ? data : [data]);
+            } else {
+                showMessage('Không tìm thấy quảng cáo', 'error');
+            }
+        } catch (error) {
+            showMessage('Lỗi khi tải quảng cáo', 'error');
+        }
+    };
+
     useEffect(() => {
         dispatch(setPageTitle('Quản Lý Quảng Cáo'));
-    });
-    const [projectList, setProjectList] = useState<any>([
-        {
-            id: 1,
-            title: 'In Progress',
-            tasks: [
-                {
-                    projectId: 1,
-                    id: 1,
-                    title: 'Creating a new Portfolio on Dribble',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-                    image: true,
-                    date: ' 08 Aug, 2020',
-                    tags: ['designing'],
-                },
-                {
-                    projectId: 1,
-                    id: 2,
-                    title: 'Singapore Team Meet',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-                    date: ' 09 Aug, 2020',
-                    tags: ['meeting'],
-                },
-            ],
-        },
-        {
-            id: 2,
-            title: 'Pending',
-            tasks: [
-                {
-                    projectId: 2,
-                    id: 3,
-                    title: 'Plan a trip to another country',
-                    description: '',
-                    date: ' 10 Sep, 2020',
-                },
-            ],
-        },
-        {
-            id: 3,
-            title: 'Complete',
-            tasks: [
-                {
-                    projectId: 3,
-                    id: 4,
-                    title: 'Dinner with Kelly Young',
-                    description: '',
-                    date: ' 08 Aug, 2020',
-                },
-                {
-                    projectId: 3,
-                    id: 5,
-                    title: 'Launch New SEO Wordpress Theme ',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                    date: ' 09 Aug, 2020',
-                },
-            ],
-        },
-        {
-            id: 4,
-            title: 'Working',
-            tasks: [],
-        },
-    ]);
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
-    const changeValue = (e: any) => {
-        const { value, id } = e.target;
-        setParams({ ...params, [id]: value });
-    };
-    const [params, setParams] = useState<any>({
-        id: null,
-        title: '',
-    });
-    const [paramsTask, setParamsTask] = useState<any>({
-        projectId: null,
-        id: null,
-        title: '',
-        description: '',
-        tags: '',
-        date: '',
-    });
+        fetchAds();
+    }, [dispatch]);
 
-    const [selectedTask, setSelectedTask] = useState<any>(null);
-    const [isAddProjectModal, setIsAddProjectModal] = useState(false);
-    const [isAddTaskModal, setIsAddTaskModal] = useState(false);
-    const [isDeleteModal, setIsDeleteModal] = useState(false);
-
-    const addEditProject = (project: any = null) => {
-        setTimeout(() => {
-            setParams({
-                id: null,
-                title: '',
-            });
-            if (project) {
-                let projectData = JSON.parse(JSON.stringify(project));
-                setParams(projectData);
-            }
-            setIsAddProjectModal(true);
+    const handleDeleteAd = async (id: string) => {
+        const result = await Swal.fire({
+            title: 'Bạn có chắc chắn muốn xóa quảng cáo này không?',
+            text: "Hành động này không thể hoàn tác!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
         });
+    
+        if (result.isConfirmed) {
+            try {
+                const deleteResult = await deleteAdbyid(id); // Sử dụng hàm DeleteAd
+                showMessage('Xóa Thành Công', 'success');
+                fetchAds();
+            } catch (error) {
+                showMessage((error as any).message || 'Xóa Thất Bại', 'error');
+            }
+        }
     };
+
+    const editAd = (ad: AdModel) => {
+        setAdParams(ad);
+        setEditModal(true);
+    };
+
+    const handleCreateOrUpdateAd = async () => {
+        if (!adParams.title || !adParams.description || !adParams.image) {
+            showMessage('Tiêu đề, mô tả và hình ảnh không được để trống', 'error');
+            return;
+        }
+    
+        let result;
+        if (adParams._id) {
+            // Cập nhật quảng cáo
+            result = await updateAd(adParams._id, adParams);
+            if ((result as { status: boolean }).status === true) {
+                showMessage('Cập Nhật Quảng Cáo Thành Công', 'success');
+            } else {
+                if (typeof result === 'object' && result !== null && 'message' in result) {
+                    showMessage((result as { message: string }).message || 'Cập Nhật Quảng Cáo Thất Bại', 'error');
+                } else {
+                    showMessage('Cập Nhật Quảng Cáo Thất Bại', 'error');
+                }
+            }
+        } else {
+            // Thêm quảng cáo mới
+            result = await createAd(adParams);
+            if ((result as { status: boolean }).status === true) {
+                showMessage('Thêm Quảng Cáo Thành Công', 'success');
+            } else {
+                showMessage((result as { message: string }).message || 'Thêm Quảng Cáo Thất Bại', 'error');
+            }
+        }
+    
+        fetchAds(); // Tải lại danh sách quảng cáo sau khi thêm/cập nhật
+        setEditModal(false);
+        setAdParams({
+            _id: '',
+            title: '',
+            tag: '',
+            description: '',
+            image: null,
+            createdAt: '',
+            updatedAt: '',
+        }); // Reset form
+    };
+    
 
     const showMessage = (msg = '', type = 'success') => {
         const toast: any = Swal.mixin({
@@ -135,159 +133,63 @@ const Scrumboard = () => {
         });
     };
 
-    const saveProject = () => {
-        if (!params.title) {
-            showMessage('Title is required.', 'error');
-            return false;
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+        setAdParams({ ...adParams, [id]: value });
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setAdParams({ ...adParams, image: file });
         }
-
-        if (params.id) {
-            //update project
-            const project = projectList.find((d: any) => d.id === params.id);
-            project.title = params.title;
-        } else {
-            //add project
-            const lastId = projectList.reduce((max: number, obj: any) => (obj.id > max ? obj.id : max), projectList[0].id) || 0;
-
-            const project = {
-                id: lastId + 1,
-                title: params.title,
-                tasks: [],
-            };
-            projectList.push(project);
-        }
-
-        showMessage('Project has been saved successfully.');
-        setIsAddProjectModal(false);
-    };
-
-    const deleteProject = (project: any) => {
-        setProjectList(projectList.filter((d: any) => d.id !== project.id));
-        showMessage('Project has been deleted successfully.');
-    };
-
-    const clearProjects = (project: any) => {
-        setParamsTask((project.tasks = []));
-    };
-
-    const addTaskData = (e: any) => {
-        const { value, id } = e.target;
-        setParamsTask({ ...paramsTask, [id]: value });
-    };
-
-    const addEditTask = (projectId: any, task: any = null) => {
-        setParamsTask({
-            projectId: projectId,
-            id: null,
-            title: '',
-            description: '',
-            tags: '',
-            date: '',
-        });
-        if (task) {
-            let data = JSON.parse(JSON.stringify(task));
-            data.projectId = projectId;
-            data.tags = data.tags ? data.tags.toString() : '';
-            setParamsTask(data);
-        }
-        setIsAddTaskModal(true);
-    };
-
-    const saveTask = () => {
-        if (!paramsTask.title) {
-            showMessage('Title is required.', 'error');
-            return false;
-        }
-        const project: any = projectList.find((d: any) => d.id === paramsTask.projectId);
-        if (paramsTask.id) {
-            //update task
-            const task = project.tasks.find((d: any) => d.id === paramsTask.id);
-            task.title = paramsTask.title;
-            task.description = paramsTask.description;
-            task.tags = paramsTask.tags?.length > 0 ? paramsTask.tags.split(',') : [];
-        } else {
-            //add task
-            let maxId = 0;
-            maxId = project.tasks?.length ? project.tasks.reduce((max: number, obj: any) => (obj.id > max ? obj.id : max), project.tasks[0].id) : 0;
-
-            const today = new Date();
-            const dd = String(today.getDate()).padStart(2, '0');
-            const mm = String(today.getMonth()); //January is 0!
-            const yyyy = today.getFullYear();
-            const monthNames: any = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const task = {
-                projectId: paramsTask.projectId,
-                id: maxId + 1,
-                title: paramsTask.title,
-                description: paramsTask.description,
-                date: dd + ' ' + monthNames[mm] + ', ' + yyyy,
-                tags: paramsTask.tags?.length > 0 ? paramsTask.tags.split(',') : [],
-            };
-            setParamsTask(project.tasks.push(task));
-        }
-
-        showMessage('Task has been saved successfully.');
-        setIsAddTaskModal(false);
-    };
-
-    const deleteConfirmModal = (projectId: any, task: any = null) => {
-        setSelectedTask(task);
-        setTimeout(() => {
-            setIsDeleteModal(true);
-        }, 10);
-    };
-    const deleteTask = () => {
-        let project = projectList.find((d: any) => d.id === selectedTask.projectId);
-        project.tasks = project.tasks.filter((d: any) => d.id !== selectedTask.id);
-        showMessage('Đã Xóa Thành Công Quảng Cáo.');
-        setIsDeleteModal(false);
     };
 
     return (
-        <div>
-            <div>
+        <div className="p-5">
+            <div className="mb-5">
                 <button
                     type="button"
-                    className="btn btn-primary flex"
+                    className="btn btn-primary flex items-center"
                     onClick={() => {
-                        addEditProject();
+                        setAdParams({
+                            _id: '',
+                            title: '',
+                            tag: '',
+                            description: '',
+                            image: null,
+                            createdAt: '',
+                            updatedAt: '',
+                        });
+                        setEditModal(true);
                     }}
                 >
                     <IconPlus className="w-5 h-5 ltr:mr-3 rtl:ml-3" />
                     Thêm Quảng Cáo
                 </button>
             </div>
-            {/* project list  */}
             <div className="relative pt-5">
                 <div className="perfect-scrollbar h-full -mx-2">
                     <div className="overflow-x-auto flex items-start flex-nowrap gap-5 pb-2 px-2">
-                        {projectList.map((project: any) => {
+                        {ads.map((ad: AdModel) => {
                             return (
-                                <div key={project.id} className="panel w-80 flex-none" data-group={project.id}>
+                                <div key={ad._id} className="panel w-80 flex-none" data-group={ad._id}>
                                     <div className="flex justify-between mb-5">
-                                        <h4 className="text-base font-semibold">{project.title}</h4>
-
+                                        <h4 className="text-base font-semibold">{ad.title}</h4>
                                         <div className="flex items-center">
+                                            <button onClick={() => editAd(ad)} type="button" className="hover:text-primary ltr:mr-2 rtl:ml-2">
+                                                <IconEdit />
+                                            </button>
                                             <div className="dropdown">
                                                 <Dropdown
                                                     offset={[0, 5]}
-                                                    placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
+                                                    placement={'bottom-start'}
                                                     button={<IconHorizontalDots className="opacity-70 hover:opacity-100" />}
                                                 >
                                                     <ul>
                                                         <li>
-                                                            <button type="button" onClick={() => addEditProject(project)}>
-                                                                Chỉnh Sửa
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button type="button" onClick={() => deleteProject(project)}>
+                                                            <button type="button" onClick={() => ad._id && handleDeleteAd(ad._id)}>
                                                                 Xóa
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button type="button" onClick={() => clearProjects(project)}>
-                                                                Xóa Tất Cả
                                                             </button>
                                                         </li>
                                                     </ul>
@@ -295,194 +197,87 @@ const Scrumboard = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <ReactSortable
-                                        list={project.tasks}
-                                        setList={(newState, sortable) => {
-                                            if (sortable) {
-                                                const groupId: any = sortable.el.closest('[data-group]')?.getAttribute('data-group') || 0;
-                                                const newList = projectList.map((task: any) => {
-                                                    if (parseInt(task.id) === parseInt(groupId)) {
-                                                        task.tasks = newState;
-                                                    }
-
-                                                    return task;
-                                                });
-                                                setProjectList(newList);
-                                            }
-                                        }}
-                                        animation={200}
-                                        group={{ name: 'shared', pull: true, put: true }}
-                                        ghostClass="sortable-ghost"
-                                        dragClass="sortable-drag"
-                                        className="connect-sorting-content min-h-[150px]"
-                                    >
-                                        {project.tasks.map((task: any) => {
-                                            return (
-                                                <div className="sortable-list " key={project.id + '' + task.id}>
-                                                    <div className="shadow bg-[#f4f4f4] dark:bg-white-dark/20 p-3 pb-5 rounded-md mb-5 space-y-3 cursor-move">
-                                                        {task.image ? <img src="/assets/images/carousel1.jpeg" alt="images" className="h-32 w-full object-cover rounded-md" /> : ''}
-                                                        <div className="text-base font-medium">{task.title}</div>
-                                                        <p className="break-all">{task.description}</p>
-                                                        <div className="flex gap-2 items-center flex-wrap">
-                                                            {task.tags?.length ? (
-                                                                task.tags.map((tag: any, i: any) => {
-                                                                    return (
-                                                                        <div key={i} className="btn px-2 py-1 flex btn-outline-primary">
-                                                                            <IconTag className="shrink-0" />
-                                                                            <span className="ltr:ml-2 rtl:mr-2">{tag}</span>
-                                                                        </div>
-                                                                    );
-                                                                })
-                                                            ) : (
-                                                                <div className="btn px-2 py-1 flex text-white-dark dark:border-white-dark/50 shadow-none">
-                                                                    <IconTag className="shrink-0" />
-                                                                    <span className="ltr:ml-2 rtl:mr-2">Không Có Tag</span>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="font-medium flex items-center hover:text-primary">
-                                                                <IconCalendar className="ltr:mr-3 rtl:ml-3 shrink-0" />
-                                                                <span>{task.date}</span>
-                                                            </div>
-                                                            <div className="flex items-center">
-                                                                <button onClick={() => deleteConfirmModal(project.id, task)} type="button" className="hover:text-danger">
-                                                                    <IconTrashLines />
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                    <div className="shadow bg-[#f4f4f4] dark:bg-[#121c2c] p-3 pb-5 rounded-md mb-5 space-y-3 cursor-move">
+                                        {ad.image && typeof ad.image === 'string' && (
+                                            <img src={`http://localhost:7777/${ad.image}`} alt="images" className="h-32 w-full object-cover rounded-md" />
+                                        )}
+                                        <div className="text-base font-medium">{ad.title}</div>
+                                        <p className="break-all">{ad.description}</p>
+                                        <div className="flex gap-2 items-center flex-wrap">
+                                            {ad.tag && (
+                                                <div className="btn px-2 py-1 flex btn-outline-primary">
+                                                    <IconTag className="shrink-0" />
+                                                    <span className="ltr:ml-2 rtl:mr-2">{ad.tag}</span>
                                                 </div>
-                                            );
-                                        })}
-                                    </ReactSortable>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div className="font-medium flex items-center hover:text-primary">
+                                                <IconCalendar className="ltr:mr-3 rtl:ml-3 shrink-0" />
+                                                <span>{new Date(ad.createdAt).toLocaleString()}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             );
                         })}
                     </div>
                 </div>
             </div>
-            {/* add project modal */}
-            <Transition appear show={isAddProjectModal} as={Fragment}>
-                <Dialog as="div" open={isAddProjectModal} onClose={() => setIsAddProjectModal(false)} className="relative z-[51]">
-                    <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
-                        <div className="fixed inset-0 bg-[black]/60" />
-                    </Transition.Child>
-                    <div className="fixed inset-0 z-[999] px-4 overflow-y-auto">
-                        <div className="flex items-center justify-center min-h-screen">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                            >
-                                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsAddProjectModal(false)}
-                                        className="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none"
-                                    >
-                                        <IconX />
-                                    </button>
-                                    <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">
-                                        {params.id ? 'Sửa Quảng Cáo' : 'Thêm Quảng Cáo'}
-                                    </div>
-                                    <div className="p-5">
-                                        <form onSubmit={saveProject}>
-                                            <div className="grid gap-5">
-                                                <div>
-                                                    <label htmlFor="ctnFile">Tải Ảnh Lên</label>
-                                                    <input id="ctnFile" type="file" className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" required />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="taskTitle">Tiêu Đề Quảng Cáo</label>
-                                                    <input id="title" value={paramsTask.title} onChange={addTaskData} type="text" className="form-input" placeholder="Nhập Tiêu Đề Quảng Cáo" />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="taskTag">Tag</label>
-                                                    <input id="tags" value={paramsTask.tags} onChange={addTaskData} type="text" className="form-input" placeholder="Nhập Tag" />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="taskdesc">Mô Tả</label>
-                                                    <textarea
-                                                        id="description"
-                                                        value={paramsTask.description}
-                                                        onChange={addTaskData}
-                                                        className="form-textarea min-h-[130px]"
-                                                        placeholder="Nhập Mô Tả"
-                                                    ></textarea>
-                                                </div>
-                                            </div>
-                                            <div className="flex justify-end items-center mt-8">
-                                                <button type="button" className="btn btn-outline-danger" onClick={() => setIsAddProjectModal(false)}>
-                                                    Hủy
-                                                </button>
-                                                <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
-                                                    {params.id ? 'Cập Nhật' : 'Thêm'}
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
-                        </div>
-                    </div>
-                </Dialog>
-            </Transition>
-            {/* delete task modal */}
-            <Transition appear show={isDeleteModal} as={Fragment}>
-                <Dialog as="div" open={isDeleteModal} onClose={() => setIsDeleteModal(false)} className="relative z-[51]">
+            {/* Modal thêm/sửa quảng cáo */}
+            <Transition appear show={editModal} as={Fragment}>
+                <Dialog as="div" open={editModal} onClose={() => setEditModal(false)} className="relative z-50">
                     <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
                         <div className="fixed inset-0 bg-[black]/60" />
                     </Transition.Child>
                     <div className="fixed inset-0 z-[999] overflow-y-auto">
-                        <div className="flex items-center justify-center min-h-screen px-4 ">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                            >
-                                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden md:w-full max-w-lg w-[90%] my-8">
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setIsDeleteModal(false);
-                                        }}
-                                        className="absolute top-4 ltr:right-4 rtl:left-4 text-white-dark"
-                                    >
-                                        <IconX />
-                                    </button>
-                                    <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">Xóa Quảng Cáo</div>
-                                    <div className="p-5 text-center">
-                                        <div className="text-white bg-danger ring-4 ring-danger/30 p-4 rounded-full w-fit mx-auto">
-                                            <IconTrashLines />
+                        <div className="flex items-center justify-center min-h-screen px-4">
+                            <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
+                                <button
+                                    type="button"
+                                    onClick={() => setEditModal(false)}
+                                    className="absolute top-4 ltr:right-4 rtl:left-4 text-white-dark hover:text-dark"
+                                >
+                                    <IconX />
+                                </button>
+                                <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]">{adParams._id ? 'Sửa Quảng Cáo' : 'Thêm Quảng Cáo'}</div>
+                                <div className="p-5">
+                                    <form onSubmit={(e) => { e.preventDefault(); handleCreateOrUpdateAd(); }}>
+                                        <div className="grid gap-5">
+                                            <div>
+                                                <label htmlFor="title">Tiêu đề</label>
+                                                <input id="title" value={adParams.title} onChange={handleChange} type="text" className="form-input" placeholder="Nhập tiêu đề" />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="tag">Tag</label>
+                                                <input id="tag" value={adParams.tag} onChange={handleChange} type="text" className="form-input" placeholder="Nhập tag" />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="description">Mô tả</label>
+                                                <textarea
+                                                    id="description"
+                                                    value={adParams.description}
+                                                    onChange={handleChange}
+                                                    className="form-textarea min-h-[130px]"
+                                                    placeholder="Nhập mô tả"
+                                                ></textarea>
+                                            </div>
+                                            <div>
+                                                <label htmlFor="image">Hình ảnh</label>
+                                                <input id="image" onChange={handleFileChange} type="file" className="form-input" placeholder="Chọn hình ảnh" />
+                                            </div>
                                         </div>
-                                        <div className="text-base sm:w-3/4 mx-auto mt-5">Bạn Có Muốn Xóa Tag Này Không?</div>
-
-                                        <div className="flex justify-center items-center mt-8">
-                                            <button
-                                                onClick={() => {
-                                                    setIsDeleteModal(false);
-                                                }}
-                                                type="button"
-                                                className="btn btn-outline-danger"
-                                            >
+                                        <div className="flex justify-end items-center mt-8">
+                                            <button onClick={() => setEditModal(false)} type="button" className="btn btn-outline-danger">
                                                 Hủy
                                             </button>
-                                            <button onClick={deleteTask} type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4">
-                                                Xóa
+                                            <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
+                                                {adParams._id ? 'Cập Nhật Quảng Cáo' : 'Thêm Quảng Cáo'}
                                             </button>
                                         </div>
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
+                                    </form>
+                                </div>
+                            </Dialog.Panel>
                         </div>
                     </div>
                 </Dialog>
@@ -490,4 +285,5 @@ const Scrumboard = () => {
         </div>
     );
 };
-export default Scrumboard;
+
+export default Advertisement;
