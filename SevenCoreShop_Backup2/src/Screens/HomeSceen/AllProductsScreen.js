@@ -1,29 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import axios from 'axios';
-
+import API__URL from '../../../config';
 const AllProductsScreen = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     // Gọi API lấy tất cả sản phẩm
-    axios.get('http://192.168.1.3:7777/products')
+    axios
+      .get(`${API__URL}/products/all`)
       .then(response => {
         setProducts(response.data.data);
       })
       .catch(error => console.error('Error fetching products:', error));
   }, []);
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}> Products</Text>
       <FlatList
         data={products}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
+        keyExtractor={item => item._id}
+        renderItem={({item}) => (
           <View style={styles.productCard}>
             <Image
-              source={{ uri: item.images && item.images[0] ? item.images[0] : 'https://via.placeholder.com/100' }}
+              source={{
+                uri:
+                  item.images && item.images[0]
+                    ? item.images[0]
+                    : 'https://via.placeholder.com/100',
+              }}
               style={styles.productImage}
             />
             <Text style={styles.productName}>{item.name}</Text>
@@ -58,6 +70,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginRight: 10,
+    marginTop: 20,
   },
   productImage: {
     width: 160,
@@ -66,14 +79,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   productName: {
-    fontWeight: "bold",
-    fontSize: 18, 
-    textAlign: 'center', 
-    color: '#000', 
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+    color: '#000',
   },
   productPrice: {
-    fontSize: 16, 
-    color: '#ff5722', 
+    fontSize: 16,
+    color: '#ff5722',
     textAlign: 'center',
   },
 });

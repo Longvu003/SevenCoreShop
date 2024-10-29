@@ -1,27 +1,38 @@
-// HomeScreen.js
-
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  FlatList,
+} from 'react-native';
 import axios from 'axios';
-import { FlatList } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-
-const HomeScreen = () => {
+import API__URL from '../../../config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchKey, setSearchKey] = useState('');
-  const navigation = useNavigation();
 
   useEffect(() => {
-    axios.get('http://192.168.1.3:7777/products')
+    // Gọi API lấy sản phẩm từ MongoDB
+    axios
+      .get(`${API__URL}/products`)
       .then(response => {
-        setProducts(response.data.data);
+        // const getidProduct = JSON.stringify(response.data);
+        const ArrayProduct = response.data.checkListProducts;
+        setProducts(ArrayProduct);
       })
       .catch(error => {
         console.error('Error fetching products:', error);
       });
 
-    axios.get('http://192.168.1.3:7777/categories')
+    // Gọi API lấy danh mục từ MongoDB
+    axios
+      .get(`${API__URL}/categories/getAllCategory`)
       .then(response => {
         const fixResponse = Object.values(response.data);
         setCategories(fixResponse[1]);
@@ -33,7 +44,8 @@ const HomeScreen = () => {
 
   const handleSearch = () => {
     if (searchKey.trim() === '') {
-      axios.get('http://192.168.1.3:7777/products')
+      axios
+        .get(`${API__URL}/products/all`)
         .then(response => {
           setProducts(response.data.data);
         })
@@ -41,7 +53,8 @@ const HomeScreen = () => {
           console.error('Error fetching products:', error);
         });
     } else {
-      axios.get(`http://192.168.1.3:7777/products/tim-kiem?key=${searchKey}`)
+      axios
+        .get(`${API__URL}/products/tim-kiem?key=${searchKey}`)
         .then(response => {
           setProducts(response.data.data);
         })
@@ -55,18 +68,25 @@ const HomeScreen = () => {
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity>
-          {/* Placeholder for cart icon */}
+        <Image
+          source={{uri: 'https://via.placeholder.com/50'}}
+          style={styles.avatar}
+        />
+        <TouchableOpacity onPress={() => navigation.navigate('CartScreen')}>
+          <Image
+            source={require('../../../assets/imgs/cart2.png')}
+            style={styles.cartIcon}
+          />
         </TouchableOpacity>
       </View>
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <TextInput 
-          style={styles.searchInput} 
-          placeholder="Search" 
-          value={searchKey} 
-          onChangeText={(text) => setSearchKey(text)} 
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          value={searchKey}
+          onChangeText={text => setSearchKey(text)}
         />
         <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
           <Text style={styles.searchButtonText}>Tìm kiếm</Text>
@@ -76,25 +96,33 @@ const HomeScreen = () => {
       {/* Categories */}
       <View style={styles.categoryHeader}>
         <Text style={styles.sectionTitle}>Categories</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Category')}>
+        <TouchableOpacity onPress={() => navigation.navigate('CategoryScreen')}>
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.categoryContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {categories.length > 0 ? categories.map((category, index) => (
-            <TouchableOpacity 
-              key={index} 
-              style={styles.categoryItem} 
-              onPress={() => navigation.navigate('CategoryDetail', { category })}
-            >
-              <Image 
-                source={{ uri: category.images && category.images.length > 0 ? category.images[0] : 'https://via.placeholder.com/50' }}
-                style={styles.categoryImage} 
-              />
-              <Text>{category.name}</Text>
-            </TouchableOpacity>
-          )) : (
+          {categories.length > 0 ? (
+            categories.map((category, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.categoryItem}
+                onPress={() =>
+                  navigation.navigate('CategoryDetailScreen', {category})
+                }>
+                <Image
+                  source={{
+                    uri:
+                      category.images && category.images.length > 0
+                        ? category.images[0]
+                        : 'https://via.placeholder.com/50',
+                  }}
+                  style={styles.categoryImage}
+                />
+                <Text>{category.name}</Text>
+              </TouchableOpacity>
+            ))
+          ) : (
             <Text>No categories available</Text>
           )}
         </ScrollView>
@@ -103,30 +131,42 @@ const HomeScreen = () => {
       {/* Top Selling */}
       <View style={styles.productHeader}>
         <Text style={styles.sectionTitle}>Top Selling</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('AllProducts')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AllProductsScreen')}>
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.productSection}>
         <FlatList
           data={products}
-          keyExtractor={(item) => item._id}
+          keyExtractor={item => item._id}
           numColumns={2}
+          showsHorizontalScrollIndicator={true}
           scrollEnabled={false}
-          renderItem={({ item }) => (
-            <View style={styles.productCard}>
-              <TouchableOpacity>
-                <Image 
-                  source={item.images && item.images.length > 0 ? { uri: item.images[0] } : require('../../../assets/imgs/abc.png')}
-                  style={styles.productImage}
-                />
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productPrice}>${item.price}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+          renderItem={({item}) => {
+            return (
+              <View style={styles.productCard}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('ProductDetail', {item})}>
+                  <Image
+                    // source={
+                    //   item.images.length > 0 && item.images[0]
+                    //     ? {uri: item.images[0]}
+                    //     : require('../../../assets/imgs/profile.png')
+                    // }
+                    source={{uri: item.images[0]}}
+                    style={styles.productImage}
+                  />
+                  <Text style={styles.productName}>{item.name}</Text>
+                  <Text style={styles.productPrice}>${item.price}</Text>
+                </TouchableOpacity>
+              </View>
+            );
+          }}
         />
       </View>
+
+      <View style={styles.productSection}></View>
     </ScrollView>
   );
 };
@@ -142,6 +182,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  genderSelection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f4f4f4',
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+  },
+  arrowDown: {
+    marginLeft: 5,
+  },
+  cartIcon: {
+    width: 50,
+    height: 50,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -174,7 +234,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color:  'black',
+    color: 'black',
   },
   seeAllText: {
     fontSize: 14,
@@ -210,6 +270,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginRight: 10,
+    marginTop: 20,
   },
   productImage: {
     width: 160,
@@ -218,7 +279,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   productName: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 18,
     textAlign: 'center',
     color: '#000',

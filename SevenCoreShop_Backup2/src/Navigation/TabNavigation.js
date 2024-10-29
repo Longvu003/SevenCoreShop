@@ -9,7 +9,9 @@ import HomeScreen from '../Screens/HomeSceen/HomeScreen';
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
   return (
-    <Tab.Navigator initialRouteName="User" screenOptions={{headerShown: false}}>
+    <Tab.Navigator
+      initialRouteName="HomeScreen"
+      screenOptions={{headerShown: false}}>
       <Tab.Screen
         name="HomeScreen"
         component={HomeScreen}
