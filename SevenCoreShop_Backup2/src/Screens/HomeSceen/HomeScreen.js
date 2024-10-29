@@ -16,6 +16,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [searchKey, setSearchKey] = useState('');
+  const navigation = useNavigation();
 
   useEffect(() => {
     // Gọi API lấy sản phẩm từ MongoDB
@@ -42,7 +44,27 @@ const HomeScreen = ({navigation}) => {
       });
   }, []);
 
-  // console.log("category fetched:", products);
+  const handleSearch = () => {
+    if (searchKey.trim() === '') {
+      axios
+        .get('http://192.168.1.3:7777/products')
+        .then(response => {
+          setProducts(response.data.data);
+        })
+        .catch(error => {
+          console.error('Error fetching products:', error);
+        });
+    } else {
+      axios
+        .get(`http://192.168.1.3:7777/products/tim-kiem?key=${searchKey}`)
+        .then(response => {
+          setProducts(response.data.data);
+        })
+        .catch(error => {
+          console.error('Error searching products:', error);
+        });
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -60,37 +82,48 @@ const HomeScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
-      {/* Thanh tìm kiếm */}
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <TextInput style={styles.searchInput} placeholder="Search" />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          value={searchKey}
+          onChangeText={text => setSearchKey(text)}
+        />
+        <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
+          <Text style={styles.searchButtonText}>Tìm kiếm</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Categories */}
       <View style={styles.categoryHeader}>
         <Text style={styles.sectionTitle}>Categories</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Category')}>
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.categoryContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {categories.length > 0 ? (
-            categories.map((category, index) => {
-              return (
-                <TouchableOpacity key={index} style={styles.categoryItem}>
-                  <Image
-                    source={{
-                      uri:
-                        category.images && category.images.length > 0
-                          ? category.images[0]
-                          : 'https://via.placeholder.com/50',
-                    }}
-                    style={styles.categoryImage}
-                  />
-                  <Text>{category.name}</Text>
-                </TouchableOpacity>
-              );
-            })
+            categories.map((category, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.categoryItem}
+                onPress={() =>
+                  navigation.navigate('CategoryDetail', {category})
+                }>
+                <Image
+                  source={{
+                    uri:
+                      category.images && category.images.length > 0
+                        ? category.images[0]
+                        : 'https://via.placeholder.com/50',
+                  }}
+                  style={styles.categoryImage}
+                />
+                <Text>{category.name}</Text>
+              </TouchableOpacity>
+            ))
           ) : (
             <Text>No categories available</Text>
           )}
@@ -100,7 +133,7 @@ const HomeScreen = ({navigation}) => {
       {/* Top Selling */}
       <View style={styles.productHeader}>
         <Text style={styles.sectionTitle}>Top Selling</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('AllProducts')}>
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
@@ -173,9 +206,6 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     flexDirection: 'row',
-    width: 342,
-    height: 40,
-    paddingHorizontal: 19,
     alignItems: 'center',
     backgroundColor: '#f4f4f4',
     borderRadius: 20,
@@ -184,6 +214,17 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
+    paddingHorizontal: 15,
+  },
+  searchButton: {
+    padding: 10,
+    backgroundColor: 'black',
+    borderRadius: 8,
+    marginLeft: 10,
+  },
+  searchButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   categoryHeader: {
     flexDirection: 'row',
@@ -194,6 +235,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: 'black',
   },
   seeAllText: {
     fontSize: 14,
@@ -202,7 +244,6 @@ const styles = StyleSheet.create({
   },
   categoryContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 20,
   },
   categoryItem: {
@@ -226,12 +267,10 @@ const styles = StyleSheet.create({
   productCard: {
     height: 200,
     width: 190,
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    borderRadius: 8,
     backgroundColor: '#F4F4F4',
+    borderRadius: 8,
+    padding: 10,
     marginRight: 10,
-    marginTop: 10,
   },
   productImage: {
     width: 160,
@@ -242,14 +281,12 @@ const styles = StyleSheet.create({
   productName: {
     fontWeight: 'bold',
     fontSize: 18,
-    marginBottom: 4,
     textAlign: 'center',
     color: '#000',
   },
   productPrice: {
     fontSize: 16,
     color: '#ff5722',
-    marginTop: 2,
     textAlign: 'center',
   },
 });

@@ -45,15 +45,27 @@ const searchProduct = async (key) => {
 };
 
 // Lấy danh sách sản phẩm theo danh mục
-const getProductByCategory = async (category_id) => {
+const getProductsByCategory = async (req, res) => {
   try {
-    const products = await ProductModel.find({
-      category: category_id, // Chỉ dùng category như ObjectId
-    });
-    return products;
+    const categoryId = req.params.categoryId;
+
+    // Tìm kiếm các sản phẩm dựa trên categoryId
+    const products = await ProductModel.find({ category: categoryId }).populate(
+      "category"
+    );
+
+    // Kiểm tra nếu không có sản phẩm nào
+    if (products.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Không có sản phẩm nào cho category này.", data: [] });
+    }
+
+    // Trả về kết quả trong một đối tượng JSON có thuộc tính data
+    res.status(200).json({ data: products });
   } catch (error) {
-    console.log("Get product by category error", error.message);
-    throw new Error("Get product by category error");
+    console.error(error);
+    res.status(500).json({ message: "Đã xảy ra lỗi hệ thống." });
   }
 };
 
@@ -195,7 +207,7 @@ module.exports = {
   getProducts,
   getAllProducts,
   searchProduct,
-  getProductByCategory,
+  getProductsByCategory,
   getProductByPrice,
   addProduct,
   updateProduct,

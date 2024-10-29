@@ -5,13 +5,15 @@ import Stacknavigation from './src/Navigation/Stacknavigation';
 import store from './src/ReduxTookit/Store';
 import { Provider } from 'react-redux';
 
-export default function App() {
+
+
+const App = () => {
   return (
     <Provider store={store}>
       <Stacknavigation />
     
     </Provider>
   );
-}
+};
 
-const styles = StyleSheet.create({});
+export default App;
