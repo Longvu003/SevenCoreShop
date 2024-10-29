@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 // http://localhost:7777/products
 
-const ProductController = require('../controllers/ProductController')
+// const CategoryController = require("../controllers/CategoryController");
+const ProductController = require("../controllers/ProductController");
 
 /**
  * method: GET
@@ -205,5 +206,14 @@ router.put('/update/:id', async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 });
+
+// API product khi nhan vao category ra 1 list ID
+router.get('/category/:categoryId', ProductController.getProductsByCategory);
+
+
+
+
+
+
 
 module.exports = router;
