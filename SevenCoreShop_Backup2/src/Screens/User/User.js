@@ -38,10 +38,23 @@ const User = ({navigation}) => {
       setLoading(true);
     }
   };
-  const Logout = async () => {
-    await AsyncStorage.removeItem('userEmail');
-    navigation.replace('LoginScreen');
+  const Logout = () => {
+    Alert.alert('Đăng xuất', 'Bạn có muốn đăng xuất không ?', [
+      {text: 'Trở lại ', onPress: () => console.log('Xác nhận trở lại')},
+      {
+        text: 'xác nhận',
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem('userEmail');
+            navigation.replace('LoginScreen');
+          } catch (error) {
+            console.log(error);
+          }
+        },
+      },
+    ]);
   };
+
   useFocusEffect(
     useCallback(() => {
       renderUser();
@@ -120,10 +133,8 @@ const User = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <View style={{flex: 3, alignItems: 'center', justifyContent: 'center'}}>
-        <TouchableOpacity>
-          <Text style={UserStyleSheet.txt__Signout} onPress={Logout}>
-            Đăng xuất
-          </Text>
+        <TouchableOpacity onPress={Logout}>
+          <Text style={UserStyleSheet.txt__Signout}>Đăng xuất</Text>
         </TouchableOpacity>
       </View>
     </View>
