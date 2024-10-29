@@ -1,15 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import API__URL from '../../../config';
 
-const CategoryScreen = () => {
+const CategoryScreen = ({navigation}) => {
   const [categories, setCategories] = useState([]);
-  const navigation = useNavigation();
 
   useEffect(() => {
     // Gọi API để lấy danh sách các danh mục
-    axios.get('http://192.168.1.3:7777/categories')
+    axios
+      .get(`${API__URL}/categories/getAllCategory`)
       .then(response => {
         // Chuyển đổi dữ liệu nếu cần và lưu vào state
         const fixResponse = Object.values(response.data);
@@ -18,9 +25,9 @@ const CategoryScreen = () => {
       .catch(error => console.error('Lỗi lấy danh mục:', error));
   }, []);
 
-  const handleCategoryPress = (category) => {
+  const handleCategoryPress = category => {
     // Điều hướng tới màn hình chi tiết danh mục (CategoryDetail), truyền danh mục qua navigation
-    navigation.navigate('CategoryDetail', { category });
+    navigation.navigate('CategoryDetailScreen', {category});
   };
 
   return (
@@ -28,11 +35,14 @@ const CategoryScreen = () => {
       <Text style={styles.title}>Shop by Categories</Text>
       <FlatList
         data={categories}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
+        keyExtractor={item => item._id}
+        renderItem={({item}) => (
           <TouchableOpacity onPress={() => handleCategoryPress(item)}>
             <View style={styles.categoryCard}>
-              <Image source={{ uri: item.images[0] }} style={styles.categoryImage} />
+              <Image
+                source={{uri: item.images[0]}}
+                style={styles.categoryImage}
+              />
               <Text style={styles.categoryName}>{item.name}</Text>
             </View>
           </TouchableOpacity>
@@ -52,7 +62,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: 'black', 
+    color: 'black',
   },
   categoryCard: {
     flexDirection: 'row',

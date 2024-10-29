@@ -12,12 +12,10 @@ import {
 import axios from 'axios';
 import API__URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchKey, setSearchKey] = useState('');
-  const navigation = useNavigation();
 
   useEffect(() => {
     // Gọi API lấy sản phẩm từ MongoDB
@@ -47,7 +45,7 @@ const HomeScreen = ({navigation}) => {
   const handleSearch = () => {
     if (searchKey.trim() === '') {
       axios
-        .get('http://192.168.1.3:7777/products')
+        .get(`${API__URL}/products/all`)
         .then(response => {
           setProducts(response.data.data);
         })
@@ -56,7 +54,7 @@ const HomeScreen = ({navigation}) => {
         });
     } else {
       axios
-        .get(`http://192.168.1.3:7777/products/tim-kiem?key=${searchKey}`)
+        .get(`${API__URL}/products/tim-kiem?key=${searchKey}`)
         .then(response => {
           setProducts(response.data.data);
         })
@@ -98,7 +96,7 @@ const HomeScreen = ({navigation}) => {
       {/* Categories */}
       <View style={styles.categoryHeader}>
         <Text style={styles.sectionTitle}>Categories</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Category')}>
+        <TouchableOpacity onPress={() => navigation.navigate('CategoryScreen')}>
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
@@ -110,7 +108,7 @@ const HomeScreen = ({navigation}) => {
                 key={index}
                 style={styles.categoryItem}
                 onPress={() =>
-                  navigation.navigate('CategoryDetail', {category})
+                  navigation.navigate('CategoryDetailScreen', {category})
                 }>
                 <Image
                   source={{
@@ -133,7 +131,8 @@ const HomeScreen = ({navigation}) => {
       {/* Top Selling */}
       <View style={styles.productHeader}>
         <Text style={styles.sectionTitle}>Top Selling</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('AllProducts')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AllProductsScreen')}>
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
@@ -271,6 +270,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginRight: 10,
+    marginTop: 20,
   },
   productImage: {
     width: 160,

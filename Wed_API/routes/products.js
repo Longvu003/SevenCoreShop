@@ -36,7 +36,6 @@ router.get("/all", async (req, res, next) => {
   try {
     const products = await ProductController.getAllProducts();
     return res.status(200).json({ status: true, data: products });
-    console.log(products);
   } catch (error) {
     return res.status(500).json({ status: false, data: error.message });
   }
@@ -91,19 +90,20 @@ router.post("/:id/update", async (req, res, next) => {
   }
 });
 
-
-router.get('/tim-kiem', async (req, res) => {
-    try {
-        const { key } = req.query;
-        if (!key) {
-            return res.status(400).json({ status: false, message: "Keyword is required" });
-        }
-        
-        const products = await ProductController.searchProduct(key);
-        return res.status(200).json({ status: true, data: products });
-    } catch (error) {
-        return res.status(500).json({ status: false, message: error.message });
+router.get("/tim-kiem", async (req, res) => {
+  try {
+    const { key } = req.query;
+    if (!key) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Keyword is required" });
     }
+
+    const products = await ProductController.searchProduct(key);
+    return res.status(200).json({ status: true, data: products });
+  } catch (error) {
+    return res.status(500).json({ status: false, message: error.message });
+  }
 });
 
 //API lấy danh sách sản phẩm theo category_id
@@ -261,5 +261,5 @@ router.put("/update/:id", async (req, res) => {
 });
 
 // API product khi nhan vao category ra 1 list ID
-router.get('/category/:categoryId', ProductController.getProductsByCategory);
+router.get("/category/:categoryId", ProductController.getProductsByCategory);
 module.exports = router;

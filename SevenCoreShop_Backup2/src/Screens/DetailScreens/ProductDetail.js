@@ -18,12 +18,16 @@ import API__URL from '../../../config';
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
 const ProductDetail = ({navigation, route}) => {
+  const {item} = route.params;
   const [quantityProduct, setQuantityProduct] = useState(1);
-  const [priceProduct, setPriceProduct] = useState(0);
+  // const [priceProduct, setPriceProduct] = useState(0);
   const increaseQuantity = () => {
     setQuantityProduct(prev => prev + 1);
   };
-
+  // const priceProduct = item.price.reduce(
+  //   (total, index) => total + index.price * quantityProduct,
+  //   setPriceProduct(priceProduct),
+  // );
   // Hàm giảm số lượng
   const decreaseQuantity = () => {
     if (quantityProduct > 1) {
@@ -32,14 +36,6 @@ const ProductDetail = ({navigation, route}) => {
       Alert.alert('Sản phẩm không được dưới 1');
     }
   };
-  const {item} = route.params;
-  // const getPriceProduct = async () => {
-  //   const priceProduct = item.price.reduce(
-  //     (total, index) => total + index.price * quantityProduct,
-  //   );
-  //   setPriceProduct(priceProduct);
-  //   console.log(priceProduct);
-  // };
   const addProductCart = async item => {
     const userId = await AsyncStorage.getItem('userId');
     const newUserId = JSON.parse(userId);
@@ -85,7 +81,6 @@ const ProductDetail = ({navigation, route}) => {
             <View style={styles.quantity__Container}>
               <Text>kích cỡ</Text>
             </View>
-
             <Text style={styles.txt__nameProduct}>{item.size}</Text>
             <TouchableOpacity>
               <Image
@@ -121,7 +116,6 @@ const ProductDetail = ({navigation, route}) => {
         <TouchableOpacity
           style={styles.btn__buy}
           onPress={() => addProductCart(item)}>
-          <Text style={styles.txt__btnbuy}></Text>
           <Text style={styles.txt__btnbuy}>Thêm vào giỏ</Text>
         </TouchableOpacity>
       </View>
@@ -149,7 +143,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
   },
   icon: {
     width: 50,
