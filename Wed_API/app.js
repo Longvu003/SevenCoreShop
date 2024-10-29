@@ -5,8 +5,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const multer = require('multer'); // thêm multer ở đây
-const Ad = require('./model/AdModel'); // import model nếu cần
+const multer = require('multer');
+const Ad = require('./model/AdModel');
 
 // Cấu hình multer để lưu ảnh
 const storage = multer.diskStorage({
@@ -24,7 +24,7 @@ const usersRouter = require('./routes/users');
 const productsRouter = require('./routes/products');
 const categoriesRouter = require('./routes/categories');
 const cartsRouter = require('./routes/carts');
-const adsRouter = require('./routes/ads')(upload); // Chỉ khai báo một lần
+const adsRouter = require('./routes/ads')(upload);
 
 const app = express();
 

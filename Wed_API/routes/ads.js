@@ -13,7 +13,7 @@ module.exports = (upload) => {
   router.get('/', adController.getAd);
 
   // Cập nhật quảng cáo theo ID
-  router.put('/:id', adController.updateAdById);
+  router.post('/:id', upload.single("image"), adController.updateAdById);
 
   return router; // Trả về router
 };

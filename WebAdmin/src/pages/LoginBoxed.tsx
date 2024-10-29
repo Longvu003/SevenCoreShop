@@ -21,7 +21,7 @@ const LoginBoxed = () => {
 
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Login Boxed'));
+        dispatch(setPageTitle('Đăng Nhập'));
     });
 
     const navigate = useNavigate();
@@ -41,7 +41,7 @@ const LoginBoxed = () => {
                     text: 'Đăng Nhập Thành Công',
                     icon: 'success',
                 });
-                navigate('/');
+                navigate('/doashboard');
             } else {
                 MySwal.fire({
                     title: 'bạn không phải là admin',

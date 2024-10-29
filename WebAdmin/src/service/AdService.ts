@@ -66,7 +66,7 @@ export const UpdateAd = async (id: string, ad: AdModel): Promise<AdModel> => {
     }
 
     const response = await fetch(`${API_URL}/ads/${id}`, {
-        method: "PUT",
+        method: "POST",
         body: formData, // Sử dụng FormData
     });
 

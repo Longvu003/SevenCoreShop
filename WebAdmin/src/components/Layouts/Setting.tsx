@@ -138,7 +138,7 @@ const Setting = () => {
                                     className="form-radio"
                                     onChange={() => dispatch(toggleNavbar('navbar-sticky'))}
                                 />
-                                <span>Dích</span>
+                                <span>Dính</span>
                             </label>
                             <label className="inline-flex mb-0">
                                 <input

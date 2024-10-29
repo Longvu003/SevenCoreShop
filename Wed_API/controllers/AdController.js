@@ -5,7 +5,7 @@ exports.createAd = async (req, res) => {
   try {
     const { title, tag, description} = req.body;
     const image = req.file.path
-    console.log(image)
+    console.log(req.body)
     const newAd = new Ad({ title, tag, description,image});
     const savedAd = await newAd.save();
     const json = {...savedAd, status:true}
@@ -45,6 +45,7 @@ exports.updateAdById = async (req, res) => {
   try {
     const adId = req.params.id;
     const updateData = req.body;
+    console.log(updateData)
     const updatedAd = await Ad.findByIdAndUpdate(adId, updateData, { new: true, runValidators: true });
 
     if (!updatedAd) {

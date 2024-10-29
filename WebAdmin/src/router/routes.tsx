@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import PrivateRoute from './PrivateRoute';  // Import the PrivateRoute component
-import Scrumboard from '../pages/Scrumboard';
+import Scrumboard from '../pages/AdvertisementManagent';
+import Advertisement from '../pages/AdvertisementManagent';
 
 const Index = lazy(() => import('../pages/Analytics'));
 const ProductManagent = lazy(() => import('../pages/ProductManagent'));
@@ -15,7 +16,7 @@ const Usermanagent = lazy(() => import('../pages/UsersManagent'));
 const routes = [
     // dashboard (protected)
     {
-        path: '/',
+        path: '/doashboard',
         element: (
             <PrivateRoute>
                 <Index />
@@ -73,7 +74,7 @@ const routes = [
     },
     // Login page (public)
     {
-        path: '/login',
+        path: '/',
         element: <LoginBoxed />,
         layout: 'blank',
     },
@@ -87,7 +88,7 @@ const routes = [
         path: '/advertising-management',
         element: (
             <PrivateRoute>
-                <Scrumboard />
+                <Advertisement />   
             </PrivateRoute>
         ),
     },

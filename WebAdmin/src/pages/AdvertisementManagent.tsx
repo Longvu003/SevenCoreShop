@@ -29,7 +29,6 @@ const Advertisement = () => {
         updatedAt: '',
     });
 
-    // Fetch ads
     const fetchAds = async () => {
         try {
             const response = await fetch('http://localhost:7777/ads');
@@ -61,7 +60,7 @@ const Advertisement = () => {
     
         if (result.isConfirmed) {
             try {
-                const deleteResult = await deleteAdbyid(id); // Sử dụng hàm DeleteAd
+                const deleteResult = await deleteAdbyid(id);
                 showMessage('Xóa Thành Công', 'success');
                 fetchAds();
             } catch (error) {
@@ -75,36 +74,53 @@ const Advertisement = () => {
         setEditModal(true);
     };
 
-    const handleCreateOrUpdateAd = async () => {
+    const handleCreateAd = async () => {
+        try {
+            const result = await createAd(adParams);
+            if (result && typeof result === 'object' && result.status === true) {
+                showMessage('Thêm Quảng Cáo Thành Công', 'success');
+            } else {
+                showMessage((result && result.message) || 'Thêm Quảng Cáo Thất Bại', 'error');
+            }
+        } catch (error) {
+            showMessage(`Lỗi: ${(error as any).message || 'Không thể thêm quảng cáo'}`, 'error');
+        } finally {
+            fetchAds(); // Tải lại danh sách quảng cáo sau khi thêm
+            resetForm();
+        }
+    };
+    
+    const handleUpdateAd = async () => {
+        try {
+            const result = await updateAd(adParams._id, adParams);
+            if (result && typeof result === 'object' && result.status === true) {
+                showMessage('Cập Nhật Quảng Cáo Thành Công', 'success');
+            } else {
+                showMessage((result && result.message) || 'Cập Nhật Quảng Cáo Thất Bại', 'error');
+            }
+            fetchAds(); // Tải lại danh sách quảng cáo sau khi cập nhật
+        } catch (error) {
+            showMessage(`Lỗi: ${(error as any).message || 'Không thể cập nhật quảng cáo'}`, 'error');
+        } finally {
+            resetForm();
+        }
+    };
+    
+    const handleCreateOrUpdateAd = () => {
         if (!adParams.title || !adParams.description || !adParams.image) {
             showMessage('Tiêu đề, mô tả và hình ảnh không được để trống', 'error');
             return;
         }
     
-        let result;
         if (adParams._id) {
-            // Cập nhật quảng cáo
-            result = await updateAd(adParams._id, adParams);
-            if ((result as { status: boolean }).status === true) {
-                showMessage('Cập Nhật Quảng Cáo Thành Công', 'success');
-            } else {
-                if (typeof result === 'object' && result !== null && 'message' in result) {
-                    showMessage((result as { message: string }).message || 'Cập Nhật Quảng Cáo Thất Bại', 'error');
-                } else {
-                    showMessage('Cập Nhật Quảng Cáo Thất Bại', 'error');
-                }
-            }
+            handleUpdateAd();
         } else {
-            // Thêm quảng cáo mới
-            result = await createAd(adParams);
-            if ((result as { status: boolean }).status === true) {
-                showMessage('Thêm Quảng Cáo Thành Công', 'success');
-            } else {
-                showMessage((result as { message: string }).message || 'Thêm Quảng Cáo Thất Bại', 'error');
-            }
+            handleCreateAd();
         }
+    };
     
-        fetchAds(); // Tải lại danh sách quảng cáo sau khi thêm/cập nhật
+    // Hàm reset form
+    const resetForm = () => {
         setEditModal(false);
         setAdParams({
             _id: '',
@@ -114,7 +130,7 @@ const Advertisement = () => {
             image: null,
             createdAt: '',
             updatedAt: '',
-        }); // Reset form
+        });
     };
     
 
