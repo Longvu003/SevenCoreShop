@@ -1,25 +1,27 @@
+// HomeScreen.js
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import axios from 'axios';
 import { FlatList } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [searchKey, setSearchKey] = useState(''); // State để lưu từ khóa tìm kiếm
+  const [searchKey, setSearchKey] = useState('');
+  const navigation = useNavigation();
 
   useEffect(() => {
-    // Gọi API lấy sản phẩm từ MongoDB
-    axios.get('http://192.168.1.9:7777/products')
+    axios.get('http://192.168.1.3:7777/products')
       .then(response => {
-        setProducts(response.data.data); // Lưu sản phẩm vào state
+        setProducts(response.data.data);
       })
       .catch(error => {
         console.error('Error fetching products:', error);
       });
 
-    // Gọi API lấy danh mục từ MongoDB
-    axios.get('http://192.168.1.9:7777/categories')
+    axios.get('http://192.168.1.3:7777/categories')
       .then(response => {
         const fixResponse = Object.values(response.data);
         setCategories(fixResponse[1]);
@@ -31,44 +33,40 @@ const HomeScreen = () => {
 
   const handleSearch = () => {
     if (searchKey.trim() === '') {
-      // Nếu không có từ khóa, lấy lại danh sách tất cả sản phẩm
-      axios.get('http://192.168.1.9:7777/products')
+      axios.get('http://192.168.1.3:7777/products')
         .then(response => {
-          setProducts(response.data.data); // Lưu danh sách sản phẩm ban đầu
+          setProducts(response.data.data);
         })
         .catch(error => {
           console.error('Error fetching products:', error);
         });
     } else {
-      // Nếu có từ khóa, gọi API tìm kiếm
-      axios.get(`http://192.168.1.9:7777/products/tim-kiem?key=${searchKey}`)
+      axios.get(`http://192.168.1.3:7777/products/tim-kiem?key=${searchKey}`)
         .then(response => {
-          setProducts(response.data.data); // Cập nhật danh sách sản phẩm với kết quả tìm kiếm
+          setProducts(response.data.data);
         })
         .catch(error => {
           console.error('Error searching products:', error);
         });
     }
   };
-  
 
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.avatar} />
         <TouchableOpacity>
-          <Image source={{ uri: 'https://via.placeholder.com/24' }} style={styles.cartIcon} />
+          {/* Placeholder for cart icon */}
         </TouchableOpacity>
       </View>
 
-      {/* Thanh tìm kiếm */}
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput 
           style={styles.searchInput} 
           placeholder="Search" 
-          value={searchKey} // Gán giá trị từ state
-          onChangeText={(text) => setSearchKey(text)} // Cập nhật searchKey khi nhập
+          value={searchKey} 
+          onChangeText={(text) => setSearchKey(text)} 
         />
         <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
           <Text style={styles.searchButtonText}>Tìm kiếm</Text>
@@ -78,14 +76,18 @@ const HomeScreen = () => {
       {/* Categories */}
       <View style={styles.categoryHeader}>
         <Text style={styles.sectionTitle}>Categories</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Category')}>
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.categoryContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {categories.length > 0 ? categories.map((category, index) => (
-            <TouchableOpacity key={index} style={styles.categoryItem}>
+            <TouchableOpacity 
+              key={index} 
+              style={styles.categoryItem} 
+              onPress={() => navigation.navigate('CategoryDetail', { category })}
+            >
               <Image 
                 source={{ uri: category.images && category.images.length > 0 ? category.images[0] : 'https://via.placeholder.com/50' }}
                 style={styles.categoryImage} 
@@ -101,7 +103,7 @@ const HomeScreen = () => {
       {/* Top Selling */}
       <View style={styles.productHeader}>
         <Text style={styles.sectionTitle}>Top Selling</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('AllProducts')}>
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
@@ -141,15 +143,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  cartIcon: {
-    width: 24,
-    height: 24,
-  },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -164,7 +157,7 @@ const styles = StyleSheet.create({
   },
   searchButton: {
     padding: 10,
-    backgroundColor: '#007bff',
+    backgroundColor: 'black',
     borderRadius: 8,
     marginLeft: 10,
   },
@@ -181,6 +174,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    color:  'black',
   },
   seeAllText: {
     fontSize: 14,
@@ -225,13 +219,13 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontWeight: "bold",
-    fontSize: 18, 
-    textAlign: 'center', 
-    color: '#000', 
+    fontSize: 18,
+    textAlign: 'center',
+    color: '#000',
   },
   productPrice: {
-    fontSize: 16, 
-    color: '#ff5722', 
+    fontSize: 16,
+    color: '#ff5722',
     textAlign: 'center',
   },
 });

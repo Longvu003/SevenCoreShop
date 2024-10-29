@@ -36,15 +36,5 @@ router.post("/add", async (req, res, next) => {
     res.status(500).json({ status: false, data: error.message });
   }
 });
-// router.post("/add", async (req, res, next) => {
-//   try {
-//     const { name, description, images } = req.body; // thêm images
-//     const category = await CategoryController.createCategory(name, description, images);
-//     return res.status(200).json({ status: true, data: category });
-//   } catch (error) {
-//     console.log("Create category error", error.message);
-//     res.status(500).json({ status: false, data: error.message });
-//   }
-// });
 
 module.exports = router;

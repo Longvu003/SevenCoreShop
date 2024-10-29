@@ -19,14 +19,14 @@ var app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
 app.use(logger("dev"));
-app.use(express.json());
+app.use(express.json());      
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Cấu hình CORS
 app.use(cors({
-  origin: ['http://192.168.1.9', 'http://localhost:3000'], // Địa chỉ của frontend, có thể thay đổi theo ứng dụng của bạn
+  origin: ['http://192.168.1.3', 'http://localhost:3000'], // Địa chỉ của frontend, có thể thay đổi theo ứng dụng của bạn
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức được phép sử dụng
   credentials: true // Cho phép truyền cookie nếu cần thiết
 }));
@@ -59,7 +59,6 @@ app.use(function (err, req, res, next) {
   // Set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-
   // Render the error page
   res.status(err.status || 500);
   res.render("error");
