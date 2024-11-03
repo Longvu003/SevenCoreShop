@@ -7,11 +7,9 @@ const CategoriesManagent = lazy(() => import('../pages/CategoriesManagement'));
 const CategoriesNew = lazy(() => import('../pages/CategoriesNew'));
 const LoginBoxed = lazy(() => import('../pages/LoginBoxed'));
 const Error = lazy(() => import('../components/Error'));
-//const HospitalApproval = lazy(() => import('../pages/HospitalApproval'));
 const ProductCreateNew = lazy(() => import('../pages/ProductCreatNew'));
 const ProductUpdate = lazy(() => import('../pages/ProductEdit'));
 const CategoriesUpdate = lazy(() => import('../pages/CategoriesNew'));
-const Contact = lazy(() => import('../pages/Contacts'));
 const CategoryEdit = lazy(() => import('../pages/CategoriesEdit'));
 const routes = [
     // dashboard (protected)
@@ -20,24 +18,6 @@ const routes = [
         element: (
             <PrivateRoute>
                 <Index />
-            </PrivateRoute>
-        ),
-    },
-    // // Hospital approval (protected)
-    // {
-    //     path: '/hospital-approval',
-    //     element: (
-    //         <PrivateRoute>
-    //             <HospitalApproval />
-    //         </PrivateRoute>
-    //     ),
-    // },
-    // user (protected)
-    {
-        path: '/usermanagent',
-        element: (
-            <PrivateRoute>
-                <Contact />
             </PrivateRoute>
         ),
     },

@@ -16,7 +16,6 @@ const Tables = () => {
 
     const deleteProductById = async (id: string) => {
         const result: any = await deleteProduct(id);
-
         console.log(result.status);
         if (result.status === true) {
             alert("Xóa Thành Công");

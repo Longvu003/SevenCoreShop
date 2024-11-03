@@ -125,7 +125,7 @@ const updateProduct = async (id, name, price, quantity, images, description, cat
             throw new Error('Category không tồn tại')
         }
         // lấy category theo id
-        const categoryInDB = await CategoryModel.findById(category);
+        const categoryInDB = await CategoryModel.findById(category['category_name']);
         if (!categoryInDB) {
             throw new Error('Category không tồn tại')
         }
@@ -148,7 +148,7 @@ const updateProduct = async (id, name, price, quantity, images, description, cat
         return true;
     } catch (error) {
         console.log('Update product error', error.message)
-        throw new Error('Update product error')
+        throw new Error('Update product error',error.message)
     }
 }
 
@@ -160,13 +160,6 @@ const deleteProduct = async (id) => {
         const productInDb = await ProductModel.findById(id);
         // delete  sản phẩm
         await ProductModel.deleteOne({ _id: id });
-
-        // // Xóa sản phẩm dựa trên ID
-        // const deletedProduct = await ProductModel.deleteOne({ _id: id });
-        // if (deletedProduct.deletedCount === 0) {
-        //     throw new Error('Sản phẩm không tồn tại');
-        // }
-
         return true;
     } catch (error) {
         console.log("delete product error", error.message)
@@ -191,22 +184,6 @@ const getById = async (id) => {
     }
 }
 
-//thống kê số lượng sản phẩm có số lượng nhiều nhất trong kho
-const getTopProduct = async () => {
-    try {
-        let query = {};
-        const products = await ProductModel
-        .find(query, 'name price quantity')
-        .sort({ quantity: -1 })
-        .limit(10);
-        return products;
-    } catch (error) {
-        console.log('Get top product error', error.message)
-        throw new Error('Get top product error')
-    }
-}
-
-
 
 
 module.exports = {
@@ -218,7 +195,6 @@ module.exports = {
     getProductByCategory,
     getProductByPrice,
     addProduct,
-    getTopProduct,
     getAllProducts
 }
 

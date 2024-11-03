@@ -1,4 +1,3 @@
- 
  const CategoryModel = require('../model/CategoryModel');
 
  // lấy danh sách danh mục
@@ -28,7 +27,7 @@
  } 
  
  // delete category
-    const eleteCategory = async (id) => {
+    const deleteCategory = async (id) => {
         try {
             const category = await CategoryModel.findByIdAndDelete(id)
             return category

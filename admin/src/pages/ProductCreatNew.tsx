@@ -14,7 +14,7 @@ export default function ProductCreateNew() {
         category: {
             category_name: ''
         },
-        images: []
+        images: '',
     });
 
     useEffect(() => {

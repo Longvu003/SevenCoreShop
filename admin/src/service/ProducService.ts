@@ -88,17 +88,20 @@ export const EditProductByid = async (id: string, product: Products): Promise<Pr
 }
 
 export const GetProductByCategoryId = async (id: string): Promise<Products[]> => {
-  const response = await fetch(`${API_URL}/products/category/${id}`, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const data: any = await response.json();
-
-  if (!response.ok) {
-    return data
+  try {
+      const response = await fetch(`${API_URL}/products?categoryId=${id}`, {
+          method: "get",
+          headers: {
+              "Content-Type": "application/json",
+          },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+          return []; 
+      }
+      return data.products || []; 
+  } catch (error) {
+      console.error('Failed to fetch products by category ID:', error);
+      return []; 
   }
-
-  return data;
 }

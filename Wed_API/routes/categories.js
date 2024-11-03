@@ -43,7 +43,7 @@ router.post('/add', async (req, res, next) => {
 /**
  * xóa danh mục
  * method: DELETE
- * url: http://localhost:7777/categories/delete/:id
+ * url: http://localhost:7777/categories/:id/delete
  * response: trả về danh mục vừa xóa
  */
 

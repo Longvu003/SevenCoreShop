@@ -10,22 +10,22 @@ import { categoryController } from '../controller/CategoryController';
 
 
 const Tables = () => {
-    const { getCategories, deleteCategoriesById,  } = categoryController();
+    const { getCategories, deleteCategoriesById, } = categoryController();
     const [dataCategorie, setDataCategorie] = useState<Category[]>([]);
 
 
-    const DeleteCategoriesById = async (id: string) => {
+    const handleDelete = async (id: string) => {
         const result: any = await deleteCategoriesById(id);
-
         console.log(result.status);
         if (result.status === true) {
             alert("Xóa Thành Công");
+            window.location.reload(); // Thực hiện reload trang
         } else {
             alert("Xóa Thất Bại");
         }
-        showData();
-
     };
+
+
 
     // Hàm showData lấy dữ liệu từ API và lưu vào state
     const showData = async () => {
@@ -75,8 +75,7 @@ const Tables = () => {
                                             <a href={`/categoriesmanagent/categories-edit?id=${Category._id}`} className="btn btn-sm btn-outline-primary">
                                                 Chỉnh sửa
                                             </a>
-
-                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => DeleteCategoriesById(Category._id)}>
+                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(Category._id)}>
                                                 Xóa
                                             </button>
                                         </div>

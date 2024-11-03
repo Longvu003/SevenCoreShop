@@ -1,6 +1,5 @@
 import { useState,useEffect } from 'react';
 import { userProducts } from '../controller/ProductController';
-//import { useParams, useHistory } from "react-router-dom";
 import { Category } from '../model/CategoriesModel';
 import { categoryController } from '../controller/CategoryController';
 export default function ProductUpdate() {
@@ -17,9 +16,10 @@ export default function ProductUpdate() {
         quantity: '',
         description: '',
         category: {
-        category_name: ''
+        category_name: '',
+        category_id: '' 
         },
-        images: []
+        images: ''
     });
     const showData = async () => {
         const data: any = await getCategories();
@@ -40,7 +40,8 @@ export default function ProductUpdate() {
                         quantity: res.data.quantity,
                         description: res.data.description,
                         category: {
-                            category_name: res.data.category.category_name
+                            category_name: res.data.category.category_name,
+                            category_id: res.data.category._id
                         },
                         images: res.data.images
                     });
@@ -55,27 +56,57 @@ export default function ProductUpdate() {
         fetchProduct();
     }, [id]);
 
+    // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    //     const { name, value } = e.target;
+    //     if (name.includes('category.')) {
+    //         const categoryField = name.split('.')[1];
+    //         setDataProduct((prevState: any) => ({
+    //             ...prevState,
+    //             category: {
+    //                 ...prevState.category,
+    //                 [categoryField]: value
+    //             }
+    //         }));
+    //     } else {
+    //         setDataProduct({
+    //             ...dataProduct,
+    //             [name]: value
+    //         });
+    //     }
+    // };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
+        const { name, value, files } = e.target as HTMLInputElement;
+
+        // console.log('gias tri name'+name)
+        // console.log('gia tri value'+value);
         if (name.includes('category.')) {
-            const categoryField = name.split('.')[1];
-            setDataProduct((prevState: any) => ({
-                ...prevState,
-                category: {
-                    ...prevState.category,
-                    [categoryField]: value
-                }
-            }));
+          const categoryField = name.split('.')[1];
+          console.log(categoryField);
+          setDataProduct((prevState: any) => ({
+            ...prevState,
+            category: {
+              ...prevState.category,
+              [categoryField]: value
+            }
+          }));
+        } else if (name === 'images') {
+          setDataProduct({
+            ...dataProduct,
+            images: files ? Array.from(files).map(file => URL.createObjectURL(file)) : []
+          });
         } else {
-            setDataProduct({
-                ...dataProduct,
-                [name]: value
-            });
+          setDataProduct({
+            ...dataProduct,
+            [name]: value
+          });
         }
-    };
+      };
 
     const clickUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        console.log(dataProduct)
         try {
             const res: any = await editProduct(id, dataProduct);
             if (res.status) {
