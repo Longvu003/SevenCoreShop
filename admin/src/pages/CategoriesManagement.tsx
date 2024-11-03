@@ -53,7 +53,7 @@ const Tables = () => {
             <div className="panel">
                 <div className="flex items-center justify-between mb-12">
                     <h5 className="font-semibold text-lg dark:text-white-light">Quản lí danh mục sản phẩm</h5>
-                    <a href="/categoriesmanagent/categories-update" className="btn btn-success">+ Thêm</a>
+                    <a href="/categoriesmanagent/categories-update" className="btn btn-success">+ Thêm danh mục sản phẩm</a>
                 </div>
                 <div className="table-responsive mb-5">
                     <table>
