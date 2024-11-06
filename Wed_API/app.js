@@ -58,6 +58,8 @@ app.use("/products", productsRouter);
 app.use("/categories", categoriesRouter);
 // http://localhost:7777/carts
 app.use("/carts", cartsRouter);
+// // http://localhost:7777/api/carts
+// app.use('/carts/checkout', cartsRouter);
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
