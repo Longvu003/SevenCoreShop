@@ -12,6 +12,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Modal} from 'react-native-modal';
 import axios from 'axios';
+import API__URL from '../../../config';
 
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -51,10 +52,7 @@ const SignupScreen = ({navigation}) => {
 
     try {
       // Send POST request to API
-      const response = await axios.post(
-        'http://192.168.2.59:7777/users/register',
-        formData,
-      );
+      const response = await axios.post(`${API__URL}/users/register`, formData);
 
       // Handle response
       if (response.status === 200) {

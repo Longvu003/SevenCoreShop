@@ -14,12 +14,17 @@ import LoginScreen from '../Screens/login/LoginScreen';
 import SignupScreen from '../Screens/login/SignupScreen';
 import Welcome1 from '../Screens/login/Welcome1';
 import Welcome2 from '../Screens/login/Welcome2';
+import ProductDetail from '../Screens/DetailScreens/ProductDetail';
+import CartScreen from '../Screens/Cart/CartScreen';
+import AllProductsScreen from '../Screens/HomeSceen/AllProductsScreen';
+import CategoryDetailScreen from '../Screens/HomeSceen/CategoryDetailScreen';
+import CategoryScreen from '../Screens/HomeSceen/Category';
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="LoginScreen"
+        initialRouteName="Tab"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Welcome1" component={Welcome1} />
         <Stack.Screen name="Welcome2" component={Welcome2} />
@@ -32,6 +37,14 @@ const Stacknavigation = () => {
         <Stack.Screen name="EditPayment" component={EditPayment} />
         <Stack.Screen name="ListPayment" component={ListPayment} />
         <Stack.Screen name="EditUser" component={EditUser} />
+        <Stack.Screen name="ProductDetail" component={ProductDetail} />
+        <Stack.Screen name="CartScreen" component={CartScreen} />
+        <Stack.Screen name="AllProductsScreen" component={AllProductsScreen} />
+        <Stack.Screen name="CategoryScreen" component={CategoryScreen} />
+        <Stack.Screen
+          name="CategoryDetailScreen"
+          component={CategoryDetailScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

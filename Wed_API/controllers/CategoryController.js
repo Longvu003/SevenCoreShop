@@ -11,11 +11,12 @@ const getCategoryList = async () => {
     throw new Error("Get category list error");
   }
 };
-const createCategory = async (name, description) => {
+const createCategory = async (name, description, images) => {
   try {
     const categoryInfo = {
       name,
       description,
+      images,
     };
     const category = new CategoryModel(categoryInfo);
     await category.save();

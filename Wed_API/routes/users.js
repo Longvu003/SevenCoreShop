@@ -64,13 +64,15 @@ router.post("/login", async (req, res, next) => {
 
 router.put("/updateUser", async (req, res, next) => {
   try {
-    const { email, password, username, numberphone, birthday } = req.body;
+    const { email, password, username, numberphone, birthday, address } =
+      req.body;
     const result = await userController.updateUser(
       email,
       password,
       username,
       numberphone,
-      birthday
+      birthday,
+      address
     );
     return res.status(200).json({ status: true, data: result });
   } catch (error) {
@@ -114,4 +116,20 @@ router.get("/getUserEmail", async (req, res, next) => {
   }
 });
 
+router.get("/getUserId", async (req, res, next) => {
+  const id = req.query.id;
+
+  try {
+    const result = await userController.getUserById(id);
+    // console.log(result);
+    if (result) {
+      return res.status(200).json({ result });
+    } else {
+      res.status(404);
+    }
+  } catch (error) {
+    console.log("Verify error", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
 module.exports = router;
