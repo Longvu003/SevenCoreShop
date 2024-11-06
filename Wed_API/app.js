@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
+
 require("./controllers/UserModel");
 
 var indexRouter = require("./routes/index");
@@ -19,17 +20,26 @@ var app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
 app.use(logger("dev"));
-app.use(express.json());      
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:3000"], // Thêm domain của web app vào
+    methods: ["GET", "POST", "PUT", "DELETE"], // Các phương thức HTTP được phép
+    credentials: true, // Cho phép truyền cookie nếu cần
+  })
+);
 // Cấu hình CORS
-app.use(cors({
-  origin: ['http://192.168.1.3', 'http://localhost:3000'], // Địa chỉ của frontend, có thể thay đổi theo ứng dụng của bạn
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Các phương thức được phép sử dụng
-  credentials: true // Cho phép truyền cookie nếu cần thiết
-}));
+// app.use(
+//   cors({
+//     origin: ["http://192.168.1.3", "http://localhost:3000"], // Địa chỉ của frontend, có thể thay đổi theo ứng dụng của bạn
+//     methods: ["GET", "POST", "PUT", "DELETE"], // Các phương thức được phép sử dụng
+//     credentials: true, // Cho phép truyền cookie nếu cần thiết
+//   })
+// );
 
 // Kết nối database mongodb
 mongoose
@@ -45,7 +55,7 @@ app.use("/users", usersRouter);
 // http://localhost:7777/products
 app.use("/products", productsRouter);
 // http://localhost:7777/categories
-app.use("/categories", categoriesRouter); 
+app.use("/categories", categoriesRouter);
 // http://localhost:7777/carts
 app.use("/carts", cartsRouter);
 

@@ -1,26 +1,15 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './src/Screens/HomeSceen/HomeScreen';
-import CategoryScreen from './src/Screens/HomeSceen/Category';
-import AllProductsScreen from './src/Screens/HomeSceen/AllProductsScreen';
-import CategoryDetailScreen from './src/Screens/HomeSceen/CategoryDetailScreen';
-
-const Stack = createStackNavigator();
+import {StyleSheet, View} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Stacknavigation from './src/Navigation/Stacknavigation';
+import store from './src/ReduxTookit/Store';
+// import { Provider } from 'react-redux';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Category" component={CategoryScreen} />
-        <Stack.Screen name="AllProducts" component={AllProductsScreen} />
-        <Stack.Screen
-          name="CategoryDetail"
-          component={CategoryDetailScreen}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={{flex: 1}}>
+      <Stacknavigation />
+    </View>
   );
 };
 

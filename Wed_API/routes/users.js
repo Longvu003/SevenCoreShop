@@ -42,10 +42,11 @@ router.post("/register", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
     // console.log(req.body);
     const result = await userController.login(email, password);
     if (result) {
-      return res.status(200).json(result);
+      return res.status(200).json({ status: true, data: result });
     } else {
       return res
         .status(400)
