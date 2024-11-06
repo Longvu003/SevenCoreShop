@@ -6,6 +6,7 @@ import User from '../Screens/User/User';
 import Notification from '../Screens/Notification/Notification';
 import Order from '../Screens/Order/Order';
 import HomeScreen from '../Screens/HomeSceen/HomeScreen';
+import CartScreen from '../Screens/Cart/CartScreen';
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
   return (
@@ -23,12 +24,12 @@ const TabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Notification"
-        component={Notification}
+        name="CartScreen"
+        component={CartScreen}
         options={{
-          tabBarLabel: 'Thông báo',
+          tabBarLabel: 'Giỏ Hàng',
           tabBarIcon: () => (
-            <Image source={require('../../assets/imgs/notificationbing.png')} />
+            <Image source={require('../../assets/imgs/ic_cart.png')} />
           ),
         }}
       />

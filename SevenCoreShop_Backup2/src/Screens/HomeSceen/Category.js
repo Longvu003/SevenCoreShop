@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
 import axios from 'axios';
 import API__URL from '../../../config';
 
-const CategoryScreen = ({navigation}) => {
+const CategoryScreen = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -18,7 +18,6 @@ const CategoryScreen = ({navigation}) => {
     axios
       .get(`${API__URL}/categories/getAllCategory`)
       .then(response => {
-        // Chuyển đổi dữ liệu nếu cần và lưu vào state
         const fixResponse = Object.values(response.data);
         setCategories(fixResponse[1]);
       })
@@ -26,23 +25,26 @@ const CategoryScreen = ({navigation}) => {
   }, []);
 
   const handleCategoryPress = category => {
-    // Điều hướng tới màn hình chi tiết danh mục (CategoryDetail), truyền danh mục qua navigation
-    navigation.navigate('CategoryDetailScreen', {category});
+    navigation.navigate('CategoryDetailScreen', { category });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Shop by Categories</Text>
+      {/* Header view for back button and title */}
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>Shop by Categories</Text>
+      </View>
+
       <FlatList
         data={categories}
         keyExtractor={item => item._id}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleCategoryPress(item)}>
             <View style={styles.categoryCard}>
-              <Image
-                source={{uri: item.images[0]}}
-                style={styles.categoryImage}
-              />
+              <Image source={{ uri: item.images[0] }} style={styles.categoryImage} />
               <Text style={styles.categoryName}>{item.name}</Text>
             </View>
           </TouchableOpacity>
@@ -58,11 +60,29 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 25,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 30, // Adjusted margin for spacing
+  },
+  backButton: {
+    position: 'absolute',
+    left: 10,
+    padding: 10,
+    backgroundColor: '#000',
+    borderRadius: 5,
+  },
+  backButtonText: {
+    color: '#fff',
     fontWeight: 'bold',
-    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
     color: 'black',
+    textAlign: 'center',
+    marginHorizontal: 50,
   },
   categoryCard: {
     flexDirection: 'row',
@@ -72,8 +92,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   categoryImage: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     borderRadius: 25,
     marginRight: 15,
   },
