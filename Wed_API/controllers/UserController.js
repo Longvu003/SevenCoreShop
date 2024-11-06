@@ -20,7 +20,7 @@ const register = async (email, password, username, numberphone, birthday) => {
       username: username,
       numberphone: numberphone,
       birthday: birthday,
-      address: address,
+      // address: address,
     });
     //lưu user
     const result = await user.save();
