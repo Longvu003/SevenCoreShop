@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation,useNavigate  } from 'react-router-dom';
 import { IRootState } from '../../store';
 import { toggleRTL, toggleTheme, toggleSidebar } from '../../store/themeConfigSlice';
 import { useTranslation } from 'react-i18next';
@@ -64,6 +64,8 @@ const Header = () => {
     function createMarkup(messages: any) {
         return { __html: messages };
     }
+    const navigate = useNavigate();
+
     const [messages, setMessages] = useState([
         {
             id: 1,
@@ -123,7 +125,10 @@ const Header = () => {
     const removeNotification = (value: number) => {
         setNotifications(notifications.filter((user) => user.id !== value));
     };
-
+    const handleSignOut = () => {
+        localStorage.removeItem('tokenuser');
+        navigate('/login');
+    };
     const [search, setSearch] = useState(false);
 
     const setLocale = (flag: string) => {
@@ -455,11 +460,11 @@ const Header = () => {
                                         </Link>
                                     </li>
                                     <li className="border-t border-white-light dark:border-white-light/10">
-                                        <Link to="/auth/boxed-signin" className="text-danger !py-3">
-                                            <IconLogout className="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 rotate-90 shrink-0" />
-                                            Sign Out
-                                        </Link>
-                                    </li>
+                <button onClick={handleSignOut} className="text-danger !py-3 flex items-center">
+                    <IconLogout className="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 rotate-90 shrink-0" />
+                    Sign Out
+                </button>
+            </li>
                                 </ul>
                             </Dropdown>
                         </div>

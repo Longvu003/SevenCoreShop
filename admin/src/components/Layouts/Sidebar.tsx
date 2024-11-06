@@ -1,30 +1,41 @@
+import React, { useEffect, useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
 import { toggleSidebar } from '../../store/themeConfigSlice';
-import AnimateHeight from 'react-animate-height';
-import { IRootState } from '../../store';
-import { useState, useEffect } from 'react';
 import IconCaretsDown from '../Icon/IconCaretsDown';
 import IconMinus from '../Icon/IconMinus';
 import IconMenuChat from '../Icon/Menu/IconMenuChat';
+import { IRootState } from '../../store';
 
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState<string>('');
-    const [errorSubMenu, setErrorSubMenu] = useState(false);
+    const [role, setRole] = useState<number | null>(null); // State to store user role
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const semidark = useSelector((state: IRootState) => state.themeConfig.semidark);
     const location = useLocation();
     const dispatch = useDispatch();
     const { t } = useTranslation();
+
     const toggleMenu = (value: string) => {
-        setCurrentMenu((oldValue) => {
-            return oldValue === value ? '' : value;
-        });
+        setCurrentMenu((oldValue) => (oldValue === value ? '' : value));
     };
 
     useEffect(() => {
+        // Fetch the token string from localStorage
+        const tokenString: string | null = localStorage.getItem('tokenuser');
+        let token: any = null;
+
+        if (tokenString) {
+            try {
+                token = JSON.parse(tokenString); // Parse the JSON string into an object
+                setRole(token.role); // Set the user role from the token
+            } catch (error) {
+                console.error('Error parsing token:', error);
+            }
+        }
+
         const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
         if (selector) {
             selector.classList.add('active');
@@ -39,26 +50,20 @@ const Sidebar = () => {
                 }
             }
         }
-    }, []);
+    }, [location]);
 
     useEffect(() => {
         if (window.innerWidth < 1024 && themeConfig.sidebar) {
             dispatch(toggleSidebar());
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location]);
+    }, [location, dispatch, themeConfig.sidebar]);
 
     return (
-
         <div className={semidark ? 'dark' : ''}>
-
-            <nav
-                className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] z-50 transition-all duration-300 ${semidark ? 'text-white-dark' : ''}`}
-            >
+            <nav className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] z-50 transition-all duration-300 ${semidark ? 'text-white-dark' : ''}`}>
                 <div className="bg-white dark:bg-black h-full">
                     <div className="flex justify-between items-center px-4 py-3">
                         <NavLink to="/" className="main-logo flex items-center shrink-0">
-                            {/* <img className="w-8 ml-[5px] flex-none" src="/assets/images/logo.svg" alt="logo" /> */}
                             <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{t('SEVENTCORE')}</span>
                         </NavLink>
                         <button
@@ -93,22 +98,56 @@ const Sidebar = () => {
                             </h2>
                             <li className="nav-item">
                                 <ul>
-                                    <li className="nav-item">
-                                        <NavLink to="/product/product-managent" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuChat className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Sản Phẩm')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/categoriesmanagent" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuChat className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Danh mục sản phẩm')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li>
+                                    {/* Show all items if role is 2 */}
+                                    {role === '2' && (
+                                        <>
+                                            <li className="nav-item">
+                                                <NavLink to="/product/product-managent" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Sản Phẩm')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                            <li className="nav-item">
+                                                <NavLink to="/categoriesmanagent" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Danh mục sản phẩm')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                            <li className="nav-item">
+                                                <NavLink to="/categoriesmanagent" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Danh mục')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                        </>
+                                    )}
+                                    {/* Show only 'Sản Phẩm' if role is 3 */}
+                                    {role === '3' && (
+                                        <>
+                                            <li className="nav-item">
+                                                <NavLink to="/product/product-managent" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Sản Phẩm')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                            <li className="nav-item">
+                                                <NavLink to="/categoriesmanagent" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Danh mục sản phẩm')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
+                                        </>
+                                    )}
                                 </ul>
                             </li>
                         </ul>

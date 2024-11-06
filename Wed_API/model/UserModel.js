@@ -8,7 +8,7 @@ const UserSchema = new Schema({
     email: { type: String, required: true , unique: true},//unique: true để đảm bảo không có email trùng nhau 
     password: { type: String, required: true },
     name: { type: String, required: true },
-    role: { type: String, default: 1 },//1 là user, 2 là admin
+    role: { type: String, default: 1 },//1 là user, 2 là admin// 3 se
     // lịch sử mua hàng
     carts: { type: Array, default: [] },
     //xác thực tài khoản

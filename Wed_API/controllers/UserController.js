@@ -17,7 +17,8 @@ const register = async (email, password, name) => {
         user = new userModel({
             email: email,
             password: password,
-            name: name
+            name: name,
+            role:role
         })
         //lưu user
         const result = await user.save();

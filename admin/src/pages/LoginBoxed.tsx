@@ -44,9 +44,11 @@ const LoginBoxed = () => {
         if (responsive.status == true) {
             console.log('login thành công');
             console.log(responsive.data._id)
-            if (responsive.data.role == 2) {
+            if (responsive.status === true) {
+                console.log(responsive.data);
+                localStorage.setItem('tokenuser', JSON.stringify(responsive.data)); // Ensure this is correct
 
-                localStorage.setItem('usertoken', responsive.data._id); // Lưu token vào localStorage
+                console.log(responsive.data);
 
                 MySwal.fire({
                     title: 'login success',
