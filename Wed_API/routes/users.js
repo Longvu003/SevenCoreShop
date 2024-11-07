@@ -1,29 +1,29 @@
 var express = require("express");
 var router = express.Router();
+const { body, query, validationResult } = require('express-validator');
 const userController = require("../controllers/UserController");
-// http://localhost:7777/users
+const OtpModel = require('../models/OtpModel');
 
-/**
- * register
- * method: post
- * url: http://localhost:7777/users/register
- * body: {email: 'admin@gmail.com', password: 1}
- * response: trả về thông tin user nếu đăng kí thành công, trả về lỗi nếu đăng kí thất bại
- */
+// Hàm kiểm tra dữ liệu đầu vào
+const validateRequest = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
 
-router.post("/register", async (req, res, next) => {
+// Đăng ký
+router.post("/register", [
+  body('email').isEmail().withMessage('Email không hợp lệ'),
+  body('password').isLength({ min: 6 }).withMessage('Mật khẩu phải có ít nhất 6 ký tự'),
+  body('username').notEmpty().withMessage('Tên người dùng không được để trống'),
+  body('numberphone').isMobilePhone().withMessage('Số điện thoại không hợp lệ'),
+  body('birthday').notEmpty().withMessage('Ngày sinh không được để trống')
+], validateRequest, async (req, res) => {
   try {
-    //lấy thông tin từ body
     const { email, password, username, numberphone, birthday } = req.body;
-    console.log(req.body);
-    //gọi hàm register từ userController
-    const result = await userController.register(
-      email,
-      password,
-      username,
-      numberphone,
-      birthday
-    );
+    const result = await userController.register(email, password, username, numberphone, birthday);
     return res.status(200).json({ status: true, data: result });
   } catch (error) {
     console.log("Register error", error.message);
@@ -31,49 +31,70 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-/**
- * login
- * method: post
- * url: http://localhost:7777/users/login
- * body: {email: 'admin@gmail.com', password: 1}
- * response: trả về thông tin user nếu đăng nhập thành công, trả về lỗi nếu đăng nhập thất bại
- */
-
-router.post("/login", async (req, res, next) => {
+// Đăng nhập
+router.post("/login", [
+  body('email').isEmail().withMessage('Email không hợp lệ'),
+  body('password').notEmpty().withMessage('Mật khẩu không được để trống')
+], validateRequest, async (req, res) => {
   try {
     const { email, password } = req.body;
-    // console.log(req.body);
     const result = await userController.login(email, password);
-    if (result) {
-      return res.status(200).json(result);
-    } else {
-      return res
-        .status(400)
-        .json({ status: false, message: "Email hoặc mật khẩu không đúng" });
-    }
+    return res.status(200).json(result);
   } catch (error) {
     console.log("Login error", error.message);
     res.status(500).json({ message: error.message });
   }
 });
 
-//API cập nhật tài khoản
-// method: post
-// url: http://:7777/users/updateUser
-// kết quả: cập nhật thành công hoặc thất bại
-
-router.put("/updateUser", async (req, res, next) => {
+// Gửi OTP khi quên mật khẩu
+router.post("/forgot-password", [
+  body('email').isEmail().withMessage('Email không hợp lệ')
+], validateRequest, async (req, res) => {
+  const { email } = req.body;
   try {
-    const { email, password, username, numberphone, birthday, address } =
-      req.body;
-    const result = await userController.updateUser(
-      email,
-      password,
-      username,
-      numberphone,
-      birthday,
-      address
-    );
+    // Gửi OTP
+    const otp = await userController.generateAndSaveOtp(email);
+    await userController.sendOtpMail(email, otp);
+    res.status(200).json({ message: "OTP đã được gửi đến email" });
+  } catch (error) {
+    console.log("Forgot password error", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Đặt lại mật khẩu
+router.post("/reset-password", [
+  body('email').isEmail().withMessage('Email không hợp lệ'),
+  body('otp').notEmpty().withMessage('OTP không được để trống'),
+  body('newPassword').isLength({ min: 6 }).withMessage('Mật khẩu mới phải có ít nhất 6 ký tự'),
+  body('confirmPassword').notEmpty().withMessage('Xác nhận mật khẩu không được để trống')
+], validateRequest, async (req, res) => {
+  const { email, otp, newPassword, confirmPassword } = req.body;
+
+  // Kiểm tra sự khớp của mật khẩu mới và xác nhận mật khẩu
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ message: "Mật khẩu và xác nhận mật khẩu không khớp." });
+  }
+
+  try {
+    await userController.resetPassword(email, otp, newPassword);
+    res.status(200).json({ message: "Đặt lại mật khẩu thành công" });
+  } catch (error) {
+    console.log("Reset password error", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Cập nhật tài khoản
+router.put("/updateUser", [
+  body('email').isEmail().withMessage('Email không hợp lệ'),
+  body('username').notEmpty().withMessage('Tên người dùng không được để trống'),
+  body('numberphone').isMobilePhone().withMessage('Số điện thoại không hợp lệ'),
+  body('birthday').notEmpty().withMessage('Ngày sinh không được để trống')
+], validateRequest, async (req, res) => {
+  const { email, password, username, numberphone, birthday } = req.body;
+  try {
+    const result = await userController.updateUser(email, password, username, numberphone, birthday);
     return res.status(200).json({ status: true, data: result });
   } catch (error) {
     console.log("Update error", error.message);
@@ -81,15 +102,13 @@ router.put("/updateUser", async (req, res, next) => {
   }
 });
 
-//API xác thực email
-// method: get
-// url: http://localhost:7777/users/xac-thuc-email?email=taitan1922004@gmail.com&code=1
-// kết quả: xác thực thành công hoặc thất bại
-
-router.get("/xac-thuc-email", async (req, res, next) => {
+// Xác thực email
+router.get("/xac-thuc-email", [
+  query('email').isEmail().withMessage('Email không hợp lệ')
+], validateRequest, async (req, res) => {
+  const { email } = req.query;
   try {
-    const { email, code } = req.query;
-    const result = await userController.verify(email, code);
+    const result = await userController.verify(email);
     return res.status(200).json({ status: true, data: result });
   } catch (error) {
     console.log("Verify error", error.message);
@@ -97,39 +116,18 @@ router.get("/xac-thuc-email", async (req, res, next) => {
   }
 });
 
-// url: http://localhost:7777/users/getUserEmail?email=
 // Lấy user qua email
-router.get("/getUserEmail", async (req, res, next) => {
-  const email = req.query;
-
+router.get("/getUserEmail", [
+  query('email').isEmail().withMessage('Email không hợp lệ')
+], validateRequest, async (req, res) => {
+  const { email } = req.query;
   try {
     const result = await userController.getUserByEmail(email);
-    // console.log(result);
-    if (result) {
-      return res.status(200).json({ result });
-    } else {
-      res.status(404);
-    }
+    return res.status(200).json({ result });
   } catch (error) {
-    console.log("Verify error", error.message);
+    console.log("Get user error", error.message);
     res.status(500).json({ message: error.message });
   }
 });
 
-router.get("/getUserId", async (req, res, next) => {
-  const id = req.query.id;
-
-  try {
-    const result = await userController.getUserById(id);
-    // console.log(result);
-    if (result) {
-      return res.status(200).json({ result });
-    } else {
-      res.status(404);
-    }
-  } catch (error) {
-    console.log("Verify error", error.message);
-    res.status(500).json({ message: error.message });
-  }
-});
 module.exports = router;

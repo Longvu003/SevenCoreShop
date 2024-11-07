@@ -9,6 +9,7 @@ import EditPayment from '../Screens/User/payment/EditPayment';
 import ListPayment from '../Screens/User/payment/ListPayment';
 import LoginTest from '../Screens/LoginTest';
 import EditUser from '../Screens/User/EditUser';
+import Resetpass from '../Screens/login/Resetpass';
 import ForgotPassword from '../Screens/login/ForgotPassword';
 import LoginScreen from '../Screens/login/LoginScreen';
 import SignupScreen from '../Screens/login/SignupScreen';
@@ -32,6 +33,7 @@ const Stacknavigation = () => {
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="SignupScreen" component={SignupScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="Resetpass" component={Resetpass} />
         <Stack.Screen name="Tab" component={TabNavigation} />
         <Stack.Screen name="ListAddress" component={ListAddress} />
         <Stack.Screen name="EditAddress" component={EditAddress} />

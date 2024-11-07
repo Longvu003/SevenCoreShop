@@ -12,7 +12,7 @@ import {
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import axios from 'axios'; // Import axios
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import API__URL from '../../../config';
+
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,15 +20,19 @@ const LoginScreen = ({navigation}) => {
   // Hàm để xử lý đăng nhập
   const handleSubmit = async () => {
     // Kiểm tra người dùng đã nhập đầy đủ thông tin chưa
-    if (!email || !password) {
-      Alert.alert('Please enter both email and password');
-      return;
+    if (!email) {
+      Alert.alert('Email không chính xác');
+      return false;
+    }
+    if (!password) {
+      Alert.alert('Mật khẩu không chính xác');
+      return false;
     }
 
     try {
       // Gửi yêu cầu đăng nhập tới API
       const response = await axios.post(
-        `${API__URL}/users/login`,
+        'http://10.0.2.2:7777/users/login',
         {
           email: email,
           password: password,
@@ -37,21 +41,18 @@ const LoginScreen = ({navigation}) => {
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         },
       );
-      // console.log(response.data);
       // Kiểm tra phản hồi từ API
       if (response.status === 200) {
         const user = JSON.stringify(response.data.email);
-        const userId = JSON.stringify(response.data._id);
         await AsyncStorage.setItem('userEmail', user);
-        await AsyncStorage.setItem('userId', userId);
-        // Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
+        Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
         navigation.navigate('Tab');
       } else {
         Alert.alert('Đăng nhập thất bại', 'Nhập đúng email và mật khẩu');
       }
     } catch (error) {
       console.error('Error during login request:', error);
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      Alert.alert('Error', 'Email hoặc mật khẩu không chính xác');
     }
   };
 

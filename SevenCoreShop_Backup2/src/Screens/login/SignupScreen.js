@@ -10,9 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {Modal} from 'react-native-modal';
 import axios from 'axios';
-import API__URL from '../../../config';
 
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -21,11 +19,7 @@ const SignupScreen = ({navigation}) => {
   const [numberphone, setNumberphone] = useState('');
   const [birthday, setBirthday] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [isModalVisible, setModalVisible] = useState(false); // Show modal to select role
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
@@ -34,8 +28,42 @@ const SignupScreen = ({navigation}) => {
     }
   };
 
-  // Handle form submission
+  // Hàm kiểm tra dữ liệu
+  const validateInput = () => {
+    if (!email) {
+      Alert.alert('Lỗi', 'Email không được để trống');
+      return false;
+    }
+    if (!password) {
+      Alert.alert('Lỗi', 'Mật khẩu phải có ít nhất 6 kí tự');
+      return false;
+    }
+    if (!username) {
+      Alert.alert('Lỗi', 'Tên người dùng không được để trống');
+      return false;
+    }
+    if (!numberphone) {
+      Alert.alert('Lỗi', 'Số điện thoại không được để trống');
+      return false;
+    }
+    if (!birthday) {
+      Alert.alert('Lỗi', 'Ngày sinh không được để trống');
+      return false;
+    }
+    // Kiểm tra định dạng email
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      Alert.alert('Lỗi', 'Email không hợp lệ');
+      return false;
+    }
+    return true; // Nếu tất cả đều hợp lệ
+  };
+
   const handleSubmit = async () => {
+    if (!validateInput()) {
+      return; // Nếu không hợp lệ, dừng lại
+    }
+
     const formData = {
       email,
       password,
@@ -44,17 +72,14 @@ const SignupScreen = ({navigation}) => {
       birthday,
     };
 
-    // Basic validation for form inputs
-    if (!email || !password || !username || !numberphone || !birthday) {
-      Alert.alert('Please fill out all fields');
-      return;
-    }
-
     try {
-      // Send POST request to API
-      const response = await axios.post(`${API__URL}/users/register`, formData);
+      // Gửi yêu cầu POST tới API
+      const response = await axios.post(
+        'http://10.0.2.2:7777/users/register',
+        formData,
+      );
 
-      // Handle response
+      // Xử lý phản hồi
       if (response.status === 200) {
         Alert.alert('Đăng ký thành công');
         navigation.navigate('LoginScreen');
@@ -63,7 +88,14 @@ const SignupScreen = ({navigation}) => {
       }
     } catch (error) {
       console.error('Error during request:', error);
-      Alert.alert('Network error or server issue');
+
+      // Xử lý thông báo lỗi từ server
+      if (error.response && error.response.data.errors) {
+        const errorMessages = error.response.data.errors.map(err => err.msg);
+        Alert.alert('Đăng ký thất bại', errorMessages.join('\n'));
+      } else {
+        Alert.alert('Lỗi mạng hoặc sự cố máy chủ');
+      }
     }
   };
 
@@ -148,7 +180,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
-
   back: {
     width: 40,
     height: 40,
@@ -189,19 +220,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'regular',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    fontWeight: 'bold',
-    color: '#272727',
-  },
-  roleText: {
-    fontSize: 18,
-    paddingVertical: 10,
-    fontWeight: 'bold',
-    color: '#272727',
   },
 });
 
