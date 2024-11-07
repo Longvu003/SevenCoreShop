@@ -14,7 +14,7 @@ import API__URL from '../../../config';
 import {Dimensions} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
@@ -43,11 +43,13 @@ const CartScreen = () => {
         quantity,
       });
       const updatedItem = response.data.item;
-  
+
       const updatedCart = cart.map(item =>
-        item.productId === productId ? { ...item, quantity: updatedItem.quantity } : item
+        item.productId === productId
+          ? {...item, quantity: updatedItem.quantity}
+          : item,
       );
-  
+
       setCart(updatedCart);
       totalPrice(updatedCart);
     } catch (error) {
@@ -94,57 +96,67 @@ const CartScreen = () => {
 
   const handleCheckout = async () => {
     try {
-        const response = await axios.post(`${API__URL}/carts/checkout`, {
-            userId: userId,
-            items: cart,
-            paymentMethod: paymentMethod || 'COD',
-        });
+      const response = await axios.post(`${API__URL}/carts/checkout`, {
+        userId: userId,
+        items: cart,
+        paymentMethod: paymentMethod || 'COD',
+      });
 
-        if (response.status === 200) {
-            const order = response.data.order;
-            console.log("Dữ liệu order nhận được:", order);
+      if (response.status === 200) {
+        const order = response.data.order;
+        console.log('Dữ liệu order nhận được:', order);
 
-            const detailedItems = await Promise.all(order.items.map(async (item) => {
-                const productResponse = await axios.get(`${API__URL}/products/${item.productId}`);
-                const productData = productResponse.data.data;
-
-                return {
-                    ...item,
-                    name: productData.name,
-                    price: productData.price,
-                };
-            }));
-
-            const productDetails = detailedItems
-                .map(item => `- ${item.name}: ${item.price} VND x ${item.quantity}`)
-                .join('\n');
-
-            const message = response.data.message || 'Thanh toán thành công!';
-            const orderId = order._id || 'Không có mã đơn hàng';
-
-            Alert.alert(
-                'Thông báo',
-                `${message}\nMã đơn hàng: ${orderId}\nUser ID: ${userId}\nSản phẩm:\n${productDetails}\nPhương thức thanh toán: ${paymentMethod || 'COD'}`,
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => {
-                            navigation.navigate('Order', { order });
-                        },
-                    },
-                ],
-                { cancelable: false }
+        const detailedItems = await Promise.all(
+          order.items.map(async item => {
+            const productResponse = await axios.get(
+              `${API__URL}/products/${item.productId}`,
             );
+            const productData = productResponse.data.data;
 
-            setCart([]);
-            setTotalPriceCart(0);
-        }
-    } catch (error) {
-        console.error('Lỗi khi thanh toán:', error.response ? error.response.data : error);
-        Alert.alert(
-            'Lỗi',
-            error.response?.data?.message || 'Đã xảy ra lỗi khi thanh toán. Vui lòng thử lại.'
+            return {
+              ...item,
+              name: productData.name,
+              price: productData.price,
+            };
+          }),
         );
+
+        const productDetails = detailedItems
+          .map(item => `- ${item.name}: ${item.price} VND x ${item.quantity}`)
+          .join('\n');
+
+        const message = response.data.message || 'Thanh toán thành công!';
+        const orderId = order._id || 'Không có mã đơn hàng';
+
+        Alert.alert(
+          'Thông báo',
+          `${message}\nMã đơn hàng: ${orderId}\nUser ID: ${userId}\nSản phẩm:\n${productDetails}\nPhương thức thanh toán: ${
+            paymentMethod || 'COD'
+          }`,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                navigation.navigate('Order', {order});
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+
+        setCart([]);
+        setTotalPriceCart(0);
+      }
+    } catch (error) {
+      console.error(
+        'Lỗi khi thanh toán:',
+        error.response ? error.response.data : error,
+      );
+      Alert.alert(
+        'Lỗi',
+        error.response?.data?.message ||
+          'Đã xảy ra lỗi khi thanh toán. Vui lòng thử lại.',
+      );
     }
   };
 
@@ -160,7 +172,7 @@ const CartScreen = () => {
         leftIcon={require('../../../assets/imgs/back3.png')}
         title="Giỏ hàng"
       />
-      
+
       {/* Remove All Button */}
       <TouchableOpacity
         style={styles.removeAllBtn}
@@ -168,8 +180,7 @@ const CartScreen = () => {
           cart.forEach(element =>
             clearCart(element.productId, element.quantity),
           );
-        }}
-      >
+        }}>
         <Text style={styles.txt__remove}>Remove All</Text>
       </TouchableOpacity>
 
@@ -182,17 +193,28 @@ const CartScreen = () => {
               <Image style={styles.imgProduct} source={{uri: item.images[0]}} />
               <View style={styles.productInfo}>
                 <Text style={styles.productName}>{item.nameProduct}</Text>
-                <Text style={styles.productQuantity}>Quantity: {item.quantity}</Text>
+                <Text style={styles.productQuantity}>
+                  Quantity: {item.quantity}
+                </Text>
               </View>
             </View>
             <View style={styles.cartItemActions}>
               <Text style={styles.productPrice}>{item.price} VND</Text>
               <View style={styles.quantityControls}>
-                <TouchableOpacity onPress={() => handleIncrease(item.productId, item.quantity)}>
-                  <Image source={require('../../../assets/imgs/add.png')} style={styles.icon} />
+                <TouchableOpacity
+                  onPress={() => handleIncrease(item.productId, item.quantity)}>
+                  <Image
+                    source={require('../../../assets/imgs/add.png')}
+                    style={styles.icon}
+                  />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDecrease(item.productId, item.quantity)} style={styles.iconContainer}>
-                  <Image source={require('../../../assets/imgs/minus2.png')} style={styles.icon} />
+                <TouchableOpacity
+                  onPress={() => handleDecrease(item.productId, item.quantity)}
+                  style={styles.iconContainer}>
+                  <Image
+                    source={require('../../../assets/imgs/minus2.png')}
+                    style={styles.icon}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -203,10 +225,20 @@ const CartScreen = () => {
 
       {/* Payment Method Section */}
       <View style={styles.paymentMethodContainer}>
-        <Text style={styles.paymentMethodTitle}>Chọn phương thức thanh toán</Text>
-        <TouchableOpacity style={styles.paymentOption} onPress={() => setPaymentMethod('COD')}>
-          <View style={[styles.radioButton, paymentMethod === 'COD' && styles.radioButtonSelected]}>
-            {paymentMethod === 'COD' && <View style={styles.radioInnerCircle} />}
+        <Text style={styles.paymentMethodTitle}>
+          Chọn phương thức thanh toán
+        </Text>
+        <TouchableOpacity
+          style={styles.paymentOption}
+          onPress={() => setPaymentMethod('COD')}>
+          <View
+            style={[
+              styles.radioButton,
+              paymentMethod === 'COD' && styles.radioButtonSelected,
+            ]}>
+            {paymentMethod === 'COD' && (
+              <View style={styles.radioInnerCircle} />
+            )}
           </View>
           <Text style={styles.paymentMethodText}>Thanh toán khi nhận hàng</Text>
         </TouchableOpacity>
@@ -250,7 +282,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 4,
@@ -302,7 +334,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 4,
