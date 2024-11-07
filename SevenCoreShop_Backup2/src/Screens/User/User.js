@@ -117,8 +117,10 @@ const User = ({navigation}) => {
             source={require('../../../assets/imgs/Vector.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={UserStyleSheet.container__layout}>
-          <Text style={UserStyleSheet.txt__container}>Trợ giúp</Text>
+        <TouchableOpacity
+          style={UserStyleSheet.container__layout}
+          onPress={() => navigation.navigate('ChangePassword')}>
+          <Text style={UserStyleSheet.txt__container}>Đổi mật khẩu</Text>
           <Image
             style={UserStyleSheet.txt__container}
             source={require('../../../assets/imgs/Vector.png')}

@@ -57,7 +57,7 @@ const SignupScreen = ({navigation}) => {
       // Handle response
       if (response.status === 200) {
         Alert.alert('Đăng ký thành công');
-        navigation.navigate('LoginScreen'); // Navigate to sign-in page
+        navigation.navigate('LoginScreen');
       } else {
         Alert.alert('Đăng ký thất bại');
       }
