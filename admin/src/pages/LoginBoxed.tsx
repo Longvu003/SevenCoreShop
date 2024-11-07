@@ -81,10 +81,6 @@ const LoginBoxed = () => {
             </div>
 
             <div className="relative flex min-h-screen items-center justify-center  bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16">
-<<<<<<< HEAD
-
-=======
->>>>>>> 4f69d33c5b4d4cffa73cf961b19849ee2fc2ab13
                 <div className="relative w-full max-w-[870px] rounded-md ">
                     <div className="relative flex flex-col justify-center rounded-md bg-white/60 backdrop-blur-lg dark:bg-black/50 px-6 lg:min-h-[758px] py-20">
                         {/* <div className="absolute top-6 end-6">
@@ -137,12 +133,6 @@ const LoginBoxed = () => {
                                 <div>
                                     <label htmlFor="Email">Email</label>
                                     <div className="relative text-white-dark">
-<<<<<<< HEAD
-                                        <input id="username" type="text" placeholder="Enter Username"
-                                            onChange={(e) => setdatauser({ ...datauser, email: e.target.value })}
-
-                                            className="form-input ps-10 placeholder:text-white-dark" />
-=======
                                         <input
                                             id="username"
                                             type="text"
@@ -150,7 +140,6 @@ const LoginBoxed = () => {
                                             onChange={(e) => setdatauser({ ...datauser, email: e.target.value })}
                                             className="form-input ps-10 placeholder:text-white-dark"
                                         />
->>>>>>> 4f69d33c5b4d4cffa73cf961b19849ee2fc2ab13
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2">
                                             <IconMail fill={true} />
                                         </span>
@@ -159,12 +148,6 @@ const LoginBoxed = () => {
                                 <div>
                                     <label htmlFor="Password">Mật khẩu</label>
                                     <div className="relative text-white-dark">
-<<<<<<< HEAD
-                                        <input id="Password" type="password" placeholder="Enter Password"
-                                            onChange={(e) => setdatauser({ ...datauser, password: e.target.value })}
-
-                                            className="form-input ps-10 placeholder:text-white-dark" />
-=======
                                         <input
                                             id="Password"
                                             type="password"
@@ -172,44 +155,22 @@ const LoginBoxed = () => {
                                             onChange={(e) => setdatauser({ ...datauser, password: e.target.value })}
                                             className="form-input ps-10 placeholder:text-white-dark"
                                         />
->>>>>>> 4f69d33c5b4d4cffa73cf961b19849ee2fc2ab13
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2">
                                             <IconLockDots fill={true} />
                                         </span>
                                     </div>
                                 </div>
 
-<<<<<<< HEAD
-                                <button
-                                    type="submit"
-                                    className="btn w-full !mt-6 border-0 uppercase bg-[#2196F3] text-white shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)] hover:bg-[#1976D2]"
-                                >
-                                    Đăng Nhập
-                                </button>
-
-                            </form>
-
-
-
-=======
                                 <button type="submit" className="btn w-full !mt-6 border-0 uppercase bg-[#2196F3] text-white shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)] hover:bg-[#1976D2]">
                                     Đăng Nhập
                                 </button>
                             </form>
->>>>>>> 4f69d33c5b4d4cffa73cf961b19849ee2fc2ab13
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
-    );
-};
-
-export default LoginBoxed;
-=======
     )
 }
 
 export default LoginBoxed
->>>>>>> 4f69d33c5b4d4cffa73cf961b19849ee2fc2ab13
