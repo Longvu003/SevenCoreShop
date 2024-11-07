@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
 import axios from 'axios';
 
-const getProductDetails = async (productId) => {
+const getProductDetails = async productId => {
   try {
-    const response = await axios.get(`http://192.168.1.3:7777/products/${productId}`);
+    const response = await axios.get(
+      `http://192.168.1.8:7777/products/${productId}`,
+    );
     return response.data.data; // Trả về dữ liệu sản phẩm chi tiết
   } catch (error) {
     console.error('Lỗi khi lấy thông tin sản phẩm:', error);
@@ -12,20 +14,20 @@ const getProductDetails = async (productId) => {
   }
 };
 
-const Order = ({ route }) => {
-  const { order } = route.params;
+const Order = ({route}) => {
+  const {order} = route.params;
   const [productDetails, setProductDetails] = useState([]);
 
   useEffect(() => {
-    console.log("Dữ liệu order nhận được:", order);
+    console.log('Dữ liệu order nhận được:', order);
 
     const fetchProductDetails = async () => {
       if (order && order.items && order.items.length > 0) {
         const details = await Promise.all(
-          order.items.map(async (item) => {
+          order.items.map(async item => {
             const product = await getProductDetails(item.productId);
-            return { ...item, product }; // Kết hợp thông tin sản phẩm và số lượng trong đơn hàng
-          })
+            return {...item, product}; // Kết hợp thông tin sản phẩm và số lượng trong đơn hàng
+          }),
         );
         setProductDetails(details);
       }
@@ -41,17 +43,24 @@ const Order = ({ route }) => {
       <Text style={styles.title}>Chi tiết đơn hàng</Text>
       {order ? (
         <>
-          <Text style={styles.paymentInfo}>Phương thức thanh toán: {order.paymentMethod}</Text>
-          <Text style={styles.paymentInfo}>Tổng tiền: {order.totalAmount} VND</Text>
+          <Text style={styles.paymentInfo}>
+            Phương thức thanh toán: {order.paymentMethod}
+          </Text>
+          <Text style={styles.paymentInfo}>
+            Tổng tiền: {order.totalAmount} VND
+          </Text>
 
           {productDetails.length > 0 ? (
             productDetails.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemName}>
-                  Tên sản phẩm: {item.product ? item.product.name : 'Không có tên sản phẩm'}
+                  Tên sản phẩm:{' '}
+                  {item.product ? item.product.name : 'Không có tên sản phẩm'}
                 </Text>
                 <Text>Số lượng: {item.quantity}</Text>
-                <Text>Giá: {item.product ? item.product.price : 'N/A'} VND</Text>
+                <Text>
+                  Giá: {item.product ? item.product.price : 'N/A'} VND
+                </Text>
               </View>
             ))
           ) : (

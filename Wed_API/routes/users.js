@@ -47,6 +47,7 @@ router.post("/login", async (req, res, next) => {
     const result = await userController.login(email, password);
     if (result) {
       return res.status(200).json({ status: true, data: result });
+      // return res.status(200).json(result);
     } else {
       return res
         .status(400)
