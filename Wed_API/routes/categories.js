@@ -12,9 +12,10 @@ const CategoryController = require("../controllers/CategoryController");
  * response: trả về danh sách các danh mục
  */
 
-router.get("/", async (req, res, next) => {
+router.get("/getAllCategory", async (req, res, next) => {
   try {
     const categories = await CategoryController.getCategoryList();
+
     return res.status(200).json({ status: true, data: categories });
   } catch (error) {
     console.log("Get category list error", error.message);
@@ -23,10 +24,13 @@ router.get("/", async (req, res, next) => {
 });
 router.post("/add", async (req, res, next) => {
   try {
-    const { name, description } = req.body;
-    console.log(req.body);
-    const category = await CategoryController.createCategory(name, description);
-    return res.status(200).json({ status: true, data: category });
+    const { name, description, images } = req.body; // thêm images
+    const category = await CategoryController.createCategory(
+      name,
+      description,
+      images
+    );
+    return res.status(200).json({ status: true, category });
   } catch (error) {
     console.log("Create category error", error.message);
     res.status(500).json({ status: false, data: error.message });

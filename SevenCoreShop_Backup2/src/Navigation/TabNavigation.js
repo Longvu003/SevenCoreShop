@@ -2,16 +2,20 @@ import {Image} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import User from '../Screens/User/User';
-import Home from '../Screens/Home';
+
 import Notification from '../Screens/Notification/Notification';
 import Order from '../Screens/Order/Order';
+import HomeScreen from '../Screens/HomeSceen/HomeScreen';
+import CartScreen from '../Screens/Cart/CartScreen';
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
   return (
-    <Tab.Navigator initialRouteName="User" screenOptions={{headerShown: false}}>
+    <Tab.Navigator
+      initialRouteName="HomeScreen"
+      screenOptions={{headerShown: false}}>
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="HomeScreen"
+        component={HomeScreen}
         options={{
           tabBarLabel: 'Trang chủ',
           tabBarIcon: () => (
@@ -20,12 +24,12 @@ const TabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Notification"
-        component={Notification}
+        name="CartScreen"
+        component={CartScreen}
         options={{
-          tabBarLabel: 'Thông báo',
+          tabBarLabel: 'Giỏ Hàng',
           tabBarIcon: () => (
-            <Image source={require('../../assets/imgs/notificationbing.png')} />
+            <Image source={require('../../assets/imgs/ic_cart.png')} />
           ),
         }}
       />
