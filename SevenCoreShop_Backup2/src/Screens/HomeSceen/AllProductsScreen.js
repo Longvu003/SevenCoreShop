@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
-const AllProductsScreen = () => {
+
+const AllProductsScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -21,20 +22,25 @@ const AllProductsScreen = () => {
       })
       .catch(error => console.error('Error fetching products:', error));
   }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}> Products</Text>
+      {/* Header view for back button and title */}
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>Products</Text>
+      </View>
+
       <FlatList
         data={products}
         keyExtractor={item => item._id}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <View style={styles.productCard}>
             <Image
               source={{
-                uri:
-                  item.images && item.images[0]
-                    ? item.images[0]
-                    : 'https://via.placeholder.com/100',
+                uri: item.images && item.images[0] ? item.images[0] : 'https://via.placeholder.com/100',
               }}
               style={styles.productImage}
             />
@@ -54,14 +60,30 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#fff',
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 50, // Adjusted margin for spacing
+  },
+  backButton: {
+    position: 'absolute',
+    left: 10,
+    padding: 10,
+    backgroundColor: '#000',
+    borderRadius: 5,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: 'black',
-  },
-  productSection: {
-    marginBottom: 40,
+    textAlign: 'center',
+    marginHorizontal: 50,
   },
   productCard: {
     height: 200,
@@ -74,7 +96,7 @@ const styles = StyleSheet.create({
   },
   productImage: {
     width: 160,
-    height: 90,
+    height: 100,
     borderRadius: 8,
     marginBottom: 8,
   },

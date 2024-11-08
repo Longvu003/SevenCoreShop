@@ -1,34 +1,44 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, StyleSheet, Image} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
-const CategoryDetailScreen = ({navigation, route}) => {
-  const {category} = route.params;
+
+const CategoryDetailScreen = ({ navigation, route }) => {
+  const { category } = route.params;
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     axios
       .get(`${API__URL}/products/category/${category._id}`)
       .then(response => {
-        // console.log(response.data);
         setProducts(response.data.data);
       })
       .catch(error => console.error('Lỗi lấy sản phẩm:', error));
   }, [category._id]);
+
   return (
     <View style={styles.container}>
+      {/* Back Button */}
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>Back</Text>
+      </TouchableOpacity>
+
+      {/* Category Title */}
       <Text style={styles.title}>{category.name}</Text>
+
+      {/* Product List */}
       <FlatList
         data={products}
         keyExtractor={item => item._id}
-        numColumns={2}
-        renderItem={({item}) => (
+        numColumns={2} // This ensures two columns
+        renderItem={({ item }) => (
           <View style={styles.productCard}>
-            <Image source={{uri: item.images[0]}} style={styles.productImage} />
+            <Image source={{ uri: item.images[0] }} style={styles.productImage} />
             <Text style={styles.productName}>{item.name}</Text>
             <Text style={styles.productPrice}>${item.price}</Text>
           </View>
         )}
+        columnWrapperStyle={styles.columnWrapper} 
       />
     </View>
   );
@@ -40,27 +50,37 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
+  backButton: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    padding: 10,
+    backgroundColor: '#000',
+    borderRadius: 5,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   title: {
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 20,
     color: 'black',
-  },
-  productSection: {
-    marginBottom: 40,
+    textAlign: 'center',
+    marginTop: 50,
   },
   productCard: {
-    height: 200,
-    width: 190,
+    width: '50%', 
     backgroundColor: '#F4F4F4',
     borderRadius: 8,
     padding: 10,
-    marginRight: 10,
-    marginTop: 20,
+    alignItems: 'center', 
+    marginBottom: 20, 
   },
   productImage: {
     width: 160,
-    height: 90,
+    height: 100,
     borderRadius: 8,
     marginBottom: 8,
   },
@@ -74,6 +94,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#ff5722',
     textAlign: 'center',
+  },
+  columnWrapper: {
+    justifyContent: 'space-between', 
   },
 });
 

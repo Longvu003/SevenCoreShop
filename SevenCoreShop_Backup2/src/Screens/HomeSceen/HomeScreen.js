@@ -243,8 +243,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryImage: {
-    width: 60,
-    height: 60,
+    width: 67,
+    height: 67,
     borderRadius: 30,
   },
   productHeader: {
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   },
   productImage: {
     width: 160,
-    height: 90,
+    height: 100,
     borderRadius: 8,
     marginBottom: 8,
   },
