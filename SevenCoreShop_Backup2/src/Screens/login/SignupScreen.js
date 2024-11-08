@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
-
+import API__URL from '../../../config';
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -74,10 +74,7 @@ const SignupScreen = ({navigation}) => {
 
     try {
       // Gửi yêu cầu POST tới API
-      const response = await axios.post(
-        'http://10.0.2.2:7777/users/register',
-        formData,
-      );
+      const response = await axios.post(`${API__URL}/users/register`, formData);
 
       // Xử lý phản hồi
       if (response.status === 200) {

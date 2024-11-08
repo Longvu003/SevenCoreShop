@@ -12,7 +12,7 @@ import {
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import axios from 'axios'; // Import axios
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import API__URL from '../../../config';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,7 +32,7 @@ const LoginScreen = ({navigation}) => {
     try {
       // Gửi yêu cầu đăng nhập tới API
       const response = await axios.post(
-        'http://10.0.2.2:7777/users/login',
+        `${API__URL}/users/login`,
         {
           email: email,
           password: password,

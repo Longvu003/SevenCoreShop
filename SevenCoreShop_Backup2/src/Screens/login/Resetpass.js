@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
+import API__URL from '../../../config';
+import Customheader from '../../CustomHeader/Customheader';
 
-const Resetpass = ({ navigation }) => {
+const Resetpass = ({navigation}) => {
   const [verificationCode, setVerificationCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -29,7 +41,7 @@ const Resetpass = ({ navigation }) => {
 
     setLoading(true); // Bắt đầu loading
     try {
-      const response = await fetch('http://10.0.2.2:7777/users/reset-password', {
+      const response = await fetch(`${API__URL}/users/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,10 +50,9 @@ const Resetpass = ({ navigation }) => {
           email,
           otp: verificationCode,
           newPassword,
-          confirmPassword, 
-        })        
+          confirmPassword,
+        }),
       });
-      
 
       const result = await response.json();
 
@@ -49,7 +60,10 @@ const Resetpass = ({ navigation }) => {
         Alert.alert('Thành công', 'Mật khẩu đã được đặt lại thành công.');
         navigation.navigate('LoginScreen');
       } else {
-        Alert.alert('Lỗi', result.message || 'Đặt lại mật khẩu không thành công.');
+        Alert.alert(
+          'Lỗi',
+          result.message || 'Đặt lại mật khẩu không thành công.',
+        );
       }
     } catch (error) {
       Alert.alert('Lỗi', 'Đã xảy ra lỗi. Vui lòng thử lại sau.');
@@ -60,65 +74,69 @@ const Resetpass = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Image source={require('../../../assets/imgs/back2.png')} />
-      </TouchableOpacity>
-      <Text style={styles.title}>Reset Password</Text>
+    <ScrollView style={{backgroundColor: 'white'}}>
+      <View style={{marginVertical: 26}}>
+        <Customheader leftIcon={require('../../../assets/imgs/back4.png')} />
+      </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+      <View style={styles.container}>
+        <Text style={styles.title}>Lấy lại mật khẩu</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Mã xác minh"
+          value={verificationCode}
+          onChangeText={setVerificationCode}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Mật khẩu mới"
+          secureTextEntry
+          value={newPassword}
+          onChangeText={setNewPassword}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Xác nhận mật khẩu mới"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleResetPassword}
+          disabled={loading}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.submitButtonText}>Gửi</Text>
+          )}
+        </TouchableOpacity>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Mã xác minh"
-        value={verificationCode}
-        onChangeText={setVerificationCode}
-      />
+        <TouchableOpacity>
+          <Text style={styles.linkText}>Gửi lại mã</Text>
+        </TouchableOpacity>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Mật khẩu mới"
-        secureTextEntry
-        value={newPassword}
-        onChangeText={setNewPassword}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Xác nhận mật khẩu mới"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
-
-      <TouchableOpacity style={styles.submitButton} onPress={handleResetPassword} disabled={loading}>
-        {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.submitButtonText}>Gửi</Text>}
-      </TouchableOpacity>
-
-      <TouchableOpacity>
-        <Text style={styles.linkText}>Gửi lại mã</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-        <Text style={styles.linkText}>Quay lại trang đăng nhập</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+          <Text style={styles.linkText}>Quay lại trang đăng nhập</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 4,
     justifyContent: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: '#F5F5F5',
+    paddingHorizontal: 26,
   },
   backButton: {
     position: 'absolute',

@@ -27,8 +27,6 @@ const User = ({navigation}) => {
       if (newUserEmail) {
         const response = await axios.get(url);
         const newnew = Object.values(response.data);
-        // const getDataApi = newnew[2];
-        // console.log(response.data);
         setUser(newnew);
       } else {
         console.log('Lỗi không thấy email');
@@ -54,7 +52,6 @@ const User = ({navigation}) => {
       },
     ]);
   };
-
   useFocusEffect(
     useCallback(() => {
       renderUser();
@@ -65,7 +62,7 @@ const User = ({navigation}) => {
       <View style={UserStyleSheet.layout__Img}>
         <Image
           style={UserStyleSheet.img__User}
-          source={require('../../../assets/imgs/profile.png')}
+          source={require('../../../assets/imgs/abc.png')}
         />
       </View>
       <View style={UserStyleSheet.header__Information}>
@@ -74,18 +71,17 @@ const User = ({navigation}) => {
             data={user}
             renderItem={({item}) => (
               <TouchableOpacity>
-                <Text style={[UserStyleSheet.txt__header, {color: 'black'}]}>
-                  {item.username}
+                <Text style={UserStyleSheet.txt__header}>{item.username}</Text>
+                <Text style={[UserStyleSheet.txt__header, {fontWeight: '300'}]}>
+                  {item.email}
                 </Text>
-                <Text style={UserStyleSheet.txt__header}>{item.email}</Text>
-                <Text style={UserStyleSheet.txt__header}>
+                <Text style={[UserStyleSheet.txt__header, {fontWeight: '300'}]}>
                   {item.numberphone}
                 </Text>
               </TouchableOpacity>
             )}
             keyExtractor={(item, index) => index.toString()}
           />
-
           <Text
             onPress={() => navigation.navigate('EditUser')}
             style={UserStyleSheet.btn__Edit}>
@@ -93,7 +89,7 @@ const User = ({navigation}) => {
           </Text>
         </View>
       </View>
-      <View style={{flex: 7}}>
+      <View style={{flex: 2}}>
         <TouchableOpacity
           style={UserStyleSheet.container__layout}
           onPress={() => navigation.navigate('ListAddress')}>
@@ -103,36 +99,36 @@ const User = ({navigation}) => {
             source={require('../../../assets/imgs/Vector.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={UserStyleSheet.container__layout}>
+        {/* <TouchableOpacity style={UserStyleSheet.container__layout}>
           <Text style={UserStyleSheet.txt__container}>Danh sách yêu thích</Text>
           <Image
             style={UserStyleSheet.txt__container}
             source={require('../../../assets/imgs/Vector.png')}
           />
-        </TouchableOpacity>
-        <TouchableOpacity style={UserStyleSheet.container__layout}>
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity style={UserStyleSheet.container__layout}>
           <Text style={UserStyleSheet.txt__container}>Thanh toán</Text>
           <Image
             style={UserStyleSheet.txt__container}
             source={require('../../../assets/imgs/Vector.png')}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={UserStyleSheet.container__layout}
-          onPress={() => navigation.navigate('ChangePassword')}>
+          onPress={() => navigation.navigate('ForgotPassword')}>
           <Text style={UserStyleSheet.txt__container}>Đổi mật khẩu</Text>
           <Image
             style={UserStyleSheet.txt__container}
             source={require('../../../assets/imgs/Vector.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={UserStyleSheet.container__layout}>
+        {/* <TouchableOpacity style={UserStyleSheet.container__layout}>
           <Text style={UserStyleSheet.txt__container}>Hỗ trợ</Text>
           <Image
             style={UserStyleSheet.txt__container}
             source={require('../../../assets/imgs/Vector.png')}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <View style={{flex: 3, alignItems: 'center', justifyContent: 'center'}}>
         <TouchableOpacity onPress={Logout}>

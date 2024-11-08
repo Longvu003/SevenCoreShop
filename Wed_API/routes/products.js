@@ -141,15 +141,15 @@ router.get("/loc-theo-gia", async (req, res, next) => {
  * url: http://localhost:7777/products/:id/delete
  * response: trå về sån phåm vừa cập nhật
  */
-router.post("/:id/delete", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const products = await ProductController.deleteProduct(id);
-    return res.status(200).json({ status: true, data: products }); //
-  } catch (error) {
-    return res.status(500).json({ status: false, data: error.message });
-  }
-});
+// router.delete("/deleteProductById", async (req, res, next) => {
+//   try {
+//     const { id } = req.params.id;
+//     const products = await ProductController.deleteProduct(id);
+//     return res.status(200).json({ status: true, data: products }); //
+//   } catch (error) {
+//     return res.status(500).json({ status: false, data: error.message });
+//   }
+// });
 
 /**
  * API Lấy sp theo id

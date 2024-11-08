@@ -101,7 +101,7 @@ const HomeScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <View style={styles.categoryContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal showsVerticalScrollIndicator={false}>
           {categories.length > 0 ? (
             categories.map((category, index) => (
               <TouchableOpacity
@@ -141,26 +141,19 @@ const HomeScreen = ({navigation}) => {
           data={products}
           keyExtractor={item => item._id}
           numColumns={2}
-          showsHorizontalScrollIndicator={true}
           scrollEnabled={false}
           renderItem={({item}) => {
             return (
-              <View style={styles.productCard}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('ProductDetail', {item})}>
-                  <Image
-                    // source={
-                    //   item.images.length > 0 && item.images[0]
-                    //     ? {uri: item.images[0]}
-                    //     : require('../../../assets/imgs/profile.png')
-                    // }
-                    source={{uri: item.images[0]}}
-                    style={styles.productImage}
-                  />
-                  <Text style={styles.productName}>{item.name}</Text>
-                  <Text style={styles.productPrice}>${item.price}</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                style={styles.productCard}
+                onPress={() => navigation.navigate('ProductDetail', {item})}>
+                <Image
+                  source={{uri: item.images[0]}}
+                  style={styles.productImage}
+                />
+                <Text style={styles.productName}>{item.name}</Text>
+                <Text style={styles.productPrice}>${item.price}</Text>
+              </TouchableOpacity>
             );
           }}
         />

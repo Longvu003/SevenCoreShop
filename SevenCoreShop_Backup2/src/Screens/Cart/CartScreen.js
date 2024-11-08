@@ -18,7 +18,7 @@ const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
 import {useFocusEffect} from '@react-navigation/native';
 const CartScreen = () => {
-  const [cart, setCart] = useState();
+  const [cart, setCart] = useState([]);
   const [totalPriceCart, setTotalPriceCart] = useState();
   const totalPrice = async cartItem => {
     const totalCart = cartItem.reduce(
@@ -52,7 +52,7 @@ const CartScreen = () => {
   };
 
   const handleDecrease = (productId, currentQuantity) => {
-    const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 0;
+    const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 1;
     updateCart(productId, newQuantity);
   };
   const getIdUser = async () => {
@@ -93,36 +93,42 @@ const CartScreen = () => {
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1}}>
         <Customheader
-          leftIcon={require('../../../assets/imgs/back3.png')}
+          leftIcon={require('../../../assets/imgs/back4.png')}
           title="Giỏ hàng"
         />
       </View>
       <View style={{flex: 1, alignItems: 'flex-end'}}>
         <TouchableOpacity
           onPress={() => {
-            cart.forEach(element =>
-              clearCart(element.productId, element.quantity),
-            );
+            if (cart.length >= 1) {
+              Alert.alert(
+                'Xóa sản phẩm !',
+                'Bạn muốn xóa hết sản phẩm trong giỏ hàng ?',
+                [
+                  {text: 'Không', onPress: () => console.log('Không')},
+                  {
+                    text: 'Xác nhận',
+                    onPress: () =>
+                      cart.forEach(element =>
+                        clearCart(element.productId, element.quantity),
+                      ),
+                  },
+                ],
+              );
+            } else {
+              Alert.alert('Không có sản phẩm để xóa');
+            }
           }}>
           <Text style={styles.txt__remove}>Remove All</Text>
         </TouchableOpacity>
       </View>
-      <View style={{flex: 5}}>
+      <View style={{flex: 6}}>
         <FlatList
           data={cart}
           renderItem={({item}) => {
             return (
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: '#F4F4F4',
-                  flexDirection: 'row',
-                  height: HEIGHT__SCREEN * 0.15,
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginTop: 20,
-                }}>
-                <View style={styles.product__container}>
+              <View style={styles.product__container}>
+                <View style={styles.item__container}>
                   <Image
                     style={styles.img__product}
                     source={{uri: item.images[0]}}
@@ -172,9 +178,10 @@ const CartScreen = () => {
           flex: 1,
           flexDirection: 'row',
           justifyContent: 'space-between',
+          marginHorizontal: 20,
         }}>
-        <Text>Total</Text>
-        <Text>{totalPriceCart}</Text>
+        <Text style={styles.txt__price}>Total</Text>
+        <Text style={styles.txt__price}>{totalPriceCart}</Text>
       </View>
       <View style={{flex: 1}}>
         <TouchableOpacity style={styles.btn__buy}>
@@ -183,32 +190,49 @@ const CartScreen = () => {
       </View>
     </View>
 
-    //  :( <View>
+    //  <View>
     //   <Text>
     //     Nodata in cart
     //   </Text>
 
-    //   </View>)
+    //   </View>
   );
 };
 
 export default CartScreen;
 
 const styles = StyleSheet.create({
+  txt__price: {
+    fontSize: 20,
+    color: 'black',
+    fontWeight: '700',
+  },
+  product__container: {
+    flex: 1,
+    backgroundColor: '#F4F4F4',
+    flexDirection: 'row',
+    height: HEIGHT__SCREEN * 0.13,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 20,
+    width: WIDTH__SCREEN * 0.9,
+    marginHorizontal: 20,
+  },
   txt__buy: {
     fontSize: 16,
     color: 'white',
   },
   btn__buy: {
     backgroundColor: 'black',
-    width: WIDTH__SCREEN * 1,
-    height: HEIGHT__SCREEN * 0.09,
-    borderRadius: 20,
+    width: WIDTH__SCREEN * 0.9,
+    height: HEIGHT__SCREEN * 0.08,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 20,
   },
 
-  product__container: {
+  item__container: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginLeft: 10,

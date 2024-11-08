@@ -1,5 +1,7 @@
 import {StyleSheet} from 'react-native';
-
+import {Dimensions} from 'react-native';
+const HEIGHT__SCREEN = Dimensions.get('screen').height;
+const WIDTH__SCREEN = Dimensions.get('screen').width;
 const UserStyleSheet = StyleSheet.create({
   txt__Signout: {
     fontSize: 20,
@@ -19,12 +21,18 @@ const UserStyleSheet = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    height: WIDTH__SCREEN * 0.2,
+    width: WIDTH__SCREEN * 0.9,
+    marginHorizontal: 20,
   },
   header__Layout: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#F4F4F4',
+    height: HEIGHT__SCREEN * 0.1,
+    width: WIDTH__SCREEN * 0.9,
+    marginHorizontal: 20,
   },
   btn__Edit: {
     marginRight: 20,
@@ -34,8 +42,10 @@ const UserStyleSheet = StyleSheet.create({
   },
 
   txt__header: {
-    color: '#272727',
+    color: 'black',
     marginLeft: 10,
+    fontWeight: '700',
+    fontSize: 20,
   },
   header__Information: {
     backgroundColor: 'white',

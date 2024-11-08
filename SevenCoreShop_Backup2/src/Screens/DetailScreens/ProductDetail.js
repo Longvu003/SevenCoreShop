@@ -2,6 +2,7 @@ import {
   Alert,
   Dimensions,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -64,62 +65,64 @@ const ProductDetail = ({navigation, route}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <ScrollView style={{backgroundColor: 'white'}}>
       <View style={{flex: 1}}>
-        <Customheader leftIcon={require('../../../assets/imgs/back3.png')} />
-      </View>
-      <View style={{flex: 6}}>
-        <Image
-          style={styles.img__product}
-          // source={require('../../../assets/imgs/profile.png')}
-          source={{uri: item.images[0]}}
-        />
-        <Text style={styles.txt__nameProduct}>{item.name}</Text>
-        <Text style={styles.txt__priceProduct}>{item.price}</Text>
-        <View style={{flexDirection: 'column', flex: 2}}>
-          <TouchableOpacity disabled style={styles.btn__container}>
-            <View style={styles.quantity__Container}>
-              <Text>kích cỡ</Text>
-            </View>
-            <Text style={styles.txt__nameProduct}>{item.size}</Text>
-            <TouchableOpacity>
-              <Image
-                style={{marginHorizontal: 30}}
-                source={require('../../../assets/imgs/arrowdown2.png')}
-              />
+        <View style={{flex: 1, marginVertical: 24}}>
+          <Customheader leftIcon={require('../../../assets/imgs/back3.png')} />
+        </View>
+        <View style={{flex: 6, marginHorizontal: 20}}>
+          <Image
+            style={styles.img__product}
+            // source={require('../../../assets/imgs/profile.png')}
+            source={{uri: item.images[0]}}
+          />
+          <Text style={styles.txt__nameProduct}>{item.name}</Text>
+          <Text style={styles.txt__priceProduct}>{item.price}</Text>
+          <View style={{flexDirection: 'column', flex: 2}}>
+            <TouchableOpacity disabled style={styles.btn__container}>
+              <View style={styles.quantity__Container}>
+                <Text>kích cỡ</Text>
+              </View>
+              <Text style={styles.txt__nameProduct}>{item.size}</Text>
+              <TouchableOpacity>
+                <Image
+                  style={{marginHorizontal: 30}}
+                  source={require('../../../assets/imgs/arrowdown2.png')}
+                />
+              </TouchableOpacity>
             </TouchableOpacity>
-          </TouchableOpacity>
-          <TouchableOpacity disabled style={styles.btn__container}>
-            <View style={styles.quantity__Container}>
-              <Text>Số lượng</Text>
-            </View>
-            <TouchableOpacity onPress={increaseQuantity}>
-              <Image
-                style={styles.icon}
-                source={require('../../../assets/imgs/add.png')}
-              />
+            <TouchableOpacity disabled style={styles.btn__container}>
+              <View style={styles.quantity__Container}>
+                <Text>Số lượng</Text>
+              </View>
+              <TouchableOpacity onPress={increaseQuantity}>
+                <Image
+                  style={styles.icon}
+                  source={require('../../../assets/imgs/add.png')}
+                />
+              </TouchableOpacity>
+              <Text style={{marginHorizontal: 5}}>{quantityProduct}</Text>
+              <TouchableOpacity onPress={decreaseQuantity}>
+                <Image
+                  style={styles.icon}
+                  source={require('../../../assets/imgs/minus2.png')}
+                />
+              </TouchableOpacity>
             </TouchableOpacity>
-            <Text style={{marginHorizontal: 5}}>{quantityProduct}</Text>
-            <TouchableOpacity onPress={decreaseQuantity}>
-              <Image
-                style={styles.icon}
-                source={require('../../../assets/imgs/minus2.png')}
-              />
-            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={{flex: 1}}>
+          <Text style={styles.txt__description}>{item.description}</Text>
+        </View>
+        <View style={{flex: 1}}>
+          <TouchableOpacity
+            style={styles.btn__buy}
+            onPress={() => addProductCart(item)}>
+            <Text style={styles.txt__btnbuy}>Thêm vào giỏ</Text>
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{flex: 1}}>
-        <Text style={styles.txt__description}>{item.description}</Text>
-      </View>
-      <View style={{flex: 1}}>
-        <TouchableOpacity
-          style={styles.btn__buy}
-          onPress={() => addProductCart(item)}>
-          <Text style={styles.txt__btnbuy}>Thêm vào giỏ</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -137,18 +140,19 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   btn__buy: {
-    width: WIDTH__SCREEN * 1,
+    width: WIDTH__SCREEN * 0.9,
     height: HEIGHT__SCREEN * 0.08,
     backgroundColor: 'black',
-    borderRadius: 20,
+    borderRadius: 35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginHorizontal: 20,
   },
   icon: {
     width: 50,
     height: 50,
-    marginHorizontal: 5,
+    marginHorizontal: 26,
   },
   quantity__Container: {
     flex: 1,
@@ -156,12 +160,12 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   btn__container: {
-    width: WIDTH__SCREEN * 1,
+    width: WIDTH__SCREEN * 0.9,
     height: HEIGHT__SCREEN * 0.08,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    backgroundColor: 'orange',
+    backgroundColor: '#F4F4F4',
     borderRadius: 20,
     marginTop: 20,
   },
@@ -178,7 +182,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   img__product: {
-    width: WIDTH__SCREEN * 1,
+    width: WIDTH__SCREEN * 0.9,
     height: HEIGHT__SCREEN * 0.3,
+    borderRadius: 10,
   },
 });

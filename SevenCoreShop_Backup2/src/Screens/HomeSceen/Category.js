@@ -20,7 +20,7 @@ const CategoryScreen = ({navigation}) => {
       .then(response => {
         // Chuyển đổi dữ liệu nếu cần và lưu vào state
         const fixResponse = Object.values(response.data);
-        console.log(fixResponse);
+
         setCategories(fixResponse[1]);
       })
       .catch(error => console.error('Lỗi lấy danh mục:', error));
