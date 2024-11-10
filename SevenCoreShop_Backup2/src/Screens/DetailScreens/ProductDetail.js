@@ -28,8 +28,18 @@ const ProductDetail = ({ navigation, route }) => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedText, setEditedText] = useState('');
+  const [currentUserEmail, setCurrentUserEmail] = useState('');
 
-  // Fetch comments for the product
+  // Lấy email của người dùng hiện tại
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      const email = await AsyncStorage.getItem('userEmail');
+      setCurrentUserEmail(email);
+    };
+    fetchUserEmail();
+  }, []);
+
+  // Lấy bình luận của sản phẩm
   useEffect(() => {
     axios
       .get(`${API__URL}/api/comments/${item._id}`)
@@ -101,39 +111,34 @@ const ProductDetail = ({ navigation, route }) => {
     }
   };
 
-  // Khi nhấn vào nút chỉnh sửa bình luận
-const updateComment = async (commentId) => {
-  setEditingCommentId(commentId);
-  setDialogVisible(true);
-};
+  const updateComment = async (commentId) => {
+    setEditingCommentId(commentId);
+    setDialogVisible(true);
+  };
 
-// Khi người dùng nhấn nút lưu để chỉnh sửa bình luận
-const handleEditComment = async () => {
-  if (!(editedText && typeof editedText === 'string' && editedText.trim())) {
-    Alert.alert('Vui lòng nhập nội dung bình luận!');
-    return;
-  }
+  const handleEditComment = async () => {
+    if (!(editedText && typeof editedText === 'string' && editedText.trim())) {
+      Alert.alert('Vui lòng nhập nội dung bình luận!');
+      return;
+    }
 
-  try {
-    // Gửi yêu cầu PUT đến API để cập nhật bình luận
-    const response = await axios.put(`${API__URL}/api/comments/updateComment`, {
-      commentId: editingCommentId,  // Truyền commentId cần cập nhật
-      newText: editedText,  // Thay đổi từ newText thành editedText
-    });
+    try {
+      const response = await axios.put(`${API__URL}/api/comments/updateComment`, {
+        commentId: editingCommentId,
+        newText: editedText,
+      });
 
-    // Cập nhật lại danh sách bình luận sau khi thành công
-    setComments(comments.map((comment) =>
-      comment._id === editingCommentId ? response.data : comment // Thay thế bình luận đã chỉnh sửa
-    ));
+      setComments(comments.map((comment) =>
+        comment._id === editingCommentId ? response.data : comment
+      ));
 
-    // Đóng dialog và reset lại text
-    setDialogVisible(false);
-    setEditedText('');  // Đảm bảo rằng bạn reset lại editedText sau khi chỉnh sửa xong
-  } catch (error) {
-    console.error('Lỗi khi cập nhật bình luận:', error);
-    Alert.alert('Có lỗi xảy ra khi cập nhật bình luận');
-  }
-};
+      setDialogVisible(false);
+      setEditedText('');
+    } catch (error) {
+      console.error('Lỗi khi cập nhật bình luận:', error);
+      Alert.alert('Có lỗi xảy ra khi cập nhật bình luận');
+    }
+  };
 
   const deleteComment = async (commentId) => {
     try {
@@ -202,7 +207,6 @@ const handleEditComment = async () => {
         </TouchableOpacity>
       </View>
 
-      {/* Phần bình luận */}
       <View style={{ flex: 1, paddingHorizontal: 20, marginTop: 20 }}>
         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Bình luận</Text>
         <FlatList
@@ -210,17 +214,30 @@ const handleEditComment = async () => {
           keyExtractor={(comment) => comment._id.toString()}
           renderItem={({ item }) => (
             <View style={{ paddingVertical: 10 }}>
+              <Text style={{ fontWeight: 'bold' }}>{item.userEmail}</Text>
               <Text>{item.text}</Text>
               <Text style={{ color: 'gray', fontSize: 12 }}>{item.date}</Text>
-              <TouchableOpacity onPress={() => updateComment(item._id)}>
-                <Text style={{ color: 'blue' }}>Sửa</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => deleteComment(item._id)}>
-                <Text style={{ color: 'red' }}>Xóa</Text>
-              </TouchableOpacity>
+              {item.userEmail === currentUserEmail && (
+                <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                  <TouchableOpacity
+                    onPress={() => updateComment(item._id)}
+                    style={styles.smallButton}
+                  >
+                    <Text style={{ color: 'blue' }}>Sửa</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => deleteComment(item._id)}
+                    style={styles.smallButton}
+                  >
+                    <Text style={{ color: 'red' }}>Xóa</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           )}
         />
+
         <TextInput
           style={{ borderColor: 'gray', borderWidth: 1, padding: 10, marginVertical: 10 }}
           placeholder="Nhập bình luận..."
@@ -234,7 +251,6 @@ const handleEditComment = async () => {
         </View>
       </View>
 
-      {/* Dialog for editing comment */}
       <Dialog.Container visible={dialogVisible}>
         <Dialog.Title>Sửa bình luận</Dialog.Title>
         <Dialog.Input
@@ -253,69 +269,79 @@ export default ProductDetail;
 
 const styles = StyleSheet.create({
   txt__description: {
-    marginVertical: 20,
-    fontSize: 15,
-    fontWeight: '700',
-    marginHorizontal: 20,
-  },
-  txt__btnbuy: {
-    fontSize: 15,
-    color: 'white',
-  },
-  btn__buy: {
-    width: WIDTH__SCREEN * 1,
-    height: HEIGHT__SCREEN * 0.08,
-    backgroundColor: 'black',
-    borderRadius: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  icon: {
-    width: 50,
-    height: 50,
-    marginHorizontal: 5,
-  },
-  quantity__Container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    paddingLeft: 10,
-  },
-  btn__container: {
-    height: HEIGHT__SCREEN * 0.08,
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'gray',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  btnCmtContainer: {
-    marginTop: 10,
-  },
-  btnCmt: {
-    backgroundColor: 'black',
-    borderRadius: 20,
-    padding: 10,
-    alignItems: 'center',
-  },
-  btnCmtText: {
-    color: 'white',
     fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    color: 'black',
+  },
+  txt__priceProduct: {
+    fontSize: 20,
+    paddingHorizontal: 10,
+    color: 'green',
+  },
+  txt__nameProduct: {
+    fontSize: 24,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    color: 'black',
   },
   img__product: {
     width: WIDTH__SCREEN,
-    height: HEIGHT__SCREEN * 0.4,
+    height: HEIGHT__SCREEN / 2.5,
   },
-  txt__nameProduct: {
-    fontSize: 20,
+  btn__container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    padding: 15,
+    marginVertical: 10,
+  },
+  quantity__Container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  icon: {
+    width: 30,
+    height: 30,
+  },
+  btn__buy: {
+    backgroundColor: 'black',
+    padding: 15,
+    alignItems: 'center',
+    borderRadius: 5,
+    marginHorizontal: 20,
+    marginVertical: 20,
+  },
+  txt__btnbuy: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  smallButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  btnCmtContainer: {
+    alignItems: 'flex-end',
+    alignItems: 'center', 
+  },
+  btnCmt: {
+    backgroundColor: 'black',
+    padding: 16,
+    borderRadius: 5,
+    width: '100%',  
+  },
+  btnCmtText: {
+    color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
-    paddingVertical: 10,
-  },
-  txt__priceProduct: {
-    fontSize: 18,
-    textAlign: 'center',
-    color: 'green',
-    paddingVertical: 10,
   },
 });
-
