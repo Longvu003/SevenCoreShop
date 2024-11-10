@@ -102,9 +102,6 @@ const Resetpass = ({ navigation }) => {
         {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.submitButtonText}>Gửi</Text>}
       </TouchableOpacity>
 
-      <TouchableOpacity>
-        <Text style={styles.linkText}>Gửi lại mã</Text>
-      </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
         <Text style={styles.linkText}>Quay lại trang đăng nhập</Text>

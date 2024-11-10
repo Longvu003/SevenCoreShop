@@ -20,10 +20,10 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     // Gọi API lấy sản phẩm từ MongoDB
     axios
-      .get(`${API__URL}/products`)
+      .get(`${API__URL}/products/all`)
       .then(response => {
         // const getidProduct = JSON.stringify(response.data);
-        const ArrayProduct = response.data.checkListProducts;
+        const ArrayProduct = response.data.data;
         setProducts(ArrayProduct);
       })
       .catch(error => {
@@ -41,7 +41,7 @@ const HomeScreen = ({navigation}) => {
         console.error('Error fetching categories:', error);
       });
   }, []);
-
+  console.log(products)
   const handleSearch = () => {
     if (searchKey.trim() === '') {
       axios

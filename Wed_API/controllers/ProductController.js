@@ -94,7 +94,8 @@ const addProduct = async (
   color,
   size,
   status,
-  inventory
+  inventory,
+  userEmail // Thêm tham số userEmail
 ) => {
   try {
     const categoryInDB = await CategoryModel.findById(category);
@@ -113,6 +114,8 @@ const addProduct = async (
       size,
       status,
       inventory, // Lưu category dưới dạng ObjectId
+      userEmail,  // Thêm userEmail vào product
+      viewedAt: new Date(),  // Thêm viewedAt
     });
 
     const result = await product.save();
