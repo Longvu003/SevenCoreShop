@@ -41,7 +41,7 @@ const LoginBoxed = () => {
                     text: 'Đăng Nhập Thành Công',
                     icon: 'success',
                 });
-                navigate('/doashboard');
+                navigate('/dashboard');
             } else {
                 MySwal.fire({
                     title: 'bạn không phải là admin',

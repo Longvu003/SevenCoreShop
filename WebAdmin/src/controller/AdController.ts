@@ -56,7 +56,7 @@ export const useAdController = () => {
             return { status: true, updatedAd }; // Trả về trạng thái thành công
         } catch (error) {
             console.error('Lỗi Cập Nhật Quảng Cáo', error);
-            return { status: false, message: 'Lỗi không xác định' }; // Trả về thông báo lỗi
+            return { status: false, message: 'Lỗi Cập Nhật Quảng Cáo' }; // Trả về thông báo lỗi
         }
     };
 

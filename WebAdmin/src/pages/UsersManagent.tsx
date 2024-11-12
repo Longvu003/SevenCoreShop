@@ -6,7 +6,7 @@ import { setPageTitle } from '../store/themeConfigSlice';
 import { useloginUser } from '../controller/UserController';
 import { UserModel } from '../model/UserModel';
 
-const Contacts = () => {
+const UsersManagent = () => {
     const { getAllUser, deleteUserbyId, updateUserbyId, lockUserbyId, unlockUserbyId } = useloginUser();
     const [dataUser, setDataUser] = useState<UserModel[]>([]);
     const [editModal, setEditModal] = useState(false);
@@ -15,12 +15,13 @@ const Contacts = () => {
         name: '',
         email: '',
         phone: '',
-        role: '',
+        role: 1,  // Mặc định là User
         address: '',
     });
 
     const showData = async () => {
         const data: any = await getAllUser();
+        console.log(data['data']); // Kiểm tra dữ liệu role
         setDataUser(data['data']);
     };
 
@@ -45,13 +46,14 @@ const Contacts = () => {
             } else {
                 showMessage('Xóa Thất Bại', 'error');
             }
-            showData(); // Cập nhật danh sách người dùng sau khi xóa
+            showData();
         }
     };
 
     const editUser = (user: UserModel) => {
-        setParams(user); // Gán dữ liệu người dùng cần sửa vào state
-        setEditModal(true); // Mở modal chỉnh sửa
+        console.log(user.role); // Kiểm tra giá trị role khi mở modal
+        setParams(user); 
+        setEditModal(true);
     };
 
     const handleUpdateUser = async () => {
@@ -69,7 +71,7 @@ const Contacts = () => {
         }
 
         setEditModal(false);
-        showData(); // Cập nhật danh sách người dùng
+        showData();
     };
 
     const showMessage = (msg = '', type = 'success') => {
@@ -87,9 +89,9 @@ const Contacts = () => {
         });
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
-        setParams({ ...params, [id]: value });
+        setParams({ ...params, [id]: id === 'role' ? parseInt(value) : value });
     };
 
     const dispatch = useDispatch();
@@ -98,7 +100,6 @@ const Contacts = () => {
         dispatch(setPageTitle('Quản Lý Người Dùng'));
     }, [dispatch]);
 
-    // Hàm khóa người dùng
     const handleLockUser = async (id: string) => {
         const result = await Swal.fire({
             title: 'Bạn có chắc chắn muốn khóa người dùng này không?',
@@ -116,11 +117,10 @@ const Contacts = () => {
             } else {
                 showMessage('Khóa Thất Bại', 'error');
             }
-            showData(); // Cập nhật danh sách người dùng
+            showData();
         }
     };
 
-    // Hàm mở khóa người dùng
     const handleUnlockUser = async (id: string) => {
         const result = await Swal.fire({
             title: 'Bạn có chắc chắn muốn mở khóa người dùng này không?',
@@ -138,18 +138,13 @@ const Contacts = () => {
             } else {
                 showMessage('Mở Khóa Thất Bại', 'error');
             }
-            showData(); // Cập nhật danh sách người dùng
+            showData();
         }
     };
 
     return (
         <div>
-            <div className="flex items-center justify-between flex-wrap gap-4">
-                <h2 className="text-xl">Quản Lý Người Dùng</h2>
-                <div className="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
-                    {/* Vùng tìm kiếm nếu cần */}
-                </div>
-            </div>
+            <h2 className="text-xl">Quản Lý Người Dùng</h2>
             <div className="mt-5 panel p-0 border-0 overflow-hidden">
                 <div className="table-responsive">
                     <table className="table-striped table-hover">
@@ -159,6 +154,7 @@ const Contacts = () => {
                                 <th>Email</th>
                                 <th>Địa Chỉ</th>
                                 <th>Điện Thoại</th>
+                                <th>Vai Trò</th>
                                 <th className="!text-center">Hoạt Động</th>
                             </tr>
                         </thead>
@@ -170,37 +166,14 @@ const Contacts = () => {
                                     <td>{user.address}</td>
                                     <td>{user.phone}</td>
                                     <td>
+                                        {parseInt(user.role as string) === 1 ? 'User' : parseInt(user.role as string) === 2 ? 'Admin' : parseInt(user.role as string) === 3 ? 'Seller' : 'Unknown'}
+                                    </td>
+                                    <td>
                                         <div className="flex gap-4 items-center justify-center">
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-primary"
-                                                onClick={() => editUser(user)}
-                                            >
-                                                Chỉnh Sửa
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-danger"
-                                                onClick={() => deleteUser(String(user._id))}
-                                            >
-                                                Xóa
-                                            </button>
-                                            {/* Nút khóa */}
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-danger"
-                                                onClick={() => handleLockUser(String(user._id))}
-                                            >
-                                                Khóa
-                                            </button>
-                                            {/* Nút mở khóa */}
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-success"
-                                                onClick={() => handleUnlockUser(String(user._id))}
-                                            >
-                                                Mở Khóa
-                                            </button>
+                                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => editUser(user)}>Chỉnh Sửa</button>
+                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteUser(String(user._id))}>Xóa</button>
+                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => handleLockUser(String(user._id))}>Khóa</button>
+                                            <button type="button" className="btn btn-sm btn-outline-success" onClick={() => handleUnlockUser(String(user._id))}>Mở Khóa</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -210,106 +183,40 @@ const Contacts = () => {
                 </div>
             </div>
 
-            {/* Modal chỉnh sửa người dùng */}
             <Transition appear show={editModal} as={Fragment}>
                 <Dialog as="div" open={editModal} onClose={() => setEditModal(false)} className="relative z-[51]">
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0 scale-95"
-                        enterTo="opacity-100 scale-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100 scale-100"
-                        leaveTo="opacity-0 scale-95"
-                    >
-                        <div className="fixed inset-0 bg-black/60" />
-                    </Transition.Child>
                     <div className="fixed inset-0 overflow-y-auto">
                         <div className="flex items-center justify-center min-h-full">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                            >
+                            <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100" leave="ease-in duration-200" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95">
                                 <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
-                                    {/* Nút Đóng Modal */}
-                                    <button
-                                        type="button"
-                                        onClick={() => setEditModal(false)}
-                                        className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none"
-                                    >
-                                    </button>
-                                    {/* Tiêu Đề Modal */}
-                                    <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] px-5 py-3">
-                                        Cập Nhật Thông Tin Người Dùng
-                                    </div>
-                                    {/* Nội Dung Modal */}
+                                    <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] px-5 py-3">Cập Nhật Thông Tin Người Dùng</div>
                                     <div className="p-5">
                                         <form>
                                             <div className="mb-5">
                                                 <label htmlFor="name">Tên</label>
-                                                <input
-                                                    id="name"
-                                                    type="text"
-                                                    placeholder="Nhập tên"
-                                                    className="form-input"
-                                                    value={params.name}
-                                                    onChange={handleChange}
-                                                />
+                                                <input id="name" type="text" placeholder="Nhập tên" className="form-input" value={params.name} onChange={handleChange} />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="email">Email</label>
-                                                <input
-                                                    id="email"
-                                                    type="email"
-                                                    placeholder="Nhập email"
-                                                    className="form-input"
-                                                    value={params.email}
-                                                    onChange={handleChange}
-                                                />
+                                                <input id="email" type="email" placeholder="Nhập email" className="form-input" value={params.email} onChange={handleChange} />
                                             </div>
                                             <div className="mb-5">
-                                                <label htmlFor="phone">Số Điện Thoại</label>
-                                                <input
-                                                    id="phone"
-                                                    type="text"
-                                                    placeholder="Nhập số điện thoại"
-                                                    className="form-input"
-                                                    value={params.phone}
-                                                    onChange={handleChange}
-                                                />
+                                                <label htmlFor="phone">Điện Thoại</label>
+                                                <input id="phone" type="text" placeholder="Nhập số điện thoại" className="form-input" value={params.phone} onChange={handleChange} />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="address">Địa Chỉ</label>
-                                                <textarea
-                                                    id="address"
-                                                    rows={3}
-                                                    placeholder="Nhập địa chỉ"
-                                                    className="form-textarea resize-none min-h-[130px]"
-                                                    value={params.address}
-                                                    onChange={handleChange}
-                                                ></textarea>
+                                                <textarea id="address" placeholder="Nhập địa chỉ" className="form-input" value={params.address} onChange={handleChange}></textarea>
                                             </div>
-                                            <div className="flex justify-end items-center mt-8">
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-outline-danger"
-                                                    onClick={() => setEditModal(false)}
-                                                >
-                                                    Hủy
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-primary ml-4"
-                                                    onClick={handleUpdateUser}
-                                                >
-                                                    Cập nhật
-                                                </button>
+                                            <div className="mb-5">
+                                                <label htmlFor="role">Vai Trò</label>
+                                                <select id="role" className="form-select" value={params.role} onChange={handleChange}>
+                                                    <option value={1}>User</option>
+                                                    <option value={2}>Admin</option>
+                                                    <option value={3}>Seller</option>
+                                                </select>
                                             </div>
+                                            <button type="button" onClick={handleUpdateUser} className="btn btn-primary">Cập Nhật</button>
                                         </form>
                                     </div>
                                 </Dialog.Panel>
@@ -318,9 +225,8 @@ const Contacts = () => {
                     </div>
                 </Dialog>
             </Transition>
-
         </div>
     );
 };
 
-export default Contacts;
+export default UsersManagent;

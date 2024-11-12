@@ -102,7 +102,7 @@ const Sidebar = () => {
                             <li className="nav-item">
                                 <ul>
                                     <li className="nav-item">
-                                        <NavLink to="/doashboard" className="group">
+                                        <NavLink to="/dashboard" className="group">
                                             <div className="flex items-center">
                                                 <IconHome className="group-hover:!text-primary shrink-0" />
                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Trang Chủ')}</span>
@@ -117,22 +117,6 @@ const Sidebar = () => {
                             </h2>
                             <li className="nav-item">
                                 <ul>
-                                    <li className="nav-item">
-                                        <NavLink to="/product/product-managent" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuChat className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Quản Lý Sản Phẩm')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li>
-                                    <li className="nav-item">
-                                        <NavLink to="/categoriesmanagent" className="group">
-                                            <div className="flex items-center">
-                                                <IconMenuChat className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Quản Lý Danh Mục')}</span>
-                                            </div>
-                                        </NavLink>
-                                    </li>
                                     <li className="nav-item">
                                         <NavLink to="/usermanagent" className="group">
                                             <div className="flex items-center">
