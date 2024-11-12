@@ -6,7 +6,7 @@ export const loginUser = async  (user:UserModel):Promise<UserModel>=>{
         body: JSON.stringify(user),
         headers: {
           "Content-Type": "application/json",
-        },
+        },  
       });
       const data: any = await response.json();
 

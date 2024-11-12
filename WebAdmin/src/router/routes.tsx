@@ -1,6 +1,9 @@
 import { lazy } from 'react';
 import PrivateRoute from './PrivateRoute';  // Import the PrivateRoute component
 import Scrumboard from '../pages/Scrumboard';
+import Analytics from '../pages/Analytics';
+import Contacts from '../pages/Contacts';
+import Tables from '../pages/Tables';
 
 const Index = lazy(() => import('../pages/Analytics'));
 const ProductManagent = lazy(() => import('../pages/ProductManagent'));
@@ -12,6 +15,12 @@ const ProductUpdate = lazy(() => import('../pages/ProductEdit'));
 const CategoriesUpdate = lazy(() => import('../pages/CategoriesNew'));
 const CategoryEdit = lazy(() => import('../pages/CategoriesEdit'));
 const Usermanagent = lazy(() => import('../pages/UsersManagent'));
+const BillsManagement = lazy(() => import('../pages/OrderManagement'));
+const OrdersManagement = lazy(() => import('../pages/OrderManagement'));
+const PaymentPage = lazy(() => import('../pages/Payment'));
+const PaymentCallbackPage = lazy(() => import('../pages/PaymentCallbackPage'));
+
+
 const routes = [
     // dashboard (protected)
     {
@@ -88,6 +97,31 @@ const routes = [
         element: (
             <PrivateRoute>
                 <Scrumboard />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/bill-management',
+        element: (
+            <PrivateRoute>
+                <OrdersManagement />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/payment',
+        element: (
+            <PrivateRoute>
+                <PaymentPage />
+            </PrivateRoute>
+        ),
+    },
+    
+    {
+        path: '/payment-callback',
+        element: (
+            <PrivateRoute>
+                <PaymentCallbackPage />
             </PrivateRoute>
         ),
     },
