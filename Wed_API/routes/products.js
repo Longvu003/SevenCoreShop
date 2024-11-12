@@ -261,5 +261,5 @@ router.put("/update/:id", async (req, res) => {
 });
 
 // API product khi nhan vao category ra 1 list ID
-router.get("/category/:categoryId", ProductController.getProductsByCategory);
+router.get("/categoryId", ProductController.getProductsByCategory);
 module.exports = router;

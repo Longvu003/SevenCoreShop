@@ -67,7 +67,7 @@ const LoginScreen = ({navigation}) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor: 'white'}}>
       <View style={styles.container}>
         <View style={{flex: 1, marginTop: 10}}>
           <Text style={styles.title}>Đăng nhập</Text>

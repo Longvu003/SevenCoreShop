@@ -62,7 +62,7 @@ const User = ({navigation}) => {
       <View style={UserStyleSheet.layout__Img}>
         <Image
           style={UserStyleSheet.img__User}
-          source={require('../../../assets/imgs/abc.png')}
+          source={require('../../../assets/imgs/logo.png')}
         />
       </View>
       <View style={UserStyleSheet.header__Information}>

@@ -65,7 +65,7 @@ const HomeScreen = ({navigation}) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={styles.header}>
         <Image
@@ -101,7 +101,7 @@ const HomeScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <View style={styles.categoryContainer}>
-        <ScrollView horizontal showsVerticalScrollIndicator={false}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {categories.length > 0 ? (
             categories.map((category, index) => (
               <TouchableOpacity

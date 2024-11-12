@@ -136,15 +136,19 @@ router.put(
   ],
   validateRequest,
   async (req, res) => {
-    const { email, password, username, numberphone, birthday } = req.body;
+    const { email, password, username, numberphone, birthday, address } =
+      req.body;
+
     try {
       const result = await userController.updateUser(
         email,
         password,
         username,
         numberphone,
-        birthday
+        birthday,
+        address
       );
+
       return res.status(200).json({ status: true, data: result });
     } catch (error) {
       console.log("Update error", error.message);

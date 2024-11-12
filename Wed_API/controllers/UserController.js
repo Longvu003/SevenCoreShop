@@ -153,7 +153,14 @@ const resetPassword = async (email, otp, newPassword) => {
 };
 
 // Cập nhật thông tin người dùng
-const updateUser = async (email, password, username, numberphone, birthday) => {
+const updateUser = async (
+  email,
+  password,
+  username,
+  numberphone,
+  birthday,
+  address
+) => {
   try {
     const user = await userModel.findOne({ email: email });
     if (!user) {
@@ -169,6 +176,7 @@ const updateUser = async (email, password, username, numberphone, birthday) => {
     user.username = username;
     user.numberphone = numberphone;
     user.birthday = birthday;
+    user.address = address;
     user.updatedAt = Date.now();
 
     await user.save();
