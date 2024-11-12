@@ -24,7 +24,10 @@ const usersRouter = require('./routes/users');
 const productsRouter = require('./routes/products');
 const categoriesRouter = require('./routes/categories');
 const cartsRouter = require('./routes/carts');
+const orderRouter = require('./routes/orders');
 const adsRouter = require('./routes/ads')(upload); // Chỉ khai báo một lần
+// const paymentRoutes = require('./routes/payments'); // Import router thanh toán
+
 
 const app = express();
 
@@ -51,6 +54,8 @@ app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
 app.use('/carts', cartsRouter);
 app.use('/ads', adsRouter); // Đăng ký router quảng cáo
+app.use('/orders', orderRouter);
+// app.use('/payments', paymentRoutes); // Đăng ký router thanh toán
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
