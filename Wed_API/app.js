@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"], // Thêm domain của web app vào
+    origin: ["http://localhost:7777", "http://localhost:3000"], // Thêm domain của web app vào
     methods: ["GET", "POST", "PUT", "DELETE"], // Các phương thức HTTP được phép
     credentials: true, // Cho phép truyền cookie nếu cần
   })

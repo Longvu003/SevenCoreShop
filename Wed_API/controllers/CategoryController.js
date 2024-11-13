@@ -1,7 +1,6 @@
 const CategoryModel = require("./CategoryModel");
 
 // lấy danh sách danh mục
-
 const getCategoryList = async () => {
   try {
     const category = await CategoryModel.find(); // lấy tất cả danh mục trong db
@@ -11,6 +10,7 @@ const getCategoryList = async () => {
     throw new Error("Get category list error");
   }
 };
+
 const createCategory = async (name, description, images) => {
   try {
     const categoryInfo = {

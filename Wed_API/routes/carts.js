@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 var express = require("express");
 var router = express.Router();
 
@@ -55,25 +56,34 @@ router.get("/getItemCartById", async (req, res) => {
  */
 router.delete("/deleteItemCart", async (req, res) => {
   const { userId, productId, quantity } = req.body;
+  console.log("Nhận yêu cầu xóa sản phẩm với userId:", userId, "productId:", productId, "và quantity:", quantity);
+
   try {
-    const itemDelete = await cartController.deleteItemcart(userId, productId);
-    if (!itemDelete) {
-      res.status(404).json({ message: "Không tìm thấy người dùng" });
+    const { success, message, itemDeleted } = await cartController.deleteItemcart(userId, productId);
+    
+    if (!success) {
+      console.log("Lỗi khi xóa sản phẩm:", message);
+      return res.status(404).json({ message }); // Nếu không thành công, trả về 404
+    }
+
+    // Nếu sản phẩm tồn tại trong giỏ hàng
+    itemDeleted.quantity -= quantity;
+
+    // Nếu quantity còn lại <= 0, xóa sản phẩm khỏi giỏ hàng
+    if (itemDeleted.quantity <= 0) {
+      await itemDeleted.deleteOne();
+      return res.status(200).json({ message: "Sản phẩm đã được xóa thành công" });
     } else {
-      itemDelete.quantity -= quantity;
-      if (itemDelete.quantity <= 0) {
-        await itemDelete.deleteOne();
-        res.status(200).json({ message: "Xóa thành công" });
-      } else {
-        await itemDelete.save();
-        res.status(200).json({ itemDelete });
-      }
+      await itemDeleted.save();
+      return res.status(200).json({ itemDeleted });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ status: false, data: error.message });
+    console.log("Lỗi xử lý yêu cầu:", error);
+    return res.status(500).json({ status: false, data: error.message });
   }
 });
+
+
 
 /**
  * Cập nhật số lượng sản phẩm trong giỏ hàng

@@ -68,10 +68,12 @@ const HomeScreen = ({navigation}) => {
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Image
-          source={{uri: 'https://via.placeholder.com/50'}}
-          style={styles.avatar}
-        />
+        <Text style={styles.hello}>
+           Xin Chào
+        </Text>
+          
+          
+        
         <TouchableOpacity onPress={() => navigation.navigate('CartScreen')}>
           <Image
             source={require('../../../assets/imgs/cart2.png')}
@@ -176,6 +178,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#fff',
+  },
+  hello:{
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   header: {
     flexDirection: 'row',

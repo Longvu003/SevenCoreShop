@@ -10,7 +10,7 @@ const OrderSchema = new mongoose.Schema({
   ],
   totalAmount: { type: Number, required: true },
   paymentMethod: { type: String, enum: ['COD'], required: true },
-  status: { type: String, default: 'Pending' }, // Trạng thái đơn hàng
+  status: { type: String, default: 'Đang giao hàng' }, // Trạng thái đơn hàng
   createdAt: { type: Date, default: Date.now },
 });
 

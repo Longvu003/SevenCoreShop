@@ -20,7 +20,7 @@ const LoginTest = ({navigation}) => {
   // const [isLoading, setIsLoading] = useState(false);
   const onSubmitFormHandler = async () => {
     try {
-      const response = await Axios.post('http://192.168.2.59:3000/login', {
+      const response = await Axios.post('http://192.168.1.3:7777/login', {
         phone,
         password,
       });

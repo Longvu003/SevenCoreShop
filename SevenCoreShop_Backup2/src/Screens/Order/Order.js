@@ -1,72 +1,57 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import axios from 'axios';
 
-const getProductDetails = async productId => {
+const getProductDetails = async (productId) => {
   try {
-    const response = await axios.get(
-      `http://192.168.1.8:7777/products/${productId}`,
-    );
-    return response.data.data; // Trả về dữ liệu sản phẩm chi tiết
+    const response = await axios.get(`http://192.168.1.3:7777/products/${productId}`);
+    return response.data.data;
   } catch (error) {
     console.error('Lỗi khi lấy thông tin sản phẩm:', error);
     return null;
   }
 };
 
-const Order = ({route}) => {
-  const {order} = route.params;
-  const [productDetails, setProductDetails] = useState([]);
+const Order = ({ route }) => {
+  const { order } = route.params;
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    console.log('Dữ liệu order nhận được:', order);
-
-    const fetchProductDetails = async () => {
+    const fetchOrderDetails = async () => {
       if (order && order.items && order.items.length > 0) {
         const details = await Promise.all(
-          order.items.map(async item => {
+          order.items.map(async (item) => {
             const product = await getProductDetails(item.productId);
-            return {...item, product}; // Kết hợp thông tin sản phẩm và số lượng trong đơn hàng
-          }),
+            return { ...item, product };
+          })
         );
-        setProductDetails(details);
+        setOrders((prevOrders) => [...prevOrders, { ...order, details }]);
       }
     };
 
-    if (order) {
-      fetchProductDetails();
-    }
+    fetchOrderDetails();
   }, [order]);
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Chi tiết đơn hàng</Text>
-      {order ? (
-        <>
-          <Text style={styles.paymentInfo}>
-            Phương thức thanh toán: {order.paymentMethod}
-          </Text>
-          <Text style={styles.paymentInfo}>
-            Tổng tiền: {order.totalAmount} VND
-          </Text>
-
-          {productDetails.length > 0 ? (
-            productDetails.map((item, index) => (
-              <View key={index} style={styles.itemContainer}>
+      <Text style={styles.title}>Lịch sử các đơn hàng</Text>
+      {orders.length > 0 ? (
+        orders.map((order, orderIndex) => (
+          <View key={orderIndex} style={styles.orderContainer}>
+            <Text style={styles.orderTitle}>Đơn hàng {orderIndex + 1}</Text>
+            <Text style={styles.paymentInfo}>Phương thức thanh toán: {order.paymentMethod}</Text>
+            <Text style={styles.paymentInfo}>Tổng tiền: {order.totalAmount} VND</Text>
+            {order.details.map((item, itemIndex) => (
+              <View key={itemIndex} style={styles.itemContainer}>
                 <Text style={styles.itemName}>
-                  Tên sản phẩm:{' '}
-                  {item.product ? item.product.name : 'Không có tên sản phẩm'}
+                  Tên sản phẩm: {item.product ? item.product.name : 'Không có tên sản phẩm'}
                 </Text>
                 <Text>Số lượng: {item.quantity}</Text>
-                <Text>
-                  Giá: {item.product ? item.product.price : 'N/A'} VND
-                </Text>
+                <Text>Giá: {item.product ? item.product.price : 'N/A'} VND</Text>
               </View>
-            ))
-          ) : (
-            <Text>Không có sản phẩm nào trong đơn hàng.</Text>
-          )}
-        </>
+            ))}
+          </View>
+        ))
       ) : (
         <Text>Không có đơn hàng nào được tạo.</Text>
       )}
@@ -85,6 +70,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  orderContainer: {
+    marginBottom: 25,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
+  orderTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
   paymentInfo: {
     fontSize: 18,
     marginBottom: 10,
@@ -93,7 +90,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#ddd',
     borderRadius: 5,
   },
   itemName: {

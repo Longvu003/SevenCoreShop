@@ -48,11 +48,11 @@ const searchProduct = async (key) => {
 // Lấy danh sách sản phẩm theo danh mục
 const getProductsByCategory = async (req, res) => {
   try {
+
     const categoryId = req.params.categoryId;
 
-    // Chuyển categoryId sang ObjectId
     const products = await ProductModel.find({
-      category: mongoose.Types.ObjectId(categoryId),
+      category: categoryId,
     }).populate("category");
 
     if (products.length === 0) {
@@ -96,7 +96,7 @@ const addProduct = async (
   inventory
 ) => {
   try {
-    const categoryInDB = await CategoryModel.findById(mongoose.Types.ObjectId(category));
+    const categoryInDB = await CategoryModel.findById(new mongoose.Types.ObjectId(category));
     if (!categoryInDB) {
       throw new Error("Category không tồn tại");
     }
@@ -107,7 +107,7 @@ const addProduct = async (
       quantity,
       images,
       description,
-      category: mongoose.Types.ObjectId(category), // Lưu category dưới dạng ObjectId
+      category: new mongoose.Types.ObjectId(category),
       color,
       size,
       status,
