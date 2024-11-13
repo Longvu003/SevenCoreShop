@@ -127,8 +127,8 @@ router.post("/:id/deleteuserbyid", async (req, res, next) => {
   router.post("/:id/updateuserbyid", async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { email, password, name, phone, address } = req.body;
-      const result = await userController.updateUserById(id, email, password, name, phone, address);
+      const { email, password, name, phone, address, role } = req.body;
+      const result = await userController.updateUserById(id, email, password, name, phone, address, role);
       return res.status(200).json({ status: true, message: "Cập nhật tài khoản thành công", data: result });
     } catch (error) {
       console.log("Update user by id error", error.message);

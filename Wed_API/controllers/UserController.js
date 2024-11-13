@@ -159,7 +159,7 @@ const deleteUser = async (email) => {
 // Lấy tất cả người dùng
 const getAllUser = async () => {
   try {
-    const users = await userModel.find();
+    const users = await userModel.find({}, { password: 0 });
     return users;
   } catch (error) {
     console.log("Get all user error", error.message);
@@ -182,7 +182,7 @@ const deleteUserById = async (id) => {
 };
 
 // Cập nhật người dùng theo ID
-const updateUserById = async (id, email, password, name, phone, address) => {
+const updateUserById = async (id, email, password, name, phone, address, role) => {
   try {
       const user = await userModel.findById(id);
       if (!user) {
@@ -199,6 +199,7 @@ const updateUserById = async (id, email, password, name, phone, address) => {
       user.name = name;
       user.phone = phone;
       user.address = address;
+      user.role = role;
       user.updatedAt = Date.now();
 
       await user.save();
