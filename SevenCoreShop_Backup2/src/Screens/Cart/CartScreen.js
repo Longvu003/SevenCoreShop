@@ -18,7 +18,6 @@ import {useNavigation} from '@react-navigation/native';
 
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
-
 const CartScreen = () => {
   const navigation = useNavigation();
 

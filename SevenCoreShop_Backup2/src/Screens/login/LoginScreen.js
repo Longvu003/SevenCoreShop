@@ -21,11 +21,11 @@ const LoginScreen = ({navigation}) => {
   const handleSubmit = async () => {
     // Kiểm tra người dùng đã nhập đầy đủ thông tin chưa
     if (!email) {
-      Alert.alert('Email không chính xác');
+      Alert.alert('Email không được để trống');
       return false;
     }
     if (!password) {
-      Alert.alert('Mật khẩu không chính xác');
+      Alert.alert('Mật khẩu không được để trống');
       return false;
     }
 

@@ -14,6 +14,8 @@ const productsRouter = require("./routes/products");
 const categoriesRouter = require("./routes/categories");
 const cartsRouter = require("./routes/carts");
 const Order = require("./routes/Order");
+const commentRoutes = require("./routes/cmt.js");
+
 var app = express();
 
 // View engine setup
@@ -54,6 +56,8 @@ app.use("/carts", cartsRouter);
 // // http://localhost:7777/api/carts
 // app.use('/carts/checkout', cartsRouter);
 app.use("/Orders", Order);
+
+app.use("/api/comments", commentRoutes);
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

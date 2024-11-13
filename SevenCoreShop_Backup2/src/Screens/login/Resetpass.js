@@ -124,6 +124,32 @@ const Resetpass = ({navigation}) => {
           <Text style={styles.linkText}>Gửi lại mã</Text>
         </TouchableOpacity>
 
+        <TextInput
+          style={styles.input}
+          placeholder="Mật khẩu mới"
+          secureTextEntry
+          value={newPassword}
+          onChangeText={setNewPassword}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Xác nhận mật khẩu mới"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleResetPassword}
+          disabled={loading}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.submitButtonText}>Gửi</Text>
+          )}
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
           <Text style={styles.linkText}>Quay lại trang đăng nhập</Text>
         </TouchableOpacity>

@@ -2,7 +2,7 @@ exports.resetPassword = async (req, res) => {
   const { email, otp, newPassword, confirmPassword } = req.body;
 
   if (newPassword !== confirmPassword) {
-    return res.status(400).send({ message: 'Mật khẩu và xác nhận mật khẩu không khớp.' });
+    return res.status(400).send({ message: 'Mật khẩu mới và xác nhận mật khẩu không khớp.' });
   }
 
   try {
