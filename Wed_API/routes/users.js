@@ -57,13 +57,25 @@ router.post(
   ],
   validateRequest,
   async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      const result = await userController.login(email, password);
-      return res.status(200).json(result);
-    } catch (error) {
-      console.log("Login error", error.message);
-      res.status(500).json({ message: error.message });
+    // try {
+    //   const { email, password } = req.body;
+    //   const result = await userController.login(email, password);
+    //   return res.status(200).json(result);
+    // } catch (error) {
+    //   console.log("Login error", error.message);
+    //   res.status(500).json({ message: error.message });
+    // }
+    const { email, password } = req.body;
+
+    // console.log(req.body);
+    const result = await userController.login(email, password);
+    if (result) {
+      return res.status(200).json({ status: true, data: result });
+      // return res.status(200).json(result);
+    } else {
+      return res
+        .status(400)
+        .json({ message: "Mật khẩu và xác nhận mật khẩu không khớp." });
     }
   }
 );
@@ -106,17 +118,30 @@ router.post(
 
     // Kiểm tra sự khớp của mật khẩu mới và xác nhận mật khẩu
     if (newPassword !== confirmPassword) {
-      return res
-        .status(400)
-        .json({ message: "Mật khẩu và xác nhận mật khẩu không khớp." });
-    }
+      // =======
+      // router.post("/login", async (req, res, next) => {
+      //   try {
+      //     const { email, password } = req.body;
 
-    try {
-      await userController.resetPassword(email, otp, newPassword);
-      res.status(200).json({ message: "Đặt lại mật khẩu thành công" });
-    } catch (error) {
-      console.log("Reset password error", error.message);
-      res.status(500).json({ message: error.message });
+      //     // console.log(req.body);
+      //     const result = await userController.login(email, password);
+      //     if (result) {
+      //       return res.status(200).json({ status: true, data: result });
+      //       // return res.status(200).json(result);
+      //     } else {
+      // >>>>>>> 0c41e54e254d54a59fe560489db8ebd4b695e321
+      //       return res
+      //         .status(400)
+      //         .json({ message: "Mật khẩu và xác nhận mật khẩu không khớp." });
+      //     }
+
+      try {
+        await userController.resetPassword(email, otp, newPassword);
+        res.status(200).json({ message: "Đặt lại mật khẩu thành công" });
+      } catch (error) {
+        console.log("Reset password error", error.message);
+        res.status(500).json({ message: error.message });
+      }
     }
   }
 );

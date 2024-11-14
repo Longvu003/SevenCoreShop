@@ -35,16 +35,19 @@ const add = async (userId, productId, nameProduct, quantity, price, images) => {
 // Hàm xóa sản phẩm khỏi giỏ hàng
 const deleteItemcart = async (userId, productId) => {
   try {
-    const itemDeleted = await CartModel.findOneAndDelete({ userId, productId });
-    if (itemDeleted) {
-      return { success: true, message: "Đã xóa sản phẩm khỏi giỏ hàng" };
-    } else {
-      console.log("Sản phẩm không tồn tại trong giỏ hàng");
+    // console.log("Tìm sản phẩm với userId:", userId, "và productId:", productId); // Log để kiểm tra thông tin
+
+    const itemDeleted = await CartModel.findOne({ userId, productId });
+
+    if (!itemDeleted) {
+      console.log("Không tìm thấy sản phẩm trong giỏ hàng");
       return {
         success: false,
         message: "Sản phẩm không tồn tại trong giỏ hàng",
       };
     }
+
+    return { success: true, itemDeleted };
   } catch (error) {
     console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
     return { success: false, message: "Đã xảy ra lỗi khi xóa sản phẩm" };

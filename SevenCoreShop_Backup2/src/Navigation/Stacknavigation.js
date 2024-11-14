@@ -43,9 +43,10 @@ const Stacknavigation = () => {
         <Stack.Screen name="EditUser" component={EditUser} />
         <Stack.Screen name="ProductDetail" component={ProductDetail} />
         <Stack.Screen name="CartScreen" component={CartScreen} />
-        {/* <Stack.Screen name="Order" component={Order} /> */}
         <Stack.Screen name="AllProductsScreen" component={AllProductsScreen} />
         <Stack.Screen name="CategoryScreen" component={CategoryScreen} />
+        <Stack.Screen name="Order" component={Order} />
+        {/* <Stack.Screen name="AddressSelection" component={AddressSelection} options={{title: 'Chọn địa chỉ giao hàng'}} />  */}
         <Stack.Screen
           name="CategoryDetailScreen"
           component={CategoryDetailScreen}

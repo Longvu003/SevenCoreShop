@@ -43,7 +43,9 @@ const LoginScreen = ({navigation}) => {
       );
       // Kiểm tra phản hồi từ API
       if (response.status === 200) {
-        const user = JSON.stringify(response.data.email);
+        console.log('data nè', response.data.data.email);
+        const user = JSON.stringify(response.data.data.email);
+        const userId = JSON.stringify(response.data.data._id);
         await AsyncStorage.setItem('userEmail', user);
         Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
         navigation.navigate('Tab');

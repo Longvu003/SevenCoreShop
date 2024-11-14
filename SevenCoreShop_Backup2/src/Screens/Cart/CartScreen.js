@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  FlatList,
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import Customheader from '../../CustomHeader/Customheader';
@@ -12,12 +13,12 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API__URL from '../../../config';
 import {Dimensions} from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
+
 const CartScreen = () => {
   const navigation = useNavigation();
 
@@ -94,8 +95,13 @@ const CartScreen = () => {
   };
 
   const handleCheckout = async () => {
+    if (!paymentMethod) {
+      Alert.alert('Thông báo', 'Bạn phải chọn phương thức thanh toán!');
+      return;
+    }
+
     try {
-      const response = await axios.post(`${API__URL}/Orders/checkout`, {
+      const response = await axios.post(`${API__URL}/carts/checkout`, {
         userId: userId,
         items: cart,
         paymentMethod: paymentMethod || 'COD',
@@ -103,7 +109,7 @@ const CartScreen = () => {
 
       if (response.status === 200) {
         const order = response.data.order;
-        // console.log('Dữ liệu order nhận được:', order);
+        console.log('Dữ liệu order nhận được:', order);
 
         const detailedItems = await Promise.all(
           order.items.map(async item => {
@@ -129,9 +135,7 @@ const CartScreen = () => {
 
         Alert.alert(
           'Thông báo',
-          `${message}\nMã đơn hàng: ${orderId}\nUser ID: ${userId}\nSản phẩm:\n${productDetails}\nPhương thức thanh toán: ${
-            paymentMethod || 'COD'
-          }`,
+          'Thanh toán thành công',
           [
             {
               text: 'OK',
@@ -143,8 +147,14 @@ const CartScreen = () => {
           {cancelable: false},
         );
 
-        setCart([]);
+        // Clear toàn bộ giỏ hàng sau khi thanh toán
+        for (let item of cart) {
+          await clearCart(item.productId, item.quantity); // Xóa
+        }
+
+        // Reset lại tổng giá trị và phương thức thanh toán
         setTotalPriceCart(0);
+        setPaymentMethod(null); // Reset phương thức thanh toán
       }
     } catch (error) {
       console.error(
@@ -158,6 +168,9 @@ const CartScreen = () => {
       );
     }
   };
+  const handlePayment = () => {
+    navigation.navigate('AddressSelection'); // Điều hướng đến màn hình chọn địa chỉ
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -166,62 +179,40 @@ const CartScreen = () => {
   );
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-      <View style={{flex: 1}}>
-        <Customheader
-          leftIcon={require('../../../assets/imgs/back4.png')}
-          title="Giỏ hàng"
-        />
-      </View>
-      <View style={{flex: 1, alignItems: 'flex-end'}}>
-        <TouchableOpacity
-          onPress={() => {
-            if (cart.length >= 1) {
-              Alert.alert(
-                'Xóa sản phẩm !',
-                'Bạn muốn xóa hết sản phẩm trong giỏ hàng ?',
-                [
-                  {text: 'Không', onPress: () => console.log('Không')},
-                  {
-                    text: 'Xác nhận',
-                    onPress: () =>
-                      cart.forEach(element =>
-                        clearCart(element.productId, element.quantity),
-                      ),
-                  },
-                ],
-              );
-            } else {
-              Alert.alert('Không có sản phẩm để xóa');
-            }
-          }}>
-          <Text style={styles.txt__remove}>Remove All</Text>
-        </TouchableOpacity>
-      </View>
-      {/* <View style={{flex: 6}}>
-        <FlatList
-          data={cart}
-          renderItem={({item}) => {
-            return (
-              <View style={styles.product__container}>
-                <View style={styles.item__container}>
-                  <Image
-                    style={styles.img__product}
-                    source={{uri: item.images[0]}}
-                  />
-                  <View style={{marginLeft: 10}}>
-                    <Text style={styles.txt__remove}>{item.nameProduct}</Text>
-                    <Text style={styles.txt__remove}>{item.quantity}</Text>
-                  </View>
-                </View>
-                <View>
-                  <View
-                    style={{
-                      flexDirection: 'column',
-                      alignItems: 'flex-end',
-                    }}>
-                    <Text style={styles.txt__remove}>{item.price}</Text> */}
+    <View style={styles.container}>
+      <Customheader
+        leftIcon={require('../../../assets/imgs/back3.png')}
+        title="Giỏ hàng"
+      />
 
+      {/* Remove All Button */}
+      <TouchableOpacity
+        style={styles.removeAllBtn}
+        onPress={() => {
+          Alert.alert(
+            'Xác nhận',
+            'Bạn có chắc chắn muốn xóa tất cả sản phẩm trong giỏ hàng?',
+            [
+              {
+                text: 'Không',
+                style: 'cancel',
+              },
+              {
+                text: 'Có',
+                onPress: () => {
+                  cart.forEach(element =>
+                    clearCart(element.productId, element.quantity),
+                  );
+                },
+              },
+            ],
+            {cancelable: false},
+          );
+        }}>
+        <Text style={styles.txt__remove}>Remove All</Text>
+      </TouchableOpacity>
+
+      {/* Cart Items List */}
       <FlatList
         data={cart}
         renderItem={({item}) => (
@@ -433,7 +424,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 20,
   },
   btnCheckoutText: {
     fontSize: 18,
