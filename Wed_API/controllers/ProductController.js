@@ -80,78 +80,83 @@ const getProductByPrice = async (min, max) => {
 // thêm mới sản phẩm
 const addProduct = async (name, price, quantity, images, description, category) => {
     try {
-        console.log('category: ', category)
-        // lấy category theo id
-        const categoryInDB = await CategoryModel.findById(category);
-        if (!categoryInDB) {
-            throw new Error('Category không tồn tại')
-        }
-        
-        
-        // tạo object category
-        category = {
-            category_id: categoryInDB._id,
-            category_name: categoryInDB.name
+        // Check if a product with the same name already exists
+        const existingProduct = await ProductModel.findOne({ name });
+        if (existingProduct) {
+            throw new Error('Product with the same name already exists');
         }
 
-        // chưa bắt lỗi 
-        const product = {
-            name, price, quantity, images, description, category
+        // Get category by ID
+        const categoryInDB = await CategoryModel.findById(category);
+        if (!categoryInDB) {
+            throw new Error('Category không tồn tại');
         }
+
+        // Create category object
+        const categoryObj = {
+            category_id: categoryInDB._id,
+            category_name: categoryInDB.name
+        };
+
+        // Create product object
+        const product = {
+            name, price, quantity, images, description, category: categoryObj
+        };
         const newProduct = new ProductModel(product);
-        // lưu vào db
+
+        // Save to database
         const result = await newProduct.save();
-        // setTimeout(() => {
-        //     console.log('result: ', result);
-        //     //thêm 1 sp vào danh sách poducts của category
-        // }, 0);
         return result;
     } catch (error) {
-        console.log('Add product error', error.message)
-        throw new Error('Add product error')
+        console.log('Add product error', error.message);
+        throw new Error('Add product error');
     }
-}
+};
 
 // cập nhật sản phẩm 
 const updateProduct = async (id, name, price, quantity, images, description, category) => {
     try {
-        // tìm sp theo id
+        // Find product by ID
         const productInDb = await ProductModel.findById(id);
         if (!productInDb) {
             throw new Error("Sản phẩm không tồn tại");
         }
 
-        if(!category){
-            throw new Error('Category không tồn tại')
-        }
-        // lấy category theo id
-        const categoryInDB = await CategoryModel.findById(category['category_name']);
-        if (!categoryInDB) {
-            throw new Error('Category không tồn tại')
+        // Check if a product with the same name already exists
+        const existingProduct = await ProductModel.findOne({ name });
+        if (existingProduct && existingProduct._id.toString() !== id) {
+            throw new Error('Product with the same name already exists');
         }
 
-        // tạo object category
-        category = {
+        // Get category by ID
+        const categoryInDB = await CategoryModel.findById(category);
+        if (!categoryInDB) {
+            throw new Error('Category không tồn tại');
+        }
+
+        // Create category object
+        const categoryObj = {
             category_id: categoryInDB._id,
             category_name: categoryInDB.name
-        }
+        };
 
-        // cập nhật sản phẩm 
+        // Update product fields
         productInDb.name = name || productInDb.name;
         productInDb.price = price || productInDb.price;
         productInDb.quantity = quantity || productInDb.quantity;
-        productInDb.images = images || productInDb.images
+        productInDb.images = images || productInDb.images;
         productInDb.description = description || productInDb.description;
+        productInDb.category = categoryObj;
         productInDb.updateAt = Date.now();
 
+        // Save updated product to database
         await productInDb.save();
         return true;
     } catch (error) {
-        console.log('Update product error', error.message)
-        throw new Error('Update product error',error.message)
+        console.log('Update product error', error.message);
+        throw new Error('Update product error');
     }
-}
-
+};
 
 // xóa sp
 const deleteProduct = async (id) => {

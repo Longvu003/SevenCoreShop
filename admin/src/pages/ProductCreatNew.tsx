@@ -115,7 +115,7 @@ export default function ProductCreateNew() {
     return (
         <form className="space-y-5" onSubmit={clickCreateNew}>
             <div>
-                <label htmlFor="productName">Product Name</label>
+                <label htmlFor="productName">Tên Sản Phẩm</label>
                 <input
                     id="productName"
                     type="text"
@@ -128,7 +128,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productPrice">Product Price</label>
+                <label htmlFor="productPrice">Giá bán</label>
                 <input
                     id="productPrice"
                     type="number"
@@ -141,7 +141,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productQuantity">Product Quantity</label>
+                <label htmlFor="productQuantity">Số lượng</label>
                 <input
                     id="productQuantity"
                     type="number"
@@ -154,7 +154,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productDescription">Product Description</label>
+                <label htmlFor="productDescription">Mô tả sản phẩm</label>
                 <input
                     id="productDescription"
                     type="text"
@@ -167,7 +167,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productCategory">Product Categories</label>
+                <label htmlFor="productCategory">Danh mục sản phẩm</label>
                 <select
                     id="productCategory"
                     name="category_name"
@@ -176,7 +176,7 @@ export default function ProductCreateNew() {
                     className="form-multiselect text-white-dark"
                     required
                 >
-                    <option value="">Select Category</option>
+                    <option value="">Nhấn để chọn danh mục của sản phẩm</option>
                     {categories.map((item, index) => (
                         <option key={index} value={item._id}>{item.name}</option>
                     ))}
@@ -184,7 +184,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productImages">Images</label>
+                <label htmlFor="productImages">Hình ảnh</label>
                 <input
                     id="productImages"
                     type="file"
@@ -220,7 +220,7 @@ export default function ProductCreateNew() {
             </div>
 
             <button type="submit" className="btn btn-primary !mt-6">
-                Submit
+                Lưu
             </button>
         </form>
     );

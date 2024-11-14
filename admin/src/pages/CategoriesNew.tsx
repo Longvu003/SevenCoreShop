@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { categoryController } from '../controller/CategoryController';
-import { Navigate } from "react-router-dom";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 
 export default function CategoryUpdate() {
+    const MySwal = withReactContent(Swal);
     const { createCategories } = categoryController();
     const [dataCategories, setDataCategories] = useState<any>({
         name: '',
@@ -19,33 +22,39 @@ export default function CategoryUpdate() {
     const clickCreateNew = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log(dataCategories);        
-        const res:any = await createCategories(dataCategories);
+        const res: any = await createCategories(dataCategories);
         console.log(res);   
-        if(res.status === true){
-            alert("Create Categories Success")
-            location.href = "/categoriesmanagent";
-
-
-    }else{
-        alert("Create Categories Fail")
-    }
-
+        if (res.status === true) {
+            MySwal.fire({
+                title: 'Thành công',
+                text: 'Thêm mới danh mục sản phẩm thành công',
+                icon: 'success',
+            }).then(() => {
+                location.href = "/categoriesmanagent";
+            });
+        } else {
+            MySwal.fire({
+                title: 'Thất bại',
+                text: 'Tên danh mục đã tồn tại',
+                icon: 'error',
+            });
+        }
     };
     
 
     return (
         <form className="space-y-5" onSubmit={clickCreateNew}>
             <div>
-                <label htmlFor="productName">Categories Name</label>
+                <label htmlFor="productName">Tên Danh mục sản phẩm</label>
                 <input id="Name" type="text" name="name" className="form-input" required onChange={handleChange} />
             </div>
 
             <div>
-                <label htmlFor="productDescription">Categories Description</label>
+                <label htmlFor="productDescription">Mô Tả danh mục sản phẩm</label>
                 <input id="Description" type="text" name="description" className="form-input" required  onChange={handleChange} />
             </div>
 
-            <button type="submit" className="btn btn-primary !mt-6">Submit</button>
+            <button type="submit" className="btn btn-primary !mt-6">Lưu</button>
         </form>
     );
 }

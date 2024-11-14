@@ -1,23 +1,23 @@
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { userProducts } from '../controller/ProductController';
 import { Category } from '../model/CategoriesModel';
 import { categoryController } from '../controller/CategoryController';
 export default function ProductUpdate() {
     const queryString = location.search;
     const urlParams = new URLSearchParams(queryString);
-    const { getCategories, deleteCategoriesById,  } = categoryController();
+    const { getCategories, deleteCategoriesById, } = categoryController();
     const [dataCategorie, setDataCategorie] = useState<Category[]>([]);
-    const id: any = urlParams.get('id');   
-    console.log(id); 
-    const { editProduct,getProductById  } = userProducts();
+    const id: any = urlParams.get('id');
+    console.log(id);
+    const { editProduct, getProductById } = userProducts();
     const [dataProduct, setDataProduct] = useState<any>({
         name: '',
         price: '',
         quantity: '',
         description: '',
         category: {
-        category_name: '',
-        category_id: '' 
+            category_name: '',
+            category_id: ''
         },
         images: ''
     });
@@ -28,11 +28,11 @@ export default function ProductUpdate() {
     };
     useEffect(() => {
         showData();
-        console.log("dataCategorie"+dataCategorie);
+        console.log("dataCategorie" + dataCategorie);
         const fetchProduct = async () => {
             try {
                 const res: any = await getProductById(id);
-                console.log("giá trị res"+res.data.images);
+                console.log("giá trị res" + res.data.images);
                 if (res.status) {
                     setDataProduct({
                         name: res.data.name,
@@ -81,27 +81,27 @@ export default function ProductUpdate() {
         // console.log('gias tri name'+name)
         // console.log('gia tri value'+value);
         if (name.includes('category.')) {
-          const categoryField = name.split('.')[1];
-          console.log(categoryField);
-          setDataProduct((prevState: any) => ({
-            ...prevState,
-            category: {
-              ...prevState.category,
-              [categoryField]: value
-            }
-          }));
+            const categoryField = name.split('.')[1];
+            console.log(categoryField);
+            setDataProduct((prevState: any) => ({
+                ...prevState,
+                category: {
+                    ...prevState.category,
+                    [categoryField]: value
+                }
+            }));
         } else if (name === 'images') {
-          setDataProduct({
-            ...dataProduct,
-            images: files ? Array.from(files).map(file => URL.createObjectURL(file)) : []
-          });
+            setDataProduct({
+                ...dataProduct,
+                images: files ? Array.from(files).map(file => URL.createObjectURL(file)) : []
+            });
         } else {
-          setDataProduct({
-            ...dataProduct,
-            [name]: value
-          });
+            setDataProduct({
+                ...dataProduct,
+                [name]: value
+            });
         }
-      };
+    };
 
     const clickUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -135,7 +135,6 @@ export default function ProductUpdate() {
                     onChange={handleChange}
                 />
             </div>
-
             <div>
                 <label htmlFor="productPrice">Giá bán</label>
                 <input
@@ -203,9 +202,9 @@ export default function ProductUpdate() {
                     className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
                     onChange={handleChange}
                 />
-                 <div style={{ margin: '10px' }}>
-                 <img src={dataProduct.images[0]} alt="Product" style={{ width: '200px' }} />
-                 </div>
+                <div style={{ margin: '10px' }}>
+                    <img src={dataProduct.images[0]} alt="Product" style={{ width: '200px' }} />
+                </div>
             </div>
             <button type="submit" className="btn btn-primary !mt-6">Submit</button>
         </form>

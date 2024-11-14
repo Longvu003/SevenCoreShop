@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const CategoryController = require('../controllers/CategoryController');
 
-const CategoryController = require('../controllers/CategoryController')
 // http://localhost:7777/categories
 
 /**
@@ -12,11 +12,11 @@ const CategoryController = require('../controllers/CategoryController')
  */
 router.get('/', async (req, res, next) => {
     try {
-        const categories = await CategoryController.getCategoryList()
+        const categories = await CategoryController.getCategoryList();
         return res.status(200).json({status: true, data: categories});
     } catch (error) {
-        console.log('Get category list error', error.message) 
-        res.status(500).json({status: false, data: error.message})
+        console.log('Get category list error', error.message);
+        res.status(500).json({status: false, data: error.message});
     }
 });
 
@@ -29,16 +29,18 @@ router.get('/', async (req, res, next) => {
  */
 router.post('/add', async (req, res, next) => {
     try {
-        const {name,description} = req.body
-        console.log(req.body);
-        const category = await CategoryController.createCategory(name,description)
-        return res.status(200).json({status: true, data: category});
+        const { name, description } = req.body;
+        const isDuplicate = await CategoryController.checkDuplicateCategory(name); // Kiểm tra trùng lặp
+        if (isDuplicate) {
+            return res.status(400).json({ status: false, data: 'Category already exists' });
+        }
+        const category = await CategoryController.createCategory(name, description);
+        return res.status(200).json({ status: true, data: category });
     } catch (error) {
-        console.log('Create category error', error.message)
-        res.status(500).json({status: false, data: error.message})
+        console.log('Create category error', error.message);
+        res.status(500).json({ status: false, data: error.message });
     }
 });
-
 
 /**
  * xóa danh mục
@@ -46,7 +48,6 @@ router.post('/add', async (req, res, next) => {
  * url: http://localhost:7777/categories/:id/delete
  * response: trả về danh mục vừa xóa
  */
-
 router.post('/:id/delete', async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -60,24 +61,28 @@ router.post('/:id/delete', async (req, res, next) => {
 
 router.post('/:id/update', async (req, res, next) => {
     try {
-        const id = req.params.id
-        const {name,description} = req.body
-        const category = await CategoryController.updateCategory(id,name,description)
-        return res.status(200).json({status: true, data: category});
+        const id = req.params.id;
+        const { name, description } = req.body;
+        const isDuplicate = await CategoryController.checkDuplicateCategory(name); // Kiểm tra trùng lặp
+        if (isDuplicate) {
+            return res.status(400).json({ status: false, data: 'Category already exists' });
+        }
+        const category = await CategoryController.updateCategory(id, name, description);
+        return res.status(200).json({ status: true, data: category });
     } catch (error) {
-        console.log('Update category error', error.message)
-        res.status(500).json({status: false, data: error.message})
+        console.log('Update category error', error.message);
+        res.status(500).json({ status: false, data: error.message });
     }
 });
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const id = req.params.id
-        const category = await CategoryController.getCategoryById(id)   
-        return res.status(200).json({status: true, data: category});
+        const id = req.params.id;
+        const category = await CategoryController.getCategoryById(id);
+        return res.status(200).json({ status: true, data: category });
     } catch (error) {
-        console.log('Get category by id error', error.message)
-        res.status(500).json({status: false, data: error.message})
+        console.log('Get category by id error', error.message);
+        res.status(500).json({ status: false, data: error.message });
     }
 });
 
