@@ -11,6 +11,7 @@ const ProductCreateNew = lazy(() => import('../pages/ProductCreatNew'));
 const ProductUpdate = lazy(() => import('../pages/ProductEdit'));
 const CategoriesUpdate = lazy(() => import('../pages/CategoriesNew'));
 const CategoryEdit = lazy(() => import('../pages/CategoriesEdit'));
+const OrderManagent = lazy(() => import('../pages/OrderManagement'));
 const routes = [
     // dashboard (protected)
     {
@@ -18,6 +19,14 @@ const routes = [
         element: (
             <PrivateRoute>
                 <Index />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/orderManagent',
+        element: (
+            <PrivateRoute>
+                <OrderManagent />
             </PrivateRoute>
         ),
     },
