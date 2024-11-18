@@ -16,7 +16,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import API__URL from '../../../config';
 const User = ({navigation}) => {
   const [user, setUser] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState(null);
   const [numberPhone, setNumberPhone] = useState(null);
   const renderUser = async () => {

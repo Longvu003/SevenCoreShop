@@ -16,7 +16,7 @@ import API__URL from '../../../../config';
 import {useFocusEffect} from '@react-navigation/native';
 const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
-const EditAddress = () => {
+const EditAddress = ({navigation}) => {
   const [addressInformation, setAddressInformation] = useState('');
   const getEmailUser = async () => {
     try {
@@ -33,37 +33,38 @@ const EditAddress = () => {
       console.log(error);
     }
   };
-
   const changeAddress = async (inputData, value) => {
     setAddressInformation(oldData => ({
       ...oldData,
       [inputData]: value,
     }));
   };
-
   const updateUser = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     const newUserEmail = JSON.parse(userEmail);
     const url2 = `${API__URL}/users/updateUser?email=${newUserEmail}`;
 
     try {
-      if (newUserEmail) {
+      if (
+        addressInformation.address.length < 8 ||
+        !addressInformation.address
+      ) {
+        Alert.alert('Vui lòng nhập địa chỉ và đại chỉ phải lớn hơn 8 ký tự');
+      } else {
         await axios.put(url2, addressInformation, {
           headers: 'application/x-www-form-urlencoded',
         });
         Alert.alert('Sửa thành công');
-      } else {
-        console.log('Sửa thất bại');
+        navigation.navigate('ListAddress');
       }
     } catch (error) {
       console.log(error);
     }
   };
-
   useEffect(() => {
     getEmailUser();
   }, []);
-  // console.log(addressInformation.address);
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1}}>

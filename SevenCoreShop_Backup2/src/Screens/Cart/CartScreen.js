@@ -97,65 +97,67 @@ const CartScreen = () => {
   const handleCheckout = async () => {
     if (!paymentMethod) {
       Alert.alert('Thông báo', 'Bạn phải chọn phương thức thanh toán!');
-      return;
+      return false;
     }
 
     try {
-      const response = await axios.post(`${API__URL}/Orders/checkout`, {
-        userId: userId,
-        items: cart,
-        paymentMethod: paymentMethod || 'COD',
-      });
+      if (cart.length < 1) {
+        Alert.alert('Không có sản phẩm trong giỏ hàng');
+      } else {
+        const response = await axios.post(`${API__URL}/Orders/checkout`, {
+          userId: userId,
+          items: cart,
+          paymentMethod: paymentMethod || 'COD',
+        });
 
-      if (response.status === 200) {
-        const order = response.data.order;
-        // console.log('Dữ liệu order nhận được:', order);
+        if (response.status === 200) {
+          const order = response.data.order;
+          const detailedItems = await Promise.all(
+            order.items.map(async item => {
+              const productResponse = await axios.get(
+                `${API__URL}/products/${item.productId}`,
+              );
+              const productData = productResponse.data.data;
 
-        const detailedItems = await Promise.all(
-          order.items.map(async item => {
-            const productResponse = await axios.get(
-              `${API__URL}/products/${item.productId}`,
-            );
-            const productData = productResponse.data.data;
+              return {
+                ...item,
+                name: productData.name,
+                images: productData.images[0],
+                price: productData.price,
+              };
+            }),
+          );
 
-            return {
-              ...item,
-              name: productData.name,
-              images: productData.images[0],
-              price: productData.price,
-            };
-          }),
-        );
+          const productDetails = detailedItems
+            .map(item => `- ${item.name}: ${item.price} VND x ${item.quantity}`)
+            .join('\n');
 
-        const productDetails = detailedItems
-          .map(item => `- ${item.name}: ${item.price} VND x ${item.quantity}`)
-          .join('\n');
+          const message = response.data.message || 'Thanh toán thành công!';
+          const orderId = order._id || 'Không có mã đơn hàng';
 
-        const message = response.data.message || 'Thanh toán thành công!';
-        const orderId = order._id || 'Không có mã đơn hàng';
-
-        Alert.alert(
-          'Thông báo',
-          'Thanh toán thành công',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigation.navigate('OrderScreen', {order});
+          Alert.alert(
+            'Thông báo',
+            'Thanh toán thành công',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  navigation.navigate('OrderScreen', {order});
+                },
               },
-            },
-          ],
-          {cancelable: false},
-        );
+            ],
+            {cancelable: false},
+          );
 
-        // Clear toàn bộ giỏ hàng sau khi thanh toán
-        for (let item of cart) {
-          await clearCart(item.productId, item.quantity); // Xóa
+          // Clear toàn bộ giỏ hàng sau khi thanh toán
+          for (let item of cart) {
+            await clearCart(item.productId, item.quantity); // Xóa
+          }
+
+          // Reset lại tổng giá trị và phương thức thanh toán
+          setTotalPriceCart(0);
+          setPaymentMethod(null); // Reset phương thức thanh toán
         }
-
-        // Reset lại tổng giá trị và phương thức thanh toán
-        setTotalPriceCart(0);
-        setPaymentMethod(null); // Reset phương thức thanh toán
       }
     } catch (error) {
       console.error(

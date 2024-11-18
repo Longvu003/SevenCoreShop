@@ -160,14 +160,14 @@ router.put(
   ],
   validateRequest,
   async (req, res) => {
-    const { email, username, numberphone, address } = req.body;
+    const { email, username, numberphone, address, birthday } = req.body;
 
     try {
       const result = await userController.updateUser(
         email,
         username,
         numberphone,
-        // birthday,
+        birthday,
         address
       );
 

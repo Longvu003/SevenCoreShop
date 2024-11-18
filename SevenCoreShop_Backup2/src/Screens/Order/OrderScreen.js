@@ -17,8 +17,8 @@ import {Dimensions} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
-const OrderScreen = () => {
-  const [dataOrder, setDataOrder] = useState();
+const OrderScreen = ({navigation}) => {
+  const [dataOrder, setDataOrder] = useState([]);
   const [productDetails, setProductDetails] = useState([]);
   const getProductDetails = async () => {
     try {
@@ -34,50 +34,72 @@ const OrderScreen = () => {
       getProductDetails();
     }, []),
   );
+
   return (
     <ScrollView style={styles.container}>
       <View style={{flex: 1}}>
         <View style={{flex: 1}}>
           <Customheader title="Lịch sử giao hàng" />
         </View>
-        <View style={{flex: 1}}>
-          <FlatList
-            scrollEnabled={false}
-            data={dataOrder}
-            renderItem={({item}) => {
-              return (
-                <TouchableOpacity>
-                  <View style={styles.layout__container}>
-                    <View style={styles.item__container}>
-                      <Image
-                        style={{width: 40, height: 60}}
-                        source={{uri: item.items[0].images[0]}}
-                      />
-                      <View>
-                        <Text style={styles.txt__Item}>
-                          Đơn hàng: {item._id}
-                        </Text>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                          }}>
-                          <Text style={{marginHorizontal: 30}}>
-                            {item.createdAt}
+        {dataOrder.length > 0 ? (
+          <View style={{flex: 1}}>
+            <FlatList
+              scrollEnabled={false}
+              data={dataOrder}
+              renderItem={({item}) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('DetailOrder', {item})}>
+                    <View style={styles.layout__container}>
+                      <View style={styles.item__container}>
+                        <Image
+                          style={{width: 40, height: 60}}
+                          source={{uri: item.items[0].images[0]}}
+                        />
+                        <View>
+                          <Text style={styles.txt__Item}>
+                            Đơn hàng: {item._id}
                           </Text>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                            }}>
+                            <Text style={{marginHorizontal: 30}}>
+                              {item.createdAt}
+                            </Text>
+                          </View>
                         </View>
-                      </View>
 
-                      <Image
-                        source={require('../../../assets/imgs/Vector.png')}
-                      />
+                        <Image
+                          source={require('../../../assets/imgs/Vector.png')}
+                        />
+                      </View>
                     </View>
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-            keyExtractor={item => item._id}
-          />
-        </View>
+                  </TouchableOpacity>
+                );
+              }}
+              keyExtractor={item => item._id}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: HEIGHT__SCREEN * 0.8,
+            }}>
+            <Image source={require('../../../assets/imgs/cart3.png')} />
+            <Text
+              style={{
+                fontSize: 24,
+                color: 'Black',
+                fontWeight: '700',
+                marginTop: 24,
+              }}>
+              Không có đơn hàng
+            </Text>
+          </View>
+        )}
       </View>
     </ScrollView>
   );

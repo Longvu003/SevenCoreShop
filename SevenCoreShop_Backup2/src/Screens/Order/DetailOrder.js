@@ -1,47 +1,61 @@
-import {Image, StyleSheet, Text, View, Dimensions} from 'react-native';
-import React from 'react';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  FlatList,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import Customheader from '../../CustomHeader/Customheader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API__URL from '../../../config';
 import axios from 'axios';
+
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
-const DetailOrder = () => {
+const DetailOrder = ({route}) => {
+  const {item} = route.params;
+  const [DetailOrder, setDetailOrder] = useState([]);
+  const getOrderDetail = () => {
+    setDetailOrder(item);
+  };
+
+  useEffect(() => {
+    getOrderDetail();
+  }, []);
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1}}>
         <Customheader
           leftIcon={require('../../../assets/imgs/back4.png')}
-          title="đơn hàng #123123123"
+          title={item._id}
         />
       </View>
-      <View style={{flex: 1}}>
-        <View style={styles.item__container}>
-          <Image
-            style={styles.img__size}
-            source={require('../../../assets/imgs/logo.png')}
-          />
-          <View>
-            <Text>Áo khoác mùa đông</Text>
-            <Text>Số lượng : 2</Text>
-            <Text>đơn giá : 100</Text>
-          </View>
-        </View>
+      <View style={{flex: 4}}>
+        <FlatList
+          data={DetailOrder.items}
+          renderItem={({item}) => {
+            return (
+              <View style={styles.item__container}>
+                <Image
+                  style={styles.img__size}
+                  source={{uri: item.images[0]}}
+                />
+                <View>
+                  <Text>{item.nameProduct}</Text>
+                  <Text>Số lượng : {item.quantity}</Text>
+                  <Text>Đơn giá : {item.price}</Text>
+                </View>
+              </View>
+            );
+          }}
+          keyExtractor={item => item._id}
+        />
       </View>
-      <View style={{flex: 1}}>
-        <View style={styles.item__container}>
-          <Image
-            style={styles.img__size}
-            source={require('../../../assets/imgs/logo.png')}
-          />
-          <View>
-            <Text>Giày thể thao</Text>
-            <Text>Số lượng : 1</Text>
-            <Text>đơn giá : 100</Text>
-          </View>
-        </View>
-      </View>
-      <View style={{flex: 2}}>
+
+      <View style={{flex: 3}}>
         <Text
           style={{
             color: 'black',
@@ -61,9 +75,9 @@ const DetailOrder = () => {
           }}>
           <View style={{marginHorizontal: 20}}>
             <Text>Địa chỉ: Tô ký, Tân Chánh Hiệp, Quận 12, Tp.Hồ Chí Minh</Text>
-            <Text>Trạng thái: Thành công</Text>
-            <Text>Phương thức thanh toán: Tiền mặt</Text>
-            <Text>Tổng tiền: 1000</Text>
+            <Text>Trạng thái: {DetailOrder.status}</Text>
+            <Text>Phương thức thanh toán:{DetailOrder.paymentMethod} </Text>
+            <Text>Tổng tiền:{DetailOrder.totalAmount} </Text>
           </View>
         </View>
       </View>
@@ -81,6 +95,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     alignItems: 'center',
     flexDirection: 'row',
+    marginVertical: 20,
   },
   img__size: {
     width: WIDTH__SCREEN * 0.2,
