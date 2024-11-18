@@ -22,8 +22,8 @@ const ProductController = require("../controllers/ProductController");
 // });
 
 router.get("/", async (req, res, next) => {
-  const { category_id } = req.query;
-  console.log(category_id);
+  const category_id = req.query._id;
+
   try {
     const checkListProducts = await ProductController.getProducts(category_id);
     return res.status(200).json({ status: true, checkListProducts });
@@ -261,5 +261,5 @@ router.put("/update/:id", async (req, res) => {
 });
 
 // API product khi nhan vao category ra 1 list ID
-router.get("/categoryId", ProductController.getProductsByCategory);
+router.get("/categoryById", ProductController.getProductsByCategory);
 module.exports = router;

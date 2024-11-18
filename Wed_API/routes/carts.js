@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 var express = require("express");
+
 var router = express.Router();
 
 const cartController = require("../controllers/CartController");
@@ -13,7 +14,7 @@ const cartController = require("../controllers/CartController");
  */
 router.post("/addItemcart", async (req, res) => {
   try {
-    console.log("Dữ liệu nhận được từ client:", req.body);
+    // console.log("Dữ liệu nhận được từ client:", req.body);
     const { userId, productId, nameProduct, quantity, price, images } =
       req.body;
     const result = await cartController.add(
@@ -40,8 +41,10 @@ router.post("/addItemcart", async (req, res) => {
  */
 router.get("/getItemCartById", async (req, res) => {
   try {
-    const userId = req.query.id;
+    const userId = req.query.userId;
+
     const result = await cartController.getItemCart(userId);
+
     const totalPrice = result.reduce(
       (total, item) => total + item.price * item.quantity,
       0
@@ -61,11 +64,19 @@ router.get("/getItemCartById", async (req, res) => {
  */
 router.delete("/deleteItemCart", async (req, res) => {
   const { userId, productId, quantity } = req.body;
-  console.log("Nhận yêu cầu xóa sản phẩm với userId:", userId, "productId:", productId, "và quantity:", quantity);
+  console.log(
+    "Nhận yêu cầu xóa sản phẩm với userId:",
+    userId,
+    "productId:",
+    productId,
+    "và quantity:",
+    quantity
+  );
 
   try {
-    const { success, message, itemDeleted } = await cartController.deleteItemcart(userId, productId);
-    
+    const { success, message, itemDeleted } =
+      await cartController.deleteItemcart(userId, productId);
+
     if (!success) {
       console.log("Lỗi khi xóa sản phẩm:", message);
       return res.status(404).json({ message }); // Nếu không thành công, trả về 404
@@ -77,7 +88,9 @@ router.delete("/deleteItemCart", async (req, res) => {
     // Nếu quantity còn lại <= 0, xóa sản phẩm khỏi giỏ hàng
     if (itemDeleted.quantity <= 0) {
       await itemDeleted.deleteOne();
-      return res.status(200).json({ message: "Sản phẩm đã được xóa thành công" });
+      return res
+        .status(200)
+        .json({ message: "Sản phẩm đã được xóa thành công" });
     } else {
       await itemDeleted.save();
       return res.status(200).json({ itemDeleted });
@@ -87,8 +100,6 @@ router.delete("/deleteItemCart", async (req, res) => {
     return res.status(500).json({ status: false, data: error.message });
   }
 });
-
-
 
 /**
  * Cập nhật số lượng sản phẩm trong giỏ hàng

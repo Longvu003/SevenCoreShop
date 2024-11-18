@@ -4,9 +4,8 @@ const router = express.Router();
 router.post("/checkout", OrderController.checkout);
 
 router.get("/getOrderUser", async (req, res) => {
-  const { userId } = req.query;
   try {
-    const itemOrder = await OrderController.getOrderUser(userId);
+    const itemOrder = await OrderController.getOrderUser();
     if (itemOrder) {
       return res.status(200).json(itemOrder);
     } else {

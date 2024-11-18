@@ -43,10 +43,12 @@ const LoginScreen = ({navigation}) => {
       );
       // Kiểm tra phản hồi từ API
       if (response.status === 200) {
-        console.log('data nè', response.data.data.email);
         const user = JSON.stringify(response.data.data.email);
-        const userId = JSON.stringify(response.data.data._id);
+        // console.log('data nè', user);
+        const userId = JSON.stringify(response.data.data.id);
         await AsyncStorage.setItem('userEmail', user);
+        await AsyncStorage.setItem('userId', userId);
+        // console.log(userId);
         Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
         navigation.navigate('Tab');
       } else {
@@ -58,15 +60,15 @@ const LoginScreen = ({navigation}) => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      console.log('Google Sign In Data:', userInfo);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const userInfo = await GoogleSignin.signIn();
+  //     console.log('Google Sign In Data:', userInfo);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <ScrollView style={{backgroundColor: 'white'}}>
@@ -119,7 +121,8 @@ const LoginScreen = ({navigation}) => {
 
             <TouchableOpacity
               style={styles.socialButton}
-              onPress={handleGoogleSignIn}>
+              // onPress={handleGoogleSignIn}
+            >
               <Image
                 source={require('../../../assets/imgs/google.png')}
                 style={styles.icon2}

@@ -74,6 +74,7 @@ const login = async (email, password) => {
 
     // Trả về thông tin người dùng nhưng không bao gồm mật khẩu
     return {
+      id: user._id,
       email: user.email,
       username: user.username,
       role: user.role,
@@ -126,59 +127,44 @@ const forgotPassword = async (email) => {
 };
 
 // Đặt lại mật khẩu với OTP hợp lệ
-const resetPassword = async (email, otp, newPassword) => {
-  try {
-    // Tìm kiếm OTP trong cơ sở dữ liệu và xác minh nó có còn hiệu lực không
-    const otpRecord = await OtpModel.findOne({ userEmail: email, otp: otp });
-    if (!otpRecord || otpRecord.otpExpiry < Date.now()) {
-      throw new Error("OTP không hợp lệ hoặc đã hết hạn");
-    }
+// const resetPassword = async (email, otp, newPassword) => {
+//   try {
+//     // Tìm kiếm OTP trong cơ sở dữ liệu và xác minh nó có còn hiệu lực không
+//     const otpRecord = await OtpModel.findOne({ userEmail: email, otp: otp });
+//     if (!otpRecord || otpRecord.otpExpiry < Date.now()) {
+//       throw new Error("OTP không hợp lệ hoặc đã hết hạn");
+//     }
 
-    // Mã hóa mật khẩu mới
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+//     // Mã hóa mật khẩu mới
+//     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Cập nhật mật khẩu cho người dùng
-    const user = await getUserByEmail(email);
-    user.password = hashedPassword;
-    await user.save();
+//     // Cập nhật mật khẩu cho người dùng
+//     const user = await getUserByEmail(email);
+//     user.password = hashedPassword;
+//     await user.save();
 
-    // Xóa OTP sau khi sử dụng
-    await OtpModel.deleteOne({ userEmail: email, otp: otp });
+//     // Xóa OTP sau khi sử dụng
+//     await OtpModel.deleteOne({ userEmail: email, otp: otp });
 
-    return "Mật khẩu đã được đặt lại thành công";
-  } catch (error) {
-    console.error("Reset password error:", error.message);
-    throw new Error("Reset password error: " + error.message);
-  }
-};
+//     return "Mật khẩu đã được đặt lại thành công";
+//   } catch (error) {
+//     console.error("Reset password error:", error.message);
+//     throw new Error("Reset password error: " + error.message);
+//   }
+// };
 
 // Cập nhật thông tin người dùng
-const updateUser = async (
-  email,
-  password,
-  username,
-  numberphone,
-  birthday,
-  address
-) => {
+const updateUser = async (email, username, numberphone, birthday, address) => {
   try {
     const user = await userModel.findOne({ email: email });
     if (!user) {
       throw new Error("Email không tồn tại");
     }
-
-    let updatedPassword = user.password;
-    if (password) {
-      updatedPassword = await bcrypt.hash(password, 10);
-    }
-
-    user.password = updatedPassword;
     user.username = username;
     user.numberphone = numberphone;
     user.birthday = birthday;
     user.address = address;
     user.updatedAt = Date.now();
-
     await user.save();
 
     return "Cập nhật thành công";
@@ -224,6 +210,6 @@ module.exports = {
   getUserByEmail,
   generateAndSaveOtp,
   forgotPassword,
-  resetPassword,
+  // resetPassword,
   sendOtpMail,
 };

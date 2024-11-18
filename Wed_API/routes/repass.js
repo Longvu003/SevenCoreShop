@@ -1,8 +1,8 @@
 // routes/repass.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const resetPasswordController = require('../controllers/RepassController');
+const resetPasswordController = require("../controllers/RepassController");
 
-router.post('/', resetPasswordController.resetPassword);
+router.post("/resetPassword", resetPasswordController.resetPassword);
 
 module.exports = router;

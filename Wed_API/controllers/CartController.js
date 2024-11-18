@@ -25,6 +25,7 @@ const add = async (userId, productId, nameProduct, quantity, price, images) => {
         price,
         images,
       });
+
       await newItem.save();
     }
   } catch (error) {
@@ -58,7 +59,8 @@ const deleteItemcart = async (userId, productId) => {
 const getItemCart = async (userId) => {
   try {
     const items = await CartModel.find({ userId });
-    return items.length ? items : [];
+    // console.log("All cart items:", items);
+    return items;
   } catch (error) {
     console.error("Lỗi khi lấy sản phẩm trong giỏ hàng:", error);
   }

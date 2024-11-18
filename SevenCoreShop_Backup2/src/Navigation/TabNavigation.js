@@ -4,13 +4,15 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import User from '../Screens/User/User';
 
 import Notification from '../Screens/Notification/Notification';
-import Order from '../Screens/Order/Order';
+import OrderScreen from '../Screens/Order/OrderScreen';
 import HomeScreen from '../Screens/HomeSceen/HomeScreen';
 import CartScreen from '../Screens/Cart/CartScreen';
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
   return (
-    <Tab.Navigator initialRouteName="User" screenOptions={{headerShown: false}}>
+    <Tab.Navigator
+      initialRouteName="HomeScreen"
+      screenOptions={{headerShown: false}}>
       <Tab.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -32,8 +34,8 @@ const TabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Order"
-        component={Order}
+        name="OrderScreen"
+        component={OrderScreen}
         options={{
           tabBarLabel: 'Đơn hàng',
           tabBarIcon: () => (

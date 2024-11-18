@@ -66,9 +66,8 @@ router.post(
     //   res.status(500).json({ message: error.message });
     // }
     const { email, password } = req.body;
-
-    // console.log(req.body);
     const result = await userController.login(email, password);
+    console.log(result);
     if (result) {
       return res.status(200).json({ status: true, data: result });
       // return res.status(200).json(result);
@@ -100,51 +99,51 @@ router.post(
 );
 
 // Đặt lại mật khẩu
-router.post(
-  "/reset-password",
-  [
-    body("email").isEmail().withMessage("Email không hợp lệ"),
-    body("otp").notEmpty().withMessage("OTP không được để trống"),
-    body("newPassword")
-      .isLength({ min: 6 })
-      .withMessage("Mật khẩu mới phải có ít nhất 6 ký tự"),
-    body("confirmPassword")
-      .notEmpty()
-      .withMessage("Xác nhận mật khẩu không được để trống"),
-  ],
-  validateRequest,
-  async (req, res) => {
-    const { email, otp, newPassword, confirmPassword } = req.body;
+// router.post(
+//   "/reset-password",
+//   [
+//     body("email").isEmail().withMessage("Email không hợp lệ"),
+//     body("otp").notEmpty().withMessage("OTP không được để trống"),
+//     body("newPassword")
+//       .isLength({ min: 6 })
+//       .withMessage("Mật khẩu mới phải có ít nhất 6 ký tự"),
+//     body("confirmPassword")
+//       .notEmpty()
+//       .withMessage("Xác nhận mật khẩu không được để trống"),
+//   ],
+//   validateRequest,
+//   async (req, res) => {
+//     const { email, otp, newPassword, confirmPassword } = req.body;
 
-    // Kiểm tra sự khớp của mật khẩu mới và xác nhận mật khẩu
-    if (newPassword !== confirmPassword) {
-      // =======
-      // router.post("/login", async (req, res, next) => {
-      //   try {
-      //     const { email, password } = req.body;
+// Kiểm tra sự khớp của mật khẩu mới và xác nhận mật khẩu
+// if (newPassword !== confirmPassword) {
+// =======
+// router.post("/login", async (req, res, next) => {
+//   try {
+//     const { email, password } = req.body;
 
-      //     // console.log(req.body);
-      //     const result = await userController.login(email, password);
-      //     if (result) {
-      //       return res.status(200).json({ status: true, data: result });
-      //       // return res.status(200).json(result);
-      //     } else {
-      // >>>>>>> 0c41e54e254d54a59fe560489db8ebd4b695e321
-      //       return res
-      //         .status(400)
-      //         .json({ message: "Mật khẩu và xác nhận mật khẩu không khớp." });
-      //     }
+//     // console.log(req.body);
+//     const result = await userController.login(email, password);
+//     if (result) {
+//       return res.status(200).json({ status: true, data: result });
+//       // return res.status(200).json(result);
+//     } else {
+// >>>>>>> 0c41e54e254d54a59fe560489db8ebd4b695e321
+//       return res
+//         .status(400)
+//         .json({ message: "Mật khẩu và xác nhận mật khẩu không khớp." });
+//     }
 
-      try {
-        await userController.resetPassword(email, otp, newPassword);
-        res.status(200).json({ message: "Đặt lại mật khẩu thành công" });
-      } catch (error) {
-        console.log("Reset password error", error.message);
-        res.status(500).json({ message: error.message });
-      }
-    }
-  }
-);
+//       try {
+//         await userController.resetPassword(email, otp, newPassword);
+//         res.status(200).json({ message: "Đặt lại mật khẩu thành công" });
+//       } catch (error) {
+//         console.log("Reset password error", error.message);
+//         res.status(500).json({ message: error.message });
+//       }
+//     }
+//   }
+// );
 
 // Cập nhật tài khoản
 router.put(
@@ -161,16 +160,14 @@ router.put(
   ],
   validateRequest,
   async (req, res) => {
-    const { email, password, username, numberphone, birthday, address } =
-      req.body;
+    const { email, username, numberphone, address } = req.body;
 
     try {
       const result = await userController.updateUser(
         email,
-        password,
         username,
         numberphone,
-        birthday,
+        // birthday,
         address
       );
 

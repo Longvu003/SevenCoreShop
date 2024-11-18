@@ -16,10 +16,10 @@ const CategoryDetailScreen = ({navigation, route}) => {
 
   useEffect(() => {
     axios
-      .get(`${API__URL}/products/categoryId?id=${category._id}`)
+      .get(`${API__URL}/products/categoryById?categoryId=${category._id}`)
       .then(response => {
         setProducts(response.data.data);
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch(error => console.error('Lỗi lấy sản phẩm:', error));
   }, [category._id]);
@@ -32,10 +32,8 @@ const CategoryDetailScreen = ({navigation, route}) => {
         onPress={() => navigation.goBack()}>
         <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
-
       {/* Category Title */}
       <Text style={styles.title}>{category.name}</Text>
-
       {/* Product List */}
       <FlatList
         data={products}

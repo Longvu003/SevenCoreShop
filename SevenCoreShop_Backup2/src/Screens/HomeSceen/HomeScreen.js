@@ -41,7 +41,6 @@ const HomeScreen = ({navigation}) => {
         console.error('Error fetching categories:', error);
       });
   }, []);
-  console.log(products)
   const handleSearch = () => {
     if (searchKey.trim() === '') {
       axios
@@ -68,12 +67,8 @@ const HomeScreen = ({navigation}) => {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.hello}>
-           Xin Chào
-        </Text>
-          
-          
-        
+        <Text style={styles.hello}>Xin Chào</Text>
+
         <TouchableOpacity onPress={() => navigation.navigate('CartScreen')}>
           <Image
             source={require('../../../assets/imgs/cart2.png')}
@@ -172,7 +167,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#fff',
   },
-  hello:{
+  hello: {
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 10,

@@ -49,9 +49,8 @@ const searchProduct = async (key) => {
 
 // Lấy danh sách sản phẩm theo danh mục
 const getProductsByCategory = async (req, res) => {
+  const { categoryId } = req.query.categoryId;
   try {
-    const categoryId = req.params.categoryId;
-
     const products = await ProductModel.find({
       category: categoryId,
     }).populate("category");

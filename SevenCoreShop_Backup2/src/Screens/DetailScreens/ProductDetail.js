@@ -60,7 +60,8 @@ const ProductDetail = ({navigation, route}) => {
   };
 
   const addProductCart = async () => {
-    const userId = await AsyncStorage.getItem('userId');
+    const getuserId = await AsyncStorage.getItem('userId');
+    const userId = JSON.parse(getuserId);
     const product = {
       userId,
       productId: item._id,
@@ -216,6 +217,7 @@ const ProductDetail = ({navigation, route}) => {
         <Text style={{fontSize: 18, fontWeight: 'bold'}}>Bình luận</Text>
         <FlatList
           data={comments}
+          scrollEnabled={false}
           keyExtractor={comment => comment._id.toString()}
           renderItem={({item}) => (
             <View style={{paddingVertical: 10}}>

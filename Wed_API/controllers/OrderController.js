@@ -39,6 +39,7 @@ const checkout = async (req, res) => {
       }
 
       const product = await ProductModel.findById(item.productId);
+
       if (!product) {
         return res
           .status(404)
@@ -56,8 +57,7 @@ const checkout = async (req, res) => {
       status: "Pending",
     });
     await order.save();
-
-    // console.log(order);
+    console.log(order.items);
     // Lưu lịch sử đơn hàng vào tài khoản người dùng
     await UserModel.findByIdAndUpdate(userId, {
       $push: { orderHistory: order._id },
@@ -78,8 +78,8 @@ const checkout = async (req, res) => {
   }
 };
 
-const getOrderUser = async (userId) => {
-  const itemOrder = await OrderModel.find(userId);
+const getOrderUser = async () => {
+  const itemOrder = await OrderModel.find({});
   return itemOrder;
 };
 

@@ -21,7 +21,6 @@ const WIDTH__SCREEN = Dimensions.get('screen').width;
 
 const CartScreen = () => {
   const navigation = useNavigation();
-
   const [cart, setCart] = useState([]);
   const [totalPriceCart, setTotalPriceCart] = useState(0);
   const [userId, setUserId] = useState(null);
@@ -72,8 +71,9 @@ const CartScreen = () => {
     const newUserId = JSON.parse(userId);
     setUserId(newUserId);
     const respone = await axios.get(
-      `${API__URL}/carts/getItemCartById?id=${newUserId}`,
+      `${API__URL}/carts/getItemCartById?userId=${newUserId}`,
     );
+
     setCart(respone.data.result);
     totalPrice(respone.data.result);
   };
@@ -101,7 +101,7 @@ const CartScreen = () => {
     }
 
     try {
-      const response = await axios.post(`${API__URL}/carts/checkout`, {
+      const response = await axios.post(`${API__URL}/Orders/checkout`, {
         userId: userId,
         items: cart,
         paymentMethod: paymentMethod || 'COD',
@@ -109,7 +109,7 @@ const CartScreen = () => {
 
       if (response.status === 200) {
         const order = response.data.order;
-        console.log('Dữ liệu order nhận được:', order);
+        // console.log('Dữ liệu order nhận được:', order);
 
         const detailedItems = await Promise.all(
           order.items.map(async item => {
@@ -121,6 +121,7 @@ const CartScreen = () => {
             return {
               ...item,
               name: productData.name,
+              images: productData.images[0],
               price: productData.price,
             };
           }),
@@ -140,7 +141,7 @@ const CartScreen = () => {
             {
               text: 'OK',
               onPress: () => {
-                navigation.navigate('Order', {order});
+                navigation.navigate('OrderScreen', {order});
               },
             },
           ],

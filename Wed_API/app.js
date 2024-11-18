@@ -15,7 +15,7 @@ const categoriesRouter = require("./routes/categories");
 const cartsRouter = require("./routes/carts");
 const Order = require("./routes/Order");
 const commentRoutes = require("./routes/cmt.js");
-
+const resetPass = require("./routes/repass.js");
 var app = express();
 
 // View engine setup
@@ -34,14 +34,6 @@ app.use(
     credentials: true, // Cho phép truyền cookie nếu cần
   })
 );
-// Cấu hình CORS
-// app.use(
-//   cors({
-//     origin: ["http://192.168.1.3", "http://localhost:3000"], // Địa chỉ của frontend, có thể thay đổi theo ứng dụng của bạn
-//     methods: ["GET", "POST", "PUT", "DELETE"], // Các phương thức được phép sử dụng
-//     credentials: true, // Cho phép truyền cookie nếu cần thiết
-//   })
-// );
 
 // Kết nối database mongodb
 mongoose
@@ -63,7 +55,7 @@ app.use("/carts", cartsRouter);
 // // http://localhost:7777/api/carts
 // app.use('/carts/checkout', cartsRouter);
 app.use("/Orders", Order);
-
+app.use("/resetpass", resetPass);
 app.use("/api/comments", commentRoutes);
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
