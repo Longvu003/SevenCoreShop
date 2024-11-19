@@ -26,7 +26,7 @@ const getUserByEmail = async (email) => {
 };
 
 // Đăng ký người dùng mới
-const register = async (email, password, username, numberphone, birthday) => {
+const register = async (email, password, username, numberphone, address) => {
   try {
     // Kiểm tra email đã tồn tại trong cơ sở dữ liệu
     let user = await userModel.findOne({ email: email });
@@ -44,7 +44,8 @@ const register = async (email, password, username, numberphone, birthday) => {
       password: password,
       username: username,
       numberphone: numberphone,
-      birthday: birthday,
+      // birthday: birthday,
+      address: address,
     });
 
     // Lưu người dùng

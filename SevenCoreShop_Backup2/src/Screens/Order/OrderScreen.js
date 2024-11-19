@@ -21,8 +21,12 @@ const OrderScreen = ({navigation}) => {
   const [dataOrder, setDataOrder] = useState([]);
   const [productDetails, setProductDetails] = useState([]);
   const getProductDetails = async () => {
+    const userId = await AsyncStorage.getItem('userId');
+    const newUserId = JSON.parse(userId);
     try {
-      const response = await axios.get(`${API__URL}/Orders/getOrderUser`);
+      const response = await axios.get(
+        `${API__URL}/Orders/getOrderUserById?userId=${newUserId}`,
+      );
       setDataOrder(response.data);
     } catch (error) {
       console.error('Lỗi khi lấy thông tin sản phẩm:', error);
@@ -42,7 +46,7 @@ const OrderScreen = ({navigation}) => {
           <Customheader title="Lịch sử giao hàng" />
         </View>
         {dataOrder.length > 0 ? (
-          <View style={{flex: 1}}>
+          <View style={{flex: 1, marginHorizontal: 20}}>
             <FlatList
               scrollEnabled={false}
               data={dataOrder}
@@ -107,7 +111,6 @@ const OrderScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
     backgroundColor: 'white',
   },
   title: {

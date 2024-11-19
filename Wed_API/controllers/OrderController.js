@@ -82,5 +82,11 @@ const getOrderUser = async () => {
   const itemOrder = await OrderModel.find({});
   return itemOrder;
 };
+const getOrderUserById = async (userId) => {
+  const itemOrder = await OrderModel.find({
+    userId: mongoose.Types.ObjectId(userId),
+  });
+  return itemOrder;
+};
 
-module.exports = { checkout, getOrderUser };
+module.exports = { checkout, getOrderUser, getOrderUserById };

@@ -17,16 +17,16 @@ const SignupScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [numberphone, setNumberphone] = useState('');
-  const [birthday, setBirthday] = useState('');
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      const date = selectedDate.toISOString().split('T')[0]; // Format date
-      setBirthday(date);
-    }
-  };
+  // const [birthday, setBirthday] = useState('');
+  // const [showDatePicker, setShowDatePicker] = useState(false);
+  const [address, setAddress] = useState('');
+  // const handleDateChange = (event, selectedDate) => {
+  //   setShowDatePicker(false);
+  //   if (selectedDate) {
+  //     const date = selectedDate.toISOString().split('T')[0]; // Format date
+  //     setBirthday(date);
+  //   }
+  // };
 
   // Hàm kiểm tra dữ liệu
   const validateInput = () => {
@@ -46,8 +46,8 @@ const SignupScreen = ({navigation}) => {
       Alert.alert('Lỗi', 'Số điện thoại không được để trống');
       return false;
     }
-    if (!birthday) {
-      Alert.alert('Lỗi', 'Ngày sinh không được để trống');
+    if (!address) {
+      Alert.alert('Lỗi', 'đại chỉ không được để trống');
       return false;
     }
     // Kiểm tra định dạng email
@@ -69,7 +69,7 @@ const SignupScreen = ({navigation}) => {
       password,
       username,
       numberphone,
-      birthday,
+      address,
     };
 
     try {
@@ -97,7 +97,7 @@ const SignupScreen = ({navigation}) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor: 'white'}}>
       <View style={styles.container}>
         <View style={{flex: 2}}>
           <TouchableOpacity
@@ -141,8 +141,14 @@ const SignupScreen = ({navigation}) => {
             onChangeText={setEmail}
             keyboardType="email-address"
           />
+          <TextInput
+            style={styles.input}
+            placeholder="Address"
+            value={address}
+            onChangeText={setAddress}
+          />
           {/* Birthday Input */}
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          {/* <TouchableOpacity onPress={() => setShowDatePicker(true)}>
             <TextInput
               style={[styles.input, birthday ? styles.boldText : null]}
               placeholder="Birthday"
@@ -159,7 +165,7 @@ const SignupScreen = ({navigation}) => {
               display="default"
               onChange={handleDateChange}
             />
-          )}
+          )} */}
 
           <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
             <Text style={styles.loginText}>Tiếp tục</Text>

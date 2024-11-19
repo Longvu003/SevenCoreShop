@@ -62,10 +62,10 @@ const HomeScreen = ({navigation}) => {
         });
     }
   };
-
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
+
       <View style={styles.header}>
         <Text style={styles.hello}>Xin Chào</Text>
 
@@ -90,70 +90,71 @@ const HomeScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
-      {/* Categories */}
-      <View style={styles.categoryHeader}>
-        <Text style={styles.sectionTitle}>Categories</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('CategoryScreen')}>
-          <Text style={styles.seeAllText}>See All</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.categoryContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {categories.length > 0 ? (
-            categories.map((category, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.categoryItem}
-                onPress={() =>
-                  navigation.navigate('CategoryDetailScreen', {category})
-                }>
-                <Image
-                  source={{
-                    uri:
-                      category.images && category.images.length > 0
-                        ? category.images[0]
-                        : 'https://via.placeholder.com/50',
-                  }}
-                  style={styles.categoryImage}
-                />
-                <Text>{category.name}</Text>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <Text>No categories available</Text>
-          )}
-        </ScrollView>
-      </View>
+      <View>
+        <View style={styles.categoryHeader}>
+          <Text style={styles.sectionTitle}>Categories</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CategoryScreen')}>
+            <Text style={styles.seeAllText}>See All</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.categoryContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {categories.length > 0 ? (
+              categories.map((category, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.categoryItem}
+                  onPress={() =>
+                    navigation.navigate('CategoryDetailScreen', {category})
+                  }>
+                  <Image
+                    source={{
+                      uri:
+                        category.images && category.images.length > 0
+                          ? category.images[0]
+                          : 'https://via.placeholder.com/50',
+                    }}
+                    style={styles.categoryImage}
+                  />
+                  <Text>{category.name}</Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text>No categories available</Text>
+            )}
+          </ScrollView>
+        </View>
 
-      {/* Top Selling */}
-      <View style={styles.productHeader}>
-        <Text style={styles.sectionTitle}>Top Selling</Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('AllProductsScreen')}>
-          <Text style={styles.seeAllText}>See All</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.productSection}>
-        <FlatList
-          data={products}
-          keyExtractor={item => item._id}
-          numColumns={2}
-          scrollEnabled={false}
-          renderItem={({item}) => {
-            return (
-              <TouchableOpacity
-                style={styles.productCard}
-                onPress={() => navigation.navigate('ProductDetail', {item})}>
-                <Image
-                  source={{uri: item.images[0]}}
-                  style={styles.productImage}
-                />
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productPrice}>${item.price}</Text>
-              </TouchableOpacity>
-            );
-          }}
-        />
+        <View style={styles.productHeader}>
+          <Text style={styles.sectionTitle}>Top Selling</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AllProductsScreen')}>
+            <Text style={styles.seeAllText}>See All</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.productSection}>
+          <FlatList
+            data={products}
+            keyExtractor={item => item._id}
+            numColumns={2}
+            scrollEnabled={false}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity
+                  style={styles.productCard}
+                  onPress={() => navigation.navigate('ProductDetail', {item})}>
+                  <Image
+                    source={{uri: item.images[0]}}
+                    style={styles.productImage}
+                  />
+                  <Text style={styles.productName}>{item.name}</Text>
+                  <Text style={styles.productPrice}>${item.price}</Text>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
       </View>
 
       <View style={styles.productSection}></View>

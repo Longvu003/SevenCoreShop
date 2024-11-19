@@ -8,7 +8,7 @@ const UserSchema = new Schema(
     username: { type: String },
     role: { type: String, default: "1" }, // Để role là string '1' hoặc '2'
     numberphone: { type: String },
-    birthday: { type: String },
+    // birthday: { type: String },
     address: { type: String },
     isVerify: { type: Number, default: 1 },
     available: { type: Boolean, default: true },

@@ -27,18 +27,18 @@ router.post(
     body("numberphone")
       .isMobilePhone()
       .withMessage("Số điện thoại không hợp lệ"),
-    body("birthday").notEmpty().withMessage("Ngày sinh không được để trống"),
+    body("address").notEmpty().withMessage("Địa chỉ không được để trống"),
   ],
   validateRequest,
   async (req, res) => {
     try {
-      const { email, password, username, numberphone, birthday } = req.body;
+      const { email, password, username, numberphone, address } = req.body;
       const result = await userController.register(
         email,
         password,
         username,
         numberphone,
-        birthday
+        address
       );
       return res.status(200).json({ status: true, data: result });
     } catch (error) {

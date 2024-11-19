@@ -16,7 +16,6 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Dialog from 'react-native-dialog';
 import API__URL from '../../../config';
-
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
 
@@ -158,59 +157,58 @@ const ProductDetail = ({navigation, route}) => {
   };
 
   return (
-    <ScrollView style={{flex: 1}}>
-      <View style={{flex: 1}}>
+    <ScrollView style={{backgroundColor: 'white'}}>
+      <View style={{height: HEIGHT__SCREEN * 0.08}}>
         <Customheader leftIcon={require('../../../assets/imgs/back3.png')} />
       </View>
 
-      <View style={{flex: 6}}>
+      <View style={{flex: 3}}>
         <Image style={styles.img__product} source={{uri: item.images[0]}} />
         <Text style={styles.txt__nameProduct}>{item.name}</Text>
         <Text style={styles.txt__priceProduct}>{item.price}</Text>
+      </View>
+      <View style={{flexDirection: 'column'}}>
+        <TouchableOpacity disabled style={styles.btn__container}>
+          <View style={styles.quantity__Container}>
+            <Text>Kích cỡ</Text>
+          </View>
+          <Text style={styles.txt__nameProduct}>{item.size}</Text>
+          <TouchableOpacity>
+            <Image
+              style={{marginHorizontal: 30}}
+              source={require('../../../assets/imgs/arrowdown2.png')}
+            />
+          </TouchableOpacity>
+        </TouchableOpacity>
 
-        <View style={{flexDirection: 'column', flex: 2}}>
-          <TouchableOpacity disabled style={styles.btn__container}>
-            <View style={styles.quantity__Container}>
-              <Text>Kích cỡ</Text>
-            </View>
-            <Text style={styles.txt__nameProduct}>{item.size}</Text>
-            <TouchableOpacity>
-              <Image
-                style={{marginHorizontal: 30}}
-                source={require('../../../assets/imgs/arrowdown2.png')}
-              />
-            </TouchableOpacity>
+        <TouchableOpacity disabled style={styles.btn__container}>
+          <View style={styles.quantity__Container}>
+            <Text>Số lượng</Text>
+          </View>
+          <TouchableOpacity onPress={increaseQuantity}>
+            <Image
+              style={styles.icon}
+              source={require('../../../assets/imgs/add.png')}
+            />
           </TouchableOpacity>
-
-          <TouchableOpacity disabled style={styles.btn__container}>
-            <View style={styles.quantity__Container}>
-              <Text>Số lượng</Text>
-            </View>
-            <TouchableOpacity onPress={increaseQuantity}>
-              <Image
-                style={styles.icon}
-                source={require('../../../assets/imgs/add.png')}
-              />
-            </TouchableOpacity>
-            <Text style={{marginHorizontal: 5}}>{quantityProduct}</Text>
-            <TouchableOpacity onPress={decreaseQuantity}>
-              <Image
-                style={styles.icon}
-                source={require('../../../assets/imgs/minus2.png')}
-              />
-            </TouchableOpacity>
+          <Text style={{marginHorizontal: 5}}>{quantityProduct}</Text>
+          <TouchableOpacity onPress={decreaseQuantity}>
+            <Image
+              style={styles.icon}
+              source={require('../../../assets/imgs/minus2.png')}
+            />
           </TouchableOpacity>
-        </View>
-        <View style={{flex: 1}}>
-          <Text style={styles.txt__description}>{item.description}</Text>
-        </View>
-        <View style={{flex: 1}}>
-          <TouchableOpacity
-            style={styles.btn__buy}
-            onPress={() => addProductCart(item)}>
-            <Text style={styles.txt__btnbuy}>Thêm vào giỏ</Text>
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
+      </View>
+      <View style={{flex: 1}}>
+        <Text style={styles.txt__description}>{item.description}</Text>
+      </View>
+      <View style={{flex: 1}}>
+        <TouchableOpacity
+          style={styles.btn__buy}
+          onPress={() => addProductCart(item)}>
+          <Text style={styles.txt__btnbuy}>Thêm vào giỏ</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={{flex: 1, paddingHorizontal: 20, marginTop: 20}}>
@@ -242,7 +240,6 @@ const ProductDetail = ({navigation, route}) => {
             </View>
           )}
         />
-
         <TextInput
           style={{
             borderColor: 'gray',
@@ -277,27 +274,34 @@ const ProductDetail = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
   img__product: {
-    width: WIDTH__SCREEN * 0.7,
+    width: WIDTH__SCREEN * 0.9,
     height: HEIGHT__SCREEN * 0.35,
     resizeMode: 'contain',
     alignSelf: 'center',
   },
   txt__nameProduct: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
-    marginVertical: 10,
+    marginVertical: 24,
+    marginHorizontal: 24,
+    color: 'black',
   },
   txt__priceProduct: {
     fontSize: 18,
-    color: 'red',
-    marginVertical: 5,
+    color: 'A2845E',
+    marginVertical: 24,
+    marginHorizontal: 24,
   },
   btn__container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginVertical: 10,
+    marginVertical: 12,
+    backgroundColor: '#F4F4F4',
+    width: WIDTH__SCREEN * 0.9,
+    marginHorizontal: 20,
+    borderRadius: 20,
+    height: HEIGHT__SCREEN * 0.07,
   },
   quantity__Container: {
     alignItems: 'center',
@@ -305,15 +309,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   icon: {
-    width: 20,
-    height: 20,
+    width: 40,
+    height: 40,
   },
   btn__buy: {
-    backgroundColor: '#ff6600',
-    padding: 10,
+    backgroundColor: 'black',
     alignItems: 'center',
-    borderRadius: 5,
-    marginVertical: 10,
+    borderRadius: 22,
+    width: WIDTH__SCREEN * 0.9,
+    marginHorizontal: 20,
+    height: HEIGHT__SCREEN * 0.07,
+    justifyContent: 'center',
   },
   txt__btnbuy: {
     color: '#fff',
