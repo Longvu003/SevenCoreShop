@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const ProductModel = require("./ProductModel");
-const CategoryModel = require("./CategoryModel");
+const ProductModel = require("../model/ProductModel");
+const CategoryModel = require("../model/CategoryModel");
 
 // Lấy danh sách sản phẩm (có thể lọc theo danh mục)
 const getProducts = async (category = "") => {

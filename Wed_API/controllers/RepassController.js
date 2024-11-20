@@ -1,5 +1,5 @@
 const OtpModel = require("../models/OtpModel");
-const UserModel = require("../controllers/UserModel");
+const UserModel = require("../model/UserModel");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 exports.resetPassword = async (req, res) => {

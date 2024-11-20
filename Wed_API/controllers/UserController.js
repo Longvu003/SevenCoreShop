@@ -1,4 +1,4 @@
-const userModel = require("./UserModel");
+const userModel = require("../model/UserModel");
 const bcrypt = require("bcrypt");
 const sendResetPasswordEmail = require("../helpers/EmailCofig");
 const httml = require("../helpers/MailContent");
