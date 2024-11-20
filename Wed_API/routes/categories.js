@@ -10,15 +10,6 @@ const CategoryController = require("../controllers/CategoryController");
  * url: http://localhost:7777/categories
  * response: trả về danh sách các danh mục
  */
-router.get("/", async (req, res, next) => {
-  try {
-    const categories = await CategoryController.getCategoryList();
-    return res.status(200).json({ status: true, data: categories });
-  } catch (error) {
-    console.log("Get category list error", error.message);
-    res.status(500).json({ status: false, data: error.message });
-  }
-});
 
 /**
  * thêm mới danh mục
@@ -90,8 +81,7 @@ router.get("/:id", async (req, res, next) => {
 router.get("/getAllCategory", async (req, res, next) => {
   try {
     const categories = await CategoryController.getCategoryList();
-
-    return res.status(200).json({ status: true, data: categories });
+    return res.status(200).json({ data: categories });
   } catch (error) {
     console.log("Get category list error", error.message);
     res.status(500).json({ status: false, data: error.message });
