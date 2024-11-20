@@ -1,5 +1,6 @@
 import { UserModel } from "../model/UserModel"
-const API_URL = "http://192.168.1.8:7777" // Cập nhật URL chính xác
+
+import API_URL from "../Config"
 export const loginUser = async (user: UserModel): Promise<UserModel> => {
     const response = await fetch(`${API_URL}/users/login`, {
         method: "POST",

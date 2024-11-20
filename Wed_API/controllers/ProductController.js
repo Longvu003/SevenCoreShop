@@ -129,7 +129,7 @@ const addProduct = async (
 
 // Cập nhật sản phẩm
 const updateProduct = async (
-  id,
+  _id,
   name,
   price,
   quantity,
@@ -139,7 +139,7 @@ const updateProduct = async (
 ) => {
   try {
     const productInDb = await ProductModel.findById(
-      mongoose.Types.ObjectId(id)
+      mongoose.Types.ObjectId(_id)
     );
     if (!productInDb) {
       throw new Error("Sản phẩm không tồn tại");

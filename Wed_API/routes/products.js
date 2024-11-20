@@ -226,7 +226,7 @@ router.post("/add", async (req, res) => {
 // url: http://localhost:7777/products/update/:id
 // body: {name, price, quantity, images, description, category, color, size, status, inventory}
 // response: Returns the updated product
-router.put("/update/:id", async (req, res) => {
+router.put("/update/id", async (req, res) => {
   try {
     const { id } = req.params;
     const {
