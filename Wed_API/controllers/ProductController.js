@@ -94,7 +94,7 @@ const addProduct = async (name, price, quantity, images, description, category) 
 
         // Create category object
         const categoryObj = {
-            category_id: categoryInDB._id,
+            category_id: category,
             category_name: categoryInDB.name
         };
 

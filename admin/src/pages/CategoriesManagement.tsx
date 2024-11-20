@@ -13,7 +13,7 @@ const MySwal = withReactContent(Swal);
 
 
 const Tables = () => {
-    const { getCategories, deleteCategoriesById, } = categoryController();
+    const { getCategories, deleteCategoriesById } = categoryController();
     const [dataCategorie, setDataCategorie] = useState<Category[]>([]);
 
 
@@ -30,15 +30,17 @@ const Tables = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 const response: any = await deleteCategoriesById(id);
-                console.log(response.status);
+                console.log("gia tri "+response);
                 if (response.status === true) {
+                    const data: any = await getCategories();
+                    console.log(data);
+                    setDataCategorie(data.data);
                     MySwal.fire(
                         'Đã xóa!',
                         'Danh mục đã được xóa.',
                         'success'
-                    ).then(() => {
-                        window.location.reload(); // Thực hiện reload trang
-                    });
+                    )
+
                 } else {
                     MySwal.fire(
                         'Lỗi!',

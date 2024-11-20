@@ -52,9 +52,7 @@ export const DeleteCategoriesByid = async (id: string): Promise<void> => {
           alert('Xóa Thất Bại: ' + (errorData.message || 'Lỗi không xác định'));
           return;
       }
-
-      // If everything goes well, show success message
-      alert("Xóa danh mục thành công");
+      return response.json(); // Return the response data
 
   } catch (error) {
       // Handle unexpected errors (network issues, etc.)

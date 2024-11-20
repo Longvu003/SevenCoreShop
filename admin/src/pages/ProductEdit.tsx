@@ -56,30 +56,8 @@ export default function ProductUpdate() {
         fetchProduct();
     }, [id]);
 
-    // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    //     const { name, value } = e.target;
-    //     if (name.includes('category.')) {
-    //         const categoryField = name.split('.')[1];
-    //         setDataProduct((prevState: any) => ({
-    //             ...prevState,
-    //             category: {
-    //                 ...prevState.category,
-    //                 [categoryField]: value
-    //             }
-    //         }));
-    //     } else {
-    //         setDataProduct({
-    //             ...dataProduct,
-    //             [name]: value
-    //         });
-    //     }
-    // };
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, files } = e.target as HTMLInputElement;
-
-        // console.log('gias tri name'+name)
-        // console.log('gia tri value'+value);
         if (name.includes('category.')) {
             const categoryField = name.split('.')[1];
             console.log(categoryField);
@@ -111,7 +89,6 @@ export default function ProductUpdate() {
             const res: any = await editProduct(id, dataProduct);
             if (res.status) {
                 alert("Update Product Success");
-                //history.push("/productmanagent");
             } else {
                 alert("Update Product Fail");
             }
@@ -162,7 +139,7 @@ export default function ProductUpdate() {
             </div>
 
             <div>
-                <label htmlFor="productDescription">Product Description</label>
+                <label htmlFor="productDescription">Mô tả</label>
                 <input
                     id="productDescription"
                     type="text"
@@ -175,7 +152,7 @@ export default function ProductUpdate() {
             </div>
 
             <div>
-                <label htmlFor="productCategory">Product Categories</label>
+                <label htmlFor="productCategory">Danh mục</label>
                 <select
                     id="productCategory"
                     name="category.category_name"
@@ -193,7 +170,7 @@ export default function ProductUpdate() {
             </div>
 
             <div>
-                <label htmlFor="productImages">Images</label>
+                <label htmlFor="productImages">Hình ảnh</label>
                 <input
                     id="productImages"
                     type="file"
@@ -206,7 +183,7 @@ export default function ProductUpdate() {
                     <img src={dataProduct.images[0]} alt="Product" style={{ width: '200px' }} />
                 </div>
             </div>
-            <button type="submit" className="btn btn-primary !mt-6">Submit</button>
+            <button type="submit" className="btn btn-primary !mt-6">Lưu</button>
         </form>
     );
 }
