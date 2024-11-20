@@ -37,16 +37,14 @@ const LoginBoxed = () => {
             dispatch(toggleRTL("ltr"))
         }
     }
-
     const [flag, setFlag] = useState(themeConfig.locale)
     const submitForm = async (event: React.FormEvent) => {
         event.preventDefault() // Prevent page reload
         const responsive: any = await loginUser(datauser)
-        console.log("data tại đây", responsive)
         if (responsive.status == true) {
             console.log("login thành công")
             console.log(responsive.data._id)
-            if (responsive.status == true) {
+            if (responsive.status === true) {
                 console.log(responsive.data)
                 localStorage.setItem("tokenuser", JSON.stringify(responsive.data)) // Ensure this is correct
 

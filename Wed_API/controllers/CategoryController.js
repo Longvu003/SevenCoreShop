@@ -1,4 +1,4 @@
-const CategoryModel = require("./CategoryModel");
+const CategoryModel = require("../model/CategoryModel");
 
 // lấy danh sách danh mục
 
@@ -27,4 +27,47 @@ const createCategory = async (name, description, images) => {
   }
 };
 
-module.exports = { getCategoryList, createCategory };
+// delete category
+const deleteCategory = async (id) => {
+  try {
+    const category = await CategoryModel.findByIdAndDelete(id);
+    return category;
+  } catch (error) {
+    console.log("Delete category error", error.message);
+    throw new Error("Delete category error");
+  }
+};
+// update category
+const updateCategory = async (id, name, description) => {
+  try {
+    const category = await CategoryModel.findById(id);
+    if (!category) {
+      throw new Error("Category không tồn tại");
+    }
+    category.name = name;
+    category.description = description;
+    await category.save();
+    return category;
+  } catch (error) {
+    console.log("Update category error", error.message);
+    throw new Error("Update category error");
+  }
+};
+
+// get category by id
+const getCategoryById = async (id) => {
+  try {
+    const category = await CategoryModel.findById(id);
+    return category;
+  } catch (error) {
+    console.log("Get category by id error", error.message);
+    throw new Error("Get category by id error");
+  }
+};
+module.exports = {
+  getCategoryList,
+  createCategory,
+  deleteCategory,
+  updateCategory,
+  getCategoryById,
+};

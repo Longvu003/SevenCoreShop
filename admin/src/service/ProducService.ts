@@ -1,8 +1,8 @@
 import { ex } from "@fullcalendar/core/internal-common"
 import { Products } from "../model/ProductModel"
-const API_URL = "http://192.168.1.8:7777" // Cập nhật URL chính xác
+const API_URL = "http://localhost:7777" // Cập nhật URL chính xác
 export const GetProduct = async (): Promise<Products> => {
-    const response = await fetch(`${API_URL}/products/all`, {
+    const response = await fetch(`${API_URL}/products`, {
         method: "get",
         headers: {
             "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export const GetProduct = async (): Promise<Products> => {
 
 //creat new product
 export const CreateProduct = async (product: Products): Promise<Products> => {
-    const response = await fetch(`${API_URL}/products/`, {
+    const response = await fetch(`${API_URL}/products`, {
         method: "post",
         body: JSON.stringify(product),
         headers: {

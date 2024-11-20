@@ -47,6 +47,7 @@ router.get("/all", async (req, res, next) => {
  * body: {name, price, quantity, images, decription, category}
  * response: trả về sản phẩm vừa tạo
  */
+<<<<<<< HEAD
 router.post("/", async (req, res, next) => {
   try {
     const { name, price, quantity, images, decription, category } = req.body;
@@ -62,6 +63,16 @@ router.post("/", async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({ status: false, data: error.message });
   }
+=======
+router.post('/', async (req, res, next) => {
+    try {
+        const { name, price, quantity, images, description, category } = req.body;
+        const product = await ProductController.addProduct(name, price, quantity, images, description, category);
+        return res.status(200).json({ status: true, data: product })
+    } catch (error) {
+        return res.status(500).json({ status: false, data: error.message })
+    }
+>>>>>>> 0c855e5fff0363c788f1200af0ba29753acb4548
 });
 
 /**
@@ -71,6 +82,7 @@ router.post("/", async (req, res, next) => {
  * body: name, price, quantity, images, description, category
  * response: trå về sån phåm vừa cập nhật
  */
+<<<<<<< HEAD
 router.post("/:id/update", async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -88,6 +100,32 @@ router.post("/:id/update", async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({ status: false, data: error.message });
   }
+=======
+router.post('/:id/update', async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const { name, price, quantity, images, description, category } = req.body;
+        console.log(req.body)
+        const product = await ProductController.updateProduct(id, name, price, quantity, images, description, category);
+        return res.status(200).json({ status: true, data: product });
+    } catch (error) {
+        return res.status(500).json({ status: false, data: error.message });
+    }
+})
+
+//API tìm kiếm sản phẩm theo từ khóa
+// method: get
+// url: http://localhost:7777/products/tim-kiem?key=Product 1
+// kết quả: danh sách sản phẩm có tên hoặc mô tả chứa từ khóa tìm kiếm
+router.get('/tim-kiem', async (req, res, next) => {
+    try {
+        const { key } = req.query;
+        const products = await ProductController.searchProduct(key);
+        return res.status(200).json({ status: true, data: products })
+    } catch (error) {
+        return res.status(500).json({ status: false, data: error.message })
+    }
+>>>>>>> 0c855e5fff0363c788f1200af0ba29753acb4548
 });
 
 router.get("/tim-kiem", async (req, res) => {
@@ -110,6 +148,7 @@ router.get("/tim-kiem", async (req, res) => {
 // method: get
 // url: http://localhost:7777/products/danh-muc?id=1
 // kết quả: danh sách sản phẩm theo danh mục
+<<<<<<< HEAD
 router.get("/danh-muc", async (req, res, next) => {
   try {
     const { id } = req.query;
@@ -118,6 +157,16 @@ router.get("/danh-muc", async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({ status: false, data: error.message });
   }
+=======
+router.get('/category', async (req, res, next) => {
+    try {
+        const { id } = req.query;
+        const products = await ProductController.getProductByCategory(id);
+        return res.status(200).json({ status: true, data: products })
+    } catch (error) {
+        return res.status(500).json({ status: false, data: error.message })
+    }
+>>>>>>> 0c855e5fff0363c788f1200af0ba29753acb4548
 });
 
 //API lấy danh sách sản phẩm có giá trong khoảng min, max
@@ -260,6 +309,16 @@ router.put("/update/:id", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 // API product khi nhan vao category ra 1 list ID
 router.get("/category/:categoryId", ProductController.getProductsByCategory);
+=======
+
+
+
+
+
+
+
+>>>>>>> 0c855e5fff0363c788f1200af0ba29753acb4548
 module.exports = router;

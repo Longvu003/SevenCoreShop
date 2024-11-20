@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
-const ProductModel = require("./ProductModel");
-const CategoryModel = require("./CategoryModel");
+const ProductModel = require("../model/ProductModel");
+const CategoryModel = require("../model/CategoryModel");
 
 // Lấy danh sách sản phẩm (có thể lọc theo danh mục)
 const getProducts = async (category = "") => {
   try {
     let products;
     if (category) {
-      products = await ProductModel.find({ category: mongoose.Types.ObjectId(category) });
+      products = await ProductModel.find({
+        category: mongoose.Types.ObjectId(category),
+      });
     } else {
       products = await ProductModel.find();
     }
@@ -18,7 +20,19 @@ const getProducts = async (category = "") => {
   }
 };
 
-// Lấy tất cả sản phẩm
+//lấy danh sách sản phẩm theo danh mục
+const getProductByCategory = async (category_id) => {
+  try {
+    const products = await ProductModel.find({
+      "category.category_id": category_id,
+    });
+    return products;
+  } catch (error) {
+    console.log("Get product by category error", error.message);
+    throw new Error("Get product by category error");
+  }
+};
+
 const getAllProducts = async () => {
   try {
     const products = await ProductModel.find();
@@ -96,7 +110,9 @@ const addProduct = async (
   inventory
 ) => {
   try {
-    const categoryInDB = await CategoryModel.findById(mongoose.Types.ObjectId(category));
+    const categoryInDB = await CategoryModel.findById(
+      mongoose.Types.ObjectId(category)
+    );
     if (!categoryInDB) {
       throw new Error("Category không tồn tại");
     }
@@ -113,8 +129,13 @@ const addProduct = async (
       status,
       inventory,
     });
-
-    const result = await product.save();
+    const newProduct = new ProductModel(product);
+    // lưu vào db
+    const result = await newProduct.save();
+    // setTimeout(() => {
+    //     console.log('result: ', result);
+    //     //thêm 1 sp vào danh sách poducts của category
+    // }, 0);
     return result;
   } catch (error) {
     console.log("Add product error", error.message);
@@ -122,7 +143,7 @@ const addProduct = async (
   }
 };
 
-// Cập nhật sản phẩm
+// cập nhật sản phẩm
 const updateProduct = async (
   id,
   name,
@@ -133,40 +154,54 @@ const updateProduct = async (
   category
 ) => {
   try {
-    const productInDb = await ProductModel.findById(mongoose.Types.ObjectId(id));
+    // tìm sp theo id
+    const productInDb = await ProductModel.findById(id);
     if (!productInDb) {
       throw new Error("Sản phẩm không tồn tại");
     }
 
-    const categoryInDB = await CategoryModel.findById(mongoose.Types.ObjectId(category));
+    if (!category) {
+      throw new Error("Category không tồn tại");
+    }
+    // lấy category theo id
+    const categoryInDB = await CategoryModel.findById(
+      category["category_name"]
+    );
     if (!categoryInDB) {
       throw new Error("Category không tồn tại");
     }
 
+    // tạo object category
+    category = {
+      category_id: categoryInDB._id,
+      category_name: categoryInDB.name,
+    };
+
+    // cập nhật sản phẩm
     productInDb.name = name || productInDb.name;
     productInDb.price = price || productInDb.price;
     productInDb.quantity = quantity || productInDb.quantity;
     productInDb.images = images || productInDb.images;
     productInDb.description = description || productInDb.description;
-    productInDb.category = mongoose.Types.ObjectId(category); // Cập nhật lại category như ObjectId
-    productInDb.updatedAt = Date.now();
+    productInDb.updateAt = Date.now();
 
     await productInDb.save();
-    return productInDb;
+    return true;
   } catch (error) {
     console.log("Update product error", error.message);
-    throw new Error("Update product error");
+    throw new Error("Update product error", error.message);
   }
 };
 
 // Xóa sản phẩm
 const deleteProduct = async (id) => {
   try {
-    const productInDb = await ProductModel.findById(mongoose.Types.ObjectId(id));
+    const productInDb = await ProductModel.findById(
+      mongoose.Types.ObjectId(id)
+    );
     if (!productInDb) {
       throw new Error("Sản phẩm không tồn tại");
     }
-
     await ProductModel.deleteOne({ _id: mongoose.Types.ObjectId(id) });
     return true;
   } catch (error) {
@@ -179,7 +214,9 @@ const deleteProduct = async (id) => {
 const getById = async (id) => {
   try {
     // Sử dụng cú pháp `new mongoose.Types.ObjectId(id)`
-    const productInDb = await ProductModel.findById(new mongoose.Types.ObjectId(id)); 
+    const productInDb = await ProductModel.findById(
+      new mongoose.Types.ObjectId(id)
+    );
     if (!productInDb) {
       throw new Error("Sản phẩm không tồn tại");
     }
