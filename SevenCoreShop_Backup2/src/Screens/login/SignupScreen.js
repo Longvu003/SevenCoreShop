@@ -10,65 +10,94 @@ import {
   ScrollView,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {Modal} from 'react-native-modal';
 import axios from 'axios';
 import API__URL from '../../../config';
-
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [numberphone, setNumberphone] = useState('');
-  const [birthday, setBirthday] = useState('');
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [isModalVisible, setModalVisible] = useState(false); // Show modal to select role
+  // const [birthday, setBirthday] = useState('');
+  // const [showDatePicker, setShowDatePicker] = useState(false);
+  const [address, setAddress] = useState('');
+  // const handleDateChange = (event, selectedDate) => {
+  //   setShowDatePicker(false);
+  //   if (selectedDate) {
+  //     const date = selectedDate.toISOString().split('T')[0]; // Format date
+  //     setBirthday(date);
+  //   }
+  // };
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
-  const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      const date = selectedDate.toISOString().split('T')[0]; // Format date
-      setBirthday(date);
+  // Hàm kiểm tra dữ liệu
+  const validateInput = () => {
+    if (!email) {
+      Alert.alert('Lỗi', 'Email không được để trống');
+      return false;
     }
+    if (!password) {
+      Alert.alert('Lỗi', 'Mật khẩu phải có ít nhất 6 kí tự');
+      return false;
+    }
+    if (!username) {
+      Alert.alert('Lỗi', 'Tên người dùng không được để trống');
+      return false;
+    }
+    if (!numberphone) {
+      Alert.alert('Lỗi', 'Số điện thoại không được để trống');
+      return false;
+    }
+    if (!address) {
+      Alert.alert('Lỗi', 'đại chỉ không được để trống');
+      return false;
+    }
+    // Kiểm tra định dạng email
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      Alert.alert('Lỗi', 'Email không hợp lệ');
+      return false;
+    }
+    return true; // Nếu tất cả đều hợp lệ
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
+    if (!validateInput()) {
+      return; // Nếu không hợp lệ, dừng lại
+    }
+
     const formData = {
       email,
       password,
       username,
       numberphone,
-      birthday,
+      address,
     };
 
-    // Basic validation for form inputs
-    if (!email || !password || !username || !numberphone || !birthday) {
-      Alert.alert('Please fill out all fields');
-      return;
-    }
-
     try {
-      // Send POST request to API
+      // Gửi yêu cầu POST tới API
       const response = await axios.post(`${API__URL}/users/register`, formData);
 
-      // Handle response
+      // Xử lý phản hồi
       if (response.status === 200) {
         Alert.alert('Đăng ký thành công');
-        navigation.navigate('LoginScreen'); // Navigate to sign-in page
+        navigation.navigate('LoginScreen');
       } else {
         Alert.alert('Đăng ký thất bại');
       }
     } catch (error) {
       console.error('Error during request:', error);
-      Alert.alert('Network error or server issue');
+
+      // Xử lý thông báo lỗi từ server
+      if (error.response && error.response.data.errors) {
+        const errorMessages = error.response.data.errors.map(err => err.msg);
+        Alert.alert('Đăng ký thất bại', errorMessages.join('\n'));
+      } else {
+        Alert.alert('Lỗi mạng hoặc sự cố máy chủ');
+      }
     }
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor: 'white'}}>
       <View style={styles.container}>
         <View style={{flex: 2}}>
           <TouchableOpacity
@@ -112,8 +141,14 @@ const SignupScreen = ({navigation}) => {
             onChangeText={setEmail}
             keyboardType="email-address"
           />
+          <TextInput
+            style={styles.input}
+            placeholder="Address"
+            value={address}
+            onChangeText={setAddress}
+          />
           {/* Birthday Input */}
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          {/* <TouchableOpacity onPress={() => setShowDatePicker(true)}>
             <TextInput
               style={[styles.input, birthday ? styles.boldText : null]}
               placeholder="Birthday"
@@ -130,7 +165,7 @@ const SignupScreen = ({navigation}) => {
               display="default"
               onChange={handleDateChange}
             />
-          )}
+          )} */}
 
           <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
             <Text style={styles.loginText}>Tiếp tục</Text>
@@ -148,7 +183,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
-
   back: {
     width: 40,
     height: 40,
@@ -189,19 +223,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'regular',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    fontWeight: 'bold',
-    color: '#272727',
-  },
-  roleText: {
-    fontSize: 18,
-    paddingVertical: 10,
-    fontWeight: 'bold',
-    color: '#272727',
   },
 });
 

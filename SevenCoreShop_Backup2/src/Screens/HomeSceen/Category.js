@@ -19,6 +19,7 @@ const CategoryScreen = ({ navigation }) => {
       .get(`${API__URL}/categories/getAllCategory`)
       .then(response => {
         const fixResponse = Object.values(response.data);
+
         setCategories(fixResponse[1]);
       })
       .catch(error => console.error('Lỗi lấy danh mục:', error));

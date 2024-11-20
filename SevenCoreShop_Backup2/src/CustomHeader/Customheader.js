@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 15,
-    marginHorizontal: 24,
+    marginHorizontal: 27,
     alignItems: 'center',
   },
 });

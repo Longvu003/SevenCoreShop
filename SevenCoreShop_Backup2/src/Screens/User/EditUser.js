@@ -15,7 +15,7 @@ const HEIGHT__SCREEN = Dimensions.get('screen').height;
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API__URL from '../../../config';
-const EditUser = () => {
+const EditUser = ({navigation}) => {
   const [userData, setUserData] = useState({});
 
   const getUser = async () => {
@@ -43,22 +43,23 @@ const EditUser = () => {
     setUserData(oldData => ({...oldData, [dataInput]: value}));
   };
   const updateUserInformation = async () => {
+    const userEmail_2 = await AsyncStorage.getItem('userEmail');
+    const userString = JSON.parse(userEmail_2);
+    const url = `${API__URL}/users/updateUser?email=${userString}`;
     try {
-      const userEmail_2 = await AsyncStorage.getItem('userEmail');
-      const userString = JSON.parse(userEmail_2);
-      const url = `${API__URL}/users/updateUser?email=${userString}`;
-      await axios.put(url, userData, {
-        headers: 'application/x-www-form-urlencoded',
-      });
-      // console.log(url);
-
-      Alert.alert('Cập nhật thành công');
+      if (userData.username.length < 6 && userData.numberphone.length <= 10) {
+        Alert.alert('userName từ 6 ký tự và numberphone phải 10 ký tự  ');
+      } else {
+        await axios.put(url, userData, {
+          headers: 'application/x-www-form-urlencoded',
+        });
+        Alert.alert('Cập nhật thành công');
+        navigation.navigate('User');
+      }
     } catch (error) {
-      console.error('Lỗi cập nhật user', error);
+      console.log('Lỗi cập nhật user', error);
     }
   };
-
-  // console.log(userData);
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1}}>
