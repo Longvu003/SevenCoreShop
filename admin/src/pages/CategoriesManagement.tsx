@@ -1,51 +1,45 @@
-import { useEffect, useState } from 'react';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../store';
-import { setPageTitle } from '../store/themeConfigSlice';
-import { Category } from '../model/CategoriesModel';
-import { categoryController } from '../controller/CategoryController';
-
-
+import { useEffect, useState } from "react"
+import Tippy from "@tippyjs/react"
+import "tippy.js/dist/tippy.css"
+import { useDispatch, useSelector } from "react-redux"
+import { IRootState } from "../store"
+import { setPageTitle } from "../store/themeConfigSlice"
+import { Category } from "../model/CategoriesModel"
+import { categoryController } from "../controller/CategoryController"
 
 const Tables = () => {
-    const { getCategories, deleteCategoriesById, } = categoryController();
-    const [dataCategorie, setDataCategorie] = useState<Category[]>([]);
-
+    const { getCategories, deleteCategoriesById } = categoryController()
+    const [dataCategorie, setDataCategorie] = useState<Category[]>([])
 
     const handleDelete = async (id: string) => {
-        const result: any = await deleteCategoriesById(id);
-        console.log(result.status);
+        const result: any = await deleteCategoriesById(id)
+        console.log(result.status)
         if (result.status === true) {
-            alert("Xóa Thành Công");
-            window.location.reload(); // Thực hiện reload trang
+            alert("Xóa Thành Công")
+            window.location.reload() // Thực hiện reload trang
         } else {
-            alert("Xóa Thất Bại");
+            alert("Xóa Thất Bại")
         }
-    };
-
-
+    }
 
     // Hàm showData lấy dữ liệu từ API và lưu vào state
     const showData = async () => {
-        const data: any = await getCategories();
-        console.log(data.data);
-        setDataCategorie(data.data);
-    };
+        const data: any = await getCategories()
+        console.log(data.data)
+        setDataCategorie(data.data)
+    }
 
-    const dispatch = useDispatch();
-
-
-    useEffect(() => {
-        showData();
-    }, []);
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(setPageTitle('Tables'));
-    });
+        showData()
+    }, [])
 
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
+    useEffect(() => {
+        dispatch(setPageTitle("Tables"))
+    })
+
+    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl" ? true : false
 
     return (
         <div className="grid xl:grid-cols-1 gap-12 grid-cols-1">
@@ -53,7 +47,9 @@ const Tables = () => {
             <div className="panel">
                 <div className="flex items-center justify-between mb-12">
                     <h5 className="font-semibold text-lg dark:text-white-light">Quản lí danh mục sản phẩm</h5>
-                    <a href="/categoriesmanagent/categories-update" className="btn btn-success">+ Thêm danh mục sản phẩm</a>
+                    <a href="/categoriesmanagent/categories-update" className="btn btn-success">
+                        + Thêm danh mục sản phẩm
+                    </a>
                 </div>
                 <div className="table-responsive mb-5">
                     <table>
@@ -87,7 +83,7 @@ const Tables = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Tables;
+export default Tables
