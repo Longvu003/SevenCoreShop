@@ -20,9 +20,13 @@ const LoginScreen = ({navigation}) => {
   // Hàm để xử lý đăng nhập
   const handleSubmit = async () => {
     // Kiểm tra người dùng đã nhập đầy đủ thông tin chưa
-    if (!email || !password) {
-      Alert.alert('Please enter both email and password');
-      return;
+    if (!email) {
+      Alert.alert('Email không được để trống');
+      return false;
+    }
+    if (!password) {
+      Alert.alert('Mật khẩu không được để trống');
+      return false;
     }
 
     try {
@@ -37,37 +41,37 @@ const LoginScreen = ({navigation}) => {
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         },
       );
-      // console.log(response.data);
       // Kiểm tra phản hồi từ API
       if (response.status === 200) {
-        console.log('data nè', response.data.data.email);
         const user = JSON.stringify(response.data.data.email);
-        const userId = JSON.stringify(response.data.data._id);
+        // console.log('data nè', user);
+        const userId = JSON.stringify(response.data.data.id);
         await AsyncStorage.setItem('userEmail', user);
         await AsyncStorage.setItem('userId', userId);
-        // Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
+        // console.log(userId);
+        Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
         navigation.navigate('Tab');
       } else {
         Alert.alert('Đăng nhập thất bại', 'Nhập đúng email và mật khẩu');
       }
     } catch (error) {
       console.error('Error during login request:', error);
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      Alert.alert('Error', 'Email hoặc mật khẩu không chính xác');
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      console.log('Google Sign In Data:', userInfo);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const userInfo = await GoogleSignin.signIn();
+  //     console.log('Google Sign In Data:', userInfo);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor: 'white'}}>
       <View style={styles.container}>
         <View style={{flex: 1, marginTop: 10}}>
           <Text style={styles.title}>Đăng nhập</Text>
@@ -117,7 +121,8 @@ const LoginScreen = ({navigation}) => {
 
             <TouchableOpacity
               style={styles.socialButton}
-              onPress={handleGoogleSignIn}>
+              // onPress={handleGoogleSignIn}
+            >
               <Image
                 source={require('../../../assets/imgs/google.png')}
                 style={styles.icon2}

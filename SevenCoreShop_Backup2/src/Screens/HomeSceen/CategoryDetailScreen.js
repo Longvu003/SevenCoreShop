@@ -1,17 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
 
-const CategoryDetailScreen = ({ navigation, route }) => {
-  const { category } = route.params;
+const CategoryDetailScreen = ({navigation, route}) => {
+  const {category} = route.params;
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`${API__URL}/products/category/${category._id}`)
+      .get(`${API__URL}/products/categoryById?categoryId=${category._id}`)
       .then(response => {
         setProducts(response.data.data);
+        // console.log(response.data);
       })
       .catch(error => console.error('Lỗi lấy sản phẩm:', error));
   }, [category._id]);
@@ -19,26 +27,26 @@ const CategoryDetailScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       {/* Back Button */}
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}>
         <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
-
       {/* Category Title */}
       <Text style={styles.title}>{category.name}</Text>
-
       {/* Product List */}
       <FlatList
         data={products}
         keyExtractor={item => item._id}
         numColumns={2} // This ensures two columns
-        renderItem={({ item }) => (
+        renderItem={({item}) => (
           <View style={styles.productCard}>
-            <Image source={{ uri: item.images[0] }} style={styles.productImage} />
+            <Image source={{uri: item.images[0]}} style={styles.productImage} />
             <Text style={styles.productName}>{item.name}</Text>
             <Text style={styles.productPrice}>${item.price}</Text>
           </View>
         )}
-        columnWrapperStyle={styles.columnWrapper} 
+        columnWrapperStyle={styles.columnWrapper}
       />
     </View>
   );
@@ -71,12 +79,12 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   productCard: {
-    width: '50%', 
+    width: '50%',
     backgroundColor: '#F4F4F4',
     borderRadius: 8,
     padding: 10,
-    alignItems: 'center', 
-    marginBottom: 20, 
+    alignItems: 'center',
+    marginBottom: 20,
   },
   productImage: {
     width: 160,
@@ -96,7 +104,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   columnWrapper: {
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
   },
 });
 

@@ -22,8 +22,8 @@ const ProductController = require("../controllers/ProductController");
 // });
 
 router.get("/", async (req, res, next) => {
-  const { category_id } = req.query;
-  console.log(category_id);
+  const category_id = req.query._id;
+
   try {
     const checkListProducts = await ProductController.getProducts(category_id);
     return res.status(200).json({ status: true, checkListProducts });
@@ -141,15 +141,15 @@ router.get("/loc-theo-gia", async (req, res, next) => {
  * url: http://localhost:7777/products/:id/delete
  * response: trå về sån phåm vừa cập nhật
  */
-router.post("/:id/delete", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const products = await ProductController.deleteProduct(id);
-    return res.status(200).json({ status: true, data: products }); //
-  } catch (error) {
-    return res.status(500).json({ status: false, data: error.message });
-  }
-});
+// router.delete("/deleteProductById", async (req, res, next) => {
+//   try {
+//     const { id } = req.params.id;
+//     const products = await ProductController.deleteProduct(id);
+//     return res.status(200).json({ status: true, data: products }); //
+//   } catch (error) {
+//     return res.status(500).json({ status: false, data: error.message });
+//   }
+// });
 
 /**
  * API Lấy sp theo id
@@ -226,7 +226,7 @@ router.post("/add", async (req, res) => {
 // url: http://localhost:7777/products/update/:id
 // body: {name, price, quantity, images, description, category, color, size, status, inventory}
 // response: Returns the updated product
-router.put("/update/:id", async (req, res) => {
+router.put("/update/id", async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -261,5 +261,5 @@ router.put("/update/:id", async (req, res) => {
 });
 
 // API product khi nhan vao category ra 1 list ID
-router.get("/category/:categoryId", ProductController.getProductsByCategory);
+router.get("/categoryById", ProductController.getProductsByCategory);
 module.exports = router;

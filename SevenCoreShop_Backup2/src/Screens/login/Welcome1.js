@@ -15,7 +15,7 @@ const Welcome1 = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../../../assets/imgs/bg.png')}
+        source={require('../../../assets/imgs/logo.png')}
         style={styles.bg1}
       />
     </View>

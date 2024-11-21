@@ -9,6 +9,7 @@ import EditPayment from '../Screens/User/payment/EditPayment';
 import ListPayment from '../Screens/User/payment/ListPayment';
 import LoginTest from '../Screens/LoginTest';
 import EditUser from '../Screens/User/EditUser';
+import Resetpass from '../Screens/login/Resetpass';
 import ForgotPassword from '../Screens/login/ForgotPassword';
 import LoginScreen from '../Screens/login/LoginScreen';
 import SignupScreen from '../Screens/login/SignupScreen';
@@ -19,21 +20,21 @@ import CartScreen from '../Screens/Cart/CartScreen';
 import AllProductsScreen from '../Screens/HomeSceen/AllProductsScreen';
 import CategoryDetailScreen from '../Screens/HomeSceen/CategoryDetailScreen';
 import CategoryScreen from '../Screens/HomeSceen/Category';
-import Order from '../Screens/Order/Order';
-// import AddressSelection from '../Screens/HomeSceen/AddressSelection'
-
+import DetailOrder from '../Screens/Order/DetailOrder';
+import OrderScreen from '../Screens/Order/OrderScreen';
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="HomeSceen"
+        initialRouteName="LoginScreen"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Welcome1" component={Welcome1} />
         <Stack.Screen name="Welcome2" component={Welcome2} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="SignupScreen" component={SignupScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="Resetpass" component={Resetpass} />
         <Stack.Screen name="Tab" component={TabNavigation} />
         <Stack.Screen name="ListAddress" component={ListAddress} />
         <Stack.Screen name="EditAddress" component={EditAddress} />
@@ -44,12 +45,12 @@ const Stacknavigation = () => {
         <Stack.Screen name="CartScreen" component={CartScreen} />
         <Stack.Screen name="AllProductsScreen" component={AllProductsScreen} />
         <Stack.Screen name="CategoryScreen" component={CategoryScreen} />
-        <Stack.Screen name="Order" component={Order} />
-         {/* <Stack.Screen name="AddressSelection" component={AddressSelection} options={{title: 'Chọn địa chỉ giao hàng'}} />  */}
+        {/* <Stack.Screen name="AddressSelection" component={AddressSelection} options={{title: 'Chọn địa chỉ giao hàng'}} />  */}
         <Stack.Screen
           name="CategoryDetailScreen"
           component={CategoryDetailScreen}
         />
+        <Stack.Screen name="DetailOrder" component={DetailOrder} />
       </Stack.Navigator>
     </NavigationContainer>
   );

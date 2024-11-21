@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const CartModel = require("./CartModel");
-const UserModel = require("./UserModel");
-const ProductModel = require("./ProductModel");
-const OrderModel = require("./OrderModel");
-
+const mongoose = require("mongoose");
+const CartModel = require("../model/CartModel");
+const UserModel = require("../model/UserModel");
+const ProductModel = require("../model/ProductModel");
+const OrderModel = require("../model/OrderModel");
+// const OrderModel = require("./OrderModel");
 
 // Hàm thêm sản phẩm vào giỏ hàng
 const add = async (userId, productId, nameProduct, quantity, price, images) => {
@@ -13,7 +13,7 @@ const add = async (userId, productId, nameProduct, quantity, price, images) => {
       // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng
       await CartModel.updateOne(
         { userId, productId },
-        { $inc: {  quantity: quantity } } // Tăng số lượng
+        { $inc: { quantity: quantity } } // Tăng số lượng
       );
     } else {
       // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
@@ -25,6 +25,7 @@ const add = async (userId, productId, nameProduct, quantity, price, images) => {
         price,
         images,
       });
+
       await newItem.save();
     }
   } catch (error) {
@@ -35,13 +36,16 @@ const add = async (userId, productId, nameProduct, quantity, price, images) => {
 // Hàm xóa sản phẩm khỏi giỏ hàng
 const deleteItemcart = async (userId, productId) => {
   try {
-    console.log("Tìm sản phẩm với userId:", userId, "và productId:", productId); // Log để kiểm tra thông tin
+    // console.log("Tìm sản phẩm với userId:", userId, "và productId:", productId); // Log để kiểm tra thông tin
 
     const itemDeleted = await CartModel.findOne({ userId, productId });
 
     if (!itemDeleted) {
       console.log("Không tìm thấy sản phẩm trong giỏ hàng");
-      return { success: false, message: "Sản phẩm không tồn tại trong giỏ hàng" };
+      return {
+        success: false,
+        message: "Sản phẩm không tồn tại trong giỏ hàng",
+      };
     }
 
     return { success: true, itemDeleted };
@@ -51,13 +55,12 @@ const deleteItemcart = async (userId, productId) => {
   }
 };
 
-
-
 // Hàm lấy sản phẩm trong giỏ hàng
 const getItemCart = async (userId) => {
   try {
     const items = await CartModel.find({ userId });
-    return items.length ? items : [];
+    // console.log("All cart items:", items);
+    return items;
   } catch (error) {
     console.error("Lỗi khi lấy sản phẩm trong giỏ hàng:", error);
   }
@@ -82,78 +85,4 @@ const updateItemCart = async (userId, productId, quantity) => {
   }
 };
 
-const checkout = async (req, res) => {
-  const { userId, items, paymentMethod } = req.body;
-
-  // Kiểm tra dữ liệu đầu vào
-  if (!userId || userId.length !== 24) {
-    return res.status(400).json({ message: 'User ID không hợp lệ' });
-    console.log('User ID:', userId);
-  }
-
-
-
-  // Tìm người dùng trong cơ sở dữ liệu
-  const user = await UserModel.findById(userId);
-  if (!user) {
-    return res.status(404).json({ message: 'Người dùng không tồn tại' });
-  }
-
-  if (paymentMethod !== 'COD') {
-    return res.status(400).json({ message: 'Phương thức thanh toán không hợp lệ' });
-  }
-
-  try {
-    // Kiểm tra xem userId có hợp lệ không
-    if (!mongoose.isValidObjectId(userId)) {
-      return res.status(400).json({ message: 'User ID không hợp lệ' });
-    }
-
-    let totalAmount = 0;
-    for (const item of items) {
-      // Kiểm tra sản phẩm
-      if (!item.productId || !item.quantity) {
-        return res.status(400).json({ message: 'Sản phẩm không hợp lệ trong giỏ hàng.' });
-      }
-      
-      const product = await ProductModel.findById(item.productId);
-      if (!product) {
-        return res.status(404).json({ message: 'Sản phẩm không tồn tại: ' + item.productId });
-      }
-      totalAmount += product.price * item.quantity;
-    }
-
-    // Tạo đơn hàng mới
-    const order = new OrderModel({
-      userId,
-      items,
-      totalAmount,
-      paymentMethod,
-      status: 'Pending',
-    });
-    await order.save();
-
-    console.log(order);
-    // Lưu lịch sử đơn hàng vào tài khoản người dùng
-    await UserModel.findByIdAndUpdate(userId, {
-      $push: { orderHistory: order._id }
-    });
-
-    // Xóa giỏ hàng sau khi thanh toán
-    await CartModel.findOneAndUpdate({ userId }, { $set: { items: [] } });
-
-    res.status(200).json({
-      message: 'Thanh toán thành công! Đơn hàng của bạn đã được tạo.',
-      order: order, // Trả về toàn bộ dữ liệu đơn hàng
-    });
-  } catch (error) {
-    console.error('Lỗi khi xử lý thanh toán:', error);
-    res.status(500).json({ message: 'Lỗi khi xử lý thanh toán', error: error.message });
-  }
-};
-
-
-
-
-
-module.exports = { add, updateItemCart, deleteItemcart, getItemCart, checkout };
+module.exports = { add, updateItemCart, deleteItemcart, getItemCart };

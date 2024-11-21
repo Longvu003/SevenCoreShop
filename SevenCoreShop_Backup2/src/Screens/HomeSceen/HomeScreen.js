@@ -20,10 +20,10 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     // Gọi API lấy sản phẩm từ MongoDB
     axios
-      .get(`${API__URL}/products`)
+      .get(`${API__URL}/products/all`)
       .then(response => {
         // const getidProduct = JSON.stringify(response.data);
-        const ArrayProduct = response.data.checkListProducts;
+        const ArrayProduct = response.data.data;
         setProducts(ArrayProduct);
       })
       .catch(error => {
@@ -41,7 +41,6 @@ const HomeScreen = ({navigation}) => {
         console.error('Error fetching categories:', error);
       });
   }, []);
-
   const handleSearch = () => {
     if (searchKey.trim() === '') {
       axios
@@ -63,17 +62,13 @@ const HomeScreen = ({navigation}) => {
         });
     }
   };
-
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
+
       <View style={styles.header}>
-        <Text style={styles.hello}>
-           Xin Chào
-        </Text>
-          
-          
-        
+        <Text style={styles.hello}>Xin Chào</Text>
+
         <TouchableOpacity onPress={() => navigation.navigate('CartScreen')}>
           <Image
             source={require('../../../assets/imgs/cart2.png')}
@@ -95,77 +90,71 @@ const HomeScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
-      {/* Categories */}
-      <View style={styles.categoryHeader}>
-        <Text style={styles.sectionTitle}>Categories</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('CategoryScreen')}>
-          <Text style={styles.seeAllText}>See All</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.categoryContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {categories.length > 0 ? (
-            categories.map((category, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.categoryItem}
-                onPress={() =>
-                  navigation.navigate('CategoryDetailScreen', {category})
-                }>
-                <Image
-                  source={{
-                    uri:
-                      category.images && category.images.length > 0
-                        ? category.images[0]
-                        : 'https://via.placeholder.com/50',
-                  }}
-                  style={styles.categoryImage}
-                />
-                <Text>{category.name}</Text>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <Text>No categories available</Text>
-          )}
-        </ScrollView>
-      </View>
-
-      {/* Top Selling */}
-      <View style={styles.productHeader}>
-        <Text style={styles.sectionTitle}>Top Selling</Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('AllProductsScreen')}>
-          <Text style={styles.seeAllText}>See All</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.productSection}>
-        <FlatList
-          data={products}
-          keyExtractor={item => item._id}
-          numColumns={2}
-          showsHorizontalScrollIndicator={true}
-          scrollEnabled={false}
-          renderItem={({item}) => {
-            return (
-              <View style={styles.productCard}>
+      <View>
+        <View style={styles.categoryHeader}>
+          <Text style={styles.sectionTitle}>Categories</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CategoryScreen')}>
+            <Text style={styles.seeAllText}>See All</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.categoryContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {categories.length > 0 ? (
+              categories.map((category, index) => (
                 <TouchableOpacity
+                  key={index}
+                  style={styles.categoryItem}
+                  onPress={() =>
+                    navigation.navigate('CategoryDetailScreen', {category})
+                  }>
+                  <Image
+                    source={{
+                      uri:
+                        category.images && category.images.length > 0
+                          ? category.images[0]
+                          : 'https://via.placeholder.com/50',
+                    }}
+                    style={styles.categoryImage}
+                  />
+                  <Text>{category.name}</Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text>No categories available</Text>
+            )}
+          </ScrollView>
+        </View>
+
+        <View style={styles.productHeader}>
+          <Text style={styles.sectionTitle}>Top Selling</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AllProductsScreen')}>
+            <Text style={styles.seeAllText}>See All</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.productSection}>
+          <FlatList
+            data={products}
+            keyExtractor={item => item._id}
+            numColumns={2}
+            scrollEnabled={false}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity
+                  style={styles.productCard}
                   onPress={() => navigation.navigate('ProductDetail', {item})}>
                   <Image
-                    // source={
-                    //   item.images.length > 0 && item.images[0]
-                    //     ? {uri: item.images[0]}
-                    //     : require('../../../assets/imgs/profile.png')
-                    // }
                     source={{uri: item.images[0]}}
                     style={styles.productImage}
                   />
                   <Text style={styles.productName}>{item.name}</Text>
                   <Text style={styles.productPrice}>${item.price}</Text>
                 </TouchableOpacity>
-              </View>
-            );
-          }}
-        />
+              );
+            }}
+          />
+        </View>
       </View>
 
       <View style={styles.productSection}></View>
@@ -179,7 +168,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#fff',
   },
-  hello:{
+  hello: {
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 10,
