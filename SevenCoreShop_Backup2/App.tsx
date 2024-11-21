@@ -9,8 +9,8 @@ import AddressCart from './src/Screens/HomeSceen/AddressCart';
 const App = () => {
   return (
     <View style={{flex: 1}}>
-      {/* <Stacknavigation /> */}
-      <AddressCart />
+      <Stacknavigation />
+      {/* <AddressCart /> */}
     </View>
   );
 };

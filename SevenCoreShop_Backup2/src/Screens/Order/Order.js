@@ -13,8 +13,10 @@ const getProductDetails = async (productId) => {
 };
 
 const Order = ({ route }) => {
-  const { order } = route.params;
+  // const { order } = route.params;
+  const order = route?.params?.order;
   const [orders, setOrders] = useState([]);
+  
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -53,10 +55,13 @@ const Order = ({ route }) => {
           </View>
         ))
       ) : (
-        <Text>Không có đơn hàng nào được tạo.</Text>
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Không có đơn hàng</Text>
+        </View>
       )}
     </ScrollView>
   );
+  
 };
 
 const styles = StyleSheet.create({
