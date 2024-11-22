@@ -67,7 +67,7 @@ const Resetpass = ({navigation}) => {
       }
     } catch (error) {
       Alert.alert('Lỗi', 'Đã xảy ra lỗi. Vui lòng thử lại sau.');
-      console.error('Lỗi đặt lại mật khẩu:', error);
+      console.log('Lỗi đặt lại mật khẩu:', error);
     } finally {
       setLoading(false); // Kết thúc loading
     }

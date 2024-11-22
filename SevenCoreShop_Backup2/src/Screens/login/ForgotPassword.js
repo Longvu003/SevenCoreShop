@@ -39,7 +39,7 @@ const ForgotPassword = ({navigation}) => {
       }
     } catch (error) {
       Alert.alert('Lỗi', 'Đã xảy ra lỗi. Vui lòng thử lại sau.');
-      console.error('Lỗi quên mật khẩu:', error);
+      console.log('Lỗi quên mật khẩu:', error);
     }
   };
 

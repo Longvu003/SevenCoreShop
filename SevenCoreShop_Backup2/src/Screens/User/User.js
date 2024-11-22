@@ -31,7 +31,7 @@ const User = ({navigation}) => {
         console.log('Lỗi không thấy email');
       }
     } catch (error) {
-      console.error('lỗi nè :', error);
+      console.log('lỗi nè :', error);
       setLoading(true);
     }
   };

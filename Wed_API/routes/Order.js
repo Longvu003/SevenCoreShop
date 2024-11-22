@@ -19,8 +19,7 @@ router.get("/getOrderUser", async (req, res) => {
 router.get("/getOrderUserById", async (req, res) => {
   const { userId } = req.query;
   try {
-    const itemOrder = await OrderController.getOrderUser(userId);
-
+    const itemOrder = await OrderController.getOrderUserById(userId);
     if (itemOrder) {
       return res.status(200).json(itemOrder);
     } else {

@@ -2,8 +2,6 @@ import {Image} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import User from '../Screens/User/User';
-
-import Notification from '../Screens/Notification/Notification';
 import OrderScreen from '../Screens/Order/OrderScreen';
 import HomeScreen from '../Screens/HomeSceen/HomeScreen';
 import CartScreen from '../Screens/Cart/CartScreen';
@@ -12,7 +10,9 @@ const TabNavigation = () => {
   return (
     <Tab.Navigator
       initialRouteName="HomeScreen"
-      screenOptions={{headerShown: false}}>
+      screenOptions={{
+        headerShown: false,
+      }}>
       <Tab.Screen
         name="HomeScreen"
         component={HomeScreen}

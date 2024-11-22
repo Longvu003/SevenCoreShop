@@ -21,7 +21,7 @@ const CategoryDetailScreen = ({navigation, route}) => {
         setProducts(response.data.data);
         // console.log(response.data);
       })
-      .catch(error => console.error('Lỗi lấy sản phẩm:', error));
+      .catch(error => console.log('Lỗi lấy sản phẩm:', error));
   }, [category._id]);
 
   return (

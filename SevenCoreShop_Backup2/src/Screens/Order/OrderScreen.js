@@ -29,7 +29,7 @@ const OrderScreen = ({navigation}) => {
       );
       setDataOrder(response.data);
     } catch (error) {
-      console.error('Lỗi khi lấy thông tin sản phẩm:', error);
+      console.log('Lỗi khi lấy thông tin sản phẩm:', error);
       return null;
     }
   };

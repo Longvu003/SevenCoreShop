@@ -83,9 +83,8 @@ const getOrderUser = async () => {
   return itemOrder;
 };
 const getOrderUserById = async (userId) => {
-  const itemOrder = await OrderModel.find({
-    userId: mongoose.Types.ObjectId(userId),
-  });
+  const itemOrder = await OrderModel.find({ userId });
+
   return itemOrder;
 };
 

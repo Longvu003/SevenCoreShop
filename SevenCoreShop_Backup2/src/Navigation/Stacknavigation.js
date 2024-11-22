@@ -22,12 +22,13 @@ import CategoryDetailScreen from '../Screens/HomeSceen/CategoryDetailScreen';
 import CategoryScreen from '../Screens/HomeSceen/Category';
 import DetailOrder from '../Screens/Order/DetailOrder';
 import OrderScreen from '../Screens/Order/OrderScreen';
+import AdScreen from '../Screens/HomeSceen/AdScreen';
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="LoginScreen"
+        initialRouteName="AdScreen"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Welcome1" component={Welcome1} />
         <Stack.Screen name="Welcome2" component={Welcome2} />
@@ -51,6 +52,7 @@ const Stacknavigation = () => {
           component={CategoryDetailScreen}
         />
         <Stack.Screen name="DetailOrder" component={DetailOrder} />
+        <Stack.Screen name="AdScreen" component={AdScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
 import axios from 'axios';
 import API__URL from '../../../config';
 
-const CategoryScreen = ({ navigation }) => {
+const CategoryScreen = ({navigation}) => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -22,18 +22,20 @@ const CategoryScreen = ({ navigation }) => {
 
         setCategories(fixResponse[1]);
       })
-      .catch(error => console.error('Lỗi lấy danh mục:', error));
+      .catch(error => console.log('Lỗi lấy danh mục:', error));
   }, []);
 
   const handleCategoryPress = category => {
-    navigation.navigate('CategoryDetailScreen', { category });
+    navigation.navigate('CategoryDetailScreen', {category});
   };
 
   return (
     <View style={styles.container}>
       {/* Header view for back button and title */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Shop by Categories</Text>
@@ -42,10 +44,13 @@ const CategoryScreen = ({ navigation }) => {
       <FlatList
         data={categories}
         keyExtractor={item => item._id}
-        renderItem={({ item }) => (
+        renderItem={({item}) => (
           <TouchableOpacity onPress={() => handleCategoryPress(item)}>
             <View style={styles.categoryCard}>
-              <Image source={{ uri: item.images[0] }} style={styles.categoryImage} />
+              <Image
+                source={{uri: item.images[0]}}
+                style={styles.categoryImage}
+              />
               <Text style={styles.categoryName}>{item.name}</Text>
             </View>
           </TouchableOpacity>

@@ -43,7 +43,7 @@ const ProductDetail = ({navigation, route}) => {
     axios
       .get(`${API__URL}/api/comments/${item._id}`)
       .then(response => setComments(response.data))
-      .catch(error => console.error('Lỗi khi lấy bình luận:', error));
+      .catch(error => console.log('Lỗi khi lấy bình luận:', error));
   }, [item._id]);
 
   const increaseQuantity = () => {
@@ -140,7 +140,7 @@ const ProductDetail = ({navigation, route}) => {
       setDialogVisible(false);
       setEditedText('');
     } catch (error) {
-      console.error('Lỗi khi cập nhật bình luận:', error);
+      console.log('Lỗi khi cập nhật bình luận:', error);
       Alert.alert('Có lỗi xảy ra khi cập nhật bình luận');
     }
   };
@@ -151,7 +151,7 @@ const ProductDetail = ({navigation, route}) => {
       setComments(comments.filter(comment => comment._id !== commentId));
       Alert.alert('Xóa bình luận thành công');
     } catch (error) {
-      console.error('Lỗi khi xóa bình luận:', error);
+      console.log('Lỗi khi xóa bình luận:', error);
       Alert.alert('Có lỗi xảy ra khi xóa bình luận');
     }
   };

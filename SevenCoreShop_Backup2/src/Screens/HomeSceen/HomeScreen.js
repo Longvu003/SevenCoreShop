@@ -27,7 +27,7 @@ const HomeScreen = ({navigation}) => {
         setProducts(ArrayProduct);
       })
       .catch(error => {
-        console.error('Error fetching products:', error);
+        console.log('Error fetching products:', error);
       });
 
     // Gọi API lấy danh mục từ MongoDB
@@ -38,7 +38,7 @@ const HomeScreen = ({navigation}) => {
         setCategories(fixResponse[1]);
       })
       .catch(error => {
-        console.error('Error fetching categories:', error);
+        console.log('Error fetching categories:', error);
       });
   }, []);
   const handleSearch = () => {
@@ -49,7 +49,7 @@ const HomeScreen = ({navigation}) => {
           setProducts(response.data.data);
         })
         .catch(error => {
-          console.error('Error fetching products:', error);
+          console.log('Error fetching products:', error);
         });
     } else {
       axios
@@ -58,7 +58,7 @@ const HomeScreen = ({navigation}) => {
           setProducts(response.data.data);
         })
         .catch(error => {
-          console.error('Error searching products:', error);
+          console.log('Error searching products:', error);
         });
     }
   };

@@ -55,7 +55,7 @@ const LoginScreen = ({navigation}) => {
         Alert.alert('Đăng nhập thất bại', 'Nhập đúng email và mật khẩu');
       }
     } catch (error) {
-      console.error('Error during login request:', error);
+      console.log('Error during login request:', error);
       Alert.alert('Error', 'Email hoặc mật khẩu không chính xác');
     }
   };

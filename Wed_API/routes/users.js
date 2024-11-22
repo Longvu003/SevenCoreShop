@@ -67,7 +67,7 @@ router.post(
     // }
     const { email, password } = req.body;
     const result = await userController.login(email, password);
-    console.log(result);
+
     if (result) {
       return res.status(200).json({ status: true, data: result });
       // return res.status(200).json(result);

@@ -52,7 +52,7 @@ const getProductsByCategory = async (req, res) => {
   const { categoryId } = req.query.categoryId;
   try {
     const products = await ProductModel.find({
-      category: categoryId,
+      category: mongoose.Types.ObjectId(categoryId),
     }).populate("category");
 
     if (products.length === 0) {

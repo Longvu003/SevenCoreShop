@@ -84,7 +84,7 @@ const SignupScreen = ({navigation}) => {
         Alert.alert('Đăng ký thất bại');
       }
     } catch (error) {
-      console.error('Error during request:', error);
+      console.log('Error during request:', error);
 
       // Xử lý thông báo lỗi từ server
       if (error.response && error.response.data.errors) {
