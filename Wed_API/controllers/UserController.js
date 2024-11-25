@@ -41,8 +41,8 @@ const register = async (email, password, name, phone, address) => {
 
     return "Đăng ký thành công";
   } catch (error) {
-    console.log("Register error", error.message);
-    throw new Error("Register error");
+    console.log("Lỗi Đăng ký", error.message);
+    throw new Error("Lỗi Đăng ký");
   }
 };
 
@@ -74,8 +74,8 @@ const login = async (email, password) => {
 
     return null; // Nếu không tìm thấy user
   } catch (error) {
-    console.log("Login error", error.message);
-    throw new Error("Login error");
+    console.log("Lỗi đăng nhập", error.message);
+    throw new Error("Lỗi đăng nhập");
   }
 };
 
@@ -102,8 +102,8 @@ const update = async (email, password, name, phone, address) => {
     await user.save();
     return "Cập nhật thành công";
   } catch (error) {
-    console.log("Update error", error.message);
-    throw new Error("Update error");
+    console.log("Lỗi cập nhật người dùng", error.message);
+    throw new Error("Lỗi cập nhật người dùng");
   }
 };
 
@@ -151,8 +151,8 @@ const deleteUser = async (email) => {
     await userModel.deleteOne({ email: email });
     return "Xóa người dùng thành công";
   } catch (error) {
-    console.log("Delete error", error.message);
-    throw new Error("Delete error");
+    console.log("Xóa người dùng thất bại", error.message);
+    throw new Error("Xóa người dùng thất bại");
   }
 };
 
@@ -162,8 +162,8 @@ const getAllUser = async () => {
     const users = await userModel.find({}, { password: 0 });
     return users;
   } catch (error) {
-    console.log("Get all user error", error.message);
-    throw new Error("Get all user error");
+    console.log("Lỗi lấy dữ liệu người dùng", error.message);
+    throw new Error("Lỗi lấy dữ liệu người dùng");
   }
 };
 
@@ -176,8 +176,8 @@ const deleteUserById = async (id) => {
     }
     return "Xóa người dùng thành công";
   } catch (error) {
-    console.log("Delete user by id error", error.message);
-    throw new Error("Delete user by id error");
+    console.log("Lỗi xóa người dùng bằng id", error.message);
+    throw new Error("Lỗi xóa người dùng bằng id");
   }
 };
 
@@ -206,8 +206,8 @@ const updateUserById = async (id, email, password, name, phone, address, role) =
       console.log("User updated successfully:", user); // Thêm log
       return "Cập nhật người dùng thành công";
   } catch (error) {
-      console.log("Update user by id error", error.message);
-      throw new Error("Update user by id error");
+      console.log("Lỗi cập nhật user bằng id", error.message);
+      throw new Error("Lỗi cập nhật user bằng id");
   }
 };
 
@@ -226,8 +226,8 @@ const lockUserById = async (id) => {
     await user.save();
     return "Khóa người dùng thành công";
   } catch (error) {
-    console.log("Lock user by id error", error.message);
-    throw new Error("Lock user by id error");
+    console.log("Lỗi khóa người dùng bằng id", error.message);
+    throw new Error("Lỗi khóa người dùng bằng id");
   }
 };
 
@@ -244,8 +244,8 @@ const unlockUserById = async (id) => {
     await user.save();
     return "Mở khóa người dùng thành công";
   } catch (error) {
-    console.log("Unlock user by id error", error.message);
-    throw new Error("Unlock user by id error");
+    console.log("Lỗi mở khóa người dùng bằng id", error.message);
+    throw new Error("Lỗi mở khóa người dùng bằng id");
   }
 };
 
