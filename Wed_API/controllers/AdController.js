@@ -5,7 +5,7 @@ exports.createAd = async (req, res) => {
   try {
     const { title, tag, description} = req.body;
     const url_server = 'http://localhost:7777'
-    const image = `${url_server}/${req.file.path}`
+    const image = `${url_server}/${req.file.path.replace(/\\/g, '/')}`
     console.log(req.body)
     const newAd = new Ad({ title, tag, description,image});
     const savedAd = await newAd.save();
@@ -49,7 +49,7 @@ exports.updateAdById = async (req, res) => {
     const updateData = { title, tag, description};
     if(req.file){
       const url_server = 'http://localhost:7777'
-      const image = `${url_server}/${req.file.path}`
+      const image = `${url_server}/${req.file.path.replace(/\\/g, '/')}`
       updateData.image = image
     }
     console.log(updateData)
