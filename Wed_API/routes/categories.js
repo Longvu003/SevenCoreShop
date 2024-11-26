@@ -29,12 +29,12 @@ router.get('/', async (req, res, next) => {
  */
 router.post('/add', async (req, res, next) => {
     try {
-        const { name, description } = req.body;
+        const { name, description,images } = req.body;
         const isDuplicate = await CategoryController.checkDuplicateCategory(name); // Kiểm tra trùng lặp
         if (isDuplicate) {
             return res.status(400).json({ status: false, data: 'Category already exists' });
         }
-        const category = await CategoryController.createCategory(name, description);
+        const category = await CategoryController.createCategory(name, description,images);
         return res.status(200).json({ status: true, data: category });
     } catch (error) {
         console.log('Create category error', error.message);
@@ -62,12 +62,12 @@ router.post('/:id/delete', async (req, res, next) => {
 router.post('/:id/update', async (req, res, next) => {
     try {
         const id = req.params.id;
-        const { name, description } = req.body;
+        const { name, description, images } = req.body;
         const isDuplicate = await CategoryController.checkDuplicateCategory(name); // Kiểm tra trùng lặp
         if (isDuplicate) {
             return res.status(400).json({ status: false, data: 'Category already exists' });
         }
-        const category = await CategoryController.updateCategory(id, name, description);
+        const category = await CategoryController.updateCategory(id, name, description, images);
         return res.status(200).json({ status: true, data: category });
     } catch (error) {
         console.log('Update category error', error.message);

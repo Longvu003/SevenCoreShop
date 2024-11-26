@@ -1,6 +1,5 @@
 import React from 'react';
 import { Category } from '../model/CategoriesModel';
-import { GetProductByCategoryId } from './ProducService';
 const API_URL = 'http://localhost:7777';
 
 export const GetCategories = async (): Promise<Category> => {
@@ -13,56 +12,33 @@ export const GetCategories = async (): Promise<Category> => {
   const data: any = await response.json();
 
   if (!response.ok) {
-    return data
+    return data;
   }
 
-  return data;  // Trả về đối tượng Hospital
-}
+  return data;
+};
 
 export const DeleteCategoriesByid = async (id: string): Promise<void> => {
   try {
-      // // Fetch products by category ID
-      // const products = await GetProductByCategoryId(id);
-
-      // // Handle undefined or null product response
-      // if (!products) {
-      //     console.error('Error fetching products for category:', id);
-      //     alert('Lỗi khi lấy sản phẩm. Vui lòng thử lại.');
-      //     return; // Stop further execution
-      // }
-
-      // // Check if category contains active products
-      // if (products.length > 0) {
-      //     alert("Không thể xóa danh mục có sản phẩm đang hoạt động");
-      //     return;  // Stop further execution
-      // }
-
-      // Proceed with delete request
       const response = await fetch(`${API_URL}/categories/${id}/delete`, {
-          method: "POST", // Use POST for delete operation
+          method: "POST",
           headers: {
               "Content-Type": "application/json",
           },
       });
 
-      // Check if response is okay
       if (!response.ok) {
-          const errorData = await response.json(); // Parse the error response
+          const errorData = await response.json();
           console.error('Error deleting category:', errorData);
           alert('Xóa Thất Bại: ' + (errorData.message || 'Lỗi không xác định'));
           return;
       }
-      return response.json(); // Return the response data
-
+      return response.json();
   } catch (error) {
-      // Handle unexpected errors (network issues, etc.)
       console.error('Unexpected error during delete:', error);
       alert('Đã xảy ra lỗi. Vui lòng thử lại.');
   }
 };
-
-
-
 
 export const UpdateCategoriesByid = async (id: string | undefined, category: Category): Promise<Category> => {
   const response = await fetch(`${API_URL}/categories/${id}/update`, {
@@ -75,11 +51,11 @@ export const UpdateCategoriesByid = async (id: string | undefined, category: Cat
   const data: any = await response.json();
 
   if (!response.ok) {
-    return data
+    return data;
   }
 
   return data;
-}
+};
 
 export const CreateCategories = async (category: Category): Promise<Category> => {
   const response = await fetch(`${API_URL}/categories/add`, {
@@ -92,11 +68,11 @@ export const CreateCategories = async (category: Category): Promise<Category> =>
   const data: any = await response.json();
 
   if (!response.ok) {
-    return data
+    return data;
   }
 
   return data;
-}
+};
 
 export const GetCategoriesById = async (id: string): Promise<Category> => {
   const response = await fetch(`${API_URL}/categories/${id}`, {
@@ -105,11 +81,12 @@ export const GetCategoriesById = async (id: string): Promise<Category> => {
       "Content-Type": "application/json",
     },
   });
-  const data: any = await response.json();
 
   if (!response.ok) {
-    return data
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to fetch category');
   }
 
+  const data: Category = await response.json();
   return data;
-}
+};

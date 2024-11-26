@@ -56,11 +56,11 @@ export default function ProductUpdate() {
         fetchProduct();
     }, [id]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, files } = e.target as HTMLInputElement;
+    
         if (name.includes('category.')) {
             const categoryField = name.split('.')[1];
-            console.log(categoryField);
             setDataProduct((prevState: any) => ({
                 ...prevState,
                 category: {
@@ -68,33 +68,37 @@ export default function ProductUpdate() {
                     [categoryField]: value
                 }
             }));
-        } else if (name === 'images') {
-            setDataProduct({
-                ...dataProduct,
-                images: files ? Array.from(files).map(file => URL.createObjectURL(file)) : []
-            });
+        } else if (name === 'images' && files) {
+            const newImages = Array.from(files).map(file => URL.createObjectURL(file));
+            setDataProduct((prevState: any) => ({
+                ...prevState,
+                images: [...prevState.images, ...newImages] // Thêm các hình ảnh mới vào mảng hình ảnh cũ
+            }));
         } else {
-            setDataProduct({
-                ...dataProduct,
+            setDataProduct((prevState: any) => ({
+                ...prevState,
                 [name]: value
-            });
+            }));
         }
     };
-
+    
+    
+    
     const clickUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log(dataProduct)
         try {
             const res: any = await editProduct(id, dataProduct);
             if (res.status) {
-                alert("Update Product Success");
+                MySwal.fire("Cập nhật sản phẩm thành công", "", "success").then(() => {
+                    window.location.href = '/productmanagement';
+                });
             } else {
-                alert("Update Product Fail");
+                MySwal.fire("Cập nhật sản phẩm thất bại", "", "error");
             }
         } catch (error) {
             console.error("Error updating product:", error);
-            alert("Update Product Fail");
+            MySwal.fire("Cập nhật sản phẩm thất bại", "", "error");
         }
     };
 
@@ -170,19 +174,50 @@ export default function ProductUpdate() {
             </div>
 
             <div>
-                <label htmlFor="productImages">Hình ảnh</label>
-                <input
-                    id="productImages"
-                    type="file"
-                    name="images"
-                    multiple
-                    className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
-                    onChange={handleChange}
+    <label htmlFor="productImages">Hình ảnh</label>
+    <input
+        id="productImages"
+        type="file"
+        name="images"
+        multiple
+        className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
+        onChange={handleChange}
+    />
+    <div style={{ margin: '10px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+        {dataProduct.images.map((image: string, index: number) => (
+            <div key={index} style={{ position: 'relative' }}>
+                <img
+                    src={image}
+                    alt={`Product Image ${index + 1}`}
+                    style={{ width: '200px', height: '200px', objectFit: 'cover', borderRadius: '8px' }}
                 />
-                <div style={{ margin: '10px' }}>
-                    <img src={dataProduct.images[0]} alt="Product" style={{ width: '200px' }} />
-                </div>
+                <button
+                    type="button"
+                    onClick={() => {
+                        setDataProduct((prevState: any) => ({
+                            ...prevState,
+                            images: prevState.images.filter((_, i) => i !== index), // Xóa hình ảnh
+                        }));
+                    }}
+                    style={{
+                        position: 'absolute',
+                        top: 5,
+                        right: 5,
+                        backgroundColor: 'red',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '20px',
+                        height: '20px',
+                        cursor: 'pointer',
+                    }}
+                >
+                    X
+                </button>
             </div>
+        ))}
+    </div>
+</div>
             <button type="submit" className="btn btn-primary !mt-6">Lưu</button>
         </form>
     );

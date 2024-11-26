@@ -4,8 +4,6 @@
 
  const deleteCategory = async (id) => {
     try {
-       
-
         // // Kiểm tra xem có sản phẩm nào liên kết với danh mục này không
         const products = await ProductModel.find({ 'category.category_id': id });
 
@@ -41,11 +39,13 @@
         throw new Error('Get category list error')
     }
  }
- const createCategory = async (name,description) => {
+ const createCategory = async (name,description,images) => {
     try {
 
         const categoryInfo = {
-            name,description
+            name,
+            description,
+            images
         }
         const category = new CategoryModel(categoryInfo)
         await category.save()
@@ -56,32 +56,24 @@
     }
  } 
  
-//  // delete category
-//     const deleteCategory = async (id) => {
-//         try {
-//             const category = await CategoryModel.findByIdAndDelete(id)
-//             return category
-//         } catch (error) {
-//             console.log('Delete category error', error.message)
-//             throw new Error('Delete category error')
-//         }
-//     }
+
 // update category
-    const updateCategory = async (id, name, description) => {
-        try {
-            const category = await CategoryModel.findById(id)
-            if (!category) {
-                throw new Error('Category không tồn tại')
-            }
-            category.name = name
-            category.description = description
-            await category.save()
-            return category
-        } catch (error) {
-            console.log('Update category error', error.message)
-            throw new Error('Update category error')
+const updateCategory = async (id, name, description, images) => {
+    try {
+        const category = await CategoryModel.findById(id);
+        if (!category) {
+            throw new Error('Category không tồn tại');
         }
+        category.name = name || category.name;
+        category.description = description || category.description;
+        category.images = images || category.images;
+        await category.save();
+        return category;
+    } catch (error) {
+        console.log('Update category error', error.message);
+        throw new Error('Update category error');
     }
+};
 
     // get category by id
     const getCategoryById = async (id) => {

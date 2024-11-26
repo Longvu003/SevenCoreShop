@@ -52,25 +52,30 @@ export default function ProductCreateNew() {
     const uploadToCloudinary = async () => {
         try {
             const fileInput = document.getElementById('productImages') as HTMLInputElement;
-            const file = fileInput?.files?.[0];
-            if (file) {
-                const data = new FormData();
-                data.append('file', file);
-                data.append('upload_preset', 'ml_default');
-
-                const response = await fetch('https://api.cloudinary.com/v1_1/dlngxbn4l/image/upload', {
-                    method: 'POST',
-                    body: data
+            const files = fileInput?.files;
+            if (files) {
+                const uploadPromises = Array.from(files).map(async (file) => {
+                    const data = new FormData();
+                    data.append('file', file);
+                    data.append('upload_preset', 'ml_default');
+    
+                    const response = await fetch('https://api.cloudinary.com/v1_1/dlngxbn4l/image/upload', {
+                        method: 'POST',
+                        body: data
+                    });
+    
+                    const result = await response.json();
+                    return result['url'];
                 });
-
-                const result = await response.json();
-                console.log('Uploaded image:', result['url']);
-                setImages((prevImages) => [...prevImages, result['url']]);
+    
+                const urls = await Promise.all(uploadPromises);
+                setImages((prevImages) => [...prevImages, ...urls]);
             }
         } catch (error) {
-            console.error('Error uploading image:', error);
+            console.error('Error uploading images:', error);
         }
     };
+    
 
     const removeImage = (img: string) => {
         setImages((prevImages) => prevImages.filter(item => item !== img));
@@ -191,7 +196,7 @@ export default function ProductCreateNew() {
                     name="images"
                     onChange={uploadToCloudinary}
                     className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
-                    required
+                    multiple
                 />
                 <div className="image-preview">
                     {images.map((img, index) => (
