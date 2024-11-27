@@ -3,6 +3,7 @@ var router = express.Router();
 const { body, query, validationResult } = require("express-validator");
 const userController = require("../controllers/UserController");
 const OtpModel = require("../models/OtpModel");
+const UserModel = require("../model/UserModel");
 
 // Hàm kiểm tra dữ liệu đầu vào
 const validateRequest = (req, res, next) => {
@@ -212,5 +213,40 @@ router.get(
     }
   }
 );
+//lấy địa chỉ theo ID 
+// Lấy địa chỉ của người dùng dựa trên userID
+const mongoose = require('mongoose');
+
+router.get("/:id/address", async (req, res) => {
+  const { id } = req.params;
+  console.log("Received ID:", id); // Kiểm tra ID nhận được
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    console.log("Invalid ID:", id);
+    return res.status(400).json({ message: "ID không hợp lệ" });
+  }
+
+  try {
+    const user = await UserModel.findById(id).select("address");
+    console.log("User fetched from database:", user); // Log kết quả truy vấn
+
+    if (!user) {
+      console.log("User not found with ID:", id);
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    res.status(200).json({ address: user.address });
+  } catch (error) {
+    console.error("Error fetching user address:", error.message); // Log lỗi
+    res.status(500).json({ message: "Lỗi khi lấy địa chỉ người dùng" });
+  }
+});
+
+
+
+
+
+
+
 
 module.exports = router;

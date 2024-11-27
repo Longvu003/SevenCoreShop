@@ -49,7 +49,7 @@ const searchProduct = async (key) => {
 
 // Lấy danh sách sản phẩm theo danh mục
 const getProductsByCategory = async (req, res) => {
-  const { categoryId } = req.query.categoryId;
+  const { categoryId } = req.query;
   try {
     const products = await ProductModel.find({
       category: categoryId,

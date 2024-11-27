@@ -18,47 +18,85 @@ const LoginScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
 
   // Hàm để xử lý đăng nhập
+  // const handleSubmit = async () => {
+  //   // Kiểm tra người dùng đã nhập đầy đủ thông tin chưa
+  //   if (!email) {
+  //     Alert.alert('Email không được để trống');
+  //     return false;
+  //   }
+  //   if (!password) {
+  //     Alert.alert('Mật khẩu không được để trống');
+  //     return false;
+  //   }
+
+  //   try {
+  //     // Gửi yêu cầu đăng nhập tới API
+  //     const response = await axios.post(
+  //       `${API__URL}/users/login`,
+  //       {
+  //         email: email,
+  //         password: password,
+  //       },
+  //       {
+  //         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  //       },
+  //     );
+  //     // Kiểm tra phản hồi từ API
+  //     if (response.status === 200) {
+  //       const user = JSON.stringify(response.data.email);
+  //       // console.log('data nè', user);
+  //       const userId = JSON.stringify(response.data.data.id);
+  //       await AsyncStorage.setItem('userEmail', user);
+  //       await AsyncStorage.setItem('userId', userId);
+  //       // console.log(userId);
+  //       Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
+  //       navigation.navigate('Tab');
+  //     } else {
+  //       Alert.alert('Đăng nhập thất bại', 'Nhập đúng email và mật khẩu');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error during login request:', error);
+  //     Alert.alert('Error', 'Email hoặc mật khẩu không chính xác');
+  //   }
+  // };
+  //huy
   const handleSubmit = async () => {
-    // Kiểm tra người dùng đã nhập đầy đủ thông tin chưa
     if (!email) {
-      Alert.alert('Email không được để trống');
-      return false;
+        Alert.alert('Email không được để trống');
+        return false;
     }
     if (!password) {
-      Alert.alert('Mật khẩu không được để trống');
-      return false;
+        Alert.alert('Mật khẩu không được để trống');
+        return false;
     }
 
     try {
-      // Gửi yêu cầu đăng nhập tới API
-      const response = await axios.post(
-        `${API__URL}/users/login`,
-        {
-          email: email,
-          password: password,
-        },
-        {
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        },
-      );
-      // Kiểm tra phản hồi từ API
-      if (response.status === 200) {
-        const user = JSON.stringify(response.data.data.email);
-        // console.log('data nè', user);
-        const userId = JSON.stringify(response.data.data.id);
-        await AsyncStorage.setItem('userEmail', user);
-        await AsyncStorage.setItem('userId', userId);
-        // console.log(userId);
-        Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
-        navigation.navigate('Tab');
-      } else {
-        Alert.alert('Đăng nhập thất bại', 'Nhập đúng email và mật khẩu');
-      }
+        // Gửi yêu cầu đăng nhập tới API
+        const response = await axios.post(
+            `${API__URL}/users/login`,
+            { email, password },
+            { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        );
+
+        // Kiểm tra phản hồi từ API
+        if (response.status === 200) {
+            // Sửa đoạn này để phù hợp với cấu trúc phản hồi
+            const user = JSON.stringify(response.data.email); // Sử dụng response.data.email
+            const userId = JSON.stringify(response.data._id); // Sử dụng response.data._id
+            await AsyncStorage.setItem('userEmail', user);
+            await AsyncStorage.setItem('userId', userId);
+    
+            Alert.alert('Đăng nhập thành công', `Chào mừng ${response.data.email}`);
+            navigation.navigate('Tab');
+        } else {
+            Alert.alert('Đăng nhập thất bại', 'Nhập đúng email và mật khẩu');
+        }
     } catch (error) {
-      console.error('Error during login request:', error);
-      Alert.alert('Error', 'Email hoặc mật khẩu không chính xác');
+        console.error('Error during login request:', error);
+        Alert.alert('Error', 'Email hoặc mật khẩu không chính xác');
     }
-  };
+};
+
 
   // const handleGoogleSignIn = async () => {
   //   try {

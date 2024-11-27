@@ -22,6 +22,7 @@ import CategoryDetailScreen from '../Screens/HomeSceen/CategoryDetailScreen';
 import CategoryScreen from '../Screens/HomeSceen/Category';
 import DetailOrder from '../Screens/Order/DetailOrder';
 import OrderScreen from '../Screens/Order/OrderScreen';
+import PaymentAddressScreen from '../Screens/HomeSceen/PaymentAddressScreen'
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
@@ -45,7 +46,11 @@ const Stacknavigation = () => {
         <Stack.Screen name="CartScreen" component={CartScreen} />
         <Stack.Screen name="AllProductsScreen" component={AllProductsScreen} />
         <Stack.Screen name="CategoryScreen" component={CategoryScreen} />
-        {/* <Stack.Screen name="AddressSelection" component={AddressSelection} options={{title: 'Chọn địa chỉ giao hàng'}} />  */}
+        <Stack.Screen
+          name="PaymentAddressScreen"
+          component={PaymentAddressScreen}
+          options={{ title: 'Chọn địa chỉ và thanh toán' }}
+        />
         <Stack.Screen
           name="CategoryDetailScreen"
           component={CategoryDetailScreen}
