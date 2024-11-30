@@ -1,15 +1,41 @@
 const CategoryModel = require("../model/CategoryModel");
+const ProductModel = require("../model/ProductModel"); // Add this line to import the ProductModel
+const mongoose = require("mongoose");
 
-// lấy danh sách danh mục
-const getCategoryList = async () => {
+const deleteCategory = async (id) => {
   try {
-    const item = await CategoryModel.find();
-    return item;
+    // // Kiểm tra xem có sản phẩm nào liên kết với danh mục này không
+    const products = await ProductModel.find({ "category.category_id": id });
+
+    // Nếu có sản phẩm liên kết, không cho phép xóa
+    if (products.length > 0) {
+      throw new Error("Cannot delete category with associated products");
+    }
+
+    // Xóa danh mục nếu không có sản phẩm liên kết
+    const category = await CategoryModel.findByIdAndDelete(id);
+
+    // Nếu không tìm thấy danh mục để xóa
+    if (!category) {
+      throw new Error("Category not found");
+    }
+
+    return category; // Thông báo thành công
   } catch (error) {
-    console.log("Get category list error", error.message);
+    console.log("Delete category error:", error.message);
+    throw new Error(error.message); // Trả về lỗi chi tiết
   }
 };
 
+const getCategoryList = async () => {
+  try {
+    const category = await CategoryModel.find(); // lấy tất cả danh mục trong db
+    return category; //
+  } catch (error) {
+    console.log("Get category list error", error.message);
+    throw new Error("Get category list error");
+  }
+};
 const createCategory = async (name, description, images) => {
   try {
     const categoryInfo = {
@@ -26,25 +52,16 @@ const createCategory = async (name, description, images) => {
   }
 };
 
-// delete category
-const deleteCategory = async (id) => {
-  try {
-    const category = await CategoryModel.findByIdAndDelete(id);
-    return category;
-  } catch (error) {
-    console.log("Delete category error", error.message);
-    throw new Error("Delete category error");
-  }
-};
 // update category
-const updateCategory = async (id, name, description) => {
+const updateCategory = async (id, name, description, images) => {
   try {
     const category = await CategoryModel.findById(id);
     if (!category) {
       throw new Error("Category không tồn tại");
     }
-    category.name = name;
-    category.description = description;
+    category.name = name || category.name;
+    category.description = description || category.description;
+    category.images = images || category.images;
     await category.save();
     return category;
   } catch (error) {
@@ -63,10 +80,22 @@ const getCategoryById = async (id) => {
     throw new Error("Get category by id error");
   }
 };
+// check duplicate category
+const checkDuplicateCategory = async (name) => {
+  try {
+    const category = await CategoryModel.findOne({ name });
+    return category !== null;
+  } catch (error) {
+    console.log("Check duplicate category error", error.message);
+    throw new Error("Check duplicate category error");
+  }
+};
+
 module.exports = {
   getCategoryList,
   createCategory,
   deleteCategory,
   updateCategory,
   getCategoryById,
+  checkDuplicateCategory,
 };

@@ -6,20 +6,39 @@ import { IRootState } from "../store"
 import { setPageTitle } from "../store/themeConfigSlice"
 import { Category } from "../model/CategoriesModel"
 import { categoryController } from "../controller/CategoryController"
+import Swal from "sweetalert2"
+import withReactContent from "sweetalert2-react-content"
+
+const MySwal = withReactContent(Swal)
 
 const Tables = () => {
     const { getCategories, deleteCategoriesById } = categoryController()
     const [dataCategorie, setDataCategorie] = useState<Category[]>([])
 
     const handleDelete = async (id: string) => {
-        const result: any = await deleteCategoriesById(id)
-        console.log(result.status)
-        if (result.status === true) {
-            alert("Xóa Thành Công")
-            window.location.reload() // Thực hiện reload trang
-        } else {
-            alert("Xóa Thất Bại")
-        }
+        MySwal.fire({
+            title: "Bạn có chắc chắn muốn xóa?",
+            text: "Bạn sẽ không thể hoàn tác hành động này!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Vâng, xóa nó!",
+            cancelButtonText: "Hủy",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response: any = await deleteCategoriesById(id)
+                console.log("gia tri " + response)
+                if (response.status === true) {
+                    const data: any = await getCategories()
+                    console.log(data)
+                    setDataCategorie(data.data)
+                    MySwal.fire("Đã xóa!", "Danh mục đã được xóa.", "success")
+                } else {
+                    MySwal.fire("Lỗi!", "Xóa danh mục thất bại.", "error")
+                }
+            }
+        })
     }
 
     // Hàm showData lấy dữ liệu từ API và lưu vào state

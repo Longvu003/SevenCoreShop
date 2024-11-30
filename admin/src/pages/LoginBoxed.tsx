@@ -51,23 +51,23 @@ const LoginBoxed = () => {
                 console.log(responsive.data)
 
                 MySwal.fire({
-                    title: "login success",
-                    text: "Login Success",
+                    title: "Đăng nhập thành công",
+                    text: "thành công",
                     icon: "success",
                 })
                 navigate("/")
             } else {
                 MySwal.fire({
-                    title: "you not admin error",
-                    text: "login error",
+                    title: "Tài khoản không phải là admin",
+                    text: "Dăng nhập thất bại",
                     icon: "error",
                 })
             }
         } else {
             console.log("login thất bại")
             MySwal.fire({
-                title: "login error",
-                text: "login error",
+                title: "Đăng nhập thất bại",
+                text: "thất bại",
                 icon: "error",
             })
         }
