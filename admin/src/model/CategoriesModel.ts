@@ -2,5 +2,5 @@ export interface Category {
     _id: string;
     name: string;
     description: string;
-    image: string;
+    images: string[]; // Add this line
 }

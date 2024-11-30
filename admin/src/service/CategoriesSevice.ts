@@ -1,8 +1,12 @@
 import React from 'react';
 import { Category } from '../model/CategoriesModel';
 const API_URL = 'http://localhost:7777';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 
 export const GetCategories = async (): Promise<Category> => {
+  const MySwal = withReactContent(Swal);
   const response = await fetch(`${API_URL}/categories`, {
     method: "get",
     headers: {
@@ -30,13 +34,23 @@ export const DeleteCategoriesByid = async (id: string): Promise<void> => {
       if (!response.ok) {
           const errorData = await response.json();
           console.error('Error deleting category:', errorData);
-          alert('Xóa Thất Bại: ' + (errorData.message || 'Lỗi không xác định'));
+          MySwal.fire({
+            title: 'Xóa Thất Bại',
+            text: errorData.message || 'Lỗi không xác định',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
           return;
       }
       return response.json();
   } catch (error) {
       console.error('Unexpected error during delete:', error);
-      alert('Đã xảy ra lỗi. Vui lòng thử lại.');
+      MySwal.fire({
+        title: 'Xóa Thất Bại',
+        text: errorData.message || 'Lỗi không xác định',
+        icon: 'error',
+        confirmButtonText: 'OK'
+    });
   }
 };
 
