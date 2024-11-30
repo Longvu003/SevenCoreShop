@@ -10,7 +10,7 @@ const CategoryController = require("../controllers/CategoryController");
  * url: http://localhost:7777/categories
  * response: trả về danh sách các danh mục
  */
-router.get("/", async (req, res, next) => {
+router.get("/getAllCategory", async (req, res, next) => {
   try {
     const categories = await CategoryController.getCategoryList();
     return res.status(200).json({ status: true, data: categories });

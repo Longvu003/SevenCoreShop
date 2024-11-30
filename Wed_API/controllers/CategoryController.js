@@ -69,7 +69,7 @@ const checkDuplicateCategory = async (name) => {
 module.exports = {
   getCategoryList,
   createCategory,
-  deleteCategory,
+
   updateCategory,
   getCategoryById,
   checkDuplicateCategory,
