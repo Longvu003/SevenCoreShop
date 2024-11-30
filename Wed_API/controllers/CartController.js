@@ -74,8 +74,13 @@ const updateItemCart = async (userId, productId, quantity) => {
       console.log("Sản phẩm không tồn tại trong giỏ hàng");
       return { success: false, message: "Sản phẩm không tồn tại" };
     }
-
     // Cập nhật số lượng sản phẩm
+
+    if (item.quantity < 0) {
+      await cartController.findByIdAndDelete(productId);
+    }
+    console.log(productId);
+    await item.deleteOne();
     item.quantity = quantity;
     await item.save();
     return { success: true, item };

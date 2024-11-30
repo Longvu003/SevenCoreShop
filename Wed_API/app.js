@@ -5,7 +5,6 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
-
 require("./model/UserModel.js");
 
 var indexRouter = require("./routes/index");
@@ -16,6 +15,7 @@ const cartsRouter = require("./routes/carts");
 const Order = require("./routes/Order");
 const commentRoutes = require("./routes/cmt.js");
 const resetPass = require("./routes/repass.js");
+
 var app = express();
 
 // View engine setup
@@ -57,6 +57,7 @@ app.use("/carts", cartsRouter);
 app.use("/Orders", Order);
 app.use("/resetpass", resetPass);
 app.use("/api/comments", commentRoutes);
+
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

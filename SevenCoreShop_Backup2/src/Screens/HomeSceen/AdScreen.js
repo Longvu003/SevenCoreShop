@@ -5,40 +5,32 @@ import {
   Text,
   View,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
+import axios from 'axios';
 const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
-const AdScreen = () => {
+import API__URL from '../../../config';
+const AdScreen = ({navigation}) => {
+  const [listAds, setListAd] = useState([]);
   const getItemlayout = (data, index) => ({
     length: WITH__Screen,
     offset: WITH__Screen * index,
     index: index,
   });
+  const getAd = async () => {
+    const response = await axios.get(`${API__URL}/ads/getad`);
+    if (response.status === 200) {
+      setListAd(response.data);
+    } else {
+      console.log('lỗi lấy quảng cáo');
+    }
+  };
+  useEffect(() => {
+    getAd();
+  }, []);
 
-  const listAd = [
-    {
-      id: 1,
-      title: 'Áo siêu mỏng',
-      tag: 'Áo',
-      description: 'Cái áo này rất là mỏng',
-      image: require('../../../assets/imgs/abc.png'),
-    },
-    {
-      id: 2,
-      title: 'Áo siêu dày',
-      tag: 'Áo',
-      description: 'Cái áo này rất là dày',
-      image: require('../../../assets/imgs/logo.png'),
-    },
-    {
-      id: 3,
-      title: 'Quần sort đi biển',
-      tag: 'Áo',
-      description: 'Quần sort đi biển  này dùng để đi biển thì tuyệt vời lắm',
-      image: require('../../../assets/imgs/bg.png'),
-    },
-  ];
   const flalitRef = useRef();
   const [indexActive, setIndexActive] = useState(0);
   const scrollItem = event => {
@@ -48,8 +40,9 @@ const AdScreen = () => {
     // console.log('vị trí ', index);
     setIndexActive(index);
   };
+
   const indicatePage = () => {
-    return listAd.map((item, index) => {
+    return listAds.map((item, index) => {
       if (indexActive === index) {
         // console.log('Đây là index nè', index);
         return (
@@ -80,7 +73,7 @@ const AdScreen = () => {
   };
   useEffect(() => {
     const intervral = setInterval(() => {
-      if (indexActive === listAd.length - 1) {
+      if (indexActive === listAds.length - 1) {
         flalitRef.current.scrollToIndex({
           index: 0,
           animation: true,
@@ -91,7 +84,7 @@ const AdScreen = () => {
           animation: true,
         });
       }
-    }, 2000);
+    }, 3000);
     return () => clearInterval(intervral);
   });
   return (
@@ -100,22 +93,28 @@ const AdScreen = () => {
         showsHorizontalScrollIndicator={false}
         pagingEnabled={true}
         horizontal={true}
-        data={listAd}
+        data={listAds}
         onScroll={scrollItem}
         ref={flalitRef}
         getItemLayout={getItemlayout}
         renderItem={({item}) => {
           return (
             <View>
-              <Image
-                style={{width: WITH__Screen, height: 200}}
-                source={item.image}
-              />
+              <TouchableOpacity
+                onPress={() => navigation.navigate('AdDetail', {item})}>
+                <Image
+                  style={{width: WITH__Screen, height: 200}}
+                  source={{
+                    uri: item.image,
+                  }}
+                />
+              </TouchableOpacity>
             </View>
           );
         }}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._id}
       />
+
       <View
         style={{
           flexDirection: 'row',

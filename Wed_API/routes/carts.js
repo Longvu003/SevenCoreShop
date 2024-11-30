@@ -64,15 +64,6 @@ router.get("/getItemCartById", async (req, res) => {
  */
 router.delete("/deleteItemCart", async (req, res) => {
   const { userId, productId, quantity } = req.body;
-  console.log(
-    "Nhận yêu cầu xóa sản phẩm với userId:",
-    userId,
-    "productId:",
-    productId,
-    "và quantity:",
-    quantity
-  );
-
   try {
     const { success, message, itemDeleted } =
       await cartController.deleteItemcart(userId, productId);

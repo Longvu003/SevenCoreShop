@@ -63,7 +63,11 @@ const CartScreen = () => {
   };
 
   const handleDecrease = (productId, currentQuantity) => {
-    const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 1;
+    const newQuantity =
+      currentQuantity > 1
+        ? currentQuantity - 1
+        : setCart(cart.filter(product => product._id !== productId));
+
     updateCart(productId, newQuantity);
   };
 

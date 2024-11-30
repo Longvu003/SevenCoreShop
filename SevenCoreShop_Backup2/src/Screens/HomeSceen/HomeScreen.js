@@ -12,6 +12,8 @@ import {
 import axios from 'axios';
 import API__URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AdScreen from './AdScreen';
+import AdDetail from './AdDetail';
 const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -65,7 +67,6 @@ const HomeScreen = ({navigation}) => {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
-
       <View style={styles.header}>
         <Text style={styles.hello}>Xin Chào</Text>
 
@@ -76,7 +77,6 @@ const HomeScreen = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
-
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
@@ -89,7 +89,7 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.searchButtonText}>Tìm kiếm</Text>
         </TouchableOpacity>
       </View>
-
+      {/* <AdScreen navigation={navigation} /> */}
       <View>
         <View style={styles.categoryHeader}>
           <Text style={styles.sectionTitle}>Categories</Text>
@@ -156,7 +156,6 @@ const HomeScreen = ({navigation}) => {
           />
         </View>
       </View>
-
       <View style={styles.productSection}></View>
     </ScrollView>
   );
