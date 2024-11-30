@@ -61,10 +61,8 @@ const searchProduct = async (key) => {
 
 // Lấy danh sách sản phẩm theo danh mục
 const getProductsByCategory = async (req, res) => {
+  const { categoryId } = req.query.categoryId;
   try {
-    const categoryId = req.params.categoryId;
-
-    // Chuyển categoryId sang ObjectId
     const products = await ProductModel.find({
       category: mongoose.Types.ObjectId(categoryId),
     }).populate("category");
@@ -77,7 +75,7 @@ const getProductsByCategory = async (req, res) => {
 
     res.status(200).json({ data: products });
   } catch (error) {
-    console.error(error);
+    console.error("lỗi nè ", error);
     res.status(500).json({ message: "Đã xảy ra lỗi hệ thống." });
   }
 };
@@ -107,11 +105,12 @@ const addProduct = async (
   color,
   size,
   status,
-  inventory
+  inventory,
+  userEmail // Thêm tham số userEmail
 ) => {
   try {
     const categoryInDB = await CategoryModel.findById(
-      mongoose.Types.ObjectId(category)
+      new mongoose.Types.ObjectId(category)
     );
     if (!categoryInDB) {
       throw new Error("Category không tồn tại");
@@ -123,11 +122,13 @@ const addProduct = async (
       quantity,
       images,
       description,
-      category: mongoose.Types.ObjectId(category), // Lưu category dưới dạng ObjectId
+      category: new mongoose.Types.ObjectId(category),
       color,
       size,
       status,
-      inventory,
+      inventory, // Lưu category dưới dạng ObjectId
+      userEmail, // Thêm userEmail vào product
+      viewedAt: new Date(), // Thêm viewedAt
     });
     const newProduct = new ProductModel(product);
     // lưu vào db
@@ -145,7 +146,7 @@ const addProduct = async (
 
 // cập nhật sản phẩm
 const updateProduct = async (
-  id,
+  _id,
   name,
   price,
   quantity,
@@ -154,18 +155,15 @@ const updateProduct = async (
   category
 ) => {
   try {
-    // tìm sp theo id
-    const productInDb = await ProductModel.findById(id);
+    const productInDb = await ProductModel.findById(
+      mongoose.Types.ObjectId(_id)
+    );
     if (!productInDb) {
       throw new Error("Sản phẩm không tồn tại");
     }
 
-    if (!category) {
-      throw new Error("Category không tồn tại");
-    }
-    // lấy category theo id
     const categoryInDB = await CategoryModel.findById(
-      category["category_name"]
+      mongoose.Types.ObjectId(category)
     );
     if (!categoryInDB) {
       throw new Error("Category không tồn tại");

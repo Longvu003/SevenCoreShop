@@ -63,7 +63,11 @@ const CartScreen = () => {
   };
 
   const handleDecrease = (productId, currentQuantity) => {
-    const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 1;
+    const newQuantity =
+      currentQuantity > 1
+        ? currentQuantity - 1
+        : setCart(cart.filter(product => product._id !== productId));
+
     updateCart(productId, newQuantity);
   };
 
@@ -91,7 +95,7 @@ const CartScreen = () => {
         setTotalPriceCart(0);
       }
     } catch (error) {
-      console.error('Error clearing cart:', error);
+      console.log('Error clearing cart:', error);
     }
   };
 
@@ -157,7 +161,7 @@ const CartScreen = () => {
         setPaymentMethod(null); // Reset phương thức thanh toán
       }
     } catch (error) {
-      console.error(
+      console.log(
         'Lỗi khi thanh toán:',
         error.response ? error.response.data : error,
       );

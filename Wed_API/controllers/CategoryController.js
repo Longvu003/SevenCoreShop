@@ -1,32 +1,6 @@
 const CategoryModel = require("../model/CategoryModel");
-const ProductModel = require("../model/ProductModel"); // Add this line to import the ProductModel
-const mongoose = require("mongoose");
 
-const deleteCategory = async (id) => {
-  try {
-    // // Kiểm tra xem có sản phẩm nào liên kết với danh mục này không
-    const products = await ProductModel.find({ "category.category_id": id });
-
-    // Nếu có sản phẩm liên kết, không cho phép xóa
-    if (products.length > 0) {
-      throw new Error("Cannot delete category with associated products");
-    }
-
-    // Xóa danh mục nếu không có sản phẩm liên kết
-    const category = await CategoryModel.findByIdAndDelete(id);
-
-    // Nếu không tìm thấy danh mục để xóa
-    if (!category) {
-      throw new Error("Category not found");
-    }
-
-    return category; // Thông báo thành công
-  } catch (error) {
-    console.log("Delete category error:", error.message);
-    throw new Error(error.message); // Trả về lỗi chi tiết
-  }
-};
-
+// lấy danh sách danh mục
 const getCategoryList = async () => {
   try {
     const category = await CategoryModel.find(); // lấy tất cả danh mục trong db
@@ -36,6 +10,7 @@ const getCategoryList = async () => {
     throw new Error("Get category list error");
   }
 };
+
 const createCategory = async (name, description, images) => {
   try {
     const categoryInfo = {

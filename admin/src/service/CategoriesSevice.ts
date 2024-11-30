@@ -1,6 +1,8 @@
 import React from "react"
 import { Category } from "../model/CategoriesModel"
-const API_URL = "http://localhost:7777"
+import { GetProductByCategoryId } from "./ProducService"
+
+import API_URL from "../Config"
 export const GetCategories = async (): Promise<Category> => {
     const response = await fetch(`${API_URL}/categories/getAllCategory`, {
         method: "get",

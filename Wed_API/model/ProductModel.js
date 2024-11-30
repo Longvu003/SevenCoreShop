@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
     required: true,
-  }, // category là ObjectId
+  },
   color: String,
   size: String,
   status: {
@@ -19,7 +19,9 @@ const productSchema = new mongoose.Schema({
     default: "Available",
   },
   inventory: { type: Number, default: 0, min: 0 },
+  userEmail: { type: String, required: true }, // Thêm trường userEmail
+  viewedAt: { type: Date, default: Date.now }, // Thêm trường viewedAt
 });
 
-const Product = mongoose.model("Products", productSchema);
+const Product = mongoose.model("Product", productSchema);
 module.exports = Product;

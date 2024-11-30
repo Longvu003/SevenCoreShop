@@ -24,7 +24,7 @@ const ListAddress = ({navigation}) => {
         // console.log(newData[0].address);
         setListAddress(newData[0].address);
       } else {
-        console.error('Có lỗi nè 2:');
+        console.log('Có lỗi nè 2:');
       }
     } catch (error) {
       console.log(error);

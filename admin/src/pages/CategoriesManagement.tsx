@@ -6,16 +6,20 @@ import { IRootState } from "../store"
 import { setPageTitle } from "../store/themeConfigSlice"
 import { Category } from "../model/CategoriesModel"
 import { categoryController } from "../controller/CategoryController"
+<<<<<<< HEAD
 import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
 
 const MySwal = withReactContent(Swal)
+=======
+>>>>>>> LongVu2
 
 const Tables = () => {
     const { getCategories, deleteCategoriesById } = categoryController()
     const [dataCategorie, setDataCategorie] = useState<Category[]>([])
 
     const handleDelete = async (id: string) => {
+<<<<<<< HEAD
         MySwal.fire({
             title: "Bạn có chắc chắn muốn xóa?",
             text: "Bạn sẽ không thể hoàn tác hành động này!",
@@ -39,6 +43,16 @@ const Tables = () => {
                 }
             }
         })
+=======
+        const result: any = await deleteCategoriesById(id)
+        console.log(result.status)
+        if (result.status === true) {
+            alert("Xóa Thành Công")
+            window.location.reload() // Thực hiện reload trang
+        } else {
+            alert("Xóa Thất Bại")
+        }
+>>>>>>> LongVu2
     }
 
     // Hàm showData lấy dữ liệu từ API và lưu vào state

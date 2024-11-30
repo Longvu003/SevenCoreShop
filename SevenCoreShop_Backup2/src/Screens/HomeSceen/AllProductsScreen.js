@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,8 @@ import {
 import axios from 'axios';
 import API__URL from '../../../config';
 
-const AllProductsScreen = ({ navigation }) => {
+const AllProductsScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
-
   useEffect(() => {
     // Gọi API lấy tất cả sản phẩm
     axios
@@ -20,14 +19,16 @@ const AllProductsScreen = ({ navigation }) => {
       .then(response => {
         setProducts(response.data.data);
       })
-      .catch(error => console.error('Error fetching products:', error));
+      .catch(error => console.log('Error fetching products:', error));
   }, []);
 
   return (
     <View style={styles.container}>
       {/* Header view for back button and title */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Products</Text>
@@ -36,11 +37,14 @@ const AllProductsScreen = ({ navigation }) => {
       <FlatList
         data={products}
         keyExtractor={item => item._id}
-        renderItem={({ item }) => (
+        renderItem={({item}) => (
           <View style={styles.productCard}>
             <Image
               source={{
-                uri: item.images && item.images[0] ? item.images[0] : 'https://via.placeholder.com/100',
+                uri:
+                  item.images && item.images[0]
+                    ? item.images[0]
+                    : 'https://via.placeholder.com/100',
               }}
               style={styles.productImage}
             />
@@ -76,7 +80,6 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: '#fff',
     fontWeight: 'bold',
-    
   },
   title: {
     fontSize: 24,

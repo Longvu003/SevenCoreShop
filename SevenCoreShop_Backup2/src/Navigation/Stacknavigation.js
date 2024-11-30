@@ -1,5 +1,4 @@
 import React from 'react';
-import Home from '../Screens/LoginTest';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import TabNavigation from './TabNavigation';
@@ -7,7 +6,6 @@ import ListAddress from '../Screens/User/address/ListAddress';
 import EditAddress from '../Screens/User/address/EditAddress';
 import EditPayment from '../Screens/User/payment/EditPayment';
 import ListPayment from '../Screens/User/payment/ListPayment';
-import LoginTest from '../Screens/LoginTest';
 import EditUser from '../Screens/User/EditUser';
 import Resetpass from '../Screens/login/Resetpass';
 import ForgotPassword from '../Screens/login/ForgotPassword';
@@ -22,12 +20,15 @@ import CategoryDetailScreen from '../Screens/HomeSceen/CategoryDetailScreen';
 import CategoryScreen from '../Screens/HomeSceen/Category';
 import DetailOrder from '../Screens/Order/DetailOrder';
 import OrderScreen from '../Screens/Order/OrderScreen';
+import AdScreen from '../Screens/HomeSceen/AdScreen';
+import AdDetail from '../Screens/HomeSceen/AdDetail';
+
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="LoginScreen"
+        initialRouteName="Tab"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Welcome1" component={Welcome1} />
         <Stack.Screen name="Welcome2" component={Welcome2} />
@@ -51,6 +52,8 @@ const Stacknavigation = () => {
           component={CategoryDetailScreen}
         />
         <Stack.Screen name="DetailOrder" component={DetailOrder} />
+        <Stack.Screen name="AdScreen" component={AdScreen} />
+        <Stack.Screen name="AdDetail" component={AdDetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );

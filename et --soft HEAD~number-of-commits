@@ -1,0 +1,267 @@
+[33mcommit 7f6d0afe51046b37573369f37b7ca7a439a43d2b[m[33m ([m[1;36mHEAD -> [m[1;32mLongVu2[m[33m)[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Nov 20 14:18:51 2024 +0700
+
+    up code
+
+[33mcommit 61dd6ec7bd29c62575a142726510f73e143630e3[m[33m ([m[1;31morigin/LongVu2[m[33m)[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Nov 20 12:10:41 2024 +0700
+
+    up code
+
+[33mcommit 9b9e39be0eee81bde2fd7562142666d03cc6b100[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Tue Nov 19 23:44:17 2024 +0700
+
+    up code
+
+[33mcommit 5a662226daf87ad68e033c33cc8f44eac4898d52[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Mon Nov 18 23:35:05 2024 +0700
+
+    upcode
+
+[33mcommit f112ffe4e1029452600b89b29446cf314298d45c[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Mon Nov 18 13:04:58 2024 +0700
+
+    upcode
+
+[33mcommit 1f18e47b0766d97a26b57b69d672655542cc35e9[m
+Merge: ccff7d24 0c41e54e
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Thu Nov 14 18:12:26 2024 +0700
+
+    Merge branch 'huy-dev' of https://github.com/Longvu003/SevenCoreShop into LongVu2
+
+[33mcommit ccff7d24317859a69e4bd572193abc5d193ac6b1[m
+Merge: 3d5d792e c6f6f21f
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Nov 13 13:54:24 2024 +0700
+
+    Merge branch 'thien-ne' of https://github.com/Longvu003/SevenCoreShop into LongVu2
+
+[33mcommit c6f6f21f38c8ceca9e78aee8c74298494338cbd8[m[33m ([m[1;31morigin/thien-ne[m[33m)[m
+Author: thientht04 <thienthtps33246@fpt.edu.vn>
+Date:   Wed Nov 13 13:17:27 2024 +0700
+
+    update code ul and api
+
+[33mcommit 0c41e54e254d54a59fe560489db8ebd4b695e321[m[33m ([m[1;31morigin/huy-dev[m[33m)[m
+Author: Trịnh Công Huy <ryton2811@gmail.com>
+Date:   Wed Nov 13 11:21:37 2024 +0700
+
+    fix error
+
+[33mcommit 3d5d792e6fdbe09e235aaef1bf5a6e8db2a8aec2[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Tue Nov 12 23:10:44 2024 +0700
+
+    upcode fix orders
+
+[33mcommit f2871ecd9c6c0418f77d72d588d7cb2b2b57151b[m
+Author: thientht04 <thienthtps33246@fpt.edu.vn>
+Date:   Sun Nov 10 23:57:31 2024 +0700
+
+    update code comment task
+
+[33mcommit 830366f3d3789e23779afd578473f83b3c473cfd[m
+Author: thientht04 <thienthtps33246@fpt.edu.vn>
+Date:   Sun Nov 10 14:32:02 2024 +0700
+
+    Update task comment ul and api
+
+[33mcommit 1b1ed274526a9b106841fc5d0259176f5b0dbc6b[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Sat Nov 9 00:01:35 2024 +0700
+
+    upcode fix layout
+
+[33mcommit 3b736128f3b6074beb1a88696e5b87e93fcdf3ec[m
+Merge: 7ad83060 c7f25af9
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Fri Nov 8 23:59:17 2024 +0700
+
+    Merge branch 'huy-ne' of https://github.com/Longvu003/SevenCoreShop into LongVu2
+
+[33mcommit 7ad83060d22df5922acde2bd911be644e8223e91[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Fri Nov 8 23:46:28 2024 +0700
+
+    upcode fix layout
+
+[33mcommit bbdc7cd20afe9cae34f33f1659f3e15be845e8bb[m
+Merge: e0c7ad76 0df62dc6
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Thu Nov 7 18:38:51 2024 +0700
+
+    Merge branch 'thien-ne' of https://github.com/Longvu003/SevenCoreShop into LongVu2
+
+[33mcommit e0c7ad764315cc25258117b31c02af1ac276ec3d[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Thu Nov 7 18:21:02 2024 +0700
+
+    123
+
+[33mcommit 3f2920e9c5c25dfe61c71762cf46f5df0e4c8be7[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Thu Nov 7 15:46:04 2024 +0700
+
+    upcode Longvu2
+
+[33mcommit 0a5b56d66ddfd0dd138d313c95936d73c006e4c1[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Thu Nov 7 15:31:11 2024 +0700
+
+    update code web and app 2
+
+[33mcommit 3fb59d836b927a8d6628f023102b62f571eebc48[m
+Merge: 68beee7c 4f69d33c
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Thu Nov 7 15:27:57 2024 +0700
+
+    Merge branch 'master__fake' of https://github.com/Longvu003/SevenCoreShop
+
+[33mcommit 68beee7cdedf0960a86948e2a5f0f4fb8d513ce8[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Thu Nov 7 15:02:54 2024 +0700
+
+    upcode web and app
+
+[33mcommit 4f69d33c5b4d4cffa73cf961b19849ee2fc2ab13[m[33m ([m[1;31morigin/master__fake[m[33m, [m[1;32mmaster__fake[m[33m)[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Thu Nov 7 14:41:43 2024 +0700
+
+    abc
+
+[33mcommit 89b4c5f12e6d508194b83b9e5ea4820fc4b11b9f[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Nov 6 20:52:43 2024 +0700
+
+    pull code payment
+
+[33mcommit c92ddc25328617d8d43abc4e9ccea45370daa502[m
+Merge: a842d30c c7f25af9
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Nov 6 20:50:10 2024 +0700
+
+    Merge branches 'master__fake' and 'huy-ne' of https://github.com/Longvu003/SevenCoreShop into master__fake
+
+[33mcommit a842d30c947ab53a0994cbfab6f28f5c023e082d[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Nov 6 20:44:03 2024 +0700
+
+    .
+
+[33mcommit 0e5c2cf26d1e388d91cba211d05bc9fafccc56eb[m
+Merge: 70cb62c5 88345311
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Nov 6 18:09:19 2024 +0700
+
+    Merge branch 'LongVu2' of https://github.com/Longvu003/SevenCoreShop into master__fake
+
+[33mcommit 70cb62c5d740c4065842ea9d2668351544295b28[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Nov 6 18:08:44 2024 +0700
+
+    upcode fix web and app
+
+[33mcommit 8ee3558acf0052a26cc30cb5825aac203ebc74bc[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Nov 6 17:42:11 2024 +0700
+
+    setup full project
+
+[33mcommit c7f25af9136eb34618be74c314dc958e2d91af15[m
+Author: Trịnh Công Huy <ryton2811@gmail.com>
+Date:   Wed Nov 6 16:10:42 2024 +0700
+
+    Update Cart and History
+
+[33mcommit 0df62dc633e0764f69566d0e9342c57ba1f6fe97[m
+Author: thientht04 <thienthtps33246@fpt.edu.vn>
+Date:   Sat Nov 2 15:45:14 2024 +0700
+
+    quên mật khẩu và lấy lại mật khẩu, ul and api
+
+[33mcommit 530faf5b6e6403e93fd19d2839710489a32bee89[m
+Author: Trịnh Công Huy <ryton2811@gmail.com>
+Date:   Fri Nov 1 22:16:20 2024 +0700
+
+    Giai quyet xung dot
+
+[33mcommit 88345311c0eb432e7ec572ff3dfc6e3f49920672[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Oct 30 00:17:22 2024 +0700
+
+    upcode fix layout 1
+
+[33mcommit 1f4479f2b390846eb136183379066e5bc5798884[m
+Merge: 0b82e059 3fbf8f09
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Tue Oct 29 22:11:17 2024 +0700
+
+    Merge branch 'huy-ne' of https://github.com/Longvu003/SevenCoreShop into LongVu2
+
+[33mcommit 0b82e05960cbea69e34a9283d29a30e03b538616[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Tue Oct 29 21:58:55 2024 +0700
+
+    upcode custom Alert 1
+
+[33mcommit 3fbf8f09e8cf4d1b45a317a7601d20dcf1ce49a0[m
+Author: Trịnh Công Huy <ryton2811@gmail.com>
+Date:   Tue Oct 29 11:49:06 2024 +0700
+
+    3 task homescreen cate product
+
+[33mcommit 23107a54af10c5b4ab9184c64fbddbe5340aa98b[m[33m ([m[1;31morigin/huy-ne[m[33m)[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Mon Oct 28 17:56:43 2024 +0700
+
+    upcode cart and product Detal
+
+[33mcommit 85738c2e5d294179311e8f8d60292b61b6489283[m
+Author: ryton2811 <ryton2811@gmail.com>
+Date:   Sat Oct 26 15:35:48 2024 +0700
+
+    upcode search
+
+[33mcommit d0d9c1663793c503c15789eed6b6aab3db5cc4b6[m
+Author: ryton2811 <ryton2811@gmail.com>
+Date:   Sat Oct 26 15:06:47 2024 +0700
+
+    Update Seach ScreenHome
+
+[33mcommit f5b739da7732dbac12a8d55b05355110754fc8fa[m
+Merge: 7198f39e 0a0a6daf
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Sat Oct 26 12:00:53 2024 +0700
+
+    pull code from huy-ne
+
+[33mcommit 7198f39ec16668c9c340f1adb3c7d299c6bd1596[m
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Sat Oct 26 11:30:23 2024 +0700
+
+    upcode productDetail
+
+[33mcommit 0a0a6daf85f3dbbcd1bf27cdeae4a5e5c8cca321[m
+Author: ryton2811 <ryton2811@gmail.com>
+Date:   Sat Oct 26 10:59:21 2024 +0700
+
+    Update API Product va Category
+
+[33mcommit 6926e9c8c6263d00725dbe0a3cbd93006790b2c4[m
+Author: ryton2811 <ryton2811@gmail.com>
+Date:   Sat Oct 26 10:54:50 2024 +0700
+
+    Update HomeScreen.js
+
+[33mcommit 68117534bd0a69b6af8b30eaaddd15e8e4fd10f1[m
+Merge: ad8d5a3b 779815bf
+Author: Longvu003 <Hailongvu552@gmail.com>
+Date:   Wed Oct 23 22:42:45 2024 +0700
+
+    Merge branch 'LongVu2' of https://github.co
