@@ -28,6 +28,11 @@ const UserSchema = new Schema(
     timestamps: { createdAt: "creatAt", updatedAt: "updateAt" },
   }
 );
+UserSchema.pre('save', function(next) {
+  this.updatedAt = Date.now(); // Luôn cập nhật trường 'updatedAt' mỗi khi save
+  next();
+});
+
 // tiếng anh, số ít, chữ thường, không dấu, không cách
 //  //tạo model user từ schema UserSchema chưa có thì tạo mới, có rồi thì sử dụng lại
 module.exports = mongoose.model.user || mongoose.model("user", UserSchema);
