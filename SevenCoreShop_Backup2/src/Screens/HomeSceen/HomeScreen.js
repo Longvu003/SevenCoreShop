@@ -92,10 +92,10 @@ const HomeScreen = ({navigation}) => {
 
       <View>
         <View style={styles.categoryHeader}>
-          <Text style={styles.sectionTitle}>Categories</Text>
+          <Text style={styles.sectionTitle}>Loại Sản Phẩm</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('CategoryScreen')}>
-            <Text style={styles.seeAllText}>See All</Text>
+            <Text style={styles.seeAllText}>Xem Tất Cả</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.categoryContainer}>
@@ -127,10 +127,10 @@ const HomeScreen = ({navigation}) => {
         </View>
 
         <View style={styles.productHeader}>
-          <Text style={styles.sectionTitle}>Top Selling</Text>
+          <Text style={styles.sectionTitle}>Sản Phẩm</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('AllProductsScreen')}>
-            <Text style={styles.seeAllText}>See All</Text>
+            <Text style={styles.seeAllText}>Xem Tất Cả</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.productSection}>

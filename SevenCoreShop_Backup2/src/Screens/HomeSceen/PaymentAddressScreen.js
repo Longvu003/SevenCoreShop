@@ -12,6 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import API_URL from '../../../config';
+import Customheader from '../../CustomHeader/Customheader';
 
 const PaymentAddressScreen = ({ navigation, route }) => {
   const [addresses, setAddresses] = useState([]);
@@ -20,10 +21,12 @@ const PaymentAddressScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
 
   const cartItems = route.params?.cartItems || [];
+  // const clearCart = route.params||{}
   const totalAmount = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   const userID = route.params?.userID;
 
   useEffect(() => {
+    
     const fetchAddresses = async () => {
       try {
         if (!userID) throw new Error('UserID is required');
@@ -51,7 +54,52 @@ const PaymentAddressScreen = ({ navigation, route }) => {
     fetchAddresses();
   }, [userID]);
 
-  const handlePayment = () => {
+ 
+  // const handlePayment = async () => {
+  //   if (!selectedAddress) {
+  //     Alert.alert('Thông báo', 'Vui lòng chọn một địa chỉ giao hàng!');
+  //     return;
+  //   }
+  //   if (!paymentMethod) {
+  //     Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán!');
+  //     return;
+  //   }
+  
+  //   // Tạo dữ liệu đơn hàng với ảnh sản phẩm
+  //   const orderData = {
+  //     userId: userID,
+  //     items: cartItems.map(item => ({
+  //       productId: item.productId,
+  //       name: item.nameProduct,
+  //       quantity: item.quantity,
+  //       price: item.price,
+  //       image: item.images[0], 
+  //     })),
+  //     totalAmount,
+  //     address: selectedAddress.address,
+  //     paymentMethod,
+  //   };
+  
+  
+  //   try {
+  //     // Gửi yêu cầu tạo đơn hàng
+  //     const response = await axios.post(`${API_URL}/Orders/checkout`, orderData);
+      
+  //     // Nếu thanh toán thành công, xóa giỏ hàng
+  //     if (response.status === 201) {
+  //       // Gọi hàm xóa giỏ hàng (bạn cần định nghĩa hàm này)
+  //       // await clearCart(); // Giả sử clearCart là hàm xóa giỏ hàng
+      
+  //       Alert.alert('Thông báo', 'Đặt hàng thành công!');
+  //       // Chuyển hướng về màn hình giỏ hàng
+  //       // navigation.navigate('CartScreen');
+  //     }
+  //   } catch (error) {
+  //     console.error('Lỗi khi thanh toán:', error);
+  //     Alert.alert('Lỗi', 'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.');
+  //   }
+  // };
+  const handlePayment = async () => {
     if (!selectedAddress) {
       Alert.alert('Thông báo', 'Vui lòng chọn một địa chỉ giao hàng!');
       return;
@@ -60,14 +108,63 @@ const PaymentAddressScreen = ({ navigation, route }) => {
       Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán!');
       return;
     }
-    navigation.navigate('PaymentMethod', {
-      selectedAddress,
-      paymentMethod,
-      cartItems,
+  
+    const orderData = {
+      userId: userID,
+      items: cartItems.map(item => ({
+        productId: item.productId,
+        name: item.nameProduct,
+        quantity: item.quantity,
+        price: item.price,
+        image: item.images[0], 
+      })),
       totalAmount,
-    });
+      address: selectedAddress.address,
+      paymentMethod,
+    };
+  
+    try {
+      // Gửi yêu cầu thanh toán
+      const response = await axios.post(`${API_URL}/Orders/checkout`, orderData);
+  
+      if (response.status === 201) {
+        // Xóa toàn bộ giỏ hàng
+        await resetCartOnServer(cartItems);
+  
+        Alert.alert('Thông báo', 'Đặt hàng thành công!');
+      }
+    } catch (error) {
+      console.error('Lỗi khi thanh toán:', error);
+      Alert.alert('Lỗi', 'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.');
+    }
   };
+  
+  // Hàm reset giỏ hàng
+  const resetCartOnServer = async (cartItems) => {
+    try {
+      // Lặp qua từng sản phẩm để gọi API xóa
+      for (const item of cartItems) {
+        await axios.delete(`${API_URL}/carts/deleteItemCart`, {
+          data: {
+            userId: userID,
+            productId: item.productId,
+            quantity: item.quantity,
+          },
+        });
+      }
+      console.log('Giỏ hàng đã được reset trên server!');
+    } catch (error) {
+      console.error('Lỗi khi reset giỏ hàng:', error);
+      Alert.alert('Lỗi', 'Không thể reset giỏ hàng. Vui lòng thử lại.');
+    }
+  };
+  
+  
+  
 
+ 
+  
+  
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -80,14 +177,15 @@ const PaymentAddressScreen = ({ navigation, route }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Phần địa chỉ */}
+      <Customheader 
+        leftIcon={require('../../../assets/imgs/back4.png')}
+        containerStyle={styles.customHeaderContainer} 
+      />
       <Text style={styles.sectionHeader}>Chọn Địa Chỉ Giao Hàng</Text>
       {addresses.map((address) => (
         <TouchableOpacity
           key={address._id}
-          style={[
-            styles.addressCard,
-            selectedAddress?._id === address._id && styles.selectedCard,
-          ]}
+          style={[styles.addressCard, selectedAddress?._id === address._id && styles.selectedCard]}
           onPress={() => setSelectedAddress(address)}
         >
           <View style={styles.addressContent}>
@@ -107,10 +205,7 @@ const PaymentAddressScreen = ({ navigation, route }) => {
       <Text style={styles.sectionHeader}>Chọn Phương Thức Thanh Toán</Text>
       <View style={styles.paymentOptions}>
         <TouchableOpacity
-          style={[
-            styles.paymentOption,
-            paymentMethod === 'Tiền mặt' && styles.selectedPayment,
-          ]}
+          style={[styles.paymentOption, paymentMethod === 'Tiền mặt' && styles.selectedPayment]}
           onPress={() => setPaymentMethod('Tiền mặt')}
         >
           <Text style={styles.paymentOptionText}>
@@ -118,10 +213,7 @@ const PaymentAddressScreen = ({ navigation, route }) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[
-            styles.paymentOption,
-            paymentMethod === 'MoMo' && styles.selectedPayment,
-          ]}
+          style={[styles.paymentOption, paymentMethod === 'MoMo' && styles.selectedPayment]}
           onPress={() => setPaymentMethod('MoMo')}
         >
           <Text style={styles.paymentOptionText}>
@@ -132,21 +224,18 @@ const PaymentAddressScreen = ({ navigation, route }) => {
 
       {/* Phần thông tin giỏ hàng */}
       <Text style={styles.sectionHeader}>Thông Tin Giỏ Hàng</Text>
-           {cartItems.map((item, index) => {
-          console.log('Item.images[0]', item.image);
-          return (
-            <View key={index} style={styles.cartItem}>
-              <Image source={{ uri: item.image }} style={styles.cartItemImage} />
-              <View style={styles.cartItemDetails}>
-                <Text style={styles.cartItemName}>{item.name}</Text>
-                <Text style={styles.cartItemQuantity}>Số lượng: {item.quantity}</Text>
-                <Text style={styles.cartItemPrice}>
-                  {item.price * item.quantity} VNĐ
-                </Text>
-              </View>
-            </View>
-          );
-        })}
+      {cartItems.map((item, index) => (
+        <View key={index} style={styles.cartItem}>
+          <Image source={{ uri: item.images[0] }} style={styles.cartItemImage} />
+          <View style={styles.cartItemDetails}>
+            <Text style={styles.cartItemName}>{item.nameProduct}</Text>
+            <Text style={styles.cartItemQuantity}>Số lượng: {item.quantity}</Text>
+            <Text style={styles.cartItemPrice}>
+              {item.price * item.quantity} VNĐ
+            </Text>
+          </View>
+        </View>
+      ))}
       <View style={styles.totalAmountContainer}>
         <Text style={styles.totalAmountText}>Tổng Tiền: {totalAmount} VNĐ</Text>
       </View>
@@ -164,7 +253,7 @@ export default PaymentAddressScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: 'white',
   },
   loaderContainer: {
     flex: 1,
@@ -288,4 +377,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
   },
+  customHeaderContainer: {
+    marginBottom: 10,
+  },
 });
+

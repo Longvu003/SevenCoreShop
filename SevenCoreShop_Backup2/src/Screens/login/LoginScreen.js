@@ -81,12 +81,12 @@ const LoginScreen = ({navigation}) => {
         // Kiểm tra phản hồi từ API
         if (response.status === 200) {
             // Sửa đoạn này để phù hợp với cấu trúc phản hồi
-            const user = JSON.stringify(response.data.email); // Sử dụng response.data.email
-            const userId = JSON.stringify(response.data._id); // Sử dụng response.data._id
+            const user = JSON.stringify(response.data.data.email); // Sử dụng response.data.email
+            const userId = JSON.stringify(response.data.data.id); 
             await AsyncStorage.setItem('userEmail', user);
             await AsyncStorage.setItem('userId', userId);
-    
-            Alert.alert('Đăng nhập thành công', `Chào mừng ${response.data.email}`);
+            //  console.log(user)
+            // Alert.alert('Đăng nhập thành công', `Chào mừng ${response.data.email}`);
             navigation.navigate('Tab');
         } else {
             Alert.alert('Đăng nhập thất bại', 'Nhập đúng email và mật khẩu');

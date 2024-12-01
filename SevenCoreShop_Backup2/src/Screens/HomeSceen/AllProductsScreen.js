@@ -30,7 +30,7 @@ const AllProductsScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Products</Text>
+        <Text style={styles.title}>Sản Phẩm</Text>
       </View>
 
       <FlatList

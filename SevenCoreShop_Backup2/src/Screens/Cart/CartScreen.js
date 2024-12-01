@@ -34,7 +34,9 @@ const CartScreen = () => {
     );
     setTotalPriceCart(totalCart);
   };
-
+  const clearCart2 = () => {
+    setCart([]);
+  };
   const updateCart = async (productId, quantity) => {
     try {
       const response = await axios.put(`${API__URL}/carts/updateItemCart`, {
@@ -92,6 +94,21 @@ const CartScreen = () => {
       }
     } catch (error) {
       console.error('Error clearing cart:', error);
+    }
+  };
+  const resetCartOnServer = async () => {
+    try {
+      for (const item of cart) {
+        await axios.delete(`${API__URL}/carts/deleteItemCart`, {
+          data: { userId, productId: item.productId, quantity: item.quantity },
+        });
+      }
+      setCart([]);
+      setTotalPriceCart(0);
+      console.log('Giỏ hàng đã được reset trên server!');
+    } catch (error) {
+      console.error('Error resetting cart:', error);
+      Alert.alert('Lỗi', 'Không thể reset giỏ hàng. Vui lòng thử lại.');
     }
   };
 
@@ -169,24 +186,34 @@ const CartScreen = () => {
   //   }
   // };
   const handlePayment = async () => {
-    if (cart.length === 0) {
-      Alert.alert('Thông báo', 'Giỏ hàng trống, vui lòng thêm sản phẩm!');
-      return;
-    }
-  
-    // Lấy userId từ AsyncStorage hoặc state
-    const userId = await AsyncStorage.getItem('userId');
-    const parsedUserId = JSON.parse(userId); // Đảm bảo rằng userId là kiểu đúng
-  
-    // Chuyển hướng sang PaymentAddressScreen và truyền userId
-    navigation.navigate('PaymentAddressScreen', { 
-      userID: parsedUserId ,
-      cartItems: cart, 
-      totalAmount: totalPriceCart, 
+  if (cart.length === 0) {
+    Alert.alert('Thông báo', 'Giỏ hàng trống, vui lòng thêm sản phẩm!');
+    return;
+  }
 
-    });
-  };
-  
+  if (paymentMethod !== 'COD') {
+    Alert.alert('Thông báo', 'Bạn phải chấp nhận đơn hàng trước khi thanh toán!');
+    return;
+  }
+
+  try {
+    // Lấy userId từ AsyncStorage
+    const userId = await AsyncStorage.getItem('userId');
+    const parsedUserId = JSON.parse(userId);
+
+    // Chuyển hướng sang màn hình PaymentAddressScreen
+    navigation.navigate('PaymentAddressScreen', {
+      userID: parsedUserId,
+      cartItems: cart,
+      totalAmount: totalPriceCart,
+  });
+
+
+  } catch (error) {
+    console.error('Lỗi khi xử lý thanh toán:', error);
+    Alert.alert('Lỗi', 'Đã xảy ra lỗi khi thanh toán. Vui lòng thử lại.');
+  }
+};
 
   useFocusEffect(
     useCallback(() => {

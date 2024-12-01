@@ -13,5 +13,4 @@ const CategorySchema = new Schema({
       },
 });
 
-// Sửa lại phần xuất model:
 module.exports = mongoose.models.Category || mongoose.model('Category', CategorySchema);
