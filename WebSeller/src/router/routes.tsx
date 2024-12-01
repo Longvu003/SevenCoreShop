@@ -4,18 +4,14 @@ import PrivateRoute from './PrivateRoute';  // Import the PrivateRoute component
 const Index = lazy(() => import('../pages/Analytics'));
 const ProductManagent = lazy(() => import('../pages/ProductManagent'));
 const CategoriesManagent = lazy(() => import('../pages/CategoriesManagement'));
+const CategoriesNew = lazy(() => import('../pages/CategoriesNew'));
 const LoginBoxed = lazy(() => import('../pages/LoginBoxed'));
 const Error = lazy(() => import('../components/Error'));
 const ProductCreateNew = lazy(() => import('../pages/ProductCreatNew'));
 const ProductUpdate = lazy(() => import('../pages/ProductEdit'));
 const CategoriesUpdate = lazy(() => import('../pages/CategoriesNew'));
 const CategoryEdit = lazy(() => import('../pages/CategoriesEdit'));
-const Usermanagent = lazy(() => import('../pages/UsersManagent'));
-
-// Lấy vai trò người dùng từ localStorage
-const userRole = localStorage.getItem('userRole'); // Giả sử đã lưu vai trò khi đăng nhập
-console.log("User Role: ", userRole); // Kiểm tra giá trị vai trò
-
+const OrderManagent = lazy(() => import('../pages/OrderManagement'));
 const routes = [
     // dashboard (protected)
     {
@@ -26,22 +22,27 @@ const routes = [
             </PrivateRoute>
         ),
     },
-    // Chỉ thêm route cho Usermanagent nếu vai trò không phải là seller
-    ...(userRole !== "3" ? [  // Nếu userRole không phải là "3" (seller)
-        {
-            path: '/usermanagent',
-            element: (
-                <PrivateRoute>
-                    <Usermanagent />
-                </PrivateRoute>
-            ),
-        },
-    ] : []), 
+    {
+        path: '/orderManagent',
+        element: (
+            <PrivateRoute>
+                <OrderManagent />
+            </PrivateRoute>
+        ),
+    },
     {
         path: '/categoriesmanagent',
         element: (
             <PrivateRoute>
                 <CategoriesManagent />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/categoriesmanagent/categories-update',
+        element: (
+            <PrivateRoute>
+                <CategoriesUpdate />
             </PrivateRoute>
         ),
     },

@@ -10,7 +10,10 @@ const ProductSchema = new Schema({
     quantity: { type: Number, default: 0  },
     images: { type: Array, default: [] },
     description: { type: String, default: '' },
-    category: { type: Object, default: {} },
+    category: { 
+        category_id: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
+        category_name: { type: String, required: true }
+    },
     // ngày giờ tạo
     creatAt: { type: Date, default: Date.now },//Date.now để lấy thời gian hiện tại
     // ngày giờ cập nhật

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation,useNavigate  } from 'react-router-dom';
 import { IRootState } from '../../store';
 import { toggleRTL, toggleTheme, toggleSidebar } from '../../store/themeConfigSlice';
 import { useTranslation } from 'react-i18next';
@@ -33,21 +33,7 @@ import IconMenuForms from '../Icon/Menu/IconMenuForms';
 import IconMenuPages from '../Icon/Menu/IconMenuPages';
 import IconMenuMore from '../Icon/Menu/IconMenuMore';
 
-
-
 const Header = () => {
-    const navigate = useNavigate(); // Sử dụng hook useNavigate để điều hướng
-
-    const handleSignOut = () => {
-        // Xóa token và vai trò người dùng khỏi localStorage
-        localStorage.removeItem('usertoken');
-        localStorage.removeItem('userRole');
-        localStorage.clear();
-
-        // Điều hướng về trang đăng nhập
-        navigate('/login'); // Điều hướng đến trang đăng nhập
-        window.location.reload();
-    };
     const location = useLocation();
     useEffect(() => {
         const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');
@@ -78,6 +64,8 @@ const Header = () => {
     function createMarkup(messages: any) {
         return { __html: messages };
     }
+    const navigate = useNavigate();
+
     const [messages, setMessages] = useState([
         {
             id: 1,
@@ -137,7 +125,10 @@ const Header = () => {
     const removeNotification = (value: number) => {
         setNotifications(notifications.filter((user) => user.id !== value));
     };
-
+    const handleSignOut = () => {
+        localStorage.removeItem('tokenuser');
+        navigate('/login');
+    };
     const [search, setSearch] = useState(false);
 
     const setLocale = (flag: string) => {
@@ -158,7 +149,7 @@ const Header = () => {
                 <div className="relative bg-white flex w-full items-center px-5 py-2.5 dark:bg-black">
                     <div className="horizontal-logo flex lg:hidden justify-between items-center ltr:mr-2 rtl:ml-2">
                         <Link to="/" className="main-logo flex items-center shrink-0">
-                            {/* <img className="w-8 ltr:-ml-1 rtl:-mr-1 inline" src="/assets/images/logo.svg" alt="logo" /> */}
+                            <img className="w-8 ltr:-ml-1 rtl:-mr-1 inline" src="/assets/images/logo.png" alt="logo" />
                             <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5  font-semibold  align-middle hidden md:inline dark:text-white-light transition-all duration-300">SEVENTCORE</span>
                         </Link>
                         <button
@@ -222,9 +213,10 @@ const Header = () => {
                         <div>
                             {themeConfig.theme === 'light' ? (
                                 <button
-                                    className={`${themeConfig.theme === 'light' &&
+                                    className={`${
+                                        themeConfig.theme === 'light' &&
                                         'flex items-center p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60'
-                                        }`}
+                                    }`}
                                     onClick={() => {
                                         dispatch(toggleTheme('dark'));
                                     }}
@@ -236,9 +228,10 @@ const Header = () => {
                             )}
                             {themeConfig.theme === 'dark' && (
                                 <button
-                                    className={`${themeConfig.theme === 'dark' &&
+                                    className={`${
+                                        themeConfig.theme === 'dark' &&
                                         'flex items-center p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60'
-                                        }`}
+                                    }`}
                                     onClick={() => {
                                         dispatch(toggleTheme('system'));
                                     }}
@@ -248,9 +241,10 @@ const Header = () => {
                             )}
                             {themeConfig.theme === 'system' && (
                                 <button
-                                    className={`${themeConfig.theme === 'system' &&
+                                    className={`${
+                                        themeConfig.theme === 'system' &&
                                         'flex items-center p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60'
-                                        }`}
+                                    }`}
                                     onClick={() => {
                                         dispatch(toggleTheme('light'));
                                     }}
@@ -466,11 +460,11 @@ const Header = () => {
                                         </Link>
                                     </li>
                                     <li className="border-t border-white-light dark:border-white-light/10">
-                                        <button onClick={handleSignOut} className="text-danger !py-3 w-full text-left">
-                                            <IconLogout className="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 rotate-90 shrink-0" />
-                                            Sign Out
-                                        </button>
-                                    </li>
+                <button onClick={handleSignOut} className="text-danger !py-3 flex items-center">
+                    <IconLogout className="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 rotate-90 shrink-0" />
+                    Sign Out
+                </button>
+            </li>
                                 </ul>
                             </Dropdown>
                         </div>

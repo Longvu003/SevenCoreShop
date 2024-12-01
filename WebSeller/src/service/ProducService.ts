@@ -59,28 +59,59 @@ export const GetProductById = async (id: string): Promise<Products> => {
       "Content-Type": "application/json",
     },
   });
-  const data: any = await response.json();
 
   if (!response.ok) {
-    return data
+    const errorData = await response.json(); // Lấy dữ liệu lỗi
+    throw new Error(errorData.message || 'Failed to fetch product'); // Ném lỗi nếu không thành công
   }
 
-  return data;
+  const data: Products = await response.json();
+  return data; // Trả về dữ liệu sản phẩm
 }
 
+
 export const EditProductByid = async (id: string, product: Products): Promise<Products> => {
-  const response = await fetch(`${API_URL}/products/${id}/update`, {
-    method: "post",
-    body: JSON.stringify(product),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const data: any = await response.json();
+  try {
+    const response = await fetch(`${API_URL}/products/${id}/update`, {
+      method: "post",  
+      body: JSON.stringify(product),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  if (!response.ok) {
-    return data
+    // Kiểm tra nếu response không thành công
+    if (!response.ok) {
+      const data = await response.json();
+      console.error('Error updating product:', data);
+      throw new Error(data.message || 'Unknown error');
+    }
+
+    // Trả về kết quả nếu update thành công
+    const data: Products = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error updating product:', error);
+    throw error;  // Ném lại lỗi để có thể xử lý ở phía gọi hàm
   }
+};
 
-  return data;
+
+export const GetProductByCategoryId = async (id: string): Promise<Products[]> => {
+  try {
+      const response = await fetch(`${API_URL}/products?categoryId=${id}`, {
+          method: "get",
+          headers: {
+              "Content-Type": "application/json",
+          },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+          return []; 
+      }
+      return data.products || []; 
+  } catch (error) {
+      console.error('Failed to fetch products by category ID:', error);
+      return []; 
+  }
 }

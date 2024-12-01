@@ -1,13 +1,12 @@
-//khai báo 1 schema cho product
-//(_id, email, password, name, role, carts, creatAt, updateAt, avaialble)
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
 
+// Định nghĩa Schema cho danh mục
 const CategorySchema = new Schema({
-    name: { type: String, required: true },
-    description: { type: String, default: '' },
+    name: { type: String, required: true }, // Tên danh mục
+    description: { type: String, default: '' }, // Mô tả danh mục
+    images: { type: Array, default: [] } // Danh sách hình ảnh (array)
 });
-// tiếng anh, số ít, chữ thường, không dấu, không cách  
-//  //tạo model user từ schema UserSchema chưa có thì tạo mới, có rồi thì sử dụng lại
-module.exports = mongoose.model.category || mongoose.model('category', CategorySchema); 
+
+// Đảm bảo rằng mô hình 'Category' chỉ được tạo một lần, tránh lỗi khi tạo nhiều lần
+module.exports = mongoose.models.Category || mongoose.model('Category', CategorySchema);

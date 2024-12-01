@@ -14,7 +14,7 @@ export default function ProductCreateNew() {
         category: {
             category_name: ''
         },
-        images: []
+        images: [],
     });
 
     useEffect(() => {
@@ -52,24 +52,30 @@ export default function ProductCreateNew() {
     const uploadToCloudinary = async () => {
         try {
             const fileInput = document.getElementById('productImages') as HTMLInputElement;
-            const file = fileInput?.files?.[0];
-            if (file) {
-                const data = new FormData();
-                data.append('file', file);
-                data.append('upload_preset', 'ml_default');
-
-                const response = await fetch('https://api.cloudinary.com/v1_1/dlngxbn4l/image/upload', {
-                    method: 'POST',
-                    body: data
+            const files = fileInput?.files;
+            if (files) {
+                const uploadPromises = Array.from(files).map(async (file) => {
+                    const data = new FormData();
+                    data.append('file', file);
+                    data.append('upload_preset', 'ml_default');
+    
+                    const response = await fetch('https://api.cloudinary.com/v1_1/dlngxbn4l/image/upload', {
+                        method: 'POST',
+                        body: data
+                    });
+    
+                    const result = await response.json();
+                    return result['url'];
                 });
-
-                const result = await response.json();
-                setImages((prevImages) => [...prevImages, result.secure_url]);
+    
+                const urls = await Promise.all(uploadPromises);
+                setImages((prevImages) => [...prevImages, ...urls]);
             }
         } catch (error) {
-            console.error('Error uploading image:', error);
+            console.error('Error uploading images:', error);
         }
     };
+    
 
     const removeImage = (img: string) => {
         setImages((prevImages) => prevImages.filter(item => item !== img));
@@ -87,13 +93,17 @@ export default function ProductCreateNew() {
             };
             console.log("Payload being sent to server:", newProduct);
             const res: any = await createProduct(newProduct);
+    
             if (res.status) {
+                // Hiển thị thông báo thành công
                 Swal.fire({
                     icon: "success",
                     title: "Thành công",
                     text: "Thêm sản phẩm thành công"
+                }).then(() => {
+                    // Sau khi người dùng đóng thông báo, điều hướng sang trang quản lý sản phẩm
+                    window.location.href = "/product/product-managent";
                 });
-                location.href = "/product/product-managent";
             } else {
                 Swal.fire({
                     icon: "error",
@@ -109,12 +119,13 @@ export default function ProductCreateNew() {
                 text: "Thêm sản phẩm thất bại"
             });
         }
-    };
+    };    
+    
 
     return (
         <form className="space-y-5" onSubmit={clickCreateNew}>
             <div>
-                <label htmlFor="productName">Product Name</label>
+                <label htmlFor="productName">Tên Sản Phẩm</label>
                 <input
                     id="productName"
                     type="text"
@@ -127,7 +138,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productPrice">Product Price</label>
+                <label htmlFor="productPrice">Giá bán</label>
                 <input
                     id="productPrice"
                     type="number"
@@ -140,7 +151,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productQuantity">Product Quantity</label>
+                <label htmlFor="productQuantity">Số lượng</label>
                 <input
                     id="productQuantity"
                     type="number"
@@ -153,7 +164,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productDescription">Product Description</label>
+                <label htmlFor="productDescription">Mô tả sản phẩm</label>
                 <input
                     id="productDescription"
                     type="text"
@@ -166,7 +177,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productCategory">Product Categories</label>
+                <label htmlFor="productCategory">Danh mục sản phẩm</label>
                 <select
                     id="productCategory"
                     name="category_name"
@@ -175,7 +186,7 @@ export default function ProductCreateNew() {
                     className="form-multiselect text-white-dark"
                     required
                 >
-                    <option value="">Select Category</option>
+                    <option value="">Nhấn để chọn danh mục của sản phẩm</option>
                     {categories.map((item, index) => (
                         <option key={index} value={item._id}>{item.name}</option>
                     ))}
@@ -183,14 +194,14 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productImages">Images</label>
+                <label htmlFor="productImages">Hình ảnh</label>
                 <input
                     id="productImages"
                     type="file"
                     name="images"
                     onChange={uploadToCloudinary}
                     className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
-                    required
+                    multiple
                 />
                 <div className="image-preview">
                     {images.map((img, index) => (
@@ -219,7 +230,7 @@ export default function ProductCreateNew() {
             </div>
 
             <button type="submit" className="btn btn-primary !mt-6">
-                Submit
+                Lưu
             </button>
         </form>
     );
