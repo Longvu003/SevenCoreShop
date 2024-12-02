@@ -54,51 +54,7 @@ const PaymentAddressScreen = ({ navigation, route }) => {
     fetchAddresses();
   }, [userID]);
 
- 
-  // const handlePayment = async () => {
-  //   if (!selectedAddress) {
-  //     Alert.alert('Thông báo', 'Vui lòng chọn một địa chỉ giao hàng!');
-  //     return;
-  //   }
-  //   if (!paymentMethod) {
-  //     Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán!');
-  //     return;
-  //   }
-  
-  //   // Tạo dữ liệu đơn hàng với ảnh sản phẩm
-  //   const orderData = {
-  //     userId: userID,
-  //     items: cartItems.map(item => ({
-  //       productId: item.productId,
-  //       name: item.nameProduct,
-  //       quantity: item.quantity,
-  //       price: item.price,
-  //       image: item.images[0], 
-  //     })),
-  //     totalAmount,
-  //     address: selectedAddress.address,
-  //     paymentMethod,
-  //   };
-  
-  
-  //   try {
-  //     // Gửi yêu cầu tạo đơn hàng
-  //     const response = await axios.post(`${API_URL}/Orders/checkout`, orderData);
-      
-  //     // Nếu thanh toán thành công, xóa giỏ hàng
-  //     if (response.status === 201) {
-  //       // Gọi hàm xóa giỏ hàng (bạn cần định nghĩa hàm này)
-  //       // await clearCart(); // Giả sử clearCart là hàm xóa giỏ hàng
-      
-  //       Alert.alert('Thông báo', 'Đặt hàng thành công!');
-  //       // Chuyển hướng về màn hình giỏ hàng
-  //       // navigation.navigate('CartScreen');
-  //     }
-  //   } catch (error) {
-  //     console.error('Lỗi khi thanh toán:', error);
-  //     Alert.alert('Lỗi', 'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.');
-  //   }
-  // };
+
   const handlePayment = async () => {
     if (!selectedAddress) {
       Alert.alert('Thông báo', 'Vui lòng chọn một địa chỉ giao hàng!');
@@ -189,7 +145,6 @@ const PaymentAddressScreen = ({ navigation, route }) => {
           onPress={() => setSelectedAddress(address)}
         >
           <View style={styles.addressContent}>
-            <Icon name="location-on" size={24} color="#000" />
             <View style={styles.addressDetails}>
               <Text style={styles.addressName}>{address.name || 'Không có tên'}</Text>
               <Text style={styles.addressText}>{address.address || 'Không có địa chỉ'}</Text>
