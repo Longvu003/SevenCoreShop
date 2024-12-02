@@ -3,6 +3,8 @@ const router = express.Router();
 const adController = require('../controllers/AdController');
 
 module.exports = (upload) => {
+
+  
   // Tạo quảng cáo mới và upload ảnh
   router.post('/', upload.single('image'), adController.createAd);
 

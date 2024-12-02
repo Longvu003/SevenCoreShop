@@ -3,9 +3,11 @@ const Ad = require('../model/AdModel');
 // Tạo quảng cáo mới
 exports.createAd = async (req, res) => {
   try {
+    const a = process.env.CLOUDINARY_NAME
+    console.log(a)
+    console.log(123)
     const { title, tag, description} = req.body;
-    const url_server = 'http://localhost:7777'
-    const image = `${url_server}/${req.file.path.replace(/\\/g, '/')}`
+    const image = req.file.path
     console.log(req.body)
     const newAd = new Ad({ title, tag, description,image});
     const savedAd = await newAd.save();
@@ -48,8 +50,7 @@ exports.updateAdById = async (req, res) => {
     const { title, tag, description} = req.body;
     const updateData = { title, tag, description};
     if(req.file){
-      const url_server = 'http://localhost:7777'
-      const image = `${url_server}/${req.file.path.replace(/\\/g, '/')}`
+      const image = req.file.path
       updateData.image = image
     }
     console.log(updateData)

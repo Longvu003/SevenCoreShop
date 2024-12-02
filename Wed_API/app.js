@@ -9,15 +9,8 @@ const multer = require('multer');
 const Ad = require('./model/AdModel');
 
 // Cấu hình multer để lưu ảnh
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'images/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage: storage });
+
+const upload = require('./cloudpng/upload');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -25,6 +18,8 @@ const productsRouter = require('./routes/products');
 const categoriesRouter = require('./routes/categories');
 const cartsRouter = require('./routes/carts');
 const adsRouter = require('./routes/ads')(upload);
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 
