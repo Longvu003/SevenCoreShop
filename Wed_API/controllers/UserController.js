@@ -10,6 +10,16 @@ const isValidEmail = (email) => {
   const emailRegex = /\S+@\S+\.\S+/;
   return emailRegex.test(email);
 };
+// Lấy tất cả người dùng
+const getAllUser = async () => {
+  try {
+    const users = await userModel.find();
+    return users;
+  } catch (error) {
+    console.log("Get all user error", error.message);
+    throw new Error("Get all user error");
+  }
+};
 
 // Tìm kiếm user bằng email
 const getUserByEmail = async (email) => {
@@ -201,6 +211,40 @@ const verify = async (email) => {
     throw new Error("Xác thực thất bại: " + error.message);
   }
 };
+const updateUserById = async (
+  id,
+  email,
+  password,
+  username,
+  numberphone,
+  address
+) => {
+  try {
+    const user = await userModel.findById(id);
+    if (!user) {
+      throw new Error("User không tồn tại");
+    }
+
+    // Cập nhật thông tin người dùng
+    user.email = email;
+    user.username = username;
+    user.numberphone = numberphone;
+    user.address = address;
+    user.updatedAt = Date.now();
+
+    // Chỉ băm và cập nhật mật khẩu nếu có giá trị mật khẩu mới được cung cấp
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt); // Băm mật khẩu mới
+    }
+
+    await user.save();
+    return "Cập nhật người dùng thành công";
+  } catch (error) {
+    console.log("Update user by id error", error.message);
+    throw new Error("Update user by id error");
+  }
+};
 
 // Xuất khẩu các hàm
 module.exports = {
@@ -213,4 +257,6 @@ module.exports = {
   forgotPassword,
   // resetPassword,
   sendOtpMail,
+  getAllUser,
+  updateUserById,
 };

@@ -177,6 +177,28 @@ router.put(
     }
   }
 );
+router.post("/:id/updateuserbyid", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { email, password, username, numberphone, address } = req.body;
+    const result = await userController.updateUserById(
+      id,
+      email,
+      password,
+      username,
+      numberphone,
+      address
+    );
+    return res.status(200).json({
+      status: true,
+      message: "Cập nhật tài khoản thành công",
+      data: result,
+    });
+  } catch (error) {
+    console.log("Update user by id error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
 
 // Xác thực email
 router.get(
@@ -211,5 +233,18 @@ router.get(
     }
   }
 );
+router.get("/getalluser", async (req, res, next) => {
+  try {
+    const result = await userController.getAllUser();
+    return res.status(200).json({
+      status: true,
+      message: "Lấy thông tin tất cả tài khoản thành công",
+      data: result,
+    });
+  } catch (error) {
+    console.log("Get all user error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
 
 module.exports = router;
