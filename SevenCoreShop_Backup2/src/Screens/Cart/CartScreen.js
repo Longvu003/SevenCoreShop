@@ -8,14 +8,14 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import Customheader from '../../CustomHeader/Customheader';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API__URL from '../../../config';
-import {Dimensions} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
-import {useNavigation} from '@react-navigation/native';
+import { Dimensions } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
@@ -25,8 +25,6 @@ const CartScreen = () => {
   const [cart, setCart] = useState([]);
   const [totalPriceCart, setTotalPriceCart] = useState(0);
   const [userId, setUserId] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState(null);
-  const [isOrderAccepted, setIsOrderAccepted] = useState(false); // Trạng thái nút "Chấp nhận đơn hàng"
 
   const totalPrice = (cartItem) => {
     const totalCart = cartItem.reduce(
@@ -34,6 +32,43 @@ const CartScreen = () => {
       0
     );
     setTotalPriceCart(totalCart);
+  };
+
+  const updateCart = async (productId, quantity) => {
+    try {
+      if (quantity === 0) {
+        clearCart(productId, quantity);
+        return;
+      }
+
+      const response = await axios.put(`${API__URL}/carts/updateItemCart`, {
+        userId,
+        productId,
+        quantity,
+      });
+      const updatedItem = response.data.item;
+
+      const updatedCart = cart.map((item) =>
+        item.productId === productId
+          ? { ...item, quantity: updatedItem.quantity }
+          : item
+      );
+
+      setCart(updatedCart);
+      totalPrice(updatedCart);
+    } catch (error) {
+      console.log('Error updating cart:', error);
+    }
+  };
+
+  const handleIncrease = (productId, currentQuantity) => {
+    const newQuantity = currentQuantity + 1;
+    updateCart(productId, newQuantity);
+  };
+
+  const handleDecrease = (productId, currentQuantity) => {
+    const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 0;
+    updateCart(productId, newQuantity);
   };
 
   const getIdUser = async () => {
@@ -49,14 +84,41 @@ const CartScreen = () => {
     totalPrice(response.data.result);
   };
 
+  const clearCart = async (productId, quantity) => {
+    try {
+      const respone = await axios.delete(`${API__URL}/carts/deleteItemCart`, {
+        data: { userId, productId, quantity },
+      });
+      if (respone.status === 200) {
+        setCart((indexCart) =>
+          indexCart.filter((item) => item.productId !== productId)
+        );
+        setTotalPriceCart(0);
+      }
+    } catch (error) {
+      console.log('Error clearing cart:', error);
+    }
+  };
+
+  const resetCartOnServer = async () => {
+    try {
+      for (const item of cart) {
+        await axios.delete(`${API__URL}/carts/deleteItemCart`, {
+          data: { userId, productId: item.productId, quantity: item.quantity },
+        });
+      }
+      setCart([]);
+      setTotalPriceCart(0);
+      console.log('Giỏ hàng đã được reset trên server!');
+    } catch (error) {
+      console.log('Error resetting cart:', error);
+      Alert.alert('Lỗi', 'Không thể reset giỏ hàng. Vui lòng thử lại.');
+    }
+  };
+
   const handlePayment = async () => {
     if (cart.length === 0) {
       Alert.alert('Thông báo', 'Giỏ hàng trống, vui lòng thêm sản phẩm!');
-      return;
-    }
-
-    if (!isOrderAccepted) {
-      Alert.alert('Thông báo', 'Bạn phải chấp nhận đơn hàng trước khi thanh toán!');
       return;
     }
 
@@ -69,9 +131,6 @@ const CartScreen = () => {
         cartItems: cart,
         totalAmount: totalPriceCart,
       });
-
-      // Reset trạng thái sau khi chuyển hướng
-      setIsOrderAccepted(false);
     } catch (error) {
       console.error('Lỗi khi xử lý thanh toán:', error);
       Alert.alert('Lỗi', 'Đã xảy ra lỗi khi thanh toán. Vui lòng thử lại.');
@@ -135,6 +194,21 @@ const CartScreen = () => {
                       <Text style={styles.productQuantity}>
                         Quantity: {item.quantity}
                       </Text>
+                      <View style={styles.quantityControls}>
+                        <TouchableOpacity
+                          style={styles.iconContainer}
+                          onPress={() => handleDecrease(item.productId, item.quantity)}
+                        >
+                          <Text style={styles.icon}>-</Text>
+                        </TouchableOpacity>
+                        <Text>{item.quantity}</Text>
+                        <TouchableOpacity
+                          style={styles.iconContainer}
+                          onPress={() => handleIncrease(item.productId, item.quantity)}
+                        >
+                          <Text style={styles.icon}>+</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
                   <View style={styles.cartItemActions}>
@@ -144,25 +218,6 @@ const CartScreen = () => {
               )}
               keyExtractor={(item) => item.productId.toString()}
             />
-          </View>
-          <View style={styles.paymentMethodContainer}>
-            <Text style={styles.paymentMethodTitle}>Xác nhận đơn hàng</Text>
-            <TouchableOpacity
-              style={styles.paymentOption}
-              onPress={() => setIsOrderAccepted(!isOrderAccepted)}
-            >
-              <View
-                style={[
-                  styles.radioButton,
-                  isOrderAccepted && styles.radioButtonSelected,
-                ]}
-              >
-                {isOrderAccepted && <View style={styles.radioInnerCircle} />}
-              </View>
-              <Text style={styles.paymentMethodText}>
-                {isOrderAccepted ? 'Đã chấp nhận' : 'Chấp nhận mua hàng'}
-              </Text>
-            </TouchableOpacity>
           </View>
           <View style={styles.totalPriceContainer}>
             <Text style={styles.totalText}>Tổng cộng</Text>
@@ -204,7 +259,6 @@ const CartScreen = () => {
 
 export default CartScreen;
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -237,8 +291,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imgProduct: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     borderRadius: 8,
   },
   productInfo: {
@@ -247,93 +301,55 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
   },
   productQuantity: {
     fontSize: 14,
-    color: '#555',
-  },
-  cartItemActions: {
-    alignItems: 'flex-end',
-    flex: 1,
-  },
-  productPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    color: '#555555',
   },
   quantityControls: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
   },
   iconContainer: {
-    marginHorizontal: 15,
-  },
-  icon: {
-    width: 20,
-    height: 20,
-  },
-  paymentMethodContainer: {
-    padding: 20,
-    backgroundColor: '#FFFFFF',
-    marginTop: 20,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
-    flex: 1,
-  },
-  paymentMethodTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  paymentOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 15,
-  },
-  radioButton: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#888',
+    width: 30,
+    height: 30,
+    backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
-  },
-  radioButtonSelected: {
-    borderColor: '#4CAF50',
-  },
-  radioInnerCircle: {
-    width: 10,
-    height: 10,
+    marginHorizontal: 10,
     borderRadius: 5,
-    backgroundColor: '#4CAF50',
   },
-  paymentMethodText: {
+  icon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  cartItemActions: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  productPrice: {
     fontSize: 16,
     color: '#333',
+    fontWeight: 'bold',
   },
   totalPriceContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    backgroundColor: '#FFFFFF',
+    padding: 15,
     marginTop: 20,
-    flex: 1,
+    marginBottom: 10,
+    borderRadius: 8,
   },
   totalText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
   totalAmount: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: '#333',
+    marginTop: 5,
   },
   btnCheckout: {
     backgroundColor: '#333',
@@ -350,5 +366,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-
