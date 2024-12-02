@@ -220,7 +220,7 @@ export default PaymentAddressScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: 'white',
+    backgroundColor: '#f4f4f4',
   },
   loaderContainer: {
     flex: 1,

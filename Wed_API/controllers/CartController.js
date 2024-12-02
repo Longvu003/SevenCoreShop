@@ -85,47 +85,48 @@ const updateItemCart = async (userId, productId, quantity) => {
   }
 };
 
-// const updateItemCart = async (userId, productId, quantity) => {
-//   try {
-//     const item = await CartModel.findOne({ userId, "cartItems.productId": productId });
+const CartModel = require("../models/CartModel");
 
-//     if (!item) {
-//       console.log("Sản phẩm không tồn tại trong giỏ hàng");
-//       return { success: false, message: "Sản phẩm không tồn tại" };
+// Cập nhật hoặc xóa sản phẩm trong giỏ hàng
+// const updateCartItem = async (req, res) => {
+//   const { userId, productId, quantity } = req.body;
+
+//   try {
+//     // Tìm giỏ hàng của người dùng
+//     const cart = await CartModel.findOne({ userId });
+
+//     if (!cart) {
+//       return res.status(404).json({ success: false, message: "Giỏ hàng không tồn tại" });
 //     }
 
 //     // Tìm sản phẩm trong giỏ hàng
-//     const productIndex = item.cartItems.findIndex(
-//       (p) => p.productId.toString() === productId.toString()
+//     const productIndex = cart.cartItems.findIndex(
+//       (item) => item.productId.toString() === productId.toString()
 //     );
 
 //     if (productIndex === -1) {
-//       console.log("Sản phẩm không tồn tại trong danh sách giỏ hàng");
-//       return { success: false, message: "Sản phẩm không tồn tại" };
+//       return res.status(404).json({ success: false, message: "Sản phẩm không tồn tại" });
 //     }
 
-//     // Kiểm tra số lượng
 //     if (quantity <= 0) {
-//       // Xóa sản phẩm
-//       item.cartItems.splice(productIndex, 1);
-//       if (item.cartItems.length === 0) {
-//         // Nếu giỏ hàng rỗng, xóa luôn document
-//         await CartModel.findByIdAndDelete(item._id);
-//         console.log("Giỏ hàng đã bị xóa do không còn sản phẩm");
-//       } else {
-//         await item.save();
-//       }
-//       return { success: true, message: "Sản phẩm đã được xóa khỏi giỏ hàng" };
+//       // Xóa sản phẩm nếu số lượng <= 0
+//       cart.cartItems.splice(productIndex, 1);
 //     } else {
-//       // Cập nhật số lượng
-//       item.cartItems[productIndex].quantity = quantity;
-//       await item.save();
-//       return { success: true, item };
+//       // Cập nhật số lượng sản phẩm
+//       cart.cartItems[productIndex].quantity = quantity;
 //     }
+
+//     await cart.save();
+
+//     return res.json({ success: true, cart });
 //   } catch (error) {
-//     console.error("Lỗi khi cập nhật sản phẩm trong giỏ hàng:", error);
-//     return { success: false, message: "Đã xảy ra lỗi khi cập nhật" };
+//     console.error("Lỗi khi cập nhật giỏ hàng:", error);
+//     return res.status(500).json({ success: false, message: "Đã xảy ra lỗi" });
 //   }
+// };
+
+// module.exports = {
+//   updateCartItem,
 // };
 
 module.exports = { add, updateItemCart, deleteItemcart, getItemCart };
