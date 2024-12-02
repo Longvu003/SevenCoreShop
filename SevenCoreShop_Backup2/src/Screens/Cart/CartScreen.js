@@ -34,7 +34,9 @@ const CartScreen = () => {
     );
     setTotalPriceCart(totalCart);
   };
-
+  const clearCart2 = () => {
+    setCart([]);
+  };
   const updateCart = async (productId, quantity) => {
     try {
       const response = await axios.put(`${API__URL}/carts/updateItemCart`, {
@@ -71,7 +73,7 @@ const CartScreen = () => {
     updateCart(productId, newQuantity);
   };
 
-  const getIdUser = async () => {
+  const getIdUser = async () => { 
     const userId = await AsyncStorage.getItem('userId');
     const newUserId = JSON.parse(userId);
     setUserId(newUserId);
@@ -98,83 +100,124 @@ const CartScreen = () => {
       console.log('Error clearing cart:', error);
     }
   };
-
-  const handleCheckout = async () => {
-    if (!paymentMethod) {
-      Alert.alert('Thông báo', 'Bạn phải chọn phương thức thanh toán!');
-      return false;
-    }
-
+  const resetCartOnServer = async () => {
     try {
-      const response = await axios.post(`${API__URL}/Orders/checkout`, {
-        userId: userId,
-        items: cart,
-        paymentMethod: paymentMethod || 'COD',
-      });
-
-      if (response.status === 200) {
-        const order = response.data.order;
-        const detailedItems = await Promise.all(
-          order.items.map(async item => {
-            const productResponse = await axios.get(
-              `${API__URL}/products/${item.productId}`,
-            );
-            const productData = productResponse.data.data;
-
-            return {
-              ...item,
-              name: productData.name,
-              images: productData.images[0],
-              price: productData.price,
-            };
-          }),
-        );
-
-        const productDetails = detailedItems
-          .map(item => `- ${item.name}: ${item.price} VND x ${item.quantity}`)
-          .join('\n');
-
-        const message = response.data.message || 'Thanh toán thành công!';
-        const orderId = order._id || 'Không có mã đơn hàng';
-
-        Alert.alert(
-          'Thông báo',
-          'Thanh toán thành công',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigation.navigate('OrderScreen', {order});
-              },
-            },
-          ],
-          {cancelable: false},
-        );
-
-        // Clear toàn bộ giỏ hàng sau khi thanh toán
-        for (let item of cart) {
-          await clearCart(item.productId, item.quantity); // Xóa
-        }
-
-        // Reset lại tổng giá trị và phương thức thanh toán
-        setTotalPriceCart(0);
-        setPaymentMethod(null); // Reset phương thức thanh toán
+      for (const item of cart) {
+        await axios.delete(`${API__URL}/carts/deleteItemCart`, {
+          data: { userId, productId: item.productId, quantity: item.quantity },
+        });
       }
+      setCart([]);
+      setTotalPriceCart(0);
+      console.log('Giỏ hàng đã được reset trên server!');
     } catch (error) {
-      console.log(
-        'Lỗi khi thanh toán:',
-        error.response ? error.response.data : error,
-      );
-      Alert.alert(
-        'Lỗi',
-        error.response?.data?.message ||
-          'Đã xảy ra lỗi khi thanh toán. Vui lòng thử lại.',
-      );
+      console.log('Error resetting cart:', error);
+      Alert.alert('Lỗi', 'Không thể reset giỏ hàng. Vui lòng thử lại.');
     }
   };
-  const handlePayment = () => {
-    navigation.navigate('AddressSelection'); // Điều hướng đến màn hình chọn địa chỉ
-  };
+
+  // const handleCheckout = async () => {
+  //   if (!paymentMethod) {
+  //     Alert.alert('Thông báo', 'Bạn phải chọn phương thức thanh toán!');
+  //     return false;
+  //   }
+
+  //   try {
+  //     const response = await axios.post(`${API__URL}/Orders/checkout`, {
+  //       userId: userId,
+  //       items: cart,
+  //       paymentMethod: paymentMethod || 'COD',
+  //     });
+
+  //     if (response.status === 200) {
+  //       const order = response.data.order;
+  //       const detailedItems = await Promise.all(
+  //         order.items.map(async item => {
+  //           const productResponse = await axios.get(
+  //             `${API__URL}/products/${item.productId}`,
+  //           );
+  //           const productData = productResponse.data.data;
+
+  //           return {
+  //             ...item,
+  //             name: productData.name,
+  //             images: productData.images[0],
+  //             price: productData.price,
+  //           };
+  //         }),
+  //       );
+
+  //       const productDetails = detailedItems
+  //         .map(item => `- ${item.name}: ${item.price} VND x ${item.quantity}`)
+  //         .join('\n');
+
+  //       const message = response.data.message || 'Thanh toán thành công!';
+  //       const orderId = order._id || 'Không có mã đơn hàng';
+
+  //       Alert.alert(
+  //         'Thông báo',
+  //         'Thanh toán thành công',
+  //         [
+  //           {
+  //             text: 'OK',
+  //             onPress: () => {
+  //               navigation.navigate('OrderScreen', {order});
+  //             },
+  //           },
+  //         ],
+  //         {cancelable: false},
+  //       );
+
+  //       // Clear toàn bộ giỏ hàng sau khi thanh toán
+  //       for (let item of cart) {
+  //         await clearCart(item.productId, item.quantity); // Xóa
+  //       }
+
+  //       // Reset lại tổng giá trị và phương thức thanh toán
+  //       setTotalPriceCart(0);
+  //       setPaymentMethod(null); // Reset phương thức thanh toán
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       'Lỗi khi thanh toán:',
+  //       error.response ? error.response.data : error,
+  //     );
+  //     Alert.alert(
+  //       'Lỗi',
+  //       error.response?.data?.message ||
+  //         'Đã xảy ra lỗi khi thanh toán. Vui lòng thử lại.',
+  //     );
+  //   }
+  // };
+  const handlePayment = async () => {
+  if (cart.length === 0) {
+    Alert.alert('Thông báo', 'Giỏ hàng trống, vui lòng thêm sản phẩm!');
+    return;
+  }
+
+  if (paymentMethod !== 'COD') {
+    Alert.alert('Thông báo', 'Bạn phải chấp nhận đơn hàng trước khi thanh toán!');
+    return;
+  }
+
+  try {
+    // Lấy userId từ AsyncStorage
+    const userId = await AsyncStorage.getItem('userId');
+    const parsedUserId = JSON.parse(userId);
+
+    // Chuyển hướng sang màn hình PaymentAddressScreen
+    navigation.navigate('PaymentAddressScreen', {
+      userID: parsedUserId,
+      cartItems: cart,
+      totalAmount: totalPriceCart,
+  });
+
+
+  } catch (error) {
+    console.error('Lỗi khi xử lý thanh toán:', error);
+    Alert.alert('Lỗi', 'Đã xảy ra lỗi khi thanh toán. Vui lòng thử lại.');
+  }
+};
 
   useFocusEffect(
     useCallback(() => {
@@ -205,7 +248,8 @@ const CartScreen = () => {
   return (
     <View style={styles.container}>
       <View style={{flex: 1}}>
-        <Customheader title="Giỏ hàng" />
+        <Customheader title="Giỏ hàng" 
+        />
       </View>
       {cart.length > 0 ? (
         <View style={{flex: 7}}>
@@ -263,7 +307,7 @@ const CartScreen = () => {
           </View>
           <View style={styles.paymentMethodContainer}>
             <Text style={styles.paymentMethodTitle}>
-              Chọn phương thức thanh toán
+            Xác nhận đơn hàng
             </Text>
             <TouchableOpacity
               style={styles.paymentOption}
@@ -278,7 +322,7 @@ const CartScreen = () => {
                 )}
               </View>
               <Text style={styles.paymentMethodText}>
-                Thanh toán khi nhận hàng
+              Chấp nhận mua hàng
               </Text>
             </TouchableOpacity>
           </View>
@@ -287,11 +331,12 @@ const CartScreen = () => {
             <Text style={styles.totalAmount}>{totalPriceCart} VND</Text>
           </View>
           <View style={{flex: 2}}>
-            <TouchableOpacity
-              style={styles.btnCheckout}
-              onPress={handleCheckout}>
-              <Text style={styles.btnCheckoutText}>Mua</Text>
-            </TouchableOpacity>
+                    <TouchableOpacity
+                    style={styles.btnCheckout}
+                    onPress={handlePayment}>
+                    <Text style={styles.btnCheckoutText}>Tiến Hành Thanh Toán</Text>
+                  </TouchableOpacity>
+
           </View>
         </View>
       ) : (
@@ -464,3 +509,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+

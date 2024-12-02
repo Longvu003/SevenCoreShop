@@ -36,9 +36,9 @@ const CategoryScreen = ({navigation}) => {
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>Back</Text>
+          <Text style={styles.backButtonText}>Trở Về</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Shop by Categories</Text>
+        <Text style={styles.title}> Loại Sản Phẩm</Text>
       </View>
 
       <FlatList

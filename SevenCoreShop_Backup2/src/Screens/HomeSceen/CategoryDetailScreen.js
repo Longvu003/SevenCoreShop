@@ -15,14 +15,28 @@ const CategoryDetailScreen = ({navigation, route}) => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    if (!category?._id || !/^[a-fA-F0-9]{24}$/.test(category._id)) {
+      console.error(
+        'Invalid categoryId. Must be a valid 24-character hex string.',
+      );
+      return;
+    }
+
     axios
-      .get(`${API__URL}/products/categoryById?categoryId=${category._id}`)
-      .then(response => {
-        setProducts(response.data.data);
-        // console.log(response.data);
+      .get(`${API__URL}/products/categoryById`, {
+        params: {categoryId: category._id},
       })
-      .catch(error => console.log('Lỗi lấy sản phẩm:', error));
-  }, [category._id]);
+      .then(response => {
+        setProducts(response.data.data || []);
+      })
+      .catch(error => {
+        console.error(
+          'Error fetching products:',
+          error.response?.data?.message || error.message,
+        );
+      });
+  }, [category?._id]);
+  console.log('category._id:', category?._id);
 
   return (
     <View style={styles.container}>
@@ -30,7 +44,7 @@ const CategoryDetailScreen = ({navigation, route}) => {
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>Back</Text>
+        <Text style={styles.backButtonText}>Trờ Về</Text>
       </TouchableOpacity>
       {/* Category Title */}
       <Text style={styles.title}>{category.name}</Text>

@@ -49,24 +49,34 @@ const searchProduct = async (key) => {
 
 // Lấy danh sách sản phẩm theo danh mục
 const getProductsByCategory = async (req, res) => {
-  const { categoryId } = req.query.categoryId;
-  try {
-    const products = await ProductModel.find({
-      category: mongoose.Types.ObjectId(categoryId),
-    }).populate("category");
+ try {
+  const category = req.query
+  const products = await ProductModel.find({ category });
 
-    if (products.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "Không có sản phẩm nào cho category này.", data: [] });
-    }
-
-    res.status(200).json({ data: products });
-  } catch (error) {
-    console.error("lỗi nè ", error);
-    res.status(500).json({ message: "Đã xảy ra lỗi hệ thống." });
-  }
+  return res.status(200).json({
+    status: true,
+    message: "Products fetched successfully.",
+    data: products
+  }); 
+  
+ } catch (error) {
+  console.log("Error fetching products:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Server error. Cannot fetch products."
+    });
+ }
 };
+
+
+
+
+
+
+
+
+
+
 
 // Lấy danh sách sản phẩm theo khoảng giá và số lượng lớn hơn 0
 const getProductByPrice = async (min, max) => {

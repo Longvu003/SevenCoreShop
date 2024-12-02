@@ -1,9 +1,10 @@
-const userModel = require("../model/UserModel");
+const userModel = require("../model/UserModel"); 
 const bcrypt = require("bcrypt");
 const sendResetPasswordEmail = require("../helpers/EmailCofig");
 const httml = require("../helpers/MailContent");
 const OtpModel = require("../models/OtpModel");
 const crypto = require("crypto"); // Sử dụng để tạo OTP ngẫu nhiên
+const UserModel = require("../model/UserModel");
 
 // Hàm kiểm tra email hợp lệ
 const isValidEmail = (email) => {
@@ -202,6 +203,7 @@ const verify = async (email) => {
   }
 };
 
+
 // Xuất khẩu các hàm
 module.exports = {
   register,
@@ -213,4 +215,5 @@ module.exports = {
   forgotPassword,
   // resetPassword,
   sendOtpMail,
+  // getUserAddresses,
 };
