@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  ScrollView, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Image, 
-  ActivityIndicator, 
-  Alert 
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import API_URL from '../../../config';
 import Customheader from '../../CustomHeader/Customheader';
 
-const PaymentAddressScreen = ({ navigation, route }) => {
+const PaymentAddressScreen = ({navigation, route}) => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
@@ -22,11 +22,13 @@ const PaymentAddressScreen = ({ navigation, route }) => {
 
   const cartItems = route.params?.cartItems || [];
   // const clearCart = route.params||{}
-  const totalAmount = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const totalAmount = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
   const userID = route.params?.userID;
 
   useEffect(() => {
-    
     const fetchAddresses = async () => {
       try {
         if (!userID) throw new Error('UserID is required');
@@ -37,7 +39,7 @@ const PaymentAddressScreen = ({ navigation, route }) => {
         if (Array.isArray(data)) {
           formattedData = data;
         } else if (typeof data === 'string') {
-          formattedData = [{ _id: '1', name: 'Mặc định', address: data }];
+          formattedData = [{_id: '1', name: 'Mặc định', address: data}];
         } else {
           console.error('API trả về dữ liệu không hợp lệ:', response.data);
           throw new Error('Invalid data format from API');
@@ -53,52 +55,6 @@ const PaymentAddressScreen = ({ navigation, route }) => {
 
     fetchAddresses();
   }, [userID]);
-
- 
-  // const handlePayment = async () => {
-  //   if (!selectedAddress) {
-  //     Alert.alert('Thông báo', 'Vui lòng chọn một địa chỉ giao hàng!');
-  //     return;
-  //   }
-  //   if (!paymentMethod) {
-  //     Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán!');
-  //     return;
-  //   }
-  
-  //   // Tạo dữ liệu đơn hàng với ảnh sản phẩm
-  //   const orderData = {
-  //     userId: userID,
-  //     items: cartItems.map(item => ({
-  //       productId: item.productId,
-  //       name: item.nameProduct,
-  //       quantity: item.quantity,
-  //       price: item.price,
-  //       image: item.images[0], 
-  //     })),
-  //     totalAmount,
-  //     address: selectedAddress.address,
-  //     paymentMethod,
-  //   };
-  
-  
-  //   try {
-  //     // Gửi yêu cầu tạo đơn hàng
-  //     const response = await axios.post(`${API_URL}/Orders/checkout`, orderData);
-      
-  //     // Nếu thanh toán thành công, xóa giỏ hàng
-  //     if (response.status === 201) {
-  //       // Gọi hàm xóa giỏ hàng (bạn cần định nghĩa hàm này)
-  //       // await clearCart(); // Giả sử clearCart là hàm xóa giỏ hàng
-      
-  //       Alert.alert('Thông báo', 'Đặt hàng thành công!');
-  //       // Chuyển hướng về màn hình giỏ hàng
-  //       // navigation.navigate('CartScreen');
-  //     }
-  //   } catch (error) {
-  //     console.error('Lỗi khi thanh toán:', error);
-  //     Alert.alert('Lỗi', 'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.');
-  //   }
-  // };
   const handlePayment = async () => {
     if (!selectedAddress) {
       Alert.alert('Thông báo', 'Vui lòng chọn một địa chỉ giao hàng!');
@@ -108,7 +64,7 @@ const PaymentAddressScreen = ({ navigation, route }) => {
       Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán!');
       return;
     }
-  
+
     const orderData = {
       userId: userID,
       items: cartItems.map(item => ({
@@ -116,31 +72,37 @@ const PaymentAddressScreen = ({ navigation, route }) => {
         name: item.nameProduct,
         quantity: item.quantity,
         price: item.price,
-        image: item.images[0], 
+        image: item.images[0],
       })),
       totalAmount,
       address: selectedAddress.address,
       paymentMethod,
     };
-  
+
     try {
       // Gửi yêu cầu thanh toán
-      const response = await axios.post(`${API_URL}/Orders/checkout`, orderData);
-  
+      const response = await axios.post(
+        `${API_URL}/Orders/checkout`,
+        orderData,
+      );
+
       if (response.status === 201) {
         // Xóa toàn bộ giỏ hàng
         await resetCartOnServer(cartItems);
-  
+
         Alert.alert('Thông báo', 'Đặt hàng thành công!');
       }
     } catch (error) {
       console.error('Lỗi khi thanh toán:', error);
-      Alert.alert('Lỗi', 'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.');
+      Alert.alert(
+        'Lỗi',
+        'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.',
+      );
     }
   };
-  
+
   // Hàm reset giỏ hàng
-  const resetCartOnServer = async (cartItems) => {
+  const resetCartOnServer = async cartItems => {
     try {
       // Lặp qua từng sản phẩm để gọi API xóa
       for (const item of cartItems) {
@@ -158,13 +120,7 @@ const PaymentAddressScreen = ({ navigation, route }) => {
       Alert.alert('Lỗi', 'Không thể reset giỏ hàng. Vui lòng thử lại.');
     }
   };
-  
-  
-  
 
- 
-  
-  
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -177,22 +133,28 @@ const PaymentAddressScreen = ({ navigation, route }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Phần địa chỉ */}
-      <Customheader 
+      <Customheader
         leftIcon={require('../../../assets/imgs/back4.png')}
-        containerStyle={styles.customHeaderContainer} 
+        containerStyle={styles.customHeaderContainer}
       />
       <Text style={styles.sectionHeader}>Chọn Địa Chỉ Giao Hàng</Text>
-      {addresses.map((address) => (
+      {addresses.map(address => (
         <TouchableOpacity
           key={address._id}
-          style={[styles.addressCard, selectedAddress?._id === address._id && styles.selectedCard]}
-          onPress={() => setSelectedAddress(address)}
-        >
+          style={[
+            styles.addressCard,
+            selectedAddress?._id === address._id && styles.selectedCard,
+          ]}
+          onPress={() => setSelectedAddress(address)}>
           <View style={styles.addressContent}>
             <Icon name="location-on" size={24} color="#000" />
             <View style={styles.addressDetails}>
-              <Text style={styles.addressName}>{address.name || 'Không có tên'}</Text>
-              <Text style={styles.addressText}>{address.address || 'Không có địa chỉ'}</Text>
+              <Text style={styles.addressName}>
+                {address.name || 'Không có tên'}
+              </Text>
+              <Text style={styles.addressText}>
+                {address.address || 'Không có địa chỉ'}
+              </Text>
             </View>
           </View>
           <Text style={styles.selectText}>
@@ -205,17 +167,21 @@ const PaymentAddressScreen = ({ navigation, route }) => {
       <Text style={styles.sectionHeader}>Chọn Phương Thức Thanh Toán</Text>
       <View style={styles.paymentOptions}>
         <TouchableOpacity
-          style={[styles.paymentOption, paymentMethod === 'Tiền mặt' && styles.selectedPayment]}
-          onPress={() => setPaymentMethod('Tiền mặt')}
-        >
+          style={[
+            styles.paymentOption,
+            paymentMethod === 'Tiền mặt' && styles.selectedPayment,
+          ]}
+          onPress={() => setPaymentMethod('Tiền mặt')}>
           <Text style={styles.paymentOptionText}>
             {paymentMethod === 'Tiền mặt' ? '✅ Tiền mặt' : 'Tiền mặt'}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.paymentOption, paymentMethod === 'MoMo' && styles.selectedPayment]}
-          onPress={() => setPaymentMethod('MoMo')}
-        >
+          style={[
+            styles.paymentOption,
+            paymentMethod === 'MoMo' && styles.selectedPayment,
+          ]}
+          onPress={() => setPaymentMethod('MoMo')}>
           <Text style={styles.paymentOptionText}>
             {paymentMethod === 'MoMo' ? '✅ MoMo' : 'MoMo'}
           </Text>
@@ -226,10 +192,12 @@ const PaymentAddressScreen = ({ navigation, route }) => {
       <Text style={styles.sectionHeader}>Thông Tin Giỏ Hàng</Text>
       {cartItems.map((item, index) => (
         <View key={index} style={styles.cartItem}>
-          <Image source={{ uri: item.images[0] }} style={styles.cartItemImage} />
+          <Image source={{uri: item.images[0]}} style={styles.cartItemImage} />
           <View style={styles.cartItemDetails}>
             <Text style={styles.cartItemName}>{item.nameProduct}</Text>
-            <Text style={styles.cartItemQuantity}>Số lượng: {item.quantity}</Text>
+            <Text style={styles.cartItemQuantity}>
+              Số lượng: {item.quantity}
+            </Text>
             <Text style={styles.cartItemPrice}>
               {item.price * item.quantity} VNĐ
             </Text>
@@ -381,4 +349,3 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
-
