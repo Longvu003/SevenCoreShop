@@ -147,7 +147,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
           ]}
           onPress={() => setSelectedAddress(address)}>
           <View style={styles.addressContent}>
-            <Icon name="location-on" size={24} color="#000" />
             <View style={styles.addressDetails}>
               <Text style={styles.addressName}>
                 {address.name || 'Không có tên'}

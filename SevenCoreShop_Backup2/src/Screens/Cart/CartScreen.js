@@ -26,6 +26,7 @@ const CartScreen = () => {
   const [totalPriceCart, setTotalPriceCart] = useState(0);
   const [userId, setUserId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
+  const [isOrderAccepted, setIsOrderAccepted] = useState(false); // Trạng thái nút "Chấp nhận đơn hàng"
 
   const totalPrice = cartItem => {
     const totalCart = cartItem.reduce(
@@ -72,12 +73,13 @@ const CartScreen = () => {
     const userId = await AsyncStorage.getItem('userId');
     const newUserId = JSON.parse(userId);
     setUserId(newUserId);
-    const respone = await axios.get(
+
+    const response = await axios.get(
       `${API__URL}/carts/getItemCartById?userId=${newUserId}`,
     );
 
-    setCart(respone.data.result);
-    totalPrice(respone.data.result);
+    setCart(response.data.result);
+    totalPrice(response.data.result);
   };
 
   const clearCart = async (productId, quantity) => {
@@ -117,7 +119,7 @@ const CartScreen = () => {
       return;
     }
 
-    if (paymentMethod !== 'COD') {
+    if (!isOrderAccepted) {
       Alert.alert(
         'Thông báo',
         'Bạn phải chấp nhận đơn hàng trước khi thanh toán!',
@@ -126,27 +128,23 @@ const CartScreen = () => {
     }
 
     try {
-      // Lấy userId từ AsyncStorage
       const userId = await AsyncStorage.getItem('userId');
       const parsedUserId = JSON.parse(userId);
 
-      // Chuyển hướng sang màn hình PaymentAddressScreen
       navigation.navigate('PaymentAddressScreen', {
         userID: parsedUserId,
         cartItems: cart,
         totalAmount: totalPriceCart,
       });
+
+      // Reset trạng thái sau khi chuyển hướng
+      setIsOrderAccepted(false);
     } catch (error) {
       console.error('Lỗi khi xử lý thanh toán:', error);
       Alert.alert('Lỗi', 'Đã xảy ra lỗi khi thanh toán. Vui lòng thử lại.');
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      getIdUser();
-    }, []),
-  );
   const deleteAllItemcart = () => {
     Alert.alert(
       'Xác nhận',
@@ -168,6 +166,13 @@ const CartScreen = () => {
       {cancelable: false},
     );
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      getIdUser();
+    }, []),
+  );
+
   return (
     <View style={styles.container}>
       <View style={{flex: 1}}>
@@ -200,27 +205,6 @@ const CartScreen = () => {
                   </View>
                   <View style={styles.cartItemActions}>
                     <Text style={styles.productPrice}>{item.price} VND</Text>
-                    <View style={styles.quantityControls}>
-                      <TouchableOpacity
-                        onPress={() =>
-                          handleIncrease(item.productId, item.quantity)
-                        }>
-                        <Image
-                          source={require('../../../assets/imgs/add.png')}
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          handleDecrease(item.productId, item.quantity)
-                        }
-                        style={styles.iconContainer}>
-                        <Image
-                          source={require('../../../assets/imgs/minus2.png')}
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
-                    </View>
                   </View>
                 </View>
               )}
@@ -231,17 +215,17 @@ const CartScreen = () => {
             <Text style={styles.paymentMethodTitle}>Xác nhận đơn hàng</Text>
             <TouchableOpacity
               style={styles.paymentOption}
-              onPress={() => setPaymentMethod('COD')}>
+              onPress={() => setIsOrderAccepted(!isOrderAccepted)}>
               <View
                 style={[
                   styles.radioButton,
-                  paymentMethod === 'COD' && styles.radioButtonSelected,
+                  isOrderAccepted && styles.radioButtonSelected,
                 ]}>
-                {paymentMethod === 'COD' && (
-                  <View style={styles.radioInnerCircle} />
-                )}
+                {isOrderAccepted && <View style={styles.radioInnerCircle} />}
               </View>
-              <Text style={styles.paymentMethodText}>Chấp nhận mua hàng</Text>
+              <Text style={styles.paymentMethodText}>
+                {isOrderAccepted ? 'Đã chấp nhận' : 'Chấp nhận mua hàng'}
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.totalPriceContainer}>

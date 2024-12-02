@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
+import Customheader from '../../CustomHeader/Customheader'; // Đường dẫn tới Customheader
 
 const CategoryScreen = ({navigation}) => {
   const [categories, setCategories] = useState([]);
@@ -19,7 +20,6 @@ const CategoryScreen = ({navigation}) => {
       .get(`${API__URL}/categories/getAllCategory`)
       .then(response => {
         const fixResponse = Object.values(response.data);
-
         setCategories(fixResponse[1]);
       })
       .catch(error => console.log('Lỗi lấy danh mục:', error));
@@ -31,19 +31,19 @@ const CategoryScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {/* Header view for back button and title */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>Trở Về</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}> Loại Sản Phẩm</Text>
-      </View>
+      {/* Custom Header */}
+      <Customheader
+        leftIcon={require('../../../assets/imgs/back4.png')} // Biểu tượng quay lại
+        onLeftPress={() => navigation.goBack()} // Hành động quay lại
+        title="Loại Sản Phẩm" // Tiêu đề
+        containerStyle={styles.customHeaderContainer}
+      />
 
+      {/* Danh sách danh mục */}
       <FlatList
         data={categories}
         keyExtractor={item => item._id}
+        contentContainerStyle={{marginTop: 20}}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => handleCategoryPress(item)}>
             <View style={styles.categoryCard}>
@@ -63,32 +63,13 @@ const CategoryScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#fff',
+    paddingTop: 10,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 30, // Adjusted margin for spacing
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    padding: 10,
-    backgroundColor: '#000',
-    borderRadius: 5,
-  },
-  backButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'black',
-    textAlign: 'center',
-    marginHorizontal: 50,
+  customHeaderContainer: {
+    marginBottom: 20,
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 15,
   },
   categoryCard: {
     flexDirection: 'row',
@@ -96,6 +77,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    paddingTop: 10,
   },
   categoryImage: {
     width: 60,

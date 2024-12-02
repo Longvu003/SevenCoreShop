@@ -1,14 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, FlatList, StyleSheet, Image} from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
+import Customheader from '../../CustomHeader/Customheader'; // Đường dẫn tới Customheader
 
 const AllProductsScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
@@ -24,19 +18,19 @@ const AllProductsScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {/* Header view for back button and title */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Sản Phẩm</Text>
-      </View>
+      {/* Custom Header */}
+      <Customheader
+        leftIcon={require('../../../assets/imgs/back4.png')} // Biểu tượng quay lại
+        onLeftPress={() => navigation.goBack()} // Hành động quay lại
+        title="Sản Phẩm" // Tiêu đề
+        containerStyle={styles.customHeaderContainer}
+      />
 
+      {/* Danh sách sản phẩm */}
       <FlatList
         data={products}
         keyExtractor={item => item._id}
+        contentContainerStyle={{marginTop: 20}}
         renderItem={({item}) => (
           <View style={styles.productCard}>
             <Image
@@ -61,56 +55,36 @@ const AllProductsScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     backgroundColor: '#fff',
+    paddingTop: 10,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 50, // Adjusted margin for spacing
-  },
-  backButton: {
-    position: 'absolute',
-    left: 10,
-    padding: 10,
-    backgroundColor: '#000',
-    borderRadius: 5,
-  },
-  backButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'black',
-    textAlign: 'center',
-    marginHorizontal: 50,
+  customHeaderContainer: {
+    marginBottom: 20,
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 15,
   },
   productCard: {
     height: 200,
-    width: 190,
+    width: '48%',
     backgroundColor: '#F4F4F4',
     borderRadius: 8,
     padding: 10,
-    marginRight: 10,
-    marginTop: 20,
+    margin: '1%',
   },
   productImage: {
-    width: 160,
+    width: '100%',
     height: 100,
     borderRadius: 8,
     marginBottom: 8,
   },
   productName: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
     color: '#000',
   },
   productPrice: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#ff5722',
     textAlign: 'center',
   },
