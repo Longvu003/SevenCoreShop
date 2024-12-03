@@ -85,8 +85,6 @@ const updateItemCart = async (userId, productId, quantity) => {
   }
 };
 
-const CartModel = require("../models/CartModel");
-
 // Cập nhật hoặc xóa sản phẩm trong giỏ hàng
 // const updateCartItem = async (req, res) => {
 //   const { userId, productId, quantity } = req.body;

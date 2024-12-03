@@ -148,7 +148,9 @@ const HomeScreen = ({navigation}) => {
                     source={{uri: item.images[0]}}
                     style={styles.productImage}
                   />
-                  <Text style={styles.productName}>{item.name}</Text>
+                  <Text numberOfLines={2} style={styles.productName}>
+                    {item.name}
+                  </Text>
                   <Text style={styles.productPrice}>${item.price}</Text>
                 </TouchableOpacity>
               );

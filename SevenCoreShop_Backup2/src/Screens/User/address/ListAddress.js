@@ -35,7 +35,6 @@ const ListAddress = ({navigation}) => {
       getAddress();
     }, []),
   );
-  // console.log(listAddress);
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1}}>
@@ -73,12 +72,12 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   btn__list: {
-    flex: 1,
-    marginTop: 20,
     backgroundColor: '#F4F4F4',
-    height: HEIGHT__SCREEN * 0.1,
+    height: HEIGHT__SCREEN * 0.08,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    width: WITH__Screen * 0.9,
+    marginHorizontal: 20,
   },
 });

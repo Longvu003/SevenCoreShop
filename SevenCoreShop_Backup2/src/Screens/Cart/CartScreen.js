@@ -67,7 +67,7 @@ const CartScreen = () => {
   };
 
   const handleDecrease = (productId, currentQuantity) => {
-    const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 0;
+    const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 1;
     updateCart(productId, newQuantity);
   };
 
@@ -227,7 +227,7 @@ const CartScreen = () => {
             <TouchableOpacity
               style={styles.btnCheckout}
               onPress={handlePayment}>
-              <Text style={styles.btnCheckoutText}>Tiến Hành Thanh Toán</Text>
+              <Text style={styles.btnCheckoutText}> Thanh Toán</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -335,10 +335,11 @@ const styles = StyleSheet.create({
   },
   totalPriceContainer: {
     backgroundColor: '#FFFFFF',
-    padding: 15,
-    marginTop: 20,
-    marginBottom: 10,
+    flex: 1,
+    flexDirection: 'row',
     borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
   totalText: {
     fontSize: 18,

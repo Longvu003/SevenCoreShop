@@ -35,6 +35,7 @@ const DetailOrder = ({route}) => {
       </View>
       <View style={{flex: 4}}>
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={DetailOrder.items}
           renderItem={({item}) => {
             return (

@@ -18,6 +18,7 @@ const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const EditAddress = ({navigation}) => {
   const [addressInformation, setAddressInformation] = useState('');
+  const [errorMessage, setErrorMessage] = useState(false);
   const getEmailUser = async () => {
     try {
       const userEmail = await AsyncStorage.getItem('userEmail');
@@ -39,23 +40,21 @@ const EditAddress = ({navigation}) => {
       [inputData]: value,
     }));
   };
-  const updateUser = async () => {
+  const updateUser = async e => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     const newUserEmail = JSON.parse(userEmail);
     const url2 = `${API__URL}/users/updateUser?email=${newUserEmail}`;
 
     try {
-      if (
-        addressInformation.address.length < 8 ||
-        !addressInformation.address
-      ) {
-        Alert.alert('Vui lòng nhập địa chỉ và đại chỉ phải lớn hơn 8 ký tự');
+      if (addressInformation.address.length < 5) {
+        setErrorMessage('Địa chỉ phải có ít nhất 10 ký tự');
       } else {
         await axios.put(url2, addressInformation, {
           headers: 'application/x-www-form-urlencoded',
         });
-        Alert.alert('Sửa thành công');
+        Alert.alert('Thông báo', 'Sửa thành công');
         navigation.navigate('ListAddress');
+        setErrorMessage(false);
       }
     } catch (error) {
       console.log(error);
@@ -79,10 +78,14 @@ const EditAddress = ({navigation}) => {
           placeholder="phường, xã, huyện,TP "
           onChangeText={text => changeAddress('address', text)}
           value={addressInformation.address}
+          keyboardType="email-address"
         />
+        {errorMessage ? (
+          <Text style={styles.txt__error}>{errorMessage}</Text>
+        ) : null}
       </View>
       <View style={{flex: 1, alignItems: 'center'}}>
-        <TouchableOpacity style={styles.btn__Save} onPress={updateUser}>
+        <TouchableOpacity style={styles.btn__Save} onPress={() => updateUser()}>
           <Text style={styles.txt__btn}>Lưu</Text>
         </TouchableOpacity>
       </View>
@@ -91,6 +94,10 @@ const EditAddress = ({navigation}) => {
 };
 export default EditAddress;
 const styles = StyleSheet.create({
+  txt__error: {
+    marginHorizontal: 10,
+    color: 'red',
+  },
   txt__btn: {
     color: 'white',
     fontWeight: '800',
@@ -101,12 +108,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     width: WITH__Screen * 0.8,
     height: HEIGHT__SCREEN * 0.07,
-    borderRadius: 40,
+    borderRadius: 20,
   },
   input: {
-    width: WITH__Screen * 1,
-    height: HEIGHT__SCREEN * 0.07,
+    width: WITH__Screen * 0.9,
+    height: HEIGHT__SCREEN * 0.08,
     backgroundColor: '#F4F4F4',
     marginTop: 20,
+    marginHorizontal: 20,
   },
 });
