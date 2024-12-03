@@ -9,10 +9,8 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import API_URL from '../../../config';
-import Customheader from '../../CustomHeader/Customheader';
 
 const PaymentAddressScreen = ({navigation, route}) => {
   const [addresses, setAddresses] = useState([]);
@@ -21,7 +19,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
 
   const cartItems = route.params?.cartItems || [];
-  // const clearCart = route.params||{}
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
@@ -101,10 +98,8 @@ const PaymentAddressScreen = ({navigation, route}) => {
     }
   };
 
-  // Hàm reset giỏ hàng
   const resetCartOnServer = async cartItems => {
     try {
-      // Lặp qua từng sản phẩm để gọi API xóa
       for (const item of cartItems) {
         await axios.delete(`${API_URL}/carts/deleteItemCart`, {
           data: {
@@ -132,11 +127,17 @@ const PaymentAddressScreen = ({navigation, route}) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* Nút quay lại */}
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}>
+        <Image
+          source={require('../../../assets/imgs/back4.png')}
+          style={styles.backIcon}
+        />
+      </TouchableOpacity>
+
       {/* Phần địa chỉ */}
-      <Customheader
-        leftIcon={require('../../../assets/imgs/back4.png')}
-        containerStyle={styles.customHeaderContainer}
-      />
       <Text style={styles.sectionHeader}>Chọn Địa Chỉ Giao Hàng</Text>
       {addresses.map(address => (
         <TouchableOpacity
@@ -222,6 +223,28 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#f4f4f4',
   },
+  backButton: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    zIndex: 10,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  backIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -237,6 +260,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#333',
+    marginTop: 50,
   },
   addressCard: {
     backgroundColor: '#FFF',
@@ -270,81 +294,80 @@ const styles = StyleSheet.create({
   selectText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: '#008001',
   },
   paymentOptions: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: 16,
+    justifyContent: 'space-between',
+    marginBottom: 16,
   },
   paymentOption: {
-    padding: 10,
-    borderRadius: 8,
+    flex: 1,
+    padding: 16,
+    marginHorizontal: 4,
     borderWidth: 1,
     borderColor: '#DDD',
-    width: '45%',
+    borderRadius: 8,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   selectedPayment: {
     borderColor: '#4CAF50',
-    backgroundColor: '#E8F5E9',
   },
   paymentOptionText: {
-    fontSize: 16,
+    fontSize: 14,
+    color: '#333',
   },
   cartItem: {
     flexDirection: 'row',
     marginBottom: 10,
-    padding: 10,
     backgroundColor: '#FFF',
+    padding: 10,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#DDD',
   },
   cartItemImage: {
     width: 80,
     height: 80,
     borderRadius: 8,
+    marginRight: 10,
   },
   cartItemDetails: {
-    marginLeft: 10,
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   cartItemName: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#333',
   },
   cartItemQuantity: {
     fontSize: 14,
-    color: '#555',
+    color: '#666',
   },
   cartItemPrice: {
     fontSize: 16,
+    fontWeight: 'bold',
     color: '#333',
   },
   totalAmountContainer: {
-    marginTop: 10,
-    alignItems: 'center',
+    marginTop: 16,
+    alignItems: 'flex-end',
   },
   totalAmountText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: '#333',
   },
   checkoutButton: {
-    marginTop: 20,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#008001',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
+    marginTop: 20,
   },
   checkoutButtonText: {
     fontSize: 16,
+    color: 'white',
     fontWeight: 'bold',
-    color: '#FFF',
-  },
-  customHeaderContainer: {
-    marginBottom: 10,
   },
 });
