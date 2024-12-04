@@ -61,8 +61,8 @@ const EditUser = ({navigation}) => {
         await axios.put(url, userData, {
           headers: 'application/x-www-form-urlencoded',
         });
-        Alert.alert('Cập nhật thành công');
-        navigation.navigate('User');
+        Alert.alert('Thông báo', 'Cập nhật thành công');
+        // navigation.navigate('User');
       }
     } catch (error) {
       console.log('Lỗi cập nhật user', error);

@@ -18,7 +18,7 @@ const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchKey, setSearchKey] = useState('');
-
+  const [user, setUser] = useState([]);
   useEffect(() => {
     // Gọi API lấy sản phẩm từ MongoDB
     axios
@@ -64,11 +64,33 @@ const HomeScreen = ({navigation}) => {
         });
     }
   };
+  const getInforUser = async () => {
+    const userEmail = await AsyncStorage.getItem('userEmail');
+    const newUserEmail = JSON.parse(userEmail);
+    try {
+      const respone = await axios.get(
+        `${API__URL}/users/getUserEmail?email=${newUserEmail}`,
+      );
+      if (respone.status === 200) {
+        setUser(respone.data.result.username);
+      }
+      // console.log(respone.data.result.username);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getInforUser();
+  }, []);
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.hello}>Xin Chào</Text>
+        <View>
+          <Text style={styles.hello}>Xin Chào </Text>
+          <Text style={styles.txt__user}>{user}</Text>
+        </View>
 
         <TouchableOpacity onPress={() => navigation.navigate('CartScreen')}>
           <Image
@@ -77,6 +99,7 @@ const HomeScreen = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
+
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
@@ -164,6 +187,11 @@ const HomeScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  txt__user: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
   container: {
     flex: 1,
     padding: 10,
@@ -173,6 +201,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'black',
   },
   header: {
     flexDirection: 'row',

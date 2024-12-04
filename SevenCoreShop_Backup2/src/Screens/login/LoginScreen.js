@@ -9,57 +9,12 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import axios from 'axios'; // Import axios
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API__URL from '../../../config';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  // Hàm để xử lý đăng nhập
-  // const handleSubmit = async () => {
-  //   // Kiểm tra người dùng đã nhập đầy đủ thông tin chưa
-  //   if (!email) {
-  //     Alert.alert('Email không được để trống');
-  //     return false;
-  //   }
-  //   if (!password) {
-  //     Alert.alert('Mật khẩu không được để trống');
-  //     return false;
-  //   }
-
-  //   try {
-  //     // Gửi yêu cầu đăng nhập tới API
-  //     const response = await axios.post(
-  //       `${API__URL}/users/login`,
-  //       {
-  //         email: email,
-  //         password: password,
-  //       },
-  //       {
-  //         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-  //       },
-  //     );
-  //     // Kiểm tra phản hồi từ API
-  //     if (response.status === 200) {
-  //       const user = JSON.stringify(response.data.email);
-  //       // console.log('data nè', user);
-  //       const userId = JSON.stringify(response.data.data.id);
-  //       await AsyncStorage.setItem('userEmail', user);
-  //       await AsyncStorage.setItem('userId', userId);
-  //       // console.log(userId);
-  //       Alert.alert('Đăng nhập thành công', `Chào mừng ${user}`);
-  //       navigation.navigate('Tab');
-  //     } else {
-  //       Alert.alert('Đăng nhập thất bại', 'Nhập đúng email và mật khẩu');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error during login request:', error);
-  //     Alert.alert('Error', 'Email hoặc mật khẩu không chính xác');
-  //   }
-  // };
-  //huy
   const handleSubmit = async () => {
     if (!email) {
       Alert.alert('Email không được để trống');
@@ -69,7 +24,6 @@ const LoginScreen = ({navigation}) => {
       Alert.alert('Mật khẩu không được để trống');
       return false;
     }
-
     try {
       // Gửi yêu cầu đăng nhập tới API
       const response = await axios.post(
@@ -77,7 +31,6 @@ const LoginScreen = ({navigation}) => {
         {email, password},
         {headers: {'Content-Type': 'application/x-www-form-urlencoded'}},
       );
-
       // Kiểm tra phản hồi từ API
       if (response.status === 200) {
         // Sửa đoạn này để phù hợp với cấu trúc phản hồi
@@ -85,7 +38,6 @@ const LoginScreen = ({navigation}) => {
         const userId = JSON.stringify(response.data.data.id);
         await AsyncStorage.setItem('userEmail', user);
         await AsyncStorage.setItem('userId', userId);
-        //  console.log(user)
         // Alert.alert('Đăng nhập thành công', `Chào mừng ${response.data.email}`);
         navigation.navigate('Tab');
       } else {
@@ -96,17 +48,6 @@ const LoginScreen = ({navigation}) => {
       Alert.alert('Error', 'Email hoặc mật khẩu không chính xác');
     }
   };
-
-  // const handleGoogleSignIn = async () => {
-  //   try {
-  //     await GoogleSignin.hasPlayServices();
-  //     const userInfo = await GoogleSignin.signIn();
-  //     console.log('Google Sign In Data:', userInfo);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   return (
     <ScrollView style={{backgroundColor: 'white'}}>
       <View style={styles.container}>
@@ -156,10 +97,7 @@ const LoginScreen = ({navigation}) => {
               <Text style={styles.socialButtonText}>Tiếp tục với Apple</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.socialButton}
-              // onPress={handleGoogleSignIn}
-            >
+            <TouchableOpacity style={styles.socialButton}>
               <Image
                 source={require('../../../assets/imgs/google.png')}
                 style={styles.icon2}

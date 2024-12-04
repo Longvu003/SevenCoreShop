@@ -196,7 +196,6 @@ router.get(
     }
   }
 );
-
 // Lấy user qua email
 router.get(
   "/getUserEmail",
@@ -213,9 +212,9 @@ router.get(
     }
   }
 );
-//lấy địa chỉ theo ID 
+//lấy địa chỉ theo ID
 // Lấy địa chỉ của người dùng dựa trên userID
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 router.get("/:id/address", async (req, res) => {
   const { id } = req.params;
@@ -241,12 +240,5 @@ router.get("/:id/address", async (req, res) => {
     res.status(500).json({ message: "Lỗi khi lấy địa chỉ người dùng" });
   }
 });
-
-
-
-
-
-
-
 
 module.exports = router;

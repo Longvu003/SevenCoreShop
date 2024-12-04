@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   txt__Item: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
     color: 'black',
     marginHorizontal: 20,
