@@ -18,7 +18,7 @@ const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchKey, setSearchKey] = useState('');
-
+  const [user, setUser] = useState([]);
   useEffect(() => {
     // Gọi API lấy sản phẩm từ MongoDB
     axios
@@ -64,12 +64,34 @@ const HomeScreen = ({navigation}) => {
         });
     }
   };
+  const getInforUser = async () => {
+    const userEmail = await AsyncStorage.getItem('userEmail');
+    const newUserEmail = JSON.parse(userEmail);
+    try {
+      const respone = await axios.get(
+        `${API__URL}/users/getUserEmail?email=${newUserEmail}`,
+      );
+      if (respone.status === 200) {
+        setUser(respone.data.result.username);
+      }
+      // console.log(respone.data.result.username);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getInforUser();
+  }, []);
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
 
       <View style={styles.header}>
-        <Text style={styles.hello}>Xin Chào</Text>
+        <View>
+          <Text style={styles.hello}>Xin Chào </Text>
+          <Text style={styles.txt__user}>{user}</Text>
+        </View>
 
         <TouchableOpacity onPress={() => navigation.navigate('CartScreen')}>
           <Image
@@ -78,11 +100,12 @@ const HomeScreen = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
+
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
-          placeholder="Search"
+          placeholder="Tìm Kiếm"
           value={searchKey}
           onChangeText={text => setSearchKey(text)}
         />
@@ -93,10 +116,10 @@ const HomeScreen = ({navigation}) => {
       {/* <AdScreen navigation={navigation} /> */}
       <View>
         <View style={styles.categoryHeader}>
-          <Text style={styles.sectionTitle}>Categories</Text>
+          <Text style={styles.sectionTitle}>Loại Sản Phẩm</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('CategoryScreen')}>
-            <Text style={styles.seeAllText}>See All</Text>
+            <Text style={styles.seeAllText}>Xem Tất Cả</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.categoryContainer}>
@@ -128,10 +151,10 @@ const HomeScreen = ({navigation}) => {
         </View>
 
         <View style={styles.productHeader}>
-          <Text style={styles.sectionTitle}>Top Selling</Text>
+          <Text style={styles.sectionTitle}>Sản Phẩm</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('AllProductsScreen')}>
-            <Text style={styles.seeAllText}>See All</Text>
+            <Text style={styles.seeAllText}>Xem Tất Cả</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.productSection}>
@@ -149,7 +172,9 @@ const HomeScreen = ({navigation}) => {
                     source={{uri: item.images[0]}}
                     style={styles.productImage}
                   />
-                  <Text style={styles.productName}>{item.name}</Text>
+                  <Text numberOfLines={2} style={styles.productName}>
+                    {item.name}
+                  </Text>
                   <Text style={styles.productPrice}>${item.price}</Text>
                 </TouchableOpacity>
               );
@@ -163,6 +188,11 @@ const HomeScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  txt__user: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
   container: {
     flex: 1,
     padding: 10,
@@ -172,6 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'black',
   },
   header: {
     flexDirection: 'row',

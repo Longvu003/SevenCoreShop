@@ -1,20 +1,12 @@
-const OrderController = require("../controllers/OrderController");
 const express = require("express");
+const OrderController = require("../controllers/OrderController");
 const router = express.Router();
+
+// Endpoint thanh toán và tạo đơn hàng
 router.post("/checkout", OrderController.checkout);
 
-router.get("/getOrderUser", async (req, res) => {
-  try {
-    const itemOrder = await OrderController.getOrderUser();
-    if (itemOrder) {
-      return res.status(200).json(itemOrder);
-    } else {
-      return res.status(404).json({ message: "Có lỗi khi lấy sản phẩm !" });
-    }
-  } catch (error) {
-    console.log("Lỗi nè", error);
-  }
-});
+// Endpoint lấy danh sách tất cả đơn hàng
+router.get("/getOrderUser", OrderController.getOrderUser);
 
 router.get("/getOrderUserById", async (req, res) => {
   const { userId } = req.query;
@@ -29,4 +21,5 @@ router.get("/getOrderUserById", async (req, res) => {
     console.log("Lỗi nè", error);
   }
 });
+// router.get("/getOrderUserById", OrderController.getOrderUserById);
 module.exports = router;

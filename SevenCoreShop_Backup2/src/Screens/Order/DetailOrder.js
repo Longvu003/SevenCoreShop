@@ -35,16 +35,14 @@ const DetailOrder = ({route}) => {
       </View>
       <View style={{flex: 4}}>
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={DetailOrder.items}
           renderItem={({item}) => {
             return (
               <View style={styles.item__container}>
-                <Image
-                  style={styles.img__size}
-                  source={{uri: item.images[0]}}
-                />
+                <Image style={styles.img__size} source={{uri: item.image[0]}} />
                 <View>
-                  <Text>{item.nameProduct}</Text>
+                  <Text style={{width: WIDTH__SCREEN * 0.6}}>{item.name}</Text>
                   <Text>Số lượng : {item.quantity}</Text>
                   <Text>Đơn giá : {item.price}</Text>
                 </View>
@@ -74,10 +72,10 @@ const DetailOrder = ({route}) => {
             marginHorizontal: 20,
           }}>
           <View style={{marginHorizontal: 20}}>
-            <Text>Địa chỉ: Tô ký, Tân Chánh Hiệp, Quận 12, Tp.Hồ Chí Minh</Text>
+            <Text>Địa chỉ: {DetailOrder.address}</Text>
             <Text>Trạng thái: {DetailOrder.status}</Text>
-            <Text>Phương thức thanh toán:{DetailOrder.paymentMethod} </Text>
-            <Text>Tổng tiền:{DetailOrder.totalAmount} </Text>
+            <Text>Phương thức thanh toán: {DetailOrder.paymentMethod} </Text>
+            <Text>Tổng tiền: {DetailOrder.totalAmount} </Text>
           </View>
         </View>
       </View>

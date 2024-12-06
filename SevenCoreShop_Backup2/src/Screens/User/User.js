@@ -16,8 +16,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import API__URL from '../../../config';
 const User = ({navigation}) => {
   const [user, setUser] = useState([]);
-  const [userName, setUserName] = useState(null);
-  const [numberPhone, setNumberPhone] = useState(null);
   const renderUser = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     const newUserEmail = JSON.parse(userEmail);
@@ -98,20 +96,6 @@ const User = ({navigation}) => {
             source={require('../../../assets/imgs/Vector.png')}
           />
         </TouchableOpacity>
-        {/* <TouchableOpacity style={UserStyleSheet.container__layout}>
-          <Text style={UserStyleSheet.txt__container}>Danh sách yêu thích</Text>
-          <Image
-            style={UserStyleSheet.txt__container}
-            source={require('../../../assets/imgs/Vector.png')}
-          />
-        </TouchableOpacity> */}
-        {/* <TouchableOpacity style={UserStyleSheet.container__layout}>
-          <Text style={UserStyleSheet.txt__container}>Thanh toán</Text>
-          <Image
-            style={UserStyleSheet.txt__container}
-            source={require('../../../assets/imgs/Vector.png')}
-          />
-        </TouchableOpacity> */}
         <TouchableOpacity
           style={UserStyleSheet.container__layout}
           onPress={() => navigation.navigate('ForgotPassword')}>
@@ -121,13 +105,6 @@ const User = ({navigation}) => {
             source={require('../../../assets/imgs/Vector.png')}
           />
         </TouchableOpacity>
-        {/* <TouchableOpacity style={UserStyleSheet.container__layout}>
-          <Text style={UserStyleSheet.txt__container}>Hỗ trợ</Text>
-          <Image
-            style={UserStyleSheet.txt__container}
-            source={require('../../../assets/imgs/Vector.png')}
-          />
-        </TouchableOpacity> */}
       </View>
       <View style={{flex: 3, alignItems: 'center', justifyContent: 'center'}}>
         <TouchableOpacity onPress={Logout}>

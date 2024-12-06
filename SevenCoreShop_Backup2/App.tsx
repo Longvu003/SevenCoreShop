@@ -6,10 +6,12 @@ import store from './src/ReduxTookit/Store';
 // import { Provider } from 'react-redux';
 import AddressCart from './src/Screens/HomeSceen/AddressCart';
 
+
 const App = () => {
   return (
     <View style={{flex: 1}}>
       <Stacknavigation />
+      {/* <AddressCart /> */}
     </View>
   );
 };

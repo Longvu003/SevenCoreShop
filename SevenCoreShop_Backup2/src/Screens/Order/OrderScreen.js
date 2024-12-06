@@ -58,11 +58,14 @@ const OrderScreen = ({navigation}) => {
                       <View style={styles.item__container}>
                         <Image
                           style={{width: 40, height: 60}}
-                          source={{uri: item.items[0].images[0]}}
+                          source={{uri: item.items[0].image[0]}}
                         />
                         <View>
                           <Text style={styles.txt__Item}>
                             Đơn hàng: {item._id}
+                          </Text>
+                          <Text numberOfLines={1} style={styles.txt__Item}>
+                            {item.items[0].name}
                           </Text>
                           <View
                             style={{
@@ -121,7 +124,7 @@ const styles = StyleSheet.create({
   item__container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 2,
+    marginHorizontal: 10,
     alignItems: 'center',
   },
   layout__container: {
@@ -132,10 +135,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   txt__Item: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
     color: 'black',
-    marginHorizontal: 30,
+    marginHorizontal: 20,
+    width: WIDTH__SCREEN * 0.6,
   },
 });
 

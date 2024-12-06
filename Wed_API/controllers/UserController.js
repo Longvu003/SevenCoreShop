@@ -4,6 +4,7 @@ const sendResetPasswordEmail = require("../helpers/EmailCofig");
 const httml = require("../helpers/MailContent");
 const OtpModel = require("../models/OtpModel");
 const crypto = require("crypto"); // Sử dụng để tạo OTP ngẫu nhiên
+const UserModel = require("../model/UserModel");
 
 // Hàm kiểm tra email hợp lệ
 const isValidEmail = (email) => {

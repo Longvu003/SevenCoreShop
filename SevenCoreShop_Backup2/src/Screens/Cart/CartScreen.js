@@ -25,7 +25,6 @@ const CartScreen = () => {
   const [cart, setCart] = useState([]);
   const [totalPriceCart, setTotalPriceCart] = useState(0);
   const [userId, setUserId] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState(null);
 
   const totalPrice = cartItem => {
     const totalCart = cartItem.reduce(
@@ -37,6 +36,11 @@ const CartScreen = () => {
 
   const updateCart = async (productId, quantity) => {
     try {
+      if (quantity === 0) {
+        clearCart(productId, quantity);
+        return;
+      }
+
       const response = await axios.put(`${API__URL}/carts/updateItemCart`, {
         userId,
         productId,
@@ -63,11 +67,7 @@ const CartScreen = () => {
   };
 
   const handleDecrease = (productId, currentQuantity) => {
-    const newQuantity =
-      currentQuantity > 1
-        ? currentQuantity - 1
-        : setCart(cart.filter(product => product._id !== productId));
-
+    const newQuantity = currentQuantity > 1 ? currentQuantity - 1 : 1;
     updateCart(productId, newQuantity);
   };
 
@@ -75,12 +75,13 @@ const CartScreen = () => {
     const userId = await AsyncStorage.getItem('userId');
     const newUserId = JSON.parse(userId);
     setUserId(newUserId);
-    const respone = await axios.get(
+
+    const response = await axios.get(
       `${API__URL}/carts/getItemCartById?userId=${newUserId}`,
     );
 
-    setCart(respone.data.result);
-    totalPrice(respone.data.result);
+    setCart(response.data.result);
+    totalPrice(response.data.result);
   };
 
   const clearCart = async (productId, quantity) => {
@@ -98,89 +99,43 @@ const CartScreen = () => {
       console.log('Error clearing cart:', error);
     }
   };
+  const resetCartOnServer = async () => {
+    try {
+      for (const item of cart) {
+        await axios.delete(`${API__URL}/carts/deleteItemCart`, {
+          data: {userId, productId: item.productId, quantity: item.quantity},
+        });
+      }
+      setCart([]);
+      setTotalPriceCart(0);
+      console.log('Giỏ hàng đã được reset trên server!');
+    } catch (error) {
+      console.log('Error resetting cart:', error);
+      Alert.alert('Lỗi', 'Không thể reset giỏ hàng. Vui lòng thử lại.');
+    }
+  };
 
-  const handleCheckout = async () => {
-    if (!paymentMethod) {
-      Alert.alert('Thông báo', 'Bạn phải chọn phương thức thanh toán!');
-      return false;
+  const handlePayment = async () => {
+    if (cart.length === 0) {
+      Alert.alert('Thông báo', 'Giỏ hàng trống, vui lòng thêm sản phẩm!');
+      return;
     }
 
     try {
-      const response = await axios.post(`${API__URL}/Orders/checkout`, {
-        userId: userId,
-        items: cart,
-        paymentMethod: paymentMethod || 'COD',
+      const userId = await AsyncStorage.getItem('userId');
+      const parsedUserId = JSON.parse(userId);
+
+      navigation.navigate('PaymentAddressScreen', {
+        userID: parsedUserId,
+        cartItems: cart,
+        totalAmount: totalPriceCart,
       });
-
-      if (response.status === 200) {
-        const order = response.data.order;
-        const detailedItems = await Promise.all(
-          order.items.map(async item => {
-            const productResponse = await axios.get(
-              `${API__URL}/products/${item.productId}`,
-            );
-            const productData = productResponse.data.data;
-
-            return {
-              ...item,
-              name: productData.name,
-              images: productData.images[0],
-              price: productData.price,
-            };
-          }),
-        );
-
-        const productDetails = detailedItems
-          .map(item => `- ${item.name}: ${item.price} VND x ${item.quantity}`)
-          .join('\n');
-
-        const message = response.data.message || 'Thanh toán thành công!';
-        const orderId = order._id || 'Không có mã đơn hàng';
-
-        Alert.alert(
-          'Thông báo',
-          'Thanh toán thành công',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigation.navigate('OrderScreen', {order});
-              },
-            },
-          ],
-          {cancelable: false},
-        );
-
-        // Clear toàn bộ giỏ hàng sau khi thanh toán
-        for (let item of cart) {
-          await clearCart(item.productId, item.quantity); // Xóa
-        }
-
-        // Reset lại tổng giá trị và phương thức thanh toán
-        setTotalPriceCart(0);
-        setPaymentMethod(null); // Reset phương thức thanh toán
-      }
     } catch (error) {
-      console.log(
-        'Lỗi khi thanh toán:',
-        error.response ? error.response.data : error,
-      );
-      Alert.alert(
-        'Lỗi',
-        error.response?.data?.message ||
-          'Đã xảy ra lỗi khi thanh toán. Vui lòng thử lại.',
-      );
+      console.error('Lỗi khi xử lý thanh toán:', error);
+      Alert.alert('Lỗi', 'Đã xảy ra lỗi khi thanh toán. Vui lòng thử lại.');
     }
   };
-  const handlePayment = () => {
-    navigation.navigate('AddressSelection'); // Điều hướng đến màn hình chọn địa chỉ
-  };
 
-  useFocusEffect(
-    useCallback(() => {
-      getIdUser();
-    }, []),
-  );
   const deleteAllItemcart = () => {
     Alert.alert(
       'Xác nhận',
@@ -202,6 +157,13 @@ const CartScreen = () => {
       {cancelable: false},
     );
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      getIdUser();
+    }, []),
+  );
+
   return (
     <View style={styles.container}>
       <View style={{flex: 1}}>
@@ -230,57 +192,32 @@ const CartScreen = () => {
                       <Text style={styles.productQuantity}>
                         Quantity: {item.quantity}
                       </Text>
+                      <View style={styles.quantityControls}>
+                        <TouchableOpacity
+                          style={styles.iconContainer}
+                          onPress={() =>
+                            handleDecrease(item.productId, item.quantity)
+                          }>
+                          <Text style={styles.icon}>-</Text>
+                        </TouchableOpacity>
+                        <Text>{item.quantity}</Text>
+                        <TouchableOpacity
+                          style={styles.iconContainer}
+                          onPress={() =>
+                            handleIncrease(item.productId, item.quantity)
+                          }>
+                          <Text style={styles.icon}>+</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
                   <View style={styles.cartItemActions}>
                     <Text style={styles.productPrice}>{item.price} VND</Text>
-                    <View style={styles.quantityControls}>
-                      <TouchableOpacity
-                        onPress={() =>
-                          handleIncrease(item.productId, item.quantity)
-                        }>
-                        <Image
-                          source={require('../../../assets/imgs/add.png')}
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          handleDecrease(item.productId, item.quantity)
-                        }
-                        style={styles.iconContainer}>
-                        <Image
-                          source={require('../../../assets/imgs/minus2.png')}
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
-                    </View>
                   </View>
                 </View>
               )}
               keyExtractor={item => item.productId.toString()}
             />
-          </View>
-          <View style={styles.paymentMethodContainer}>
-            <Text style={styles.paymentMethodTitle}>
-              Chọn phương thức thanh toán
-            </Text>
-            <TouchableOpacity
-              style={styles.paymentOption}
-              onPress={() => setPaymentMethod('COD')}>
-              <View
-                style={[
-                  styles.radioButton,
-                  paymentMethod === 'COD' && styles.radioButtonSelected,
-                ]}>
-                {paymentMethod === 'COD' && (
-                  <View style={styles.radioInnerCircle} />
-                )}
-              </View>
-              <Text style={styles.paymentMethodText}>
-                Thanh toán khi nhận hàng
-              </Text>
-            </TouchableOpacity>
           </View>
           <View style={styles.totalPriceContainer}>
             <Text style={styles.totalText}>Tổng cộng</Text>
@@ -289,8 +226,8 @@ const CartScreen = () => {
           <View style={{flex: 2}}>
             <TouchableOpacity
               style={styles.btnCheckout}
-              onPress={handleCheckout}>
-              <Text style={styles.btnCheckoutText}>Mua</Text>
+              onPress={handlePayment}>
+              <Text style={styles.btnCheckoutText}> Thanh Toán</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -351,8 +288,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imgProduct: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     borderRadius: 8,
   },
   productInfo: {
@@ -362,92 +299,57 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
+    width: WIDTH__SCREEN * 0.5,
   },
   productQuantity: {
     fontSize: 14,
-    color: '#555',
-  },
-  cartItemActions: {
-    alignItems: 'flex-end',
-    flex: 1,
-  },
-  productPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    color: '#555555',
   },
   quantityControls: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
   },
   iconContainer: {
-    marginHorizontal: 15,
-  },
-  icon: {
-    width: 20,
-    height: 20,
-  },
-  paymentMethodContainer: {
-    padding: 20,
-    backgroundColor: '#FFFFFF',
-    marginTop: 20,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
-    flex: 1,
-  },
-  paymentMethodTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  paymentOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 15,
-  },
-  radioButton: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#888',
+    width: 30,
+    height: 30,
+    backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
-  },
-  radioButtonSelected: {
-    borderColor: '#4CAF50',
-  },
-  radioInnerCircle: {
-    width: 10,
-    height: 10,
+    marginHorizontal: 10,
     borderRadius: 5,
-    backgroundColor: '#4CAF50',
   },
-  paymentMethodText: {
+  icon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  cartItemActions: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  productPrice: {
     fontSize: 16,
     color: '#333',
+    fontWeight: 'bold',
   },
   totalPriceContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginTop: 20,
+    backgroundColor: '#FFFFFF',
     flex: 1,
+    flexDirection: 'row',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
   totalText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
   totalAmount: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: '#333',
+    marginTop: 5,
   },
   btnCheckout: {
     backgroundColor: '#333',
