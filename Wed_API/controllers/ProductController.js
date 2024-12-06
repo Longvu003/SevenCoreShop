@@ -78,6 +78,7 @@ const getProductsByCategory = async (req, res) => {
     });
   }
 };
+
 // Lấy danh sách sản phẩm theo khoảng giá và số lượng lớn hơn 0
 const getProductByPrice = async (min, max) => {
   try {

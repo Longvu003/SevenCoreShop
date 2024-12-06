@@ -16,7 +16,7 @@ const UserSchema = new Schema(
     //xác thực tài khoản
     // 1: chưa xác thực, 2: đã xác thực
     isVerify: { type: Number, default: 1 },
-    address: { type: String , default: ""},
+    address: { type: String, default: "" },
     // ngày giờ tạo
     creatAt: { type: Date, default: Date.now }, //Date.now để lấy thời gian hiện tại
     // ngày giờ cập nhật
