@@ -1,4 +1,6 @@
 const CategoryModel = require("../model/CategoryModel");
+const ProductModel = require("../model/ProductModel"); // Add this line to import the ProductModel
+const mongoose = require("mongoose");
 
 // lấy danh sách danh mục
 const getCategoryList = async () => {

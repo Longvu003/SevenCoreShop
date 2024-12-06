@@ -95,7 +95,6 @@ const login = async (email, password) => {
     throw new Error("Login error: " + error.message);
   }
 };
-
 // Hàm tạo và lưu OTP
 async function generateAndSaveOtp(email) {
   const otp = crypto.randomInt(100000, 999999).toString(); // Tạo OTP 6 chữ số
@@ -188,29 +187,35 @@ const updateUser = async (email, username, numberphone, birthday, address) => {
 // Xác thực email
 const verify = async (email) => {
   try {
+    // Kiểm tra xem email có hợp lệ không
     if (!isValidEmail(email)) {
       throw new Error("Email không hợp lệ");
     }
 
+    // Tìm kiếm user trong db theo email
     const user = await userModel.findOne({ email: email });
     if (!user) {
       throw new Error("Email không tồn tại");
     }
 
+    // Kiểm tra xem user đã được xác thực chưa
     if (user.verify) {
       throw new Error("Email đã được xác thực trước đó");
     }
 
+    // Cập nhật user
     user.verify = true;
     user.updatedAt = Date.now();
 
-    await user.save();
+    // Lưu user
+    const result = await user.save();
     return "Xác thực thành công";
   } catch (error) {
     console.log("Verify error:", error.message);
-    throw new Error("Xác thực thất bại: " + error.message);
+    return "Xác thực thất bại: " + error.message;
   }
 };
+
 const updateUserById = async (
   id,
   email,

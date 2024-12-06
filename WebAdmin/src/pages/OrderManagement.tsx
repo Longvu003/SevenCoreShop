@@ -1,24 +1,22 @@
-import { useEffect, useState } from 'react';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../store';
-import { setPageTitle } from '../store/themeConfigSlice';
-import { userProducts } from '../controller/ProductController';
-import { Products, Category } from '../model/ProductModel';
-import Swal from "sweetalert2";
-import withReactContent from 'sweetalert2-react-content';
+import React, { useEffect } from "react"
+import Tippy from "@tippyjs/react"
+import "tippy.js/dist/tippy.css"
+import { useDispatch, useSelector } from "react-redux"
+import { IRootState } from "../store"
+import { setPageTitle } from "../store/themeConfigSlice"
+import { userProducts } from "../controller/ProductController"
+import { Products, Category } from "../model/ProductModel"
+import Swal from "sweetalert2"
+import withReactContent from "sweetalert2-react-content"
 
-
-const MySwal = withReactContent(Swal);
+const MySwal = withReactContent(Swal)
 
 const Tables = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(setPageTitle('Tables'));
-    });
+        dispatch(setPageTitle("Tables"))
+    })
 
-    
     return (
         <div className="grid xl:grid-cols-1 gap-12 grid-cols-1">
             <div className="panel">
@@ -40,7 +38,7 @@ const Tables = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Tables;
+export default Tables

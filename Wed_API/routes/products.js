@@ -6,9 +6,10 @@ var router = express.Router();
 const ProductController = require("../controllers/ProductController");
 
 /**
+ * API lấy danh sách tất cả sản phẩm
  * method: GET
  * url: http://localhost:7777/products?limit=10&page=1
- * response: trả về danh sách tất cả sản phẩm
+ * response: trả về danh sách sản phẩm
  */
 
 // router.get('/', async (req, res) => {
@@ -69,7 +70,7 @@ router.post("/", async (req, res, next) => {
  * method: post
  * url: http://localhost:7777/products/:id/update
  * body: name, price, quantity, images, description, category
- * response: trå về sån phåm vừa cập nhật
+ * response: trả về sản phẩm vừa cập nhật
  */
 router.post("/:id/update", async (req, res, next) => {
   try {
@@ -151,42 +152,42 @@ router.get("/loc-theo-gia", async (req, res, next) => {
 });
 
 /**
- * API Xóa SP
- * method: post
+ * API xóa sản phẩm
+ * method: POST
  * url: http://localhost:7777/products/:id/delete
- * response: trå về sån phåm vừa cập nhật
+ * response: kết quả xóa sản phẩm
  */
-// router.delete("/deleteProductById", async (req, res, next) => {
-//   try {
-//     const { id } = req.params.id;
-//     const products = await ProductController.deleteProduct(id);
-//     return res.status(200).json({ status: true, data: products }); //
-//   } catch (error) {
-//     return res.status(500).json({ status: false, data: error.message });
-//   }
-// });
-
-/**
- * API Lấy sp theo id
- * method: get
- * url: http://localhost:7777/products/:id
- * response: trå về sån phåm vừa cập nhật
- */
-router.get("/:id", async (req, res) => {
+router.post("/:id/delete", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
-    const products = await ProductController.getById(id);
-    return res.status(200).json({ status: true, data: products });
+    const deletedProduct = await ProductController.deleteProduct(id);
+    return res.status(200).json({ status: true, data: deletedProduct });
   } catch (error) {
-    return res.status(500).json({ status: false, data: error.message });
+    return res.status(500).json({ status: false, message: error.message });
   }
 });
 
 /**
+ * API lấy chi tiết sản phẩm theo id
+ * method: GET
+ * url: http://localhost:7777/products/:id
+ * response: thông tin sản phẩm theo id
+ */
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await ProductController.getById(id);
+    return res.status(200).json({ status: true, data: product });
+  } catch (error) {
+    return res.status(500).json({ status: false, message: error.message });
+  }
+});
+
+/**
+ * API lấy top 10 sản phẩm theo số lượng bán nhiều nhất
  * method: GET
  * url: http://localhost:7777/products/top/top-10
- * response: trả về danh sách 10 sản phẩm có số lượng nhiều nhất
+ * response: danh sách 10 sản phẩm có số lượng nhiều nhất
  */
 router.get("/top/top-10", async (req, res) => {
   try {

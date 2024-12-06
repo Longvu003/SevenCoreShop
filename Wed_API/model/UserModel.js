@@ -28,7 +28,7 @@ const UserSchema = new Schema(
     timestamps: { createdAt: "creatAt", updatedAt: "updateAt" },
   }
 );
-UserSchema.pre('save', function(next) {
+UserSchema.pre("save", function (next) {
   this.updatedAt = Date.now(); // Luôn cập nhật trường 'updatedAt' mỗi khi save
   next();
 });
