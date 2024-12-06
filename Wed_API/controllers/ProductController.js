@@ -61,35 +61,23 @@ const searchProduct = async (key) => {
 
 // Lấy danh sách sản phẩm theo danh mục
 const getProductsByCategory = async (req, res) => {
- try {
-  const category = req.query
-  const products = await ProductModel.find({ category });
+  try {
+    const category = req.query;
+    const products = await ProductModel.find({ category });
 
-  return res.status(200).json({
-    status: true,
-    message: "Products fetched successfully.",
-    data: products
-  }); 
-  
- } catch (error) {
-  console.log("Error fetching products:", error);
+    return res.status(200).json({
+      status: true,
+      message: "Products fetched successfully.",
+      data: products,
+    });
+  } catch (error) {
+    console.log("Error fetching products:", error);
     return res.status(500).json({
       status: false,
-      message: "Server error. Cannot fetch products."
+      message: "Server error. Cannot fetch products.",
     });
- }
+  }
 };
-
-
-
-
-
-
-
-
-
-
-
 // Lấy danh sách sản phẩm theo khoảng giá và số lượng lớn hơn 0
 const getProductByPrice = async (min, max) => {
   try {

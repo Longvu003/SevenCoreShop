@@ -1,5 +1,6 @@
 import { Products } from "../model/ProductModel"
 import { GetProduct, DeleteProduct, EditProductByid, CreateProduct, GetProductById } from "../service/ProducService"
+// import { handleApiError } from "../utils/errorHandler"
 
 export const userProducts = () => {
     const getProduct = async () => {
@@ -7,7 +8,8 @@ export const userProducts = () => {
             const products = await GetProduct()
             return products
         } catch (error) {
-            return handleApiError(error, "Get product")
+            console.error("Failed to get product", error)
+            return error
         }
     }
 
@@ -16,7 +18,8 @@ export const userProducts = () => {
             const result = await DeleteProduct(id)
             return result
         } catch (error) {
-            return handleApiError(error, "Delete product")
+            console.error("Failed to delete produc", error)
+            return error
         }
     }
 
@@ -29,7 +32,8 @@ export const userProducts = () => {
             const updatedProduct = await EditProductByid(id, product)
             return updatedProduct
         } catch (error) {
-            return handleApiError(error, "Update product")
+            console.error("Failed to update product", error)
+            return error
         }
     }
 
@@ -38,7 +42,8 @@ export const userProducts = () => {
             const createdProduct = await CreateProduct(product)
             return createdProduct
         } catch (error) {
-            return handleApiError(error, "Create product")
+            console.error("Failed to create product", error)
+            return error
         }
     }
 
@@ -47,7 +52,8 @@ export const userProducts = () => {
             const product = await GetProductById(id)
             return product
         } catch (error) {
-            return handleApiError(error, "Get product by id")
+            console.error("Failed to get product", error)
+            return error
         }
     }
 
