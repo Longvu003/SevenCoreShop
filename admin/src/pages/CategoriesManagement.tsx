@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../store';
 import { setPageTitle } from '../store/themeConfigSlice';
 import { Category } from '../model/CategoriesModel';
 import { categoryController } from '../controller/CategoryController';
@@ -52,7 +51,6 @@ const Tables = () => {
     };
 
 
-
     // Hàm showData lấy dữ liệu từ API và lưu vào state
     const showData = async () => {
         const data: any = await getCategories();
@@ -60,18 +58,15 @@ const Tables = () => {
         setDataCategorie(data.data);
     };
 
-    const dispatch = useDispatch();
-
-
     useEffect(() => {
         showData();
     }, []);
 
+    const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Tables'));
     });
 
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
     return (
         <div className="grid xl:grid-cols-1 gap-12 grid-cols-1">

@@ -14,6 +14,9 @@ var usersRouter = require('./routes/users');
 const productsRouter = require('./routes/products');
 const categoriesRouter = require('./routes/categories');
 const cartsRouter = require('./routes/carts')
+const Order = require("./routes/Order");
+const PayOnline = require("./routes/PayOnline");
+
 //okokok
 
 var app = express();
@@ -45,6 +48,10 @@ app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
 // http://localhost:7777/carts
 app.use('/carts', cartsRouter)
+// http://localhost:7777/orders
+app.use("/orders", Order);
+// http://localhost:7777/payonline
+app.use("/payonline", PayOnline);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

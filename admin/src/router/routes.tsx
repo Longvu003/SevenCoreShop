@@ -12,6 +12,8 @@ const ProductUpdate = lazy(() => import('../pages/ProductEdit'));
 const CategoriesUpdate = lazy(() => import('../pages/CategoriesNew'));
 const CategoryEdit = lazy(() => import('../pages/CategoriesEdit'));
 const OrderManagent = lazy(() => import('../pages/OrderManagement'));
+const PayOnlineManagement = lazy(() => import('../pages/PayOnlineManagement'));
+const PayOnlineNew = lazy(() => import('../pages/PayOnlineNew'));
 const routes = [
     // dashboard (protected)
     {
@@ -19,6 +21,22 @@ const routes = [
         element: (
             <PrivateRoute>
                 <Index />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/payonline/new',
+        element: (
+            <PrivateRoute>
+                <PayOnlineNew />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/payonlineManagent',
+        element: (
+            <PrivateRoute>
+                <PayOnlineManagement />
             </PrivateRoute>
         ),
     },
