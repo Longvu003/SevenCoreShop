@@ -40,7 +40,7 @@ const OrderScreen = ({navigation}) => {
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={{flex: 1}}>
         <View style={{flex: 1}}>
           <Customheader title="Lịch sử giao hàng" />

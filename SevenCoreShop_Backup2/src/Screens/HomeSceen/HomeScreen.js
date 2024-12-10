@@ -84,9 +84,8 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <View style={styles.container}>
       {/* Header */}
-
       <View style={styles.header}>
         <View>
           <Text style={styles.hello}>Xin Chào </Text>
@@ -114,7 +113,7 @@ const HomeScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
       {/* <AdScreen navigation={navigation} /> */}
-      <View>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.categoryHeader}>
           <Text style={styles.sectionTitle}>Loại Sản Phẩm</Text>
           <TouchableOpacity
@@ -181,9 +180,8 @@ const HomeScreen = ({navigation}) => {
             }}
           />
         </View>
-      </View>
-      <View style={styles.productSection}></View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -208,7 +206,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   avatar: {
     width: 50,
@@ -235,7 +233,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f4f4f4',
     borderRadius: 20,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   searchInput: {
     flex: 1,

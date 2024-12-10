@@ -33,13 +33,15 @@ const checkout = async (req, res) => {
       totalAmount,
       address,
       paymentMethod,
-      status: "Pending",
+      status: "Đang xác nhận",
       date: new Date(),
     });
-    console.log(newOrder);
 
     await newOrder.save();
-
+    const cart = await CartModel.findOne({ userId });
+    // if (cart) {
+    //   await CartModel.deleteOne({ userId });
+    // }
     res.status(201).json({ message: "Đặt hàng thành công", order: newOrder });
   } catch (error) {
     console.error("Lỗi khi thanh toán:", error);

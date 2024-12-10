@@ -23,43 +23,50 @@ import OrderScreen from '../Screens/Order/OrderScreen';
 import AdScreen from '../Screens/HomeSceen/AdScreen';
 import AdDetail from '../Screens/HomeSceen/AdDetail';
 import PaymentAddressScreen from '../Screens/HomeSceen/PaymentAddressScreen';
+import CartProdvider from '../Screens/Cart/CartProdvider';
+
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Tab"
-        screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Welcome1" component={Welcome1} />
-        <Stack.Screen name="Welcome2" component={Welcome2} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="SignupScreen" component={SignupScreen} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="Resetpass" component={Resetpass} />
-        <Stack.Screen name="Tab" component={TabNavigation} />
-        <Stack.Screen name="ListAddress" component={ListAddress} />
-        <Stack.Screen name="EditAddress" component={EditAddress} />
-        <Stack.Screen name="EditPayment" component={EditPayment} />
-        <Stack.Screen name="ListPayment" component={ListPayment} />
-        <Stack.Screen name="EditUser" component={EditUser} />
-        <Stack.Screen name="ProductDetail" component={ProductDetail} />
-        <Stack.Screen name="CartScreen" component={CartScreen} />
-        <Stack.Screen name="AllProductsScreen" component={AllProductsScreen} />
-        <Stack.Screen name="CategoryScreen" component={CategoryScreen} />
-        <Stack.Screen
-          name="PaymentAddressScreen"
-          component={PaymentAddressScreen}
-          options={{title: 'Chọn địa chỉ và thanh toán'}}
-        />
-        <Stack.Screen
-          name="CategoryDetailScreen"
-          component={CategoryDetailScreen}
-        />
-        <Stack.Screen name="DetailOrder" component={DetailOrder} />
-        <Stack.Screen name="AdScreen" component={AdScreen} />
-        <Stack.Screen name="AdDetail" component={AdDetail} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <CartProdvider>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Tab"
+          screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Welcome1" component={Welcome1} />
+          <Stack.Screen name="Welcome2" component={Welcome2} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="SignupScreen" component={SignupScreen} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="Resetpass" component={Resetpass} />
+          <Stack.Screen name="Tab" component={TabNavigation} />
+          <Stack.Screen name="ListAddress" component={ListAddress} />
+          <Stack.Screen name="EditAddress" component={EditAddress} />
+          <Stack.Screen name="EditPayment" component={EditPayment} />
+          <Stack.Screen name="ListPayment" component={ListPayment} />
+          <Stack.Screen name="EditUser" component={EditUser} />
+          <Stack.Screen name="ProductDetail" component={ProductDetail} />
+          <Stack.Screen name="CartScreen" component={CartScreen} />
+          <Stack.Screen
+            name="AllProductsScreen"
+            component={AllProductsScreen}
+          />
+          <Stack.Screen name="CategoryScreen" component={CategoryScreen} />
+          <Stack.Screen
+            name="PaymentAddressScreen"
+            component={PaymentAddressScreen}
+            options={{title: 'Chọn địa chỉ và thanh toán'}}
+          />
+          <Stack.Screen
+            name="CategoryDetailScreen"
+            component={CategoryDetailScreen}
+          />
+          <Stack.Screen name="DetailOrder" component={DetailOrder} />
+          <Stack.Screen name="AdScreen" component={AdScreen} />
+          <Stack.Screen name="AdDetail" component={AdDetail} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </CartProdvider>
   );
 };
 export default Stacknavigation;

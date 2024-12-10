@@ -11,20 +11,19 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import API_URL from '../../../config';
-
+import {useCart} from '../Cart/CartProdvider';
 const PaymentAddressScreen = ({navigation, route}) => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const cartItems = route.params?.cartItems || [];
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
   );
   const userID = route.params?.userID;
-
+  const {resetCart} = useCart();
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
@@ -41,7 +40,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
           console.error('API trả về dữ liệu không hợp lệ:', response.data);
           throw new Error('Invalid data format from API');
         }
-
         setAddresses(formattedData);
       } catch (error) {
         console.error('Error fetching addresses:', error.message);
@@ -49,7 +47,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
         setLoading(false);
       }
     };
-
     fetchAddresses();
   }, [userID]);
   const handlePayment = async () => {
@@ -85,8 +82,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
 
       if (response.status === 201) {
         // Xóa toàn bộ giỏ hàng
-        await resetCartOnServer(cartItems);
-
+        resetCart();
         Alert.alert('Thông báo', 'Đặt hàng thành công!');
       }
     } catch (error) {
@@ -95,24 +91,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
         'Lỗi',
         'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.',
       );
-    }
-  };
-
-  const resetCartOnServer = async cartItems => {
-    try {
-      for (const item of cartItems) {
-        await axios.delete(`${API_URL}/carts/deleteItemCart`, {
-          data: {
-            userId: userID,
-            productId: item.productId,
-            quantity: item.quantity,
-          },
-        });
-      }
-      console.log('Giỏ hàng đã được reset trên server!');
-    } catch (error) {
-      console.error('Lỗi khi reset giỏ hàng:', error);
-      Alert.alert('Lỗi', 'Không thể reset giỏ hàng. Vui lòng thử lại.');
     }
   };
 

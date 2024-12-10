@@ -69,6 +69,10 @@ const ProductDetail = ({navigation, route}) => {
       quantity: quantityProduct,
       price: item.price,
     };
+
+    // console.log(product);
+    // console.log(quantityProduct);
+    // console.log(userId);
     try {
       const response = await axios.post(
         `${API__URL}/carts/addItemcart`,
@@ -78,7 +82,7 @@ const ProductDetail = ({navigation, route}) => {
         },
       );
       if (response.data) {
-        Alert.alert('Thêm sản phẩm thành công');
+        Alert.alert('Thông báo!', 'Thêm sản phẩm thành công');
       }
     } catch (error) {
       console.log('Lỗi:', error);
