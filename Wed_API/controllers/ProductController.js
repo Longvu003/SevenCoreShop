@@ -73,41 +73,38 @@ const getProductByPrice = async (min, max) => {
     }
 }
 
-
-// thêm mới sản phẩm
-const addProduct = async (name, price, quantity, images, decription, category) => {
+const addProduct = async (name, price, quantity, images, description, categoryId) => {
     try {
-        console.log('category: ', category)
-        // lấy category theo id
-        const categoryInDB = await CategoryModel.findById(category);
+        console.log('categoryId: ', categoryId);
+
+        // Lấy category theo id
+        const categoryInDB = await CategoryModel.findById(categoryId);
         if (!categoryInDB) {
-            throw new Error('Category không tồn tại')
-        }
-        
-        
-        // tạo object category
-        category = {
-            category_id: categoryInDB._id,
-            category_name: categoryInDB.name
+            throw new Error('Category không tồn tại');
         }
 
-        // chưa bắt lỗi 
+        // Tạo sản phẩm
         const product = {
-            name, price, quantity, images, decription, category
-        }
+            name,
+            price,
+            quantity,
+            images,
+            description, // Fix typo ở đây (decription -> description)
+            categoryId: categoryInDB._id // Lưu trực tiếp ObjectId
+        };
+
         const newProduct = new ProductModel(product);
-        // lưu vào db
+        
+        // Lưu vào DB
         const result = await newProduct.save();
-        // setTimeout(() => {
-        //     console.log('result: ', result);
-        //     //thêm 1 sp vào danh sách poducts của category
-        // }, 0);
+
         return result;
     } catch (error) {
-        console.log('Add product error', error.message)
-        throw new Error('Add product error')
+        console.log('Add product error', error.message);
+        throw new Error('Add product error');
     }
-}
+};
+
 
 // cập nhật sản phẩm 
 const updateProduct = async (id, name, price, quantity, images, decription, category) => {

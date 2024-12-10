@@ -1,23 +1,77 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const OrderSchema = new Schema({
-    id_user: { type: String, required: true }, // ID của người dùng
-    amount: { type: Number, required: true, default: 0 }, // Tổng tiền đơn hàng
-    products: { type: [String], required: true, default: [] }, // Mảng chứa ID của các sản phẩm
-    statusDelivery: { type: String, enum: ['Pending', 'Completed', 'Failed'], default: 'Pending' },
-    statusPay: { 
-        type: String, 
-        enum: ['Pending', 'Paid', 'Failed', 'Refunded'], // Trạng thái thanh toán
-        default: 'Pending' 
+// Định nghĩa Order Schema
+const orderSchema = new Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  products: [{
+    productId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Product',
+      required: true
     },
-    paymentMethod: { type: String, enum: ['Momo'], default: 'Momo' },
-    paymentCode: { type: String },  // Thêm dòng này nếu cần
-    orderInfo: { type: String, default: '' },  // Thêm trường orderInfo vào đây
-    createdAt: { type: Date, default: Date.now },
-    UpdatedAt: { type: Date, default: Date.now }, // Ngày cập nhật đơn hàng
-    Available: { type: Boolean, default: true } // Tình trạng đơn hàng còn hoạt động hay không
+    // name: {
+    //   type: String,
+    //   required: true,
+    // },
+    quantity: {
+      type: Number,
+      required: true,
+      min: [1, 'Quantity must be greater than or equal to 1']
+    },
+    total: {
+      type: Number,
+      required: true
+    }
+  }],
+  totalAmount: {
+    type: Number,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'completed', 'canceled'],
+    default: 'pending'
+  },
+  paymentMethod: {
+    type: String,
+    enum: ['credit_card', 'paypal', 'momo', 'cash_on_delivery'],
+    required: true
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['unpaid', 'paid', 'failed'],
+    default: 'unpaid'
+  },
+  deliveryStatus: {
+    type: String,
+    enum: ['pending', 'shipped', 'delivered'],
+    default: 'pending'
+  },
+  payUrl: {
+    type: String
+  },
+  orderDate: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-// Tạo model Order từ schema OrderSchema
-module.exports = mongoose.model('Order', OrderSchema);
+// Mongoose Middleware to automatically update `updatedAt` field
+orderSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+// Định nghĩa Order Model
+const Order = mongoose.model('Order', orderSchema);
+
+module.exports = Order;

@@ -50,8 +50,8 @@ router.get('/all', async (req, res, next) => {
  */
 router.post('/', async (req, res, next) => {
     try {
-        const { name, price, quantity, images, decription, category } = req.body;
-        const product = await ProductController.addProduct(name, price, quantity, images, decription, category);
+        const { name, price, quantity, images, decription, categoryId } = req.body;
+        const product = await ProductController.addProduct(name, price, quantity, images, decription, categoryId);
         return res.status(200).json({ status: true, data: product })
     } catch (error) {
         return res.status(500).json({ status: false, data: error.message })
