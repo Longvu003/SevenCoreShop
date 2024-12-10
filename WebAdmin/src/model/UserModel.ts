@@ -1,15 +1,16 @@
+
 export interface UserModel{
     isLocked: any;
-    _id:String,
-    email:String,
-    password:String,
-    name:String,
-    phone:String,
-    address:String,
-    role:String,
+    _id:string,
+    email:string,
+    password:string,
+    name:string,
+    phone:string,
+    address:string,
+    role:string,
     cart:Array<any>,
     isVerfy:Boolean,
-    createdAt:String,
-    updatedAt:String,
+    createdAt:string,
+    updatedAt:string,
     available:Boolean
 }

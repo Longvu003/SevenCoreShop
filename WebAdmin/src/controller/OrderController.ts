@@ -1,94 +1,80 @@
-import { useState } from 'react';
-import { OrderModel } from '../model/OrderModel';
-import { 
-  createOrder, 
-  getOrderById, 
-  updateOrder, 
-  deleteOrder, 
-  getAllOrders 
-} from '../service/OrderService';
+import { GetBestOrders, GetTotalOrder } from './../service/OrderService';
+import { Request, Response } from "express"
+import { OrderModel } from "../model/OrderModel"
+import { GetOrders, CreateOrder, UpdateOrder, DeleteOrder, GetTotalRevenue, GetTotalUnpaid } from "../service/OrderService"
 
-export const useOrderController = () => {
-  const [orders, setOrders] = useState<OrderModel[]>([]);
-
-  // Tạo đơn hàng mới
-  const createNewOrder = async (order: OrderModel) => {
-    try {
-      const result = await createOrder(order);
-      return result;
-    } catch (error) {
-      console.error('Failed to create order', error);
-      return error;
+export const useOrders = () => {
+    const getOrders = async (): Promise<OrderModel[]> => {
+        try {
+            const response = await GetOrders() // Gọi hàm GetOrders và nhận trực tiếp mảng dữ liệu
+            return response // Trả về mảng orders trực tiếp
+        } catch (error) {
+            throw new Error("Failed to fetch orders")
+        }
     }
-  };
 
-  // Lấy tất cả đơn hàng
-  const fetchAllOrders = async () => {
-    try {
-      const allOrders = await getAllOrders();
-      setOrders(allOrders);
-      return allOrders;
-    } catch (error) {
-      console.error('Failed to fetch orders', error);
-      return error;
+    const createOrder = async (orderData: OrderModel): Promise<OrderModel> => {
+        try {
+            return await CreateOrder(orderData)
+        } catch (error) {
+            throw new Error("Failed to create order")
+        }
     }
-  };
 
-  // Lấy đơn hàng theo ID
-  const fetchOrderById = async (id: string) => {
-    try {
-      const order = await getOrderById(id);
-      return order;
-    } catch (error) {
-      console.error('Failed to fetch order by id', error);
-      return error;
+    const updateOrder = async (orderId: string, orderData: OrderModel): Promise<OrderModel> => {
+        try {
+            return await UpdateOrder(orderId, orderData)
+        } catch (error) {
+            throw new Error("Failed to update order")
+        }
     }
-  };
 
-  // Cập nhật đơn hàng theo ID
-  const updateOrderById = async (id: string, updatedFields: Partial<OrderModel>) => {
-    try {
-      const updatedOrder = await updateOrder(id, updatedFields);
-      return updatedOrder;
-    } catch (error) {
-      console.error('Failed to update order', error);
-      return error;
+    const deleteOrder = async (orderId: string): Promise<OrderModel> => {
+        try {
+            return await DeleteOrder(orderId)
+        } catch (error) {
+            throw new Error("Failed to delete order")
+        }
     }
-  };
 
-  // Đánh dấu đơn hàng là đã thanh toán
-  // Trong useOrderController
-// Đánh dấu đơn hàng là đã thanh toán
-const markOrderAsPaid = async (id: string): Promise<{ status: boolean, updatedOrder?: OrderModel }> => {
-  try {
-    const updatedOrder = await updateOrder(id, { Status: 'Paid' });
-    return { status: true, updatedOrder }; // Trả về đơn hàng đã cập nhật cùng với status
-  } catch (error) {
-    console.error('Failed to mark order as paid', error);
-    return { status: false };
-  }
-};
+    // Lấy tổng doanh thu
+    const getTotalRevenue = async (): Promise<number> => {
+        try {
+            const revenue = await GetTotalRevenue();  // Gọi hàm GetTotalRevenue từ OrderService
+            return revenue;  // Trả về tổng doanh thu
+        } catch (error) {
+            throw new Error("Failed to fetch total revenue");
+        }
+    };
 
+    const getTotalOrder = async (): Promise<number> => {
+        try {
+            const order = await GetTotalOrder();  // Gọi hàm GetTotalRevenue từ OrderService
+            return order;  // Trả về tổng doanh thu
+        } catch (error) {
+            throw new Error("Failed to fetch total order");
+        }
+    };
+    
+    const getTotalUnpaid = async (): Promise<number> => {
+        try {
+            const orderUnpaid = await GetTotalUnpaid();  // Gọi hàm GetTotalRevenue từ OrderService
+            return orderUnpaid;  // Trả về tổng doanh thu
+        } catch (error) {
+            throw new Error("Failed to fetch total unpaid");
+        }
+    };
+    
 
-
-  // Xóa đơn hàng theo ID
-  const deleteOrderById = async (id: string) => {
-    try {
-      const deletedOrder = await deleteOrder(id);
-      return deletedOrder;
-    } catch (error) {
-      console.error('Failed to delete order', error);
-      return error;
+    const getBestOrders = async (): Promise<OrderModel[]> => {
+        try {
+            const response = await GetBestOrders() // Gọi hàm GetOrders và nhận trực tiếp mảng dữ liệu
+            return response // Trả về mảng orders trực tiếp
+        } catch (error) {
+            throw new Error("Failed to fetch best orders")
+        }
     }
-  };
+    
 
-  return {
-    createNewOrder,
-    fetchAllOrders,
-    fetchOrderById,
-    updateOrderById,
-    deleteOrderById,
-    markOrderAsPaid, // Bổ sung hàm markOrderAsPaid vào controller
-    orders,
-  };
-};
+    return { getOrders, createOrder, updateOrder, deleteOrder, getTotalRevenue, getTotalOrder, getTotalUnpaid, getBestOrders } // Corrected: Return all functions
+}

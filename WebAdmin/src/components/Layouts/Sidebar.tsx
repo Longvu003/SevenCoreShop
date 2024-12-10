@@ -148,10 +148,18 @@ const Sidebar = () => {
                                         </NavLink>
                                     </li>
                                     <li className="nav-item">
-                                        <NavLink to="/bill-management" className="group">
+                                        <NavLink to="/order-management" className="group">
                                             <div className="flex items-center">
                                                 <IconMenuWidgets className="group-hover:!text-primary shrink-0" />
                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Order Management")}</span>
+                                            </div>
+                                        </NavLink>
+                                    </li>
+                                    <li className="nav-item">
+                                        <NavLink to="/analytics" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuWidgets className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Revenue Management")}</span>
                                             </div>
                                         </NavLink>
                                     </li>

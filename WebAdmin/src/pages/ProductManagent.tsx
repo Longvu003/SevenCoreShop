@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import { setPageTitle } from '../store/themeConfigSlice';
 import { userProducts } from '../controller/ProductController';
-import { Products, Category } from '../model/ProductModel';
+import { Product, Category } from '../model/ProductModel';
 import IconTrashLines from '../components/Icon/IconTrashLines';
 
 
@@ -26,7 +26,7 @@ const Tables = () => {
     };
 
     // Sử dụng useState để lưu trữ dữ liệu từ API
-    const [dataProduct, setDataProduct] = useState<Products[]>([]);
+    const [dataProduct, setDataProduct] = useState<Product[]>([]);
 
     // Hàm showData lấy dữ liệu từ API và lưu vào state
     const showData = async () => {
@@ -76,7 +76,7 @@ const Tables = () => {
                                     <td>{product.quantity}</td>
                                     <td>{product.category.category_name}</td>
                                     <td className="text-center">
-                                        {product.avaialble ? "Yes" : "No"}
+                                        {product.available ? "Yes" : "No"}
                                     </td>
                                     <td className="text-center">
                                         <button type="button" onClick={() => deleteProductById(product._id)}>

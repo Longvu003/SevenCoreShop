@@ -4,8 +4,22 @@ import Scrumboard from '../pages/Scrumboard';
 import Analytics from '../pages/Analytics';
 import Contacts from '../pages/Contacts';
 import Tables from '../pages/Tables';
+import ContactUsBoxed from '../pages/Pages/ContactUsBoxed';
+import ContactUsCover from '../pages/Pages/ContactUsCover';
+import Faq from '../pages/Pages/Faq';
+import KnowledgeBase from '../pages/Pages/KnowledgeBase';
+import Maintenence from '../pages/Pages/Maintenence';
+import Accordians from '../pages/Components/Accordians';
+import { Card, Timeline } from '@mantine/core';
+import Cards from '../pages/Components/Cards';
+import { Carousel, ListGroup, Tabs } from 'react-bootstrap';
+import Counter from '../pages/Components/Counter';
+import LightBox from '../pages/Components/LightBox';
+import PricingTable from '../pages/Components/PricingTable';
+import SweetAlert from '../pages/Components/SweetAlert';
 
 const Index = lazy(() => import('../pages/Analytics'));
+const Index2 = lazy(() => import('../pages/Analytics2'));
 const ProductManagent = lazy(() => import('../pages/ProductManagent'));
 const CategoriesManagent = lazy(() => import('../pages/CategoriesManagement'));
 const LoginBoxed = lazy(() => import('../pages/LoginBoxed'));
@@ -19,6 +33,7 @@ const BillsManagement = lazy(() => import('../pages/OrderManagement'));
 const OrdersManagement = lazy(() => import('../pages/OrderManagement'));
 const PaymentPage = lazy(() => import('../pages/Payment'));
 const PaymentCallbackPage = lazy(() => import('../pages/PaymentCallbackPage'));
+const Time = lazy(() => import('../pages/Components/Timeline'));
 
 
 const routes = [
@@ -101,7 +116,7 @@ const routes = [
         ),
     },
     {
-        path: '/bill-management',
+        path: '/order-management',
         element: (
             <PrivateRoute>
                 <OrdersManagement />
@@ -109,22 +124,15 @@ const routes = [
         ),
     },
     {
-        path: '/payment',
+        path: '/analytics',
         element: (
             <PrivateRoute>
-                <PaymentPage />
+                <Index2 />
             </PrivateRoute>
         ),
     },
     
-    {
-        path: '/payment-callback',
-        element: (
-            <PrivateRoute>
-                <PaymentCallbackPage />
-            </PrivateRoute>
-        ),
-    },
+   
 ];
 
 export { routes };
