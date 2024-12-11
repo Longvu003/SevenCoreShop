@@ -13,5 +13,6 @@ export interface Order {
     orderCode: string;
     paymentMethod: string;
     status: string;
+    statuspay: string;
     date: Date;
 }
