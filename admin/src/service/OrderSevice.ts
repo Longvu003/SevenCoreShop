@@ -24,9 +24,9 @@ export const GetOrder = async (): Promise<Order[]> => {
     }
 };
 
-export const UpdateOrderStatus = async (orderId: string, status: string): Promise<Order> => {
+export const UpdateOrderStatus = async (orderId: string, status: string): Promise<any> => {
     try {
-        const response = await fetch(`${API_URL}/orders/updateOrderStatus`, {
+        const response = await fetch(`${API_URL}/orders/updateStatus`, {
             method: "post",
             headers: {
                 "Content-Type": "application/json",

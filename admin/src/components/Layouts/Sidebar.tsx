@@ -133,6 +133,14 @@ const Sidebar = () => {
                                                     </div>
                                                 </NavLink>
                                             </li>
+                                            <li className="nav-item">
+                                                <NavLink to="/transactionmanagement" className="group">
+                                                    <div className="flex items-center">
+                                                        <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Hóa đơn trực tuyến')}</span>
+                                                    </div>
+                                                </NavLink>
+                                            </li>
                                         </>
                                     )}
                                     {/* Show only 'Sản Phẩm' if role is 3 */}

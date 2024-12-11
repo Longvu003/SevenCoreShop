@@ -16,6 +16,7 @@ const categoriesRouter = require('./routes/categories');
 const cartsRouter = require('./routes/carts')
 const Order = require("./routes/Order");
 const PayOnline = require("./routes/PayOnline");
+const Transaction = require("./routes/crontransaction");
 
 //okokok
 
@@ -52,6 +53,8 @@ app.use('/carts', cartsRouter)
 app.use("/orders", Order);
 // http://localhost:7777/payonline
 app.use("/payonline", PayOnline);
+// http://localhost:7777/cron
+app.use("/cron", Transaction);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

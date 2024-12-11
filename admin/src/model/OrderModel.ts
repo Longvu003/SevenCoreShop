@@ -10,6 +10,7 @@ export interface Order {
     }[];
     totalAmount: number;
     address: string;
+    orderCode: string;
     paymentMethod: string;
     status: string;
     date: Date;

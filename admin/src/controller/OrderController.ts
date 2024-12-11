@@ -1,5 +1,5 @@
 import { Order } from '../model/OrderModel';
-import { GetOrder } from '../service/OrderSevice';
+import { GetOrder,UpdateOrderStatus } from '../service/OrderSevice';
 
 export const orderController = () => {
 
@@ -13,7 +13,7 @@ export const orderController = () => {
         }
     };
 
-    const updateOrderStatus = async (orderId, status) => {
+    const updateOrderStatus = async (orderId: string, status: string) => {
         try {
           const updatedOrder = await UpdateOrderStatus(orderId, status);
           return updatedOrder;

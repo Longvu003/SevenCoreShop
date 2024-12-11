@@ -2,7 +2,7 @@ const express = require("express");
 const OrderController = require("../controllers/OrderController");
 const router = express.Router();
 
-// cập nhật trạng thái đơn hàng try catch
+// cập nhật trạng thái đơn hàng 
 router.post("/updateStatus", async (req, res) => {
   const { orderId, status } = req.body;
   try {
@@ -15,9 +15,9 @@ router.post("/updateStatus", async (req, res) => {
 });
 
 
-
 // Endpoint thanh toán và tạo đơn hàng
 router.post("/checkout", OrderController.checkout);
+router.get("/cron", OrderController.checkAndUpdateAllOrders);
 
 // Endpoint lấy danh sách tất cả đơn hàng
 router.get("/getOrderUser", OrderController.getOrderUser);
