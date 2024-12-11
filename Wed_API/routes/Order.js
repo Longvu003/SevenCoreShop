@@ -21,5 +21,8 @@ router.get("/getOrderUserById", async (req, res) => {
     console.log("Lỗi nè", error);
   }
 });
+
+router.post("/searchOrder", OrderController.searchOrder);
+
 // router.get("/getOrderUserById", OrderController.getOrderUserById);
 module.exports = router;

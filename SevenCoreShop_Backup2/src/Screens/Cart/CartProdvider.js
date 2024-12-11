@@ -10,7 +10,6 @@ import {
   createContext,
   useCallback,
 } from 'react';
-import {useFocusEffect} from '@react-navigation/native';
 const CartContext = createContext();
 export const CartProdvider = ({children}) => {
   const [cart, setCart] = useState([]);
@@ -122,10 +121,8 @@ export const CartProdvider = ({children}) => {
   };
 
   useEffect(() => {
-    if (cart.length === 0) {
-      getDataCart();
-    }
-  }, [cart]);
+    getDataCart();
+  }, []);
 
   return (
     <CartContext.Provider

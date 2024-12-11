@@ -93,4 +93,19 @@ const getOrderUserById = async (userId) => {
   return itemOrder;
 };
 
-module.exports = { checkout, getOrderUser, getOrderUserById };
+const searchOrder = async (req, res) => {
+  const { query } = req.body;
+  try {
+    const searchRegex = new RegExp(query, "i");
+    const conditions = {
+      $or: [{ "items.name": searchRegex }, { status: searchRegex }],
+    };
+    const results = await OrderModel.find(conditions);
+    res.json(results);
+  } catch (error) {
+    console.log("Lỗi tìm đơn hàng:", error);
+    res.status(500).send("Lỗi trong lúc tìm  đơn hàng");
+  }
+};
+
+module.exports = { checkout, getOrderUser, getOrderUserById, searchOrder };

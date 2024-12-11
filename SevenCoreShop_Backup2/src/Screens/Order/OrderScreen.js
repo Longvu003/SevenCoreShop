@@ -8,6 +8,8 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
@@ -19,32 +21,72 @@ const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
 const OrderScreen = ({navigation}) => {
   const [dataOrder, setDataOrder] = useState([]);
-  const [productDetails, setProductDetails] = useState([]);
+  const [DataSearch, setDataSearch] = useState();
+  const [seacrh, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const getProductDetails = async () => {
     const userId = await AsyncStorage.getItem('userId');
     const newUserId = JSON.parse(userId);
+
+    if (loading) {
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <ActivityIndicator size={'large'} color="orange" />;
+      </View>;
+    }
+    if (error) {
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text>
+          Có lỗi trong lúc lấy dữ liệu... Vui lòng kiểm tra lại kết nối !!
+        </Text>
+      </View>;
+    }
     try {
       const response = await axios.get(
         `${API__URL}/Orders/getOrderUserById?userId=${newUserId}`,
       );
+      setLoading(false);
       setDataOrder(response.data);
     } catch (error) {
       console.log('Lỗi khi lấy thông tin sản phẩm:', error);
+      setError(error);
+      setLoading(false);
       return null;
     }
   };
-  useFocusEffect(
-    useCallback(() => {
-      getProductDetails();
-    }, []),
-  );
-
+  const handleSearch = async query => {
+    setSearch(query);
+    const respone = await axios.post(`${API__URL}/orders/searchOrder`, {
+      query,
+    });
+    setDataOrder(respone.data);
+  };
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     setLoading(true);
+  //     getProductDetails();
+  //   }, []),
+  // );
+  useEffect(() => {
+    setLoading(true);
+    getProductDetails();
+  }, []);
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={{flex: 1}}>
         <View style={{flex: 1}}>
           <Customheader title="Lịch sử giao hàng" />
         </View>
+        <View>
+          <TextInput
+            style={styles.input__search}
+            placeholder="Tìm kiếm "
+            value={seacrh}
+            onChangeText={text => handleSearch(text)}
+            autoCapitalize="none"
+          />
+        </View>
+
         {dataOrder.length > 0 ? (
           <View style={{flex: 1, marginHorizontal: 20}}>
             <FlatList
@@ -113,6 +155,14 @@ const OrderScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  input__search: {
+    borderColor: 'black',
+    borderWidth: 1,
+    width: WIDTH__SCREEN * 0.9,
+    marginHorizontal: 20,
+    borderRadius: 20,
+    marginVertical: 20,
+  },
   container: {
     backgroundColor: 'white',
   },
