@@ -3,134 +3,58 @@ import ReactApexChart from 'react-apexcharts';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import Dropdown from '../components/Dropdown';
 import { useEffect } from 'react';
 import { setPageTitle } from '../store/themeConfigSlice';
-import IconHorizontalDots from '../components/Icon/IconHorizontalDots';
-import IconTrendingUp from '../components/Icon/IconTrendingUp';
 import IconPlus from '../components/Icon/IconPlus';
 import IconCreditCard from '../components/Icon/IconCreditCard';
-import IconMail from '../components/Icon/IconMail';
-import IconChecks from '../components/Icon/IconChecks';
-import IconFile from '../components/Icon/IconFile';
-import IconServer from '../components/Icon/IconServer';
-import IconChrome from '../components/Icon/IconChrome';
-import IconSafari from '../components/Icon/IconSafari';
-import IconGlobe from '../components/Icon/IconGlobe';
-import IconUsersGroup from '../components/Icon/IconUsersGroup';
-import IconLink from '../components/Icon/IconLink';
-import IconChatDots from '../components/Icon/IconChatDots';
-import IconThumbUp from '../components/Icon/IconThumbUp';
-import IconCaretsDown from '../components/Icon/IconCaretsDown';
-import IconSquareCheck from '../components/Icon/IconSquareCheck';
-import IconClock from '../components/Icon/IconClock';
 import IconShoppingBag from '../components/Icon/IconShoppingBag';
+import { ThongKe } from '../model/Top1ItemModel';
+import { Top1ItemController } from '../controller/Top1ItemController';
+import { useState } from 'react';
 
 const Analytics = () => {
+    const { thongke } = Top1ItemController();
+    const [dataThongke, setDataThongKe] = useState<ThongKe | any>({
+        name: '',
+        TongTienThang: 0,
+        TongTienNam: 0,
+        TongDonHang: [],
+        bestSellingProduct: [],
+    });
+
+    const array = Array.from({ length: 12 }, (_, index) => index + 1);
+    const monthName = array.map((item) => {
+        return  `TH${item}`
+    })
+    const showData = async () => {
+        const data: any = await thongke();
+        const tongdonhang  = array.map((item) => {
+            const qty = 0;
+            const itemmonth = data.TongDonHang.find((x: any) => x._id === item)
+            return itemmonth ? itemmonth.quantity : qty;
+        });
+        setDataThongKe({...data,TongDonHang:tongdonhang, }); 
+    };
+
+    const formatMoney = (amount: number) => {
+        return amount.toLocaleString('vi-VN');
+    };
+
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Trang Chủ'));
-    });
+        showData();
+    },[]);
 
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
-    // totalVisitOptions
-    const totalVisit: any = {
-        series: [{ data: [21, 9, 36, 12, 44, 25, 59, 41, 66, 25] }],
-        options: {
-            chart: {
-                height: 58,
-                type: 'line',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-                dropShadow: {
-                    enabled: true,
-                    blur: 3,
-                    color: '#009688',
-                    opacity: 0.4,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: ['#009688'],
-            grid: {
-                padding: {
-                    top: 5,
-                    bottom: 5,
-                    left: 5,
-                    right: 5,
-                },
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-                y: {
-                    title: {
-                        formatter: () => {
-                            return '';
-                        },
-                    },
-                },
-            },
-        },
-    };
-    // paidVisitOptions
-    const paidVisit: any = {
-        series: [{ data: [22, 19, 30, 47, 32, 44, 34, 55, 41, 69] }],
-        options: {
-            chart: {
-                height: 58,
-                type: 'line',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-                dropShadow: {
-                    enabled: true,
-                    blur: 3,
-                    color: '#e2a03f',
-                    opacity: 0.4,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: ['#e2a03f'],
-            grid: {
-                padding: {
-                    top: 5,
-                    bottom: 5,
-                    left: 5,
-                    right: 5,
-                },
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-                y: {
-                    title: {
-                        formatter: () => {
-                            return '';
-                        },
-                    },
-                },
-            },
-        },
-    };
-    // uniqueVisitorSeriesOptions
     const uniqueVisitorSeries: any = {
+        
         series: [
             {
-                name: 'Đơn Hàng',
-                data: [91, 76, 85, 101, 98, 87, 105, 91, 114, 94, 66, 70],
+                name: 'Số Lượng Đơn Hàng',
+                data: dataThongke.TongDonHang,
             },
         ],
         options: {
@@ -186,7 +110,7 @@ const Analytics = () => {
                 },
             },
             xaxis: {
-                categories: ['TH1', 'TH2', 'TH3', 'TH4', 'TH5', 'TH6', 'TH7', 'TH8', 'TH9', 'TH10', 'TH11', 'TH12'],
+                categories: monthName,
                 axisBorder: {
                     show: true,
                     color: isDark ? '#3b3f5c' : '#e0e6ed',
@@ -218,136 +142,6 @@ const Analytics = () => {
             },
         },
     };
-    // followersOptions
-    const followers: any = {
-        series: [
-            {
-                data: [38, 60, 38, 52, 36, 40, 28],
-            },
-        ],
-        options: {
-            chart: {
-                height: 160,
-                type: 'area',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: ['#4361ee'],
-            grid: {
-                padding: {
-                    top: 5,
-                },
-            },
-            yaxis: {
-                show: false,
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-                y: {
-                    title: {
-                        formatter: () => {
-                            return '';
-                        },
-                    },
-                },
-            },
-        },
-    };
-    // referralOptions
-    const referral: any = {
-        series: [
-            {
-                data: [60, 28, 52, 38, 40, 36, 38],
-            },
-        ],
-        options: {
-            chart: {
-                height: 160,
-                type: 'area',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: ['#e7515a'],
-            grid: {
-                padding: {
-                    top: 5,
-                },
-            },
-            yaxis: {
-                show: false,
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-                y: {
-                    title: {
-                        formatter: () => {
-                            return '';
-                        },
-                    },
-                },
-            },
-        },
-    };
-    // engagementOptions
-    const engagement: any = {
-        series: [
-            {
-                name: 'Sales',
-                data: [28, 50, 36, 60, 38, 52, 38],
-            },
-        ],
-        options: {
-            chart: {
-                height: 160,
-                type: 'area',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: ['#1abc9c'],
-            grid: {
-                padding: {
-                    top: 5,
-                },
-            },
-            yaxis: {
-                show: false,
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-                y: {
-                    title: {
-                        formatter: () => {
-                            return '';
-                        },
-                    },
-                },
-            },
-        },
-    };
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -368,7 +162,7 @@ const Analytics = () => {
                             <h5 className="font-semibold text-lg ">Doanh Thu Tháng Này</h5>
                         </div>
                         <div className=" text-[#e95f2b] text-3xl font-bold my-10">
-                            <span>45.300.000</span>
+                            <span>{formatMoney(dataThongke.TongTienThang)} VND</span>
                         </div>               
                     </div>
                     <div className="panel h-full">
@@ -376,7 +170,7 @@ const Analytics = () => {
                             <h5 className="font-semibold text-lg ">Sản Phẩm Bán Chạy Nhất</h5>
                         </div>
                         <div className=" text-[#e95f2b] text-3xl font-bold my-10">
-                            <span>Giày Thể Thao</span>
+                            <span>{dataThongke.bestSellingProduct[0]?.name}</span>
                         </div>
                     </div>
 
@@ -388,7 +182,7 @@ const Analytics = () => {
                             <h5 className="font-semibold text-lg">Tổng Doanh Thu</h5>
 
                             <div className="relative text-xl whitespace-nowrap">
-                                875.000.000
+                                {formatMoney(dataThongke.TongTienNam)} VND
                             </div>
                         </div>
                         <div className="flex items-center justify-between z-10">
@@ -419,7 +213,9 @@ const Analytics = () => {
                         </div>
                         <PerfectScrollbar className="perfect-scrollbar relative h-[360px] ltr:pr-3 rtl:pl-3 ltr:-mr-3 rtl:-ml-3">
                             <div className="space-y-7">
-                                <div className="flex">
+                                { dataThongke.bestSellingProduct.map((item:any,index:number) => 
+                                (
+                                    <div className="flex">
                                     <div className="shrink-0 ltr:mr-2 rtl:ml-2 relative z-10 before:w-[2px] before:h-[calc(100%-24px)] before:bg-white-dark/30 before:absolute before:top-10 before:left-4">
                                         <div className="bg-secondary shadow shadow-secondary w-8 h-8 rounded-full flex items-center justify-center text-white">
                                             <IconShoppingBag className="w-4 h-4" />
@@ -427,78 +223,15 @@ const Analytics = () => {
                                     </div>
                                     <div>
                                         <h5 className="font-semibold dark:text-white-light">
-                                            Sản Phẩm 1 :{' '}
+                                            Top {index + 1 }:{' '}
                                             <button type="button" className="text-success">
-                                                [Giày Thể Thao]
+                                                [{item.name}]
                                             </button>
                                         </h5>
-                                        <p className="text-white-dark text-xs">27 Feb, 2020</p>
                                     </div>
                                 </div>
-                                <div className="flex">
-                                    <div className="shrink-0 ltr:mr-2 rtl:ml-2 relative z-10 before:w-[2px] before:h-[calc(100%-24px)] before:bg-white-dark/30 before:absolute before:top-10 before:left-4">
-                                        <div className="bg-success shadow-success w-8 h-8 rounded-full flex items-center justify-center text-white">
-                                            <IconShoppingBag className="w-4 h-4" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h5 className="font-semibold dark:text-white-light">
-                                            Sản Phẩm 2 :{' '}
-                                            <button type="button" className="text-success">
-                                                [Áo Thun]
-                                            </button>
-                                        </h5>
-                                        <p className="text-white-dark text-xs">27 Feb, 2020</p>
-                                    </div>
-                                </div>
-                                <div className="flex">
-                                    <div className="shrink-0 ltr:mr-2 rtl:ml-2 relative z-10 before:w-[2px] before:h-[calc(100%-24px)] before:bg-white-dark/30 before:absolute before:top-10 before:left-4">
-                                        <div className="bg-primary w-8 h-8 rounded-full flex items-center justify-center text-white">
-                                            <IconShoppingBag className="w-4 h-4" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h5 className="font-semibold dark:text-white-light">
-                                            Sản Phẩm 3 :{' '}
-                                            <button type="button" className="text-success">
-                                                [Quần Jean]
-                                            </button>
-                                        </h5>
-                                        <p className="text-white-dark text-xs">27 Feb, 2020</p>
-                                    </div>
-                                </div>
-                                <div className="flex">
-                                    <div className="shrink-0 ltr:mr-2 rtl:ml-2 relative z-10 before:w-[2px] before:h-[calc(100%-24px)] before:bg-white-dark/30 before:absolute before:top-10 before:left-4">
-                                        <div className="bg-danger w-8 h-8 rounded-full flex items-center justify-center text-white">
-                                            <IconShoppingBag className="w-4 h-4" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h5 className="font-semibold dark:text-white-light">
-                                            Sản Phẩm 4 :{' '}
-                                            <button type="button" className="text-success">
-                                                [Túi Xách]
-                                            </button>
-                                        </h5>
-                                        <p className="text-white-dark text-xs">27 Feb, 2020</p>
-                                    </div>
-                                </div>
-                                <div className="flex">
-                                    <div className="shrink-0 ltr:mr-2 rtl:ml-2 relative z-10 before:w-[2px] before:h-[calc(100%-24px)] before:bg-white-dark/30 before:absolute before:top-10 before:left-4">
-                                        <div className="bg-warning w-8 h-8 rounded-full flex items-center justify-center text-white">
-                                            <IconShoppingBag className="w-4 h-4" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h5 className="font-semibold dark:text-white-light">
-                                            Sản Phẩm 5 :{' '}
-                                            <button type="button" className="text-success">
-                                                [Đồng Hồ]
-                                            </button>
-                                        </h5>
-                                        <p className="text-white-dark text-xs">27 Feb, 2020</p>
-                                    </div>
-                                </div>
+                                )
+                                )}
                             </div>
                         </PerfectScrollbar>
                     </div>
