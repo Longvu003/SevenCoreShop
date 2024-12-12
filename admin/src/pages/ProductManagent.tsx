@@ -77,7 +77,7 @@ const Tables = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>Hình ảnh</th> {/* Thêm cột Hình ảnh */}
+                                <th>Hình ảnh</th>
                                 <th>Tên sản phẩm</th>
                                 <th>Giá bán</th>
                                 <th>Số lượng</th>

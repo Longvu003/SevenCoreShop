@@ -1,20 +1,22 @@
 import { useState } from "react";
-import { categoryController } from "../controller/CategoryController";
+import { payOnlineController } from "../controller/PayOnlineController";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-export default function CategoryUpdate() {
-  const MySwal = withReactContent(Swal);
-  const { createCategories } = categoryController();
+const MySwal = withReactContent(Swal);
+
+export default function NewPayOnline() {
+  const { createPayOnline } = payOnlineController();
   const [images, setImages] = useState<string[]>([]);
-  const [dataCategories, setDataCategories] = useState<any>({
-    name: "",
-    description: "",
+  const [dataPayOnline, setDataPayOnline] = useState<any>({
+    bank: "",
+    acc_holder: "",
+    acc_number: "",
   });
 
   const uploadToCloudinary = async () => {
     try {
-      const fileInput = document.getElementById("categoriesImages") as HTMLInputElement;
+      const fileInput = document.getElementById("payOnlineImages") as HTMLInputElement;
       const files = fileInput?.files;
       if (files) {
         const uploadPromises = Array.from(files).map(async (file) => {
@@ -47,8 +49,8 @@ export default function CategoryUpdate() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDataCategories({
-      ...dataCategories,
+    setDataPayOnline({
+      ...dataPayOnline,
       [e.target.name]: e.target.value,
     });
   };
@@ -56,10 +58,10 @@ export default function CategoryUpdate() {
   const clickCreateNew = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!dataCategories.name.trim() || !dataCategories.description.trim()) {
+    if (!dataPayOnline.bank.trim() || !dataPayOnline.acc_holder.trim() || !dataPayOnline.acc_number.trim()) {
       MySwal.fire({
         title: "Lỗi",
-        text: "Tên danh mục và mô tả không được để trống!",
+        text: "Ngân hàng, chủ tài khoản và số tài khoản không được để trống!",
         icon: "error",
       });
       return; 
@@ -75,32 +77,32 @@ export default function CategoryUpdate() {
     }
 
     try {
-      const newCategory = {
-        ...dataCategories,
+      const newPayOnline = {
+        ...dataPayOnline,
         images, 
       };
 
-      const res: any = await createCategories(newCategory);
+      const res: any = await createPayOnline(newPayOnline);
       if (res.status === true) {
         MySwal.fire({
           title: "Thành công",
-          text: "Thêm mới danh mục sản phẩm thành công",
+          text: "Thêm mới mục thanh toán thành công",
           icon: "success",
         }).then(() => {
-          location.href = "/categoriesmanagent";
+          location.href = "/payonlineManagent";
         });
       } else {
         MySwal.fire({
           title: "Thất bại",
-          text: "Tên danh mục đã tồn tại",
+          text: "Thêm mới mục thanh toán thất bại",
           icon: "error",
         });
       }
     } catch (error) {
-      console.error("Error creating category:", error);
+      console.error("Error creating pay online entry:", error);
       MySwal.fire({
         title: "Lỗi",
-        text: "Thêm danh mục thất bại",
+        text: "Thêm mới mục thanh toán thất bại",
         icon: "error",
       });
     }
@@ -109,11 +111,11 @@ export default function CategoryUpdate() {
   return (
     <form className="space-y-5" onSubmit={clickCreateNew}>
       <div>
-        <label htmlFor="Name">Tên Danh mục sản phẩm</label>
+        <label htmlFor="bank">Ngân hàng</label>
         <input
-          id="Name"
+          id="bank"
           type="text"
-          name="name"
+          name="bank"
           className="form-input"
           required
           onChange={handleChange}
@@ -121,11 +123,11 @@ export default function CategoryUpdate() {
       </div>
 
       <div>
-        <label htmlFor="Description">Mô Tả danh mục sản phẩm</label>
+        <label htmlFor="acc_holder">Chủ tài khoản</label>
         <input
-          id="Description"
+          id="acc_holder"
           type="text"
-          name="description"
+          name="acc_holder"
           className="form-input"
           required
           onChange={handleChange}
@@ -133,9 +135,21 @@ export default function CategoryUpdate() {
       </div>
 
       <div>
-        <label htmlFor="categoriesImages">Hình ảnh</label>
+        <label htmlFor="acc_number">Số tài khoản</label>
         <input
-          id="categoriesImages"
+          id="acc_number"
+          type="text"
+          name="acc_number"
+          className="form-input"
+          required
+          onChange={handleChange}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="payOnlineImages">Hình ảnh</label>
+        <input
+          id="payOnlineImages"
           type="file"
           name="images"
           onChange={uploadToCloudinary}
@@ -147,7 +161,7 @@ export default function CategoryUpdate() {
             <div key={index} style={{ position: "relative" }}>
               <img
                 src={img}
-                alt="categories"
+                alt="payOnline"
                 style={{ width: 150, height: 150, objectFit: "cover" }}
               />
               <button

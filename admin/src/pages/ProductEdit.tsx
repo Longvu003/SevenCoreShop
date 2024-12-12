@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { userProducts } from '../controller/ProductController';
 import { Category } from '../model/CategoriesModel';
 import { categoryController } from '../controller/CategoryController';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 export default function ProductUpdate() {
+    const MySwal = withReactContent(Swal);
     const queryString = location.search;
     const urlParams = new URLSearchParams(queryString);
     const { getCategories, deleteCategoriesById, } = categoryController();
@@ -56,9 +60,10 @@ export default function ProductUpdate() {
         fetchProduct();
     }, [id]);
 
-    const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+
         const { name, value, files } = e.target as HTMLInputElement;
-    
+
         if (name.includes('category.')) {
             const categoryField = name.split('.')[1];
             setDataProduct((prevState: any) => ({
@@ -68,22 +73,21 @@ export default function ProductUpdate() {
                     [categoryField]: value
                 }
             }));
-        } else if (name === 'images' && files) {
-            const newImages = Array.from(files).map(file => URL.createObjectURL(file));
-            setDataProduct((prevState: any) => ({
-                ...prevState,
-                images: [...prevState.images, ...newImages] // Thêm các hình ảnh mới vào mảng hình ảnh cũ
-            }));
+        } else if (name === 'images') {
+            setDataProduct({
+                ...dataProduct,
+                images: files ? Array.from(files).map(file => URL.createObjectURL(file)) : []
+            });
         } else {
-            setDataProduct((prevState: any) => ({
-                ...prevState,
+            setDataProduct({
+                ...dataProduct,
                 [name]: value
-            }));
+            });
         }
     };
-    
-    
-    
+
+
+
     const clickUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -174,50 +178,19 @@ export default function ProductUpdate() {
             </div>
 
             <div>
-    <label htmlFor="productImages">Hình ảnh</label>
-    <input
-        id="productImages"
-        type="file"
-        name="images"
-        multiple
-        className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
-        onChange={handleChange}
-    />
-    <div style={{ margin: '10px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-        {dataProduct.images.map((image: string, index: number) => (
-            <div key={index} style={{ position: 'relative' }}>
-                <img
-                    src={image}
-                    alt={`Product Image ${index + 1}`}
-                    style={{ width: '200px', height: '200px', objectFit: 'cover', borderRadius: '8px' }}
+            <label htmlFor="productImages">Hình ảnh</label>
+                <input
+                    id="productImages"
+                    type="file"
+                    name="images"
+                    multiple
+                    className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
+                    onChange={handleChange}
                 />
-                <button
-                    type="button"
-                    onClick={() => {
-                        setDataProduct((prevState: any) => ({
-                            ...prevState,
-                            images: prevState.images.filter((_, i) => i !== index), // Xóa hình ảnh
-                        }));
-                    }}
-                    style={{
-                        position: 'absolute',
-                        top: 5,
-                        right: 5,
-                        backgroundColor: 'red',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '50%',
-                        width: '20px',
-                        height: '20px',
-                        cursor: 'pointer',
-                    }}
-                >
-                    X
-                </button>
+                <div style={{ margin: '10px' }}>
+                    <img src={dataProduct.images[0]} alt="Product" style={{ width: '200px' }} />
+                </div>
             </div>
-        ))}
-    </div>
-</div>
             <button type="submit" className="btn btn-primary !mt-6">Lưu</button>
         </form>
     );
