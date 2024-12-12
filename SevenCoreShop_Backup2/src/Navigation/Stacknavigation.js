@@ -24,7 +24,7 @@ import AdScreen from '../Screens/HomeSceen/AdScreen';
 import AdDetail from '../Screens/HomeSceen/AdDetail';
 import PaymentAddressScreen from '../Screens/HomeSceen/PaymentAddressScreen';
 import CartProdvider from '../Screens/Cart/CartProdvider';
-
+import SearchOrder from '../Screens/Order/SearchOrder';
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
@@ -64,6 +64,7 @@ const Stacknavigation = () => {
           <Stack.Screen name="DetailOrder" component={DetailOrder} />
           <Stack.Screen name="AdScreen" component={AdScreen} />
           <Stack.Screen name="AdDetail" component={AdDetail} />
+          <Stack.Screen name="SearchOrder" component={SearchOrder} />
         </Stack.Navigator>
       </NavigationContainer>
     </CartProdvider>

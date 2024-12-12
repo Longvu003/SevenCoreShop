@@ -3,6 +3,12 @@ import {Dimensions} from 'react-native';
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
 const UserStyleSheet = StyleSheet.create({
+  container__btnLogout: {
+    flex: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   txt__Signout: {
     fontSize: 20,
     color: 'red',

@@ -106,7 +106,7 @@ const User = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
-      <View style={{flex: 3, alignItems: 'center', justifyContent: 'center'}}>
+      <View style={UserStyleSheet.container__btnLogout}>
         <TouchableOpacity onPress={Logout}>
           <Text style={UserStyleSheet.txt__Signout}>Đăng xuất</Text>
         </TouchableOpacity>

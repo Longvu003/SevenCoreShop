@@ -1,9 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, StyleSheet, Image} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  Dimensions,
+} from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
-import Customheader from '../../CustomHeader/Customheader'; // Đường dẫn tới Customheader
+import Customheader from '../../CustomHeader/Customheader';
 
+const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const AllProductsScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   useEffect(() => {
@@ -15,39 +23,41 @@ const AllProductsScreen = ({navigation}) => {
       })
       .catch(error => console.log('Error fetching products:', error));
   }, []);
-
   return (
     <View style={styles.container}>
-      {/* Custom Header */}
-      <Customheader
-        leftIcon={require('../../../assets/imgs/back4.png')} // Biểu tượng quay lại
-        onLeftPress={() => navigation.goBack()} // Hành động quay lại
-        title="Sản Phẩm" // Tiêu đề
-        containerStyle={styles.customHeaderContainer}
-      />
+      <View style={{height: HEIGHT__SCREEN * 0.08}}>
+        <Customheader
+          leftIcon={require('../../../assets/imgs/back4.png')}
+          onLeftPress={() => navigation.goBack()}
+          title="Sản Phẩm"
+          containerStyle={styles.customHeaderContainer}
+        />
+      </View>
 
-      {/* Danh sách sản phẩm */}
-      <FlatList
-        data={products}
-        keyExtractor={item => item._id}
-        contentContainerStyle={{marginTop: 20}}
-        renderItem={({item}) => (
-          <View style={styles.productCard}>
-            <Image
-              source={{
-                uri:
-                  item.images && item.images[0]
-                    ? item.images[0]
-                    : 'https://via.placeholder.com/100',
-              }}
-              style={styles.productImage}
-            />
-            <Text style={styles.productName}>{item.name}</Text>
-            <Text style={styles.productPrice}>${item.price}</Text>
-          </View>
-        )}
-        numColumns={2}
-      />
+      <View style={{flex: 10}}>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={products}
+          keyExtractor={item => item._id}
+          contentContainerStyle={{marginTop: 20}}
+          renderItem={({item}) => (
+            <View style={styles.productCard}>
+              <Image
+                source={{
+                  uri:
+                    item.images && item.images[0]
+                      ? item.images[0]
+                      : 'https://via.placeholder.com/100',
+                }}
+                style={styles.productImage}
+              />
+              <Text style={styles.productName}>{item.name}</Text>
+              <Text style={styles.productPrice}>${item.price}</Text>
+            </View>
+          )}
+          numColumns={2}
+        />
+      </View>
     </View>
   );
 };
@@ -56,7 +66,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 10,
   },
   customHeaderContainer: {
     marginBottom: 20,

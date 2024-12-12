@@ -44,6 +44,7 @@ const CategoryScreen = ({navigation}) => {
         data={categories}
         keyExtractor={item => item._id}
         contentContainerStyle={{marginTop: 20}}
+        showsVerticalScrollIndicator={false}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => handleCategoryPress(item)}>
             <View style={styles.categoryCard}>
@@ -64,7 +65,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 10,
   },
   customHeaderContainer: {
     marginBottom: 20,
