@@ -11,7 +11,7 @@ import { format } from 'date-fns';
 import IconTrash from '../components/Icon/IconTrash';
 
 const Tables = () => {
-    const { getOrder, updateOrderStatus } = orderController();
+    const { getOrder, updateOrderStatus, updateOrderStatusPay } = orderController();
     const [dataOrder, setDataOrder] = useState<Order[]>([]);
     const MySwal = withReactContent(Swal);
 
@@ -65,57 +65,58 @@ const Tables = () => {
                                         <td className="text-center whitespace-nowrap">
                                             <select
                                                 className={`btn dropdown-toggle btn-dark ${order.statuspay === "Success"
-                                                        ? "bg-success text-white"
-                                                        : order.statuspay === "Delivered"
-                                                            ? "bg-primary text-white"
-                                                            : order.statuspay === "Pending"
-                                                                ? "bg-warning text-dark"
-                                                                : order.statuspay === "Canceled"
-                                                                    ? "bg-danger text-white"
-                                                                    : ""
+                                                    ? "bg-success text-white"
+                                                        : order.statuspay === "Pending"
+                                                            ? "bg-warning text-dark"
+                                                            : order.statuspay === "Canceled"
+                                                                ? "bg-danger text-white"
+                                                                : ""
                                                     }`}
                                                 value={order.statuspay}
                                                 onChange={async (e) => {
-                                                    const newStatus = e.target.value;
-                                                    alert("cập nhật trạng thái");
-                                                    // try {
-                                                    //     const res = await updateOrderStatus(order._id, newStatus);
-                                                    //     console.log(res);
-                                                    //     if (res) {
-                                                    //         showData();
-                                                    //         MySwal.fire({
-                                                    //             title: "Thành công",
-                                                    //             text: `Trạng thái đơn hàng đã được cập nhật thành ${newStatus}`,
-                                                    //             icon: "success",
-                                                    //             confirmButtonText: "OK",
-                                                    //         });
-                                                    //     }
-                                                    // } catch (error) {
-                                                    //     console.error("Cập nhật trạng thái thất bại:", error);
-                                                    //     MySwal.fire({
-                                                    //         title: "Thất bại",
-                                                    //         text: "Không thể cập nhật trạng thái đơn hàng",
-                                                    //         icon: "error",
-                                                    //         confirmButtonText: "OK",
-                                                    //     });
-                                                    // }
+                                                    const newStatuspay = e.target.value;
+                                                    console.log("Thay đổi statuspay:", newStatuspay, "cho đơn hàng:", order._id);
+                                                    try {
+                                                        const res = await updateOrderStatusPay(order._id, newStatuspay);
+                                                        console.log("Kết quả từ API:", res);
+                                                        if (res) {
+                                                            showData();
+                                                            MySwal.fire({
+                                                                title: "Thành công",
+                                                                text: `Trạng thái thanh toán đơn hàng đã được cập nhật thành ${newStatuspay}`,
+                                                                icon: "success",
+                                                                confirmButtonText: "OK",
+                                                            });
+                                                        }
+                                                    } catch (error) {
+                                                        console.error("Lỗi cập nhật trạng thái:", error);
+                                                        MySwal.fire({
+                                                            title: "Thất bại",
+                                                            text: "Không thể cập nhật trạng thái thanh toán đơn hàng",
+                                                            icon: "error",
+                                                            confirmButtonText: "OK",
+                                                        });
+                                                    }
                                                 }}
+                                                
                                             >
                                                 <option value="Completed">Đã Thanh Toán</option>
                                                 <option value="Pending">Đang xử lý</option>
+                                                <option value="Canceled">Đã hủy</option>
                                             </select>
-                                        </td>                                        <td>{format(new Date(order.date), 'HH:mm - dd/MM/yyyy')}</td>
+                                        </td>                                        
+                                        <td>{format(new Date(order.date), 'HH:mm - dd/MM/yyyy')}</td>
                                         <td className="text-center whitespace-nowrap">
                                             <select
                                                 className={`btn dropdown-toggle btn-dark ${order.status === "Success"
-                                                        ? "bg-success text-white"
-                                                        : order.status === "Delivered"
-                                                            ? "bg-primary text-white"
-                                                            : order.status === "Pending"
-                                                                ? "bg-warning text-dark"
-                                                                : order.status === "Canceled"
-                                                                    ? "bg-danger text-white"
-                                                                    : ""
+                                                    ? "bg-success text-white"
+                                                    : order.status === "Delivered"
+                                                        ? "bg-primary text-white"
+                                                        : order.status === "Pending"
+                                                            ? "bg-warning text-dark"
+                                                            : order.status === "Canceled"
+                                                                ? "bg-danger text-white"
+                                                                : ""
                                                     }`}
                                                 value={order.status}
                                                 onChange={async (e) => {

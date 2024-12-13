@@ -49,29 +49,25 @@ export const UpdateOrderStatus = async (orderId: string, status: string): Promis
 };
 
 // Updatestatuspay
-export const UpdateOrderStatusPay = async (orderId: string, status: string): Promise<any> => {
+export const UpdateOrderStatusPay = async (orderId: string, statuspay: string): Promise<any> => {
     try {
         const response = await fetch(`${API_URL}/orders/updateStatusPay`, {
-            method: "post",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ orderId, status }),
+            body: JSON.stringify({ orderId, statuspay }),
         });
 
-        const responseData = await response.json();
-        console.log("Updated Order:", responseData);
-
         if (!response.ok) {
-            throw new Error(responseData?.message || "Failed to update order status");
+            const responseData = await response.json();
+            throw new Error(responseData?.message || "Failed to update statuspay");
         }
 
-        return responseData as Order;
+        return await response.json();
     } catch (error) {
-        console.error("Error updating order status:", error);
+        console.error("Error updating statuspay:", error);
         throw error;
     }
 };
-  
-  
 
