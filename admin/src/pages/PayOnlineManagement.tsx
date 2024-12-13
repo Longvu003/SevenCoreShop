@@ -67,8 +67,8 @@ const PayOnlineManagement = () => {
         <div className="grid xl:grid-cols-1 gap-12 grid-cols-1">
             <div className="panel">
                 <div className="flex items-center justify-between mb-12">
-                    <h5 className="font-semibold text-lg dark:text-white-light">Quản lý thanh toán trực tuyến</h5>
-                    <a href="/payonline/new" className="btn btn-success">+ Thêm mục thanh toán</a>
+                    <h5 className="font-semibold text-lg dark:text-white-light">Quản lý ngân hàng thanh toán</h5>
+                    <a href="/payonline/new" className="btn btn-success">+ Thêm ngân hàng</a>
                 </div>
                 <div className="table-responsive mb-5">
                     <table>

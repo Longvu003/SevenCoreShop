@@ -1,4 +1,4 @@
-import { PayOnline } from '../model/PayOnline';
+import { PayOnline } from '../model/PayOnlineModel';
 import { GetPayOnlineList, DeletePayOnlineById, UpdatePayOnlineById, CreatePayOnline, GetPayOnlineById } from '../service/PayOnlineSevice';
 
 export const payOnlineController = () => {
