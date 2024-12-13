@@ -55,6 +55,17 @@ export const userProducts = () => {
         }
     }
 
+    
+    const updateProductAvailability = async (id: string, available: boolean) => {
+    try {
+      const updatedProduct = await UpdateProductAvailability(id, available);
+      return updatedProduct;
+    } catch (error) {
+      console.error('Failed to update product availability', error);
+      return error;
+    }
+    };
+
 
 
     return {

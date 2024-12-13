@@ -48,8 +48,8 @@ const Tables = () => {
                                 <th>Tổng tiền</th>
                                 <th>Địa chỉ</th>
                                 <th>Mã chuyển tiền</th>
+                                <th>Ngày tạo</th>
                                 <th>Trạng thái thanh toán</th>
-                                <th>Ngày mua</th>
                                 <th>Trạng thái vận chuyển</th>
                             </tr>
                         </thead>
@@ -61,14 +61,13 @@ const Tables = () => {
                                         <td>{order.totalAmount}</td>
                                         <td>{order.address}</td>
                                         <td>{order.orderCode}</td>
+                                        <td>{format(new Date(order.date), 'HH:mm - dd/MM/yyyy')}</td>
                                         <td className="text-center whitespace-nowrap">
                                             <select
                                                 className={`btn dropdown-toggle btn-dark ${order.statuspay === "Đã thanh toán"
                                                     ? "bg-success text-white"
-                                                    : order.statuspay === "Đang xử lý"
-                                                        ? "bg-warning text-dark"
-                                                        : order.statuspay === "Đã hủy"
-                                                            ? "bg-danger text-white"
+                                                    : order.statuspay === "Chưa thanh toán"
+                                                        ? "bg-danger text-white"
                                                             : ""
                                                     }`}
                                                 value={order.statuspay}
@@ -99,11 +98,9 @@ const Tables = () => {
                                                 }}
                                             >
                                                 <option value="Đã thanh toán">Đã thanh toán</option>
-                                                <option value="Đang xử lý">Đang xử lý</option>
-                                                <option value="Đã hủy">Đã hủy</option>
+                                                <option value="Đang xử lý">Chưa thanh toán</option>
                                             </select>
                                         </td>                                        
-                                        <td>{format(new Date(order.date), 'HH:mm - dd/MM/yyyy')}</td>
                                         <td className="text-center whitespace-nowrap">
                                             <select
                                                 className={`btn dropdown-toggle btn-dark ${order.status === "Giao thành công"

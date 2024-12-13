@@ -16,7 +16,8 @@ const ProductSchema = new Schema({
     // ngày giờ cập nhật
     updateAt: { type: Date, default: Date.now },
     // tài khoản còn hoạt động hay không
-    avaialble: { type: Boolean, default: true }
+    available: { type: Boolean, default: true } 
+    //true là còn hoạt động, false là không hoạt động
 });
 // tiếng anh, số ít, chữ thường, không dấu, không cách  
 //  //tạo model user từ schema UserSchema chưa có thì tạo mới, có rồi thì sử dụng lại
