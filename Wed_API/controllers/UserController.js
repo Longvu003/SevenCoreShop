@@ -4,7 +4,7 @@ const { sendMail } = require("../helpers/Mailer");
 const httml = require("../helpers/MailContent");
 
 // Đăng ký người dùng mới
-const register = async (email, password, name, phone, address) => {
+const register = async (email, password, username, numberphone, address) => {
   try {
     // Tìm kiếm email trong database
     let user = await userModel.findOne({ email: email });
@@ -20,8 +20,8 @@ const register = async (email, password, name, phone, address) => {
     user = new userModel({
       email: email,
       password: password,
-      name: name,
-      phone: phone,
+      username: username,
+      numberphone: numberphone,
       address: address,
       available: true, // Mặc định người dùng được kích hoạt
     });
@@ -65,8 +65,8 @@ const login = async (email, password) => {
       return {
         _id: user._id,
         email: user.email,
-        name: user.name,
-        phone: user.phone,
+        username: user.username,
+        numberphone: user.numberphone,
         address: user.address,
         role: user.role,
       };

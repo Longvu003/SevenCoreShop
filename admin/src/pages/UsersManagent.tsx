@@ -12,9 +12,9 @@ const UsersManagent = () => {
     const [editModal, setEditModal] = useState(false);
     const [params, setParams] = useState<UserModel | any>({
         _id: '',
-        name: '',
+        username: '',
         email: '',
-        phone: '',
+        numberphone: '',
         role: 1,  // Mặc định là Buyer
         address: '',
     });
@@ -57,7 +57,7 @@ const UsersManagent = () => {
     };
 
     const handleUpdateUser = async () => {
-        if (!params.name || !params.email) {
+        if (!params.username || !params.email) {
             showMessage('Tên và Email không được để trống', 'error');
             return;
         }
@@ -161,10 +161,10 @@ const UsersManagent = () => {
                         <tbody>
                             {dataUser.map((user) => (
                                 <tr key={String(user._id)}>
-                                    <td>{user.name}</td>
+                                    <td>{user.username}</td>
                                     <td>{user.email}</td>
                                     <td>{user.address}</td>
-                                    <td>{user.phone}</td>
+                                    <td>{user.numberphone}</td>
                                     <td>
                                         {parseInt(user.role as string) === 1 ? 'Buyer' : parseInt(user.role as string) === 2 ? 'Admin' : parseInt(user.role as string) === 3 ? 'Seller' : 'Unknown'}
                                     </td>
@@ -194,7 +194,7 @@ const UsersManagent = () => {
                                         <form>
                                             <div className="mb-5">
                                                 <label htmlFor="name">Tên</label>
-                                                <input id="name" type="text" placeholder="Nhập tên" className="form-input" value={params.name} onChange={handleChange} />
+                                                <input id="name" type="text" placeholder="Nhập tên" className="form-input" value={params.username} onChange={handleChange} />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="email">Email</label>
@@ -202,7 +202,7 @@ const UsersManagent = () => {
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="phone">Điện Thoại</label>
-                                                <input id="phone" type="text" placeholder="Nhập số điện thoại" className="form-input" value={params.phone} onChange={handleChange} />
+                                                <input id="phone" type="text" placeholder="Nhập số điện thoại" className="form-input" value={params.numberphone} onChange={handleChange} />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="address">Địa Chỉ</label>

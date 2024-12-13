@@ -13,8 +13,8 @@ const userController = require("../controllers/UserController");
  */
 router.post("/register", async (req, res, next) => {
   try {
-    const { email, password, name, phone, address } = req.body;
-    const result = await userController.register(email, password, name, phone, address);
+    const { email, password, username, numberphone, address } = req.body;
+    const result = await userController.register(email, password, username, numberphone, address);
     return res.status(201).json({ status: true, message: "Đăng ký thành công", data: result });
   } catch (error) {
     console.log("Register error", error.message);
@@ -51,8 +51,8 @@ router.post("/login", async (req, res, next) => {
 // response: cập nhật thành công hoặc thất bại
 router.post("/updateuser", async (req, res, next) => {
   try {
-    const { email, password, name, phone, address } = req.body;
-    const result = await userController.update(email, password, name, phone, address);
+    const { email, password, username, numberphone, address } = req.body;
+    const result = await userController.update(email, password, username, numberphone, address);
     return res.status(200).json({ status: true, message: "Cập nhật thành công", data: result });
   } catch (error) {
     console.log("Update error", error.message);
@@ -127,8 +127,8 @@ router.post("/:id/deleteuserbyid", async (req, res, next) => {
   router.post("/:id/updateuserbyid", async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { email, password, name, phone, address, role } = req.body;
-      const result = await userController.updateUserById(id, email, password, name, phone, address, role);
+      const { email, password, username, numberphone, address, role } = req.body;
+      const result = await userController.updateUserById(id, email, password, username, numberphone, address, role);
       return res.status(200).json({ status: true, message: "Cập nhật tài khoản thành công", data: result });
     } catch (error) {
       console.log("Update user by id error", error.message);

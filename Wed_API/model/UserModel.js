@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
     email: { type: String, required: true, unique: true }, // unique: true để đảm bảo không có email trùng nhau 
     password: { type: String, required: true },
-    name: { type: String, required: true },               // Thêm trường tên
-    phone: { type: String, required: true },              // Thêm trường số điện thoại
+    username: { type: String, required: true },               // Thêm trường tên
+    numberphone: { type: String, required: true },              // Thêm trường số điện thoại
     address: { type: String, required: true },            // Thêm trường địa chỉ
     role: { type: Number, default: 1 },                   // 1 là user, 2 là admin
     carts: { type: Array, default: [] },                  // Lịch sử mua hàng
