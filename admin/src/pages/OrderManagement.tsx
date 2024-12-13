@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../store/themeConfigSlice';
 import Swal from "sweetalert2";
 import { Order } from '../model/OrderModel';
 import { orderController } from '../controller/OrderController';
 import withReactContent from 'sweetalert2-react-content';
 import { format } from 'date-fns';
-import IconTrash from '../components/Icon/IconTrash';
 
 const Tables = () => {
-    const { getOrder, updateOrderStatus } = orderController();
+    const { getOrder, updateOrderStatus, updateOrderStatusPay } = orderController();
     const [dataOrder, setDataOrder] = useState<Order[]>([]);
     const MySwal = withReactContent(Swal);
 
@@ -32,7 +31,7 @@ const Tables = () => {
 
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Tables'));
+        dispatch(setPageTitle('Quản lý đơn hàng'));
     }, [dispatch]);
 
     return (
@@ -51,7 +50,7 @@ const Tables = () => {
                                 <th>Mã chuyển tiền</th>
                                 <th>Trạng thái thanh toán</th>
                                 <th>Ngày mua</th>
-                                <th>Trạng thái</th>
+                                <th>Trạng thái vận chuyển</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,58 +63,58 @@ const Tables = () => {
                                         <td>{order.orderCode}</td>
                                         <td className="text-center whitespace-nowrap">
                                             <select
-                                                className={`btn dropdown-toggle btn-dark ${order.statuspay === "Success"
-                                                        ? "bg-success text-white"
-                                                        : order.statuspay === "Delivered"
-                                                            ? "bg-primary text-white"
-                                                            : order.statuspay === "Pending"
-                                                                ? "bg-warning text-dark"
-                                                                : order.statuspay === "Canceled"
-                                                                    ? "bg-danger text-white"
-                                                                    : ""
+                                                className={`btn dropdown-toggle btn-dark ${order.statuspay === "Đã thanh toán"
+                                                    ? "bg-success text-white"
+                                                    : order.statuspay === "Đang xử lý"
+                                                        ? "bg-warning text-dark"
+                                                        : order.statuspay === "Đã hủy"
+                                                            ? "bg-danger text-white"
+                                                            : ""
                                                     }`}
                                                 value={order.statuspay}
                                                 onChange={async (e) => {
-                                                    const newStatus = e.target.value;
-                                                    alert("cập nhật trạng thái");
-                                                    // try {
-                                                    //     const res = await updateOrderStatus(order._id, newStatus);
-                                                    //     console.log(res);
-                                                    //     if (res) {
-                                                    //         showData();
-                                                    //         MySwal.fire({
-                                                    //             title: "Thành công",
-                                                    //             text: `Trạng thái đơn hàng đã được cập nhật thành ${newStatus}`,
-                                                    //             icon: "success",
-                                                    //             confirmButtonText: "OK",
-                                                    //         });
-                                                    //     }
-                                                    // } catch (error) {
-                                                    //     console.error("Cập nhật trạng thái thất bại:", error);
-                                                    //     MySwal.fire({
-                                                    //         title: "Thất bại",
-                                                    //         text: "Không thể cập nhật trạng thái đơn hàng",
-                                                    //         icon: "error",
-                                                    //         confirmButtonText: "OK",
-                                                    //     });
-                                                    // }
+                                                    const newStatuspay = e.target.value;
+                                                    console.log("Thay đổi trạng thái thanh toán:", newStatuspay, "cho đơn hàng:", order._id);
+                                                    try {
+                                                        const res = await updateOrderStatusPay(order._id, newStatuspay);
+                                                        console.log("Kết quả từ API:", res);
+                                                        if (res) {
+                                                            showData();
+                                                            MySwal.fire({
+                                                                title: "Thành công",
+                                                                text: `Trạng thái thanh toán đơn hàng đã được cập nhật thành ${newStatuspay}`,
+                                                                icon: "success",
+                                                                confirmButtonText: "OK",
+                                                            });
+                                                        }
+                                                    } catch (error) {
+                                                        console.error("Lỗi cập nhật trạng thái:", error);
+                                                        MySwal.fire({
+                                                            title: "Thất bại",
+                                                            text: "Không thể cập nhật trạng thái thanh toán đơn hàng",
+                                                            icon: "error",
+                                                            confirmButtonText: "OK",
+                                                        });
+                                                    }
                                                 }}
                                             >
-                                                <option value="Completed">Đã Thanh Toán</option>
-                                                <option value="Pending">Đang xử lý</option>
+                                                <option value="Đã thanh toán">Đã thanh toán</option>
+                                                <option value="Đang xử lý">Đang xử lý</option>
+                                                <option value="Đã hủy">Đã hủy</option>
                                             </select>
-                                        </td>                                        <td>{format(new Date(order.date), 'HH:mm - dd/MM/yyyy')}</td>
+                                        </td>                                        
+                                        <td>{format(new Date(order.date), 'HH:mm - dd/MM/yyyy')}</td>
                                         <td className="text-center whitespace-nowrap">
                                             <select
-                                                className={`btn dropdown-toggle btn-dark ${order.status === "Success"
-                                                        ? "bg-success text-white"
-                                                        : order.status === "Delivered"
-                                                            ? "bg-primary text-white"
-                                                            : order.status === "Pending"
-                                                                ? "bg-warning text-dark"
-                                                                : order.status === "Canceled"
-                                                                    ? "bg-danger text-white"
-                                                                    : ""
+                                                className={`btn dropdown-toggle btn-dark ${order.status === "Giao thành công"
+                                                    ? "bg-success text-white"
+                                                    : order.status === "Đã giao hàng"
+                                                        ? "bg-primary text-white"
+                                                        : order.status === "Đang xử lý"
+                                                            ? "bg-warning text-dark"
+                                                            : order.status === "Đã hủy"
+                                                                ? "bg-danger text-white"
+                                                                : ""
                                                     }`}
                                                 value={order.status}
                                                 onChange={async (e) => {
@@ -143,17 +142,17 @@ const Tables = () => {
                                                     }
                                                 }}
                                             >
-                                                <option value="Delivered">Đã giao hàng</option>
-                                                <option value="Success">Giao thành công</option>
-                                                <option value="Pending">Đang xử lý</option>
-                                                <option value="Canceled">Đã hủy</option>
+                                                <option value="Đã giao hàng">Đã giao hàng</option>
+                                                <option value="Giao thành công">Giao thành công</option>
+                                                <option value="Đang xử lý">Đang xử lý</option>
+                                                <option value="Đã hủy">Đã hủy</option>
                                             </select>
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center">
+                                    <td colSpan={7} className="text-center">
                                         Không có đơn hàng nào
                                     </td>
                                 </tr>
@@ -167,4 +166,3 @@ const Tables = () => {
 };
 
 export default Tables;
-

@@ -15,8 +15,8 @@ const orderSchema = new mongoose.Schema({
     address: { type: String, required: true },
     orderCode: { type: String, required: true },
     paymentMethod: { type: String, required: true },
-    status: { type: String, default: 'Pending' },
-    statuspay : { type: String, default: 'Pending' },
+    status: { type: String, default: 'Đang xử lý' },
+    statuspay : { type: String, default: 'Đang xử lý' },
     date: { type: Date, default: Date.now },
 });
 

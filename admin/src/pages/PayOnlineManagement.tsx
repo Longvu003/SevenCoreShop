@@ -67,8 +67,8 @@ const PayOnlineManagement = () => {
         <div className="grid xl:grid-cols-1 gap-12 grid-cols-1">
             <div className="panel">
                 <div className="flex items-center justify-between mb-12">
-                    <h5 className="font-semibold text-lg dark:text-white-light">Quản lý thanh toán trực tuyến</h5>
-                    <a href="/payonline/new" className="btn btn-success">+ Thêm mục thanh toán</a>
+                    <h5 className="font-semibold text-lg dark:text-white-light">Quản lý ngân hàng thanh toán</h5>
+                    <a href="/payonline/new" className="btn btn-success">+ Thêm ngân hàng</a>
                 </div>
                 <div className="table-responsive mb-5">
                     <table>
@@ -92,7 +92,7 @@ const PayOnlineManagement = () => {
                                             <img
                                                 src={payOnline.images[0]}
                                                 alt={payOnline.bank}
-                                                style={{ width: '50px', height: '60px', objectFit: 'cover' }}
+                                                style={{ width: '100px', height: '60px', objectFit: 'cover' }}
                                             />
                                         ) : (
                                             <span>Không có ảnh</span>
@@ -100,9 +100,6 @@ const PayOnlineManagement = () => {
                                     </td>
                                     <td>
                                         <div className="flex gap-4 items-center justify-center">
-                                            <a href={`/payonline/edit?id=${payOnline._id}`} className="btn btn-sm btn-outline-primary">
-                                                Chỉnh sửa
-                                            </a>
                                             <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(payOnline._id)}>
                                                 Xóa
                                             </button>

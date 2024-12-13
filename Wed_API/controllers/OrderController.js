@@ -6,6 +6,34 @@ const OrderModel = require("../model/OrderModel");
 const Transaction = require('../model/TransactionModel');
 const Order = require("../model/OrderModel");
 
+//update statuspay
+const updateStatusPay = async (req, res) => {
+  const { orderId, statuspay } = req.body;
+
+  if (!mongoose.isValidObjectId(orderId)) {
+    return res.status(400).json({ message: "Order ID không hợp lệ" });
+  }
+
+  try {
+    const order = await OrderModel.findByIdAndUpdate(
+      orderId,
+      { statuspay },
+      { new: true } 
+    );
+    if (!order) {
+      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+    }
+    res.status(200).json(order);
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái thanh toán:", error);
+    res.status(500).json({
+      message: "Không thể cập nhật trạng thái thanh toán",
+      error: error.message,
+    });
+  }
+};
+
+
 const updateOrderStatus = async (req, res) => {
   const { orderId, status } = req.body;
 
@@ -228,4 +256,4 @@ const getOrder = async () => {
 
 
 
-module.exports = {getOrder, checkout, getOrderUser, getOrderUserById, updateOrderStatus ,checkAndUpdateAllOrders};
+module.exports = {updateStatusPay, getOrder, checkout, getOrderUser, getOrderUserById, updateOrderStatus ,checkAndUpdateAllOrders};

@@ -2,6 +2,19 @@ const express = require("express");
 const OrderController = require("../controllers/OrderController");
 const router = express.Router();
 
+// cập nhật trạng thái thanh toán
+router.post("/updateStatusPay", async (req, res) => {
+  const { orderId, statuspay } = req.body;
+  try {
+    const order = await OrderController.updateStatusPay(req, res);
+    return res.status(200).json(order);
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái thanh toán:", error);
+    res.status(500).json({ message: "Lỗi khi cập nhật trạng thái thanh toán", error: error.message });
+  }
+});
+
+
 // cập nhật trạng thái đơn hàng 
 router.post("/updateStatus", async (req, res) => {
   const { orderId, status } = req.body;
