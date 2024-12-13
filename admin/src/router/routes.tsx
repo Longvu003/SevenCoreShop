@@ -13,7 +13,7 @@ const CategoriesUpdate = lazy(() => import('../pages/CategoriesNew'));
 const CategoryEdit = lazy(() => import('../pages/CategoriesEdit'));
 const OrderManagent = lazy(() => import('../pages/OrderManagement'));
 const PayOnlineManagement = lazy(() => import('../pages/PayOnlineManagement'));
-// const PayOnlineNew = lazy(() => import('../pages/PayOnlineNew'));
+const PayOnlineNew = lazy(() => import('../pages/PayonlineNew'));
 const TransactionManagement = lazy(() => import('../pages/TransactionsManagement'));
 const routes = [
     // dashboard (protected)
@@ -33,14 +33,14 @@ const routes = [
             </PrivateRoute>
         ),
     },
-    // {
-    //     path: '/payonline/new',
-    //     element: (
-    //         <PrivateRoute>
-    //             <PayOnlineNew />
-    //         </PrivateRoute>
-    //     ),
-    // },
+    {
+        path: '/payonline/new',
+        element: (
+            <PrivateRoute>
+                <PayOnlineNew />
+            </PrivateRoute>
+        ),
+    },
     {
         path: '/payonlineManagent',
         element: (

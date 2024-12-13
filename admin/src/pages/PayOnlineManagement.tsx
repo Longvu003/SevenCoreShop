@@ -92,7 +92,7 @@ const PayOnlineManagement = () => {
                                             <img
                                                 src={payOnline.images[0]}
                                                 alt={payOnline.bank}
-                                                style={{ width: '50px', height: '60px', objectFit: 'cover' }}
+                                                style={{ width: '100px', height: '60px', objectFit: 'cover' }}
                                             />
                                         ) : (
                                             <span>Không có ảnh</span>
@@ -100,9 +100,6 @@ const PayOnlineManagement = () => {
                                     </td>
                                     <td>
                                         <div className="flex gap-4 items-center justify-center">
-                                            <a href={`/payonline/edit?id=${payOnline._id}`} className="btn btn-sm btn-outline-primary">
-                                                Chỉnh sửa
-                                            </a>
                                             <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(payOnline._id)}>
                                                 Xóa
                                             </button>
