@@ -63,10 +63,7 @@ router.post('/:id/update', async (req, res, next) => {
     try {
         const id = req.params.id;
         const { name, description, images } = req.body;
-        const isDuplicate = await CategoryController.checkDuplicateCategory(name); // Kiểm tra trùng lặp
-        if (isDuplicate) {
-            return res.status(400).json({ status: false, data: 'Category already exists' });
-        }
+        console.log(images);
         const category = await CategoryController.updateCategory(id, name, description, images);
         return res.status(200).json({ status: true, data: category });
     } catch (error) {

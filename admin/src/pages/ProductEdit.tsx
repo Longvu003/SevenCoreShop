@@ -9,7 +9,8 @@ export default function ProductUpdate() {
     const MySwal = withReactContent(Swal);
     const queryString = location.search;
     const urlParams = new URLSearchParams(queryString);
-    const { getCategories, deleteCategoriesById, } = categoryController();
+    const { getCategories, deleteCategoriesById } = categoryController();
+    const [images, setImages] = useState<string[]>([]);
     const [dataCategorie, setDataCategorie] = useState<Category[]>([]);
     const id: any = urlParams.get('id');
     console.log(id);
@@ -25,11 +26,13 @@ export default function ProductUpdate() {
         },
         images: ''
     });
+
     const showData = async () => {
         const data: any = await getCategories();
         console.log(data.data);
         setDataCategorie(data.data);
     };
+
     useEffect(() => {
         showData();
         console.log("dataCategorie" + dataCategorie);
@@ -45,7 +48,7 @@ export default function ProductUpdate() {
                         description: res.data.description,
                         category: {
                             category_name: res.data.category.category_name,
-                            category_id: res.data.category._id
+                            category_id: res.data.category.category_id
                         },
                         images: res.data.images
                     });
@@ -61,7 +64,6 @@ export default function ProductUpdate() {
     }, [id]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-
         const { name, value, files } = e.target as HTMLInputElement;
 
         if (name.includes('category.')) {
@@ -86,7 +88,32 @@ export default function ProductUpdate() {
         }
     };
 
+    const uploadToCloudinary = async () => {
+        try {
+            const fileInput = document.getElementById('productImages') as HTMLInputElement;
+            const file = fileInput?.files?.[0];
+            if (file) {
+                const data = new FormData();
+                data.append('file', file);
+                data.append('upload_preset', 'ml_default');
 
+                const response = await fetch('https://api.cloudinary.com/v1_1/dlngxbn4l/image/upload', {
+                    method: 'POST',
+                    body: data
+                });
+    
+                const result = await response.json();
+                console.log('Uploaded image:', result['url']);
+                setImages((prevImages) => [...prevImages, result['url']]);
+                setDataProduct({
+                    ...dataProduct,
+                    images: result['url']
+                });
+            }
+        } catch (error) {
+            console.error('Error uploading images:', error);
+        }
+    };
 
     const clickUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -163,9 +190,9 @@ export default function ProductUpdate() {
                 <label htmlFor="productCategory">Danh mục</label>
                 <select
                     id="productCategory"
-                    name="category.category_name"
+                    name="category.category_id" // Use category_id instead of category_name
                     className="form-select"
-                    value={dataProduct.category.category_name} // Set giá trị mặc định của category là category của sản phẩm
+                    value={dataProduct.category.category_id} // Set value based on category_id
                     required
                     onChange={handleChange}
                 >
@@ -178,17 +205,17 @@ export default function ProductUpdate() {
             </div>
 
             <div>
-            <label htmlFor="productImages">Hình ảnh</label>
+                <label htmlFor="productImages">Hình ảnh</label>
                 <input
                     id="productImages"
                     type="file"
                     name="images"
                     multiple
                     className="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
-                    onChange={handleChange}
+                    onChange={uploadToCloudinary}
                 />
                 <div style={{ margin: '10px' }}>
-                    <img src={dataProduct.images[0]} alt="Product" style={{ width: '200px' }} />
+                    <img src={dataProduct.images} alt="Product" style={{ width: '200px' }} />
                 </div>
             </div>
             <button type="submit" className="btn btn-primary !mt-6">Lưu</button>

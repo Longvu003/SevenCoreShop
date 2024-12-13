@@ -70,7 +70,8 @@ router.post('/:id/update', async (req, res, next) => {
         const { id } = req.params
         const { name, price, quantity, images, description, category } = req.body;
         console.log(req.body)
-        const product = await ProductController.updateProduct(id, name, price, quantity, images, description, category);
+        // console.log(category)
+        const product = await ProductController.updateProduct(id, name, price, quantity, images, description, category.category_id);
         return res.status(200).json({ status: true, data: product });
     } catch (error) {
         return res.status(500).json({ status: false, data: error.message });
