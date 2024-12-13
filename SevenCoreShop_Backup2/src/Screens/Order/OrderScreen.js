@@ -8,65 +8,37 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  TextInput,
-  ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import axios from 'axios';
-import API__URL from '../../../config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Customheader from '../../CustomHeader/Customheader';
+import {useFocusEffect} from '@react-navigation/native';
+import {useCart} from '../Cart/CartProdvider';
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
 const OrderScreen = ({navigation}) => {
-  const [dataOrder, setDataOrder] = useState([]);
-  const [seacrh, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const getProductDetails = async () => {
-    const userId = await AsyncStorage.getItem('userId');
-    const newUserId = JSON.parse(userId);
-
-    if (loading) {
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <ActivityIndicator size={'large'} color="orange" />;
-      </View>;
-    }
-    if (error) {
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text>
-          Có lỗi trong lúc lấy dữ liệu... Vui lòng kiểm tra lại kết nối !!
-        </Text>
-      </View>;
-    }
-    try {
-      const response = await axios.get(
-        `${API__URL}/Orders/getOrderUserById?userId=${newUserId}`,
-      );
+  const {getProductDetails, dataOrder} = useCart();
+  useFocusEffect(
+    useCallback(() => {
       setLoading(false);
-      setDataOrder(response.data);
-    } catch (error) {
-      console.log('Lỗi khi lấy thông tin sản phẩm:', error);
-      setError(error);
-      setLoading(false);
-      return null;
-    }
-  };
-  useEffect(() => {
-    setLoading(true);
-    getProductDetails();
-  }, []);
+      getProductDetails();
+    }, []),
+  );
   return (
     <View style={{flex: 1}}>
       <View style={{height: HEIGHT__SCREEN * 0.06}}>
         <Customheader title="Lịch sử giao hàng" />
       </View>
       <View style={{height: HEIGHT__SCREEN * 0.04}}>
-        <TouchableOpacity onPress={() => navigation.navigate('SearchOrder')}>
-          <Image source={require('../../../assets/imgs/search.png')} />
+        <TouchableOpacity
+          style={{width: 50}}
+          onPress={() => navigation.navigate('SearchOrder')}>
+          <Image
+            style={{marginHorizontal: 20}}
+            source={require('../../../assets/imgs/search.png')}
+          />
         </TouchableOpacity>
       </View>
-
       {dataOrder.length > 0 ? (
         <ScrollView
           style={{flex: 4, marginHorizontal: 20}}

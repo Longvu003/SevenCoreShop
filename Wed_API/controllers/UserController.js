@@ -55,7 +55,6 @@ const register = async (email, password, username, numberphone, address) => {
       password: password,
       username: username,
       numberphone: numberphone,
-      // birthday: birthday,
       address: address,
     });
 
@@ -77,13 +76,10 @@ const login = async (email, password) => {
     if (!user) {
       throw new Error("Email không tồn tại");
     }
-
-    // So sánh mật khẩu
     const check = bcrypt.compareSync(password, user.password);
     if (!check) {
       throw new Error("Mật khẩu không đúng");
     }
-
     // Trả về thông tin người dùng nhưng không bao gồm mật khẩu
     return {
       id: user._id,
@@ -93,7 +89,6 @@ const login = async (email, password) => {
     };
   } catch (error) {
     console.log("Login error", error.message);
-    throw new Error("Login error: " + error.message);
   }
 };
 // Hàm tạo và lưu OTP

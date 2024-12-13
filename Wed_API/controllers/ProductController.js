@@ -62,9 +62,8 @@ const searchProduct = async (key) => {
 // Lấy danh sách sản phẩm theo danh mục
 const getProductsByCategory = async (req, res) => {
   try {
-    const category = req.query;
+    const category = req.params.id;
     const products = await ProductModel.find({ category });
-
     return res.status(200).json({
       status: true,
       message: "Products fetched successfully.",

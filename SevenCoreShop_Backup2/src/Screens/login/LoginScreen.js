@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -34,20 +34,20 @@ const LoginScreen = ({navigation}) => {
       // Kiểm tra phản hồi từ API
       if (response.status === 200) {
         // Sửa đoạn này để phù hợp với cấu trúc phản hồi
-        const user = JSON.stringify(response.data.data.email); // Sử dụng response.data.email
+        const user = JSON.stringify(response.data.data.email);
         const userId = JSON.stringify(response.data.data.id);
         await AsyncStorage.setItem('userEmail', user);
         await AsyncStorage.setItem('userId', userId);
-        // Alert.alert('Đăng nhập thành công', `Chào mừng ${response.data.email}`);
         navigation.navigate('Tab');
       } else {
         Alert.alert('Đăng nhập thất bại', 'Nhập đúng email và mật khẩu');
       }
     } catch (error) {
       console.log('Error during login request:', error);
-      Alert.alert('Error', 'Email hoặc mật khẩu không chính xác');
+      Alert.alert('Lỗi', 'Email hoặc mật khẩu không chính xác');
     }
   };
+
   return (
     <ScrollView style={{backgroundColor: 'white'}}>
       <View style={styles.container}>

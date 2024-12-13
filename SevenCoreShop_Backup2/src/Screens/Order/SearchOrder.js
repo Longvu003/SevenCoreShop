@@ -18,30 +18,21 @@ const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
 import Customheader from '../../CustomHeader/Customheader';
 import {useState, useEffect} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 const SearchOrder = ({navigation}) => {
   const [dataOrder, setDataOrder] = useState([]);
   const [seacrh, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
   const handleSearch = async query => {
     setSearch(query);
     const respone = await axios.post(`${API__URL}/orders/searchOrder`, {
       query,
     });
-    setDataOrder(respone.data);
+    if (respone.status === 200) {
+      setDataOrder(respone.data);
+    } else {
+      console.log('Lỗi khi tìm kiếm đơn hàng');
+    }
   };
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     setLoading(true);
-  //     getProductDetails();
-  //   }, []),
-  // );
-  useEffect(() => {
-    setLoading(true);
-    handleSearch();
-  }, []);
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{height: HEIGHT__SCREEN * 0.06}}>
@@ -59,7 +50,6 @@ const SearchOrder = ({navigation}) => {
           autoCapitalize="none"
         />
       </View>
-
       {dataOrder.length > 0 ? (
         <ScrollView
           style={{flex: 4, marginHorizontal: 20}}
@@ -84,6 +74,9 @@ const SearchOrder = ({navigation}) => {
                         <Text numberOfLines={1} style={styles.txt__Item}>
                           {item.items[0].name}
                         </Text>
+                        <Text numberOfLines={1} style={styles.txt__Item}>
+                          {item.status}
+                        </Text>
                         <View
                           style={{
                             flexDirection: 'row',
@@ -93,7 +86,6 @@ const SearchOrder = ({navigation}) => {
                           </Text>
                         </View>
                       </View>
-
                       <Image
                         source={require('../../../assets/imgs/Vector.png')}
                       />
@@ -110,25 +102,32 @@ const SearchOrder = ({navigation}) => {
           style={{
             alignItems: 'center',
             justifyContent: 'center',
-            height: HEIGHT__SCREEN * 0.8,
+            height: HEIGHT__SCREEN * 0.5,
           }}>
           <Image source={require('../../../assets/imgs/cart3.png')} />
-          <Text
-            style={{
-              fontSize: 24,
-              color: 'Black',
-              fontWeight: '700',
-              marginTop: 24,
-            }}>
-            Không có đơn hàng
-          </Text>
+          {seacrh.length <= 0 ? (
+            <Text style={styles.txt__resultSearch}>
+              Bạn có thể tìm kiếm đơn hàng qua trạng thái hoặc tên đơn hàng
+            </Text>
+          ) : (
+            <Text style={styles.txt__resultSearch}>
+              Không có đơn hàng dựa trên kết quả bạn tìm kiếm "{seacrh}"
+            </Text>
+          )}
         </View>
       )}
     </View>
   );
 };
-
 const styles = StyleSheet.create({
+  txt__resultSearch: {
+    fontSize: 24,
+    color: 'Black',
+    fontWeight: '700',
+    marginTop: 24,
+    width: 400,
+    textAlign: 'center',
+  },
   input__search: {
     borderColor: 'black',
     borderWidth: 1,

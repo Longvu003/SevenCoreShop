@@ -6,23 +6,43 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
 import Customheader from '../../CustomHeader/Customheader';
-
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
+const WITH__Screen = Dimensions.get('screen').width;
 const AllProductsScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
-  useEffect(() => {
-    // Gọi API lấy tất cả sản phẩm
-    axios
-      .get(`${API__URL}/products/all`)
+  const [searchKey, setSearchKey] = useState('');
+  const handleSearch = async query => {
+    setSearchKey(query);
+    if (!searchKey) {
+      await axios
+        .get(`${API__URL}/products/all`)
+        .then(response => {
+          setProducts(response.data.data);
+        })
+        .catch(error => {
+          console.log('Lỗi lấy sản phẩm:', error);
+        });
+    }
+
+    await axios
+      .get(`${API__URL}/products/tim-kiem?key=${searchKey}`)
       .then(response => {
         setProducts(response.data.data);
       })
-      .catch(error => console.log('Error fetching products:', error));
+      .catch(error => {
+        console.log('Lỗi khi tìm sản phẩm', error);
+      });
+  };
+  useEffect(() => {
+    handleSearch();
   }, []);
+
   return (
     <View style={styles.container}>
       <View style={{height: HEIGHT__SCREEN * 0.08}}>
@@ -33,36 +53,62 @@ const AllProductsScreen = ({navigation}) => {
           containerStyle={styles.customHeaderContainer}
         />
       </View>
-
-      <View style={{flex: 10}}>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={products}
-          keyExtractor={item => item._id}
-          contentContainerStyle={{marginTop: 20}}
-          renderItem={({item}) => (
-            <View style={styles.productCard}>
-              <Image
-                source={{
-                  uri:
-                    item.images && item.images[0]
-                      ? item.images[0]
-                      : 'https://via.placeholder.com/100',
-                }}
-                style={styles.productImage}
-              />
-              <Text style={styles.productName}>{item.name}</Text>
-              <Text style={styles.productPrice}>${item.price}</Text>
-            </View>
-          )}
-          numColumns={2}
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Tìm Kiếm"
+          value={searchKey}
+          onChangeText={text => handleSearch(text)}
         />
+      </View>
+      <View style={{flex: 8}}>
+        {products.length >= 1 ? (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={products}
+            keyExtractor={item => item._id}
+            contentContainerStyle={{marginTop: 20}}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ProductDetail', {item})}
+                style={styles.productCard}>
+                <Image
+                  source={{
+                    uri:
+                      item.images && item.images[0]
+                        ? item.images[0]
+                        : 'https://via.placeholder.com/100',
+                  }}
+                  style={styles.productImage}
+                />
+                <Text style={styles.productName}>{item.name}</Text>
+                <Text style={styles.productPrice}>${item.price}</Text>
+              </TouchableOpacity>
+            )}
+            numColumns={2}
+          />
+        ) : (
+          <View>
+            <Text>Không tìm thấy sản phẩm "{searchKey}"</Text>
+          </View>
+        )}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  searchInput: {
+    fontSize: 16,
+    paddingHorizontal: 15,
+  },
+  searchContainer: {
+    backgroundColor: '#f4f4f4',
+    borderRadius: 20,
+    width: WITH__Screen * 0.9,
+    marginHorizontal: 20,
+    height: HEIGHT__SCREEN * 0.07,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',

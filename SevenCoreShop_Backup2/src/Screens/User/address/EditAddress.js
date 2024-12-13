@@ -44,7 +44,6 @@ const EditAddress = ({navigation}) => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     const newUserEmail = JSON.parse(userEmail);
     const url2 = `${API__URL}/users/updateUser?email=${newUserEmail}`;
-
     try {
       if (addressInformation.address.length < 5) {
         setErrorMessage('Địa chỉ phải có ít nhất 10 ký tự');

@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, StyleSheet, Image} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
 import Customheader from '../../CustomHeader/Customheader'; // Import CustomHeader
@@ -7,53 +14,45 @@ import Customheader from '../../CustomHeader/Customheader'; // Import CustomHead
 const CategoryDetailScreen = ({navigation, route}) => {
   const {category} = route.params;
   const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    if (!category?._id || !/^[a-fA-F0-9]{24}$/.test(category._id)) {
-      console.error(
-        'Invalid categoryId. Must be a valid 24-character hex string.',
-      );
-      return;
-    }
-
+  const id = category._id;
+  const getProduct = () => {
     axios
-      .get(`${API__URL}/products/categoryById`, {
-        params: {categoryId: category._id},
-      })
+      .get(`${API__URL}/products/getProductBycategory/${id}`)
       .then(response => {
         setProducts(response.data.data || []);
       })
       .catch(error => {
-        console.error(
+        console.log(
           'Error fetching products:',
           error.response?.data?.message || error.message,
         );
       });
-  }, [category?._id]);
-  console.log('category._id:', category?._id);
-
+  };
+  useEffect(() => {
+    getProduct();
+  }, []);
   return (
     <View style={styles.container}>
-      {/* Custom Header */}
       <Customheader
-        leftIcon={require('../../../assets/imgs/back4.png')} // Biểu tượng quay lại
-        onLeftPress={() => navigation.goBack()} // Hành động quay lại
-        title={category.name || 'Danh Mục'} // Tiêu đề lấy từ category
+        leftIcon={require('../../../assets/imgs/back4.png')}
+        onLeftPress={() => navigation.goBack()}
+        title={category.name || 'Danh Mục'}
         containerStyle={styles.customHeaderContainer}
       />
-
-      {/* Product List */}
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={products}
         keyExtractor={item => item._id}
         numColumns={2} // Chia 2 cột
-        contentContainerStyle={{marginTop: 10}} // Thêm khoảng cách trên FlatList
+        contentContainerStyle={{marginTop: 10}}
         renderItem={({item}) => (
-          <View style={styles.productCard}>
+          <TouchableOpacity
+            style={styles.productCard}
+            onPress={() => navigation.navigate('ProductDetail', {item})}>
             <Image source={{uri: item.images[0]}} style={styles.productImage} />
             <Text style={styles.productName}>{item.name}</Text>
             <Text style={styles.productPrice}>${item.price}</Text>
-          </View>
+          </TouchableOpacity>
         )}
         columnWrapperStyle={styles.columnWrapper}
       />

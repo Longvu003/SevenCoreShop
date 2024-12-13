@@ -32,9 +32,7 @@ const Welcome2 = ({navigation}) => {
     </View>
   );
 };
-
 export default Welcome2;
-
 const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',

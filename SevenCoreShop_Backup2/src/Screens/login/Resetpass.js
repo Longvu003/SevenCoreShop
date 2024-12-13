@@ -12,14 +12,12 @@ import {
 } from 'react-native';
 import API__URL from '../../../config';
 import Customheader from '../../CustomHeader/Customheader';
-
 const Resetpass = ({navigation}) => {
   const [verificationCode, setVerificationCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
-
   const handleResetPassword = async () => {
     if (!email) {
       Alert.alert('Lỗi', 'Vui lòng nhập email.');
@@ -38,7 +36,6 @@ const Resetpass = ({navigation}) => {
       Alert.alert('Lỗi', 'Mật khẩu phải có ít nhất 6 ký tự.');
       return;
     }
-
     setLoading(true); // Bắt đầu loading
     try {
       const response = await fetch(`${API__URL}/resetpass/resetPassword`, {
@@ -53,9 +50,7 @@ const Resetpass = ({navigation}) => {
           confirmPassword,
         }),
       });
-
       const result = await response.json();
-
       if (response.ok) {
         Alert.alert('Thành công', 'Mật khẩu đã được đặt lại thành công.');
         navigation.navigate('LoginScreen');
@@ -78,7 +73,6 @@ const Resetpass = ({navigation}) => {
       <View style={{marginVertical: 26}}>
         <Customheader leftIcon={require('../../../assets/imgs/back4.png')} />
       </View>
-
       <View style={styles.container}>
         <Text style={styles.title}>Lấy lại mật khẩu</Text>
         <TextInput

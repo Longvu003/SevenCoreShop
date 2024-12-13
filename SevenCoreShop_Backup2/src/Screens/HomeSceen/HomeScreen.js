@@ -8,19 +8,19 @@ import {
   TouchableOpacity,
   TextInput,
   FlatList,
+  Dimensions,
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdScreen from './AdScreen';
 import AdDetail from './AdDetail';
+
 const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [searchKey, setSearchKey] = useState('');
   const [user, setUser] = useState([]);
   useEffect(() => {
-    // Gọi API lấy sản phẩm từ MongoDB
     axios
       .get(`${API__URL}/products/all`)
       .then(response => {
@@ -31,8 +31,6 @@ const HomeScreen = ({navigation}) => {
       .catch(error => {
         console.log('Error fetching products:', error);
       });
-
-    // Gọi API lấy danh mục từ MongoDB
     axios
       .get(`${API__URL}/categories/getAllCategory`)
       .then(response => {
@@ -43,27 +41,7 @@ const HomeScreen = ({navigation}) => {
         console.log('Error fetching categories:', error);
       });
   }, []);
-  const handleSearch = () => {
-    if (searchKey.trim() === '') {
-      axios
-        .get(`${API__URL}/products/all`)
-        .then(response => {
-          setProducts(response.data.data);
-        })
-        .catch(error => {
-          console.log('Error fetching products:', error);
-        });
-    } else {
-      axios
-        .get(`${API__URL}/products/tim-kiem?key=${searchKey}`)
-        .then(response => {
-          setProducts(response.data.data);
-        })
-        .catch(error => {
-          console.log('Error searching products:', error);
-        });
-    }
-  };
+
   const getInforUser = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     const newUserEmail = JSON.parse(userEmail);
@@ -74,7 +52,6 @@ const HomeScreen = ({navigation}) => {
       if (respone.status === 200) {
         setUser(respone.data.result.username);
       }
-      // console.log(respone.data.result.username);
     } catch (error) {
       console.log(error);
     }
@@ -91,29 +68,14 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.hello}>Xin Chào </Text>
           <Text style={styles.txt__user}>{user}</Text>
         </View>
-
-        <TouchableOpacity onPress={() => navigation.navigate('CartScreen')}>
-          <Image
-            source={require('../../../assets/imgs/cart2.png')}
-            style={styles.cartIcon}
-          />
+        <TouchableOpacity
+          style={styles.Search__Icon}
+          onPress={() => navigation.navigate('AllProductsScreen')}>
+          <Image source={require('../../../assets/imgs/search.png')} />
         </TouchableOpacity>
       </View>
-
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Tìm Kiếm"
-          value={searchKey}
-          onChangeText={text => setSearchKey(text)}
-        />
-        <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
-          <Text style={styles.searchButtonText}>Tìm kiếm</Text>
-        </TouchableOpacity>
-      </View>
-      {/* <AdScreen navigation={navigation} /> */}
       <ScrollView showsVerticalScrollIndicator={false}>
+        {/* <AdScreen navigation={navigation} /> */}
         <View style={styles.categoryHeader}>
           <Text style={styles.sectionTitle}>Loại Sản Phẩm</Text>
           <TouchableOpacity
@@ -144,47 +106,49 @@ const HomeScreen = ({navigation}) => {
                 </TouchableOpacity>
               ))
             ) : (
-              <Text>No categories available</Text>
+              <Text>Không có danh mục sản phẩm</Text>
             )}
           </ScrollView>
         </View>
-
-        <View style={styles.productHeader}>
-          <Text style={styles.sectionTitle}>Sản Phẩm</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('AllProductsScreen')}>
-            <Text style={styles.seeAllText}>Xem Tất Cả</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.productSection}>
-          <FlatList
-            data={products}
-            keyExtractor={item => item._id}
-            numColumns={2}
-            scrollEnabled={false}
-            renderItem={({item}) => {
-              return (
-                <TouchableOpacity
-                  style={styles.productCard}
-                  onPress={() => navigation.navigate('ProductDetail', {item})}>
-                  <Image
-                    source={{uri: item.images[0]}}
-                    style={styles.productImage}
-                  />
-                  <Text numberOfLines={2} style={styles.productName}>
-                    {item.name}
-                  </Text>
-                  <Text style={styles.productPrice}>${item.price}</Text>
-                </TouchableOpacity>
-              );
-            }}
-          />
+        <View showsVerticalScrollIndicator={false}>
+          <View style={styles.productHeader}>
+            <Text style={styles.sectionTitle}>Sản Phẩm</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('AllProductsScreen')}>
+              <Text style={styles.seeAllText}>Xem Tất Cả</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.productSection}>
+            <FlatList
+              data={products}
+              keyExtractor={item => item._id}
+              numColumns={2}
+              scrollEnabled={false}
+              renderItem={({item}) => {
+                return (
+                  <TouchableOpacity
+                    style={styles.productCard}
+                    onPress={() =>
+                      navigation.navigate('ProductDetail', {item})
+                    }>
+                    <Image
+                      source={{uri: item.images[0]}}
+                      style={styles.productImage}
+                    />
+                    <Text numberOfLines={2} style={styles.productName}>
+                      {item.name}
+                    </Text>
+                    <Text style={styles.productPrice}>${item.price}</Text>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </View>
         </View>
       </ScrollView>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   txt__user: {
     fontSize: 15,
@@ -224,27 +188,17 @@ const styles = StyleSheet.create({
   arrowDown: {
     marginLeft: 5,
   },
-  cartIcon: {
-    width: 50,
-    height: 50,
-  },
-  searchContainer: {
-    flexDirection: 'row',
+  Search__Icon: {
+    width: 80,
+    height: 80,
     alignItems: 'center',
-    backgroundColor: '#f4f4f4',
-    borderRadius: 20,
-    marginBottom: 10,
+    justifyContent: 'center',
   },
+
   searchInput: {
     flex: 1,
     fontSize: 16,
     paddingHorizontal: 15,
-  },
-  searchButton: {
-    padding: 10,
-    backgroundColor: 'black',
-    borderRadius: 8,
-    marginLeft: 10,
   },
   searchButtonText: {
     color: '#fff',
@@ -264,14 +218,13 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 14,
     color: '#000',
-    textDecorationLine: 'underline',
   },
   categoryContainer: {
     flexDirection: 'row',
     marginBottom: 20,
   },
   categoryItem: {
-    marginRight: 10,
+    marginRight: 30,
     alignItems: 'center',
   },
   categoryImage: {

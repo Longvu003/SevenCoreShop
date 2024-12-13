@@ -33,7 +33,7 @@ const checkout = async (req, res) => {
       totalAmount,
       address,
       paymentMethod,
-      status: "Đang xác nhận",
+      status: "Đang xử lý",
       date: new Date(),
     });
 

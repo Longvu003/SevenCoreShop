@@ -15,6 +15,9 @@ export const CartProdvider = ({children}) => {
   const [cart, setCart] = useState([]);
   const [userId, setUserId] = useState(null);
   const [totalPriceCart, setTotalPriceCart] = useState(0);
+  const [dataOrder, setDataOrder] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const getDataCart = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
@@ -120,6 +123,35 @@ export const CartProdvider = ({children}) => {
     }
   };
 
+  const getProductDetails = async () => {
+    if (loading) {
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <ActivityIndicator size={'large'} color="orange" />;
+      </View>;
+    }
+    if (error) {
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text>
+          Có lỗi trong lúc lấy dữ liệu... Vui lòng kiểm tra lại kết nối !!
+        </Text>
+      </View>;
+    }
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const newUserId = JSON.parse(userId);
+      const response = await axios.get(
+        `${API__URL}/Orders/getOrderUserById?userId=${newUserId}`,
+      );
+      setLoading(false);
+      setDataOrder(response.data);
+    } catch (error) {
+      console.log('Lỗi khi lấy thông tin sản phẩm:', error);
+      setError(error);
+      setLoading(false);
+      return null;
+    }
+  };
+
   useEffect(() => {
     getDataCart();
   }, []);
@@ -138,6 +170,8 @@ export const CartProdvider = ({children}) => {
         userId,
         setUserId,
         resetCart,
+        getProductDetails,
+        dataOrder,
       }}>
       {children}
     </CartContext.Provider>
@@ -147,4 +181,3 @@ export const CartProdvider = ({children}) => {
 export const useCart = () => useContext(CartContext);
 
 export default CartProdvider;
-const styles = StyleSheet.create({});
