@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
   Alert,
   ActivityIndicator,
   ScrollView,
@@ -64,10 +63,9 @@ const Resetpass = ({navigation}) => {
       Alert.alert('Lỗi', 'Đã xảy ra lỗi. Vui lòng thử lại sau.');
       console.log('Lỗi đặt lại mật khẩu:', error);
     } finally {
-      setLoading(false); // Kết thúc loading
+      setLoading(false);
     }
   };
-
   return (
     <ScrollView style={{backgroundColor: 'white'}}>
       <View style={{marginVertical: 26}}>

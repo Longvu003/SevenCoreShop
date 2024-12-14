@@ -14,7 +14,7 @@ const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const AdDetail = ({route}) => {
   const {item} = route.params;
   const [dataAD, setDataAd] = useState(item);
-  // console.log(dataAD.image);
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1}}>
@@ -27,7 +27,6 @@ const AdDetail = ({route}) => {
             #{item.tag}
           </Text>
         </TouchableOpacity>
-
         <Image style={styles.img__item} source={{uri: dataAD.image}} />
       </View>
       <View style={{flex: 2}}>

@@ -15,12 +15,11 @@ const CategoryScreen = ({navigation}) => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    // Gọi API để lấy danh sách các danh mục
     axios
       .get(`${API__URL}/categories/getAllCategory`)
       .then(response => {
-        const fixResponse = Object.values(response.data);
-        setCategories(fixResponse[1]);
+        const fixResponse = response.data.data;
+        setCategories(fixResponse);
       })
       .catch(error => console.log('Lỗi lấy danh mục:', error));
   }, []);
@@ -33,9 +32,9 @@ const CategoryScreen = ({navigation}) => {
     <View style={styles.container}>
       {/* Custom Header */}
       <Customheader
-        leftIcon={require('../../../assets/imgs/back4.png')} // Biểu tượng quay lại
-        onLeftPress={() => navigation.goBack()} // Hành động quay lại
-        title="Loại Sản Phẩm" // Tiêu đề
+        leftIcon={require('../../../assets/imgs/back4.png')}
+        onLeftPress={() => navigation.goBack()}
+        title="Loại Sản Phẩm"
         containerStyle={styles.customHeaderContainer}
       />
 

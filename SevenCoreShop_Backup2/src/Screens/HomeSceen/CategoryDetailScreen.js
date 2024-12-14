@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
-import Customheader from '../../CustomHeader/Customheader'; // Import CustomHeader
-
+import Customheader from '../../CustomHeader/Customheader';
 const CategoryDetailScreen = ({navigation, route}) => {
   const {category} = route.params;
   const [products, setProducts] = useState([]);
@@ -43,7 +42,7 @@ const CategoryDetailScreen = ({navigation, route}) => {
         showsVerticalScrollIndicator={false}
         data={products}
         keyExtractor={item => item._id}
-        numColumns={2} // Chia 2 cột
+        numColumns={2}
         contentContainerStyle={{marginTop: 10}}
         renderItem={({item}) => (
           <TouchableOpacity
@@ -66,7 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   customHeaderContainer: {
-    marginBottom: 10, // Khoảng cách dưới CustomHeader
+    marginBottom: 10,
     backgroundColor: '#f5f5f5',
     paddingVertical: 15,
   },
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   productCard: {
-    width: '48%', // Giảm một chút để có khoảng cách giữa các card
+    width: '48%',
     backgroundColor: '#F4F4F4',
     borderRadius: 8,
     padding: 10,

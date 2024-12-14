@@ -9,7 +9,6 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 import API__URL from '../../../config';
 const SignupScreen = ({navigation}) => {
@@ -17,18 +16,8 @@ const SignupScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [numberphone, setNumberphone] = useState('');
-  // const [birthday, setBirthday] = useState('');
-  // const [showDatePicker, setShowDatePicker] = useState(false);
   const [address, setAddress] = useState('');
-  // const handleDateChange = (event, selectedDate) => {
-  //   setShowDatePicker(false);
-  //   if (selectedDate) {
-  //     const date = selectedDate.toISOString().split('T')[0]; // Format date
-  //     setBirthday(date);
-  //   }
-  // };
 
-  // Hàm kiểm tra dữ liệu
   const validateInput = () => {
     if (!email) {
       Alert.alert('Lỗi', 'Email không được để trống');
@@ -50,7 +39,7 @@ const SignupScreen = ({navigation}) => {
       Alert.alert('Lỗi', 'đại chỉ không được để trống');
       return false;
     }
-    // Kiểm tra định dạng email
+
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       Alert.alert('Lỗi', 'Email không hợp lệ');
@@ -63,7 +52,6 @@ const SignupScreen = ({navigation}) => {
     if (!validateInput()) {
       return; // Nếu không hợp lệ, dừng lại
     }
-
     const formData = {
       email,
       password,
@@ -71,11 +59,8 @@ const SignupScreen = ({navigation}) => {
       numberphone,
       address,
     };
-
     try {
-      // Gửi yêu cầu POST tới API
       const response = await axios.post(`${API__URL}/users/register`, formData);
-
       // Xử lý phản hồi
       if (response.status === 200) {
         Alert.alert('Đăng ký thành công');
@@ -85,8 +70,6 @@ const SignupScreen = ({navigation}) => {
       }
     } catch (error) {
       console.log('Error during request:', error);
-
-      // Xử lý thông báo lỗi từ server
       if (error.response && error.response.data.errors) {
         const errorMessages = error.response.data.errors.map(err => err.msg);
         Alert.alert('Đăng ký thất bại', errorMessages.join('\n'));
@@ -95,7 +78,6 @@ const SignupScreen = ({navigation}) => {
       }
     }
   };
-
   return (
     <ScrollView style={{backgroundColor: 'white'}}>
       <View style={styles.container}>
@@ -122,51 +104,31 @@ const SignupScreen = ({navigation}) => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Mật khẩu"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
           <TextInput
             style={styles.input}
-            placeholder="Phone Number"
+            placeholder="Số điện thoại"
             value={numberphone}
             onChangeText={setNumberphone}
             keyboardType="default"
           />
           <TextInput
             style={styles.input}
-            placeholder="Email Address"
+            placeholder="Email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
           />
           <TextInput
             style={styles.input}
-            placeholder="Address"
+            placeholder="Địa chỉ"
             value={address}
             onChangeText={setAddress}
           />
-          {/* Birthday Input */}
-          {/* <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-            <TextInput
-              style={[styles.input, birthday ? styles.boldText : null]}
-              placeholder="Birthday"
-              value={birthday}
-              editable={false} // Disable direct editing
-            />
-          </TouchableOpacity>
-
-          {showDatePicker && (
-            <DateTimePicker
-              style={styles.input}
-              value={new Date()}
-              mode="date"
-              display="default"
-              onChange={handleDateChange}
-            />
-          )} */}
-
           <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
             <Text style={styles.loginText}>Tiếp tục</Text>
           </TouchableOpacity>
@@ -175,7 +137,6 @@ const SignupScreen = ({navigation}) => {
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -11,7 +11,6 @@ import {
 import API__URL from '../../../config';
 const ForgotPassword = ({navigation}) => {
   const [email, setEmail] = useState(''); // Sử dụng biến email ở đây
-
   const handleForgotPassword = async () => {
     try {
       const response = await fetch(`${API__URL}/users/forgot-password`, {
@@ -21,10 +20,7 @@ const ForgotPassword = ({navigation}) => {
         },
         body: JSON.stringify({email}), // Sử dụng biến email
       });
-
-      // Chỉ đọc phản hồi JSON nếu phản hồi từ máy chủ là OK
       const result = await response.json();
-
       if (response.ok) {
         Alert.alert(
           'Thành công',
@@ -42,7 +38,6 @@ const ForgotPassword = ({navigation}) => {
       console.log('Lỗi quên mật khẩu:', error);
     }
   };
-
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -59,8 +54,8 @@ const ForgotPassword = ({navigation}) => {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address" // Thay đổi thành email-address để hỗ trợ nhập email
-        autoCapitalize="none" // Không tự động viết hoa
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TouchableOpacity
         style={styles.loginButton}
@@ -86,7 +81,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   back: {
-    width: 30, // Thay đổi kích thước cho ảnh
+    width: 30,
     height: 30,
     marginLeft: 15,
   },
@@ -119,7 +114,7 @@ const styles = StyleSheet.create({
   loginText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '600', // Thay đổi thành '600' để tạo sự khác biệt
+    fontWeight: '600',
   },
 });
 

@@ -3,7 +3,6 @@ import {
   Dimensions,
   Image,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -16,6 +15,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Dialog from 'react-native-dialog';
 import API__URL from '../../../config';
+import ProductDetailStyle from '../../StyleSheets/ProductDetailStyle';
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
 
@@ -29,7 +29,6 @@ const ProductDetail = ({navigation, route}) => {
   const [editedText, setEditedText] = useState('');
   const [currentUserEmail, setCurrentUserEmail] = useState('');
 
-  // Lấy email của người dùng hiện tại
   useEffect(() => {
     const fetchUserEmail = async () => {
       const email = await AsyncStorage.getItem('userEmail');
@@ -38,7 +37,6 @@ const ProductDetail = ({navigation, route}) => {
     fetchUserEmail();
   }, []);
 
-  // Lấy bình luận của sản phẩm
   useEffect(() => {
     axios
       .get(`${API__URL}/api/comments/${item._id}`)
@@ -69,10 +67,6 @@ const ProductDetail = ({navigation, route}) => {
       quantity: quantityProduct,
       price: item.price,
     };
-
-    // console.log(product);
-    // console.log(quantityProduct);
-    // console.log(userId);
     try {
       const response = await axios.post(
         `${API__URL}/carts/addItemcart`,
@@ -167,16 +161,19 @@ const ProductDetail = ({navigation, route}) => {
       </View>
 
       <View style={{flex: 3}}>
-        <Image style={styles.img__product} source={{uri: item.images[0]}} />
-        <Text style={styles.txt__nameProduct}>{item.name}</Text>
-        <Text style={styles.txt__priceProduct}>{item.price}</Text>
+        <Image
+          style={ProductDetailStyle.img__product}
+          source={{uri: item.images[0]}}
+        />
+        <Text style={ProductDetailStyle.txt__nameProduct}>{item.name}</Text>
+        <Text style={ProductDetailStyle.txt__priceProduct}>{item.price}</Text>
       </View>
       <View style={{flexDirection: 'column'}}>
-        <TouchableOpacity disabled style={styles.btn__container}>
-          <View style={styles.quantity__Container}>
+        <TouchableOpacity disabled style={ProductDetailStyle.btn__container}>
+          <View style={ProductDetailStyle.quantity__Container}>
             <Text>Kích cỡ</Text>
           </View>
-          <Text style={styles.txt__nameProduct}>{item.size}</Text>
+          <Text style={ProductDetailStyle.txt__nameProduct}>{item.size}</Text>
           <TouchableOpacity>
             <Image
               style={{marginHorizontal: 30}}
@@ -185,37 +182,38 @@ const ProductDetail = ({navigation, route}) => {
           </TouchableOpacity>
         </TouchableOpacity>
 
-        <TouchableOpacity disabled style={styles.btn__container}>
-          <View style={styles.quantity__Container}>
+        <TouchableOpacity disabled style={ProductDetailStyle.btn__container}>
+          <View style={ProductDetailStyle.quantity__Container}>
             <Text>Số lượng</Text>
           </View>
           <TouchableOpacity onPress={increaseQuantity}>
             <Image
-              style={styles.icon}
+              style={ProductDetailStyle.icon}
               source={require('../../../assets/imgs/add.png')}
             />
           </TouchableOpacity>
           <Text style={{marginHorizontal: 5}}>{quantityProduct}</Text>
           <TouchableOpacity onPress={decreaseQuantity}>
             <Image
-              style={styles.icon}
+              style={ProductDetailStyle.icon}
               source={require('../../../assets/imgs/minus2.png')}
             />
           </TouchableOpacity>
         </TouchableOpacity>
       </View>
       <View style={{flex: 1}}>
-        <Text style={styles.txt__description}>{item.description}</Text>
+        <Text style={ProductDetailStyle.txt__description}>
+          {item.description}
+        </Text>
       </View>
       <View style={{flex: 1}}>
         <TouchableOpacity
-          style={styles.btn__buy}
+          style={ProductDetailStyle.btn__buy}
           onPress={() => addProductCart(item)}>
-          <Text style={styles.txt__btnbuy}>Thêm vào giỏ</Text>
+          <Text style={ProductDetailStyle.txt__btnbuy}>Thêm vào giỏ</Text>
         </TouchableOpacity>
       </View>
-
-      <View style={{flex: 1, paddingHorizontal: 20, marginTop: 20}}>
+      <View style={ProductDetailStyle.container__comment}>
         <Text style={{fontSize: 18, fontWeight: 'bold'}}>Bình luận</Text>
         <FlatList
           data={comments}
@@ -230,13 +228,13 @@ const ProductDetail = ({navigation, route}) => {
                 <View style={{flexDirection: 'row', marginTop: 5}}>
                   <TouchableOpacity
                     onPress={() => updateComment(item._id)}
-                    style={styles.smallButton}>
+                    style={ProductDetailStyle.smallButton}>
                     <Text style={{color: 'blue'}}>Sửa</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     onPress={() => deleteComment(item._id)}
-                    style={styles.smallButton}>
+                    style={ProductDetailStyle.smallButton}>
                     <Text style={{color: 'red'}}>Xóa</Text>
                   </TouchableOpacity>
                 </View>
@@ -245,19 +243,16 @@ const ProductDetail = ({navigation, route}) => {
           )}
         />
         <TextInput
-          style={{
-            borderColor: 'gray',
-            borderWidth: 1,
-            padding: 10,
-            marginVertical: 10,
-          }}
+          style={ProductDetailStyle.input__comment}
           placeholder="Nhập bình luận..."
           value={newComment}
           onChangeText={setNewComment}
         />
-        <View style={styles.btnCmtContainer}>
-          <TouchableOpacity style={styles.btnCmt} onPress={addComment}>
-            <Text style={styles.btnCmtText}>Gửi bình luận</Text>
+        <View style={ProductDetailStyle.btnCmtContainer}>
+          <TouchableOpacity
+            style={ProductDetailStyle.btnCmt}
+            onPress={addComment}>
+            <Text style={ProductDetailStyle.btnCmtText}>Gửi bình luận</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -275,78 +270,5 @@ const ProductDetail = ({navigation, route}) => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  img__product: {
-    width: WIDTH__SCREEN * 0.9,
-    height: HEIGHT__SCREEN * 0.35,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-  },
-  txt__nameProduct: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginVertical: 24,
-    marginHorizontal: 24,
-    color: 'black',
-  },
-  txt__priceProduct: {
-    fontSize: 18,
-    color: 'A2845E',
-    marginVertical: 24,
-    marginHorizontal: 24,
-  },
-  btn__container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginVertical: 12,
-    backgroundColor: '#F4F4F4',
-    width: WIDTH__SCREEN * 0.9,
-    marginHorizontal: 20,
-    borderRadius: 20,
-    height: HEIGHT__SCREEN * 0.07,
-  },
-  quantity__Container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-  },
-  icon: {
-    width: 40,
-    height: 40,
-  },
-  btn__buy: {
-    backgroundColor: 'black',
-    alignItems: 'center',
-    borderRadius: 22,
-    width: WIDTH__SCREEN * 0.9,
-    marginHorizontal: 20,
-    height: HEIGHT__SCREEN * 0.07,
-    justifyContent: 'center',
-  },
-  txt__btnbuy: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  txt__description: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  smallButton: {
-    marginHorizontal: 5,
-  },
-  btnCmtContainer: {
-    alignItems: 'center',
-  },
-  btnCmt: {
-    backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
-  },
-  btnCmtText: {
-    color: '#fff',
-  },
-});
 
 export default ProductDetail;
