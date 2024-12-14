@@ -61,7 +61,7 @@ const Tables = () => {
     }, []);
 
     useEffect(() => {
-        dispatch(setPageTitle('Tables'));
+        dispatch(setPageTitle('Quản lý sản phẩm'));
     });
 
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl';

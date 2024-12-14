@@ -64,7 +64,7 @@ const Tables = () => {
 
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Tables'));
+        dispatch(setPageTitle('Quản lý danh mục sản phẩm'));
     });
 
 

@@ -60,7 +60,7 @@ const PayOnlineManagement = () => {
 
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Pay Online Management'));
+        dispatch(setPageTitle('Quản lý ngân hàng thanh toán'));
     });
 
     return (
