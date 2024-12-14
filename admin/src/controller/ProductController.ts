@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Products } from '../model/ProductModel';
-import { GetProduct, DeleteProduct,EditProductByid,CreateProduct, GetProductById } from '../service/ProducService';
+import { GetProduct, DeleteProduct,EditProductByid,CreateProduct, GetProductById, UpdateProductAvailability } from '../service/ProducService';
 
 export const userProducts = () => {
 
@@ -69,6 +69,6 @@ export const userProducts = () => {
 
 
     return {
-        getProduct, deleteProduct, editProduct,createProduct,getProductById
+        getProduct, deleteProduct, editProduct,createProduct,getProductById,updateProductAvailability
     };
 };

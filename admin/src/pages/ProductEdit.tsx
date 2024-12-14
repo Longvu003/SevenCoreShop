@@ -9,7 +9,7 @@ export default function ProductUpdate() {
     const MySwal = withReactContent(Swal);
     const queryString = location.search;
     const urlParams = new URLSearchParams(queryString);
-    const { getCategories, deleteCategoriesById } = categoryController();
+    const { getCategories} = categoryController();
     const [images, setImages] = useState<string[]>([]);
     const [dataCategorie, setDataCategorie] = useState<Category[]>([]);
     const id: any = urlParams.get('id');

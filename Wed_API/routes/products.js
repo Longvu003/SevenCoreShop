@@ -5,20 +5,24 @@ var router = express.Router();
 const ProductController = require('../controllers/ProductController')
 
 /**
- * method: GET
- * url: http://localhost:7777/products?limit=10&page=1
- * response: trả về danh sách tất cả sản phẩm
+ * API cập nhật trạng thái available của sản phẩm
+ * method: post
+ * url: http://localhost:7777/products/:id/availability
+ * body: { available }
+ * response: trả về sản phẩm vừa cập nhật
  */
+router.post('/:id/availability', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { avaialble } = req.body;
+        console.log(id, avaialble)    
+        const product = await ProductController.updateProductAvailability(id, avaialble);
+        return res.status(200).json({ status: true, data: product });
+    } catch (error) {
+        return res.status(500).json({ status: false, data: error.message });
+    }
+});
 
-// router.get('/', async (req, res) => {
-//     try {
-//         const { limit, page } = req.query;
-//         const products = await ProductController.getProducts(limit, page);
-//         return res.status(200).json({ status: true, data: products })
-//     } catch (error) {
-//         return res.status(500).json({ status: false, data: error.message })
-//     }
-// });
 
 router.get('/', async (req, res, next) => {
     const { category_id } = req.query
@@ -30,16 +34,6 @@ router.get('/', async (req, res, next) => {
         return res.status(500).json({ status: false, data: error.message });
     }
 });
-
-router.get('/all', async (req, res, next) => {
-    try {
-        const products = await ProductController.getAllProducts();
-        return res.status(200).json({ status: true, data: products });
-        console.log(products);
-    } catch (error) {
-        return res.status(500).json({ status: false, data: error.message });
-    }
-})
 
 
 /**
@@ -78,19 +72,7 @@ router.post('/:id/update', async (req, res, next) => {
     }
 })
 
-//API tìm kiếm sản phẩm theo từ khóa
-// method: get
-// url: http://localhost:7777/products/tim-kiem?key=Product 1
-// kết quả: danh sách sản phẩm có tên hoặc mô tả chứa từ khóa tìm kiếm
-router.get('/tim-kiem', async (req, res, next) => {
-    try {
-        const { key } = req.query;
-        const products = await ProductController.searchProduct(key);
-        return res.status(200).json({ status: true, data: products })
-    } catch (error) {
-        return res.status(500).json({ status: false, data: error.message })
-    }
-});
+
 
 
 //API lấy danh sách sản phẩm theo category_id
@@ -108,21 +90,6 @@ router.get('/category', async (req, res, next) => {
 });
 
 
-
-//API lấy danh sách sản phẩm có giá trong khoảng min, max
-// và có số lượng lớn hơn 0
-// method: get
-// url: http://localhost:7777/products/loc-theo-gia?min=1&max=10
-// kết quả: danh sách sản phẩm theo như yêu cầu, có sắp xếp tăng dần theo số lượng
-router.get('/loc-theo-gia', async (req, res, next) => {
-    try {
-        const { min, max } = req.query;
-        const products = await ProductController.getProductByPrice(min, max);
-        return res.status(200).json({ status: true, data: products })
-    } catch (error) {
-        return res.status(500).json({ status: false, data: error.message })
-    }
-});
 
 /**
  * API Xóa SP
@@ -158,29 +125,6 @@ router.get('/:id', async (req, res) => {
         return res.status(500).json({ status: false, data: error.message })
     }
 });
-
-/**
- * method: GET
- * url: http://localhost:7777/products/top/top-10
- * response: trả về danh sách 10 sản phẩm có số lượng nhiều nhất
- */
-router.get('/top/top-10', async (req, res) => {
-    try {
-        const products = await ProductController.getTopProduct();
-        return res.status(200).json({ status: true, data: products })
-    } catch (error) {
-        return res.status(500).json({ status: false, data: error.message })
-    }
-});
-
-
-
-
-
-
-
-
-
 
 
 module.exports = router;
