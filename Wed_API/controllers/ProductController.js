@@ -47,26 +47,57 @@ const searchProduct = async (key) => {
   }
 };
 
-// Lấy danh sách sản phẩm theo danh mục
-const getProductsByCategory = async (req, res) => {
- try {
-  const category = req.query
-  const products = await ProductModel.find({ category });
+// // Lấy danh sách sản phẩm theo danh mục
+// const getProductsByCategory = async (req, res) => {
+//  try {
+//   const category = req.query
+//   const products = await ProductModel.find({ category });
 
-  return res.status(200).json({
-    status: true,
-    message: "Products fetched successfully.",
-    data: products
-  }); 
+//   return res.status(200).json({
+//     status: true,
+//     message: "Products fetched successfully.",
+//     data: products
+//   }); 
   
- } catch (error) {
-  console.log("Error fetching products:", error);
-    return res.status(500).json({
-      status: false,
-      message: "Server error. Cannot fetch products."
-    });
- }
+//  } catch (error) {
+//   console.log("Error fetching products:", error);
+//     return res.status(500).json({
+//       status: false,
+//       message: "Server error. Cannot fetch products."
+//     });
+//  }
+// };
+
+const getProductsByCategory = async (req, res) => {
+  try {
+      const { categoryId } = req.params;
+
+      // Kiểm tra xem categoryId có phải là ObjectId hợp lệ không
+      if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+          return res.status(400).json({ error: 'Invalid category ID' });
+      }
+
+      // Chạy truy vấn với categoryId, mongoose sẽ tự động chuyển nó thành ObjectId
+      const products = await Product.find({ category: categoryId });
+
+      if (!products || products.length === 0) {
+          return res.status(404).json({ message: 'No products found for this category' });
+      }
+
+      return res.status(200).json(products);
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Server error' });
+  }
 };
+
+
+
+
+
+
+
+
 
 
 

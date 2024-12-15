@@ -1,35 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  Image,
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
-import Customheader from '../../CustomHeader/Customheader'; // Import CustomHeader
+import Customheader from '../../CustomHeader/Customheader';
 
 const CategoryDetailScreen = ({ navigation, route }) => {
   const { category } = route.params;
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!category?._id || !/^[a-fA-F0-9]{24}$/.test(category._id)) {
-      console.error("Invalid categoryId. Must be a valid 24-character hex string.");
-      return;
-    }
-
-    axios
-      .get(`${API__URL}/products/categoryById`, {
-        params: { categoryId: category._id },
-      })
-      .then(response => {
-        setProducts(response.data.data || []);
-      })
-      .catch(error => {
-        console.error("Error fetching products:", error.response?.data?.message || error.message);
+  const fetchProducts = async () => {
+    // if (!category?._id || !/^[a-fA-F0-9]{24}$/.test(category._id)) {
+    //   setError("Invalid categoryId. Must be a valid 24-character hex string.");
+    //   setLoading(false);
+    //   return;
+    // }
+    // console.log("Category ID Length:", category._id.length); 
+    try {
+      setLoading(true);
+      console.log("Fetching products for categoryId:", category._id); 
+      const response = await axios.get(`${API__URL}/products/categoryById`, {
+        params: { categoryId: category._id.toString() }, 
       });
+      setProducts(response.data.data || []);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching products:", err.response?.data || err.message);
+      setError("Failed to fetch products.");
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchProducts();
   }, [category?._id]);
 
   return (
@@ -42,12 +45,16 @@ const CategoryDetailScreen = ({ navigation, route }) => {
         containerStyle={styles.customHeaderContainer}
       />
 
+      {/* Loading or Error States */}
+      {loading && <ActivityIndicator size="large" color="#0000ff" />}
+      {error && <Text style={styles.errorText}>{error}</Text>}
+
       {/* Product List */}
       <FlatList
         data={products}
         keyExtractor={item => item._id}
-        numColumns={2} // Chia 2 cột
-        contentContainerStyle={{ marginTop: 10 }} // Thêm khoảng cách trên FlatList
+        numColumns={2}
+        contentContainerStyle={{ marginTop: 10 }}
         renderItem={({ item }) => (
           <View style={styles.productCard}>
             <Image source={{ uri: item.images[0] }} style={styles.productImage} />
@@ -67,19 +74,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   customHeaderContainer: {
-    marginBottom: 10, // Khoảng cách dưới CustomHeader
+    marginBottom: 10,
     backgroundColor: '#f5f5f5',
     paddingVertical: 15,
   },
-  title: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'black',
+  errorText: {
+    color: 'red',
     textAlign: 'center',
+    fontSize: 16,
+    marginVertical: 10,
   },
   productCard: {
-    width: '48%', // Giảm một chút để có khoảng cách giữa các card
+    width: '48%',
     backgroundColor: '#F4F4F4',
     borderRadius: 8,
     padding: 10,
