@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import Customheader from '../../CustomHeader/Customheader';
-
 const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const AdDetail = ({route}) => {

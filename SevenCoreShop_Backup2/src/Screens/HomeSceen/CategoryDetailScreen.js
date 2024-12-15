@@ -39,11 +39,6 @@ const CategoryDetailScreen = ({navigation, route}) => {
         containerStyle={styles.customHeaderContainer}
       />
 
-      {/* Loading or Error States */}
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
-      {error && <Text style={styles.errorText}>{error}</Text>}
-
-      {/* Product List */}
       <FlatList
         showsVerticalScrollIndicator={false}
         data={products}

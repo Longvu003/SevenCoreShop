@@ -55,7 +55,6 @@ const ProductDetail = ({navigation, route}) => {
       Alert.alert('Sản phẩm không được dưới 1');
     }
   };
-
   const addProductCart = async () => {
     const getuserId = await AsyncStorage.getItem('userId');
     const userId = JSON.parse(getuserId);

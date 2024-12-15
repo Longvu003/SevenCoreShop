@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
+  StyleSheet,
 } from 'react-native';
 import axios from 'axios';
 import API_URL from '../../../config';
@@ -41,12 +42,11 @@ const PaymentAddressScreen = ({navigation, route}) => {
           : [];
 
         if (!formattedData.length) {
-          console.error('API trả về dữ liệu không hợp lệ:', response.data);
-          throw new Error('Invalid data format from API');
+          console.log('API trả về dữ liệu không hợp lệ:', response.data);
         }
         setAddresses(formattedData);
       } catch (error) {
-        console.error('Error fetching addresses:', error.message);
+        console.log('Error fetching addresses:', error.message);
         Alert.alert('Lỗi', 'Không thể tải địa chỉ giao hàng.');
       } finally {
         setLoading(false);
@@ -71,14 +71,11 @@ const PaymentAddressScreen = ({navigation, route}) => {
       ) {
         setBankDetails(bankData); // Cập nhật thông tin ngân hàng
       } else {
-        console.error(
-          'Định dạng dữ liệu ngân hàng không hợp lệ:',
-          response.data,
-        );
+        console.log('Định dạng dữ liệu ngân hàng không hợp lệ:', response.data);
         throw new Error('Dữ liệu trả về không đúng định dạng');
       }
     } catch (error) {
-      console.error('Lỗi khi gọi API ngân hàng:', error.message);
+      console.log('Lỗi khi gọi API ngân hàng:', error.message);
       Alert.alert(
         'Lỗi',
         'Không thể tải thông tin ngân hàng. Kiểm tra lại API hoặc dữ liệu.',
@@ -135,7 +132,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
         throw new Error('Checkout failed');
       }
     } catch (error) {
-      console.error('Lỗi khi thanh toán:', error);
+      console.log('Lỗi khi thanh toán:', error);
       Alert.alert(
         'Lỗi',
         'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.',
@@ -156,7 +153,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
       }
       console.log('Giỏ hàng đã được reset trên server!');
     } catch (error) {
-      console.error('Lỗi khi reset giỏ hàng:', error);
+      console.log('Lỗi khi reset giỏ hàng:', error);
       Alert.alert('Lỗi', 'Không thể reset giỏ hàng. Vui lòng thử lại.');
     }
   };
@@ -192,9 +189,9 @@ const PaymentAddressScreen = ({navigation, route}) => {
           onPress={() => setSelectedAddress(address)}>
           <View style={PaymentAddressStyle.addressContent}>
             <View style={PaymentAddressStyle.addressDetails}>
-              <Text style={PaymentAddressStyle.addressName}>
+              {/* <Text style={PaymentAddressStyle.addressName}>
                 {address.name || 'Không có tên'}
-              </Text>
+              </Text> */}
               <Text style={PaymentAddressStyle.addressText}>
                 {address.address || 'Không có địa chỉ'}
               </Text>
