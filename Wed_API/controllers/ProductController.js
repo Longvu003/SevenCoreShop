@@ -159,20 +159,17 @@ const updateProduct = async (
     if (!productInDb) {
       throw new Error("Sản phẩm không tồn tại");
     }
-
     const categoryInDB = await CategoryModel.findById(
       mongoose.Types.ObjectId(category)
     );
     if (!categoryInDB) {
       throw new Error("Category không tồn tại");
     }
-
     // tạo object category
     category = {
       category_id: categoryInDB._id,
       category_name: categoryInDB.name,
     };
-
     // cập nhật sản phẩm
     productInDb.name = name || productInDb.name;
     productInDb.price = price || productInDb.price;

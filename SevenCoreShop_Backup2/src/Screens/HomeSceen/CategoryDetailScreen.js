@@ -38,6 +38,12 @@ const CategoryDetailScreen = ({navigation, route}) => {
         title={category.name || 'Danh Mục'}
         containerStyle={styles.customHeaderContainer}
       />
+
+      {/* Loading or Error States */}
+      {loading && <ActivityIndicator size="large" color="#0000ff" />}
+      {error && <Text style={styles.errorText}>{error}</Text>}
+
+      {/* Product List */}
       <FlatList
         showsVerticalScrollIndicator={false}
         data={products}
@@ -69,12 +75,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     paddingVertical: 15,
   },
-  title: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'black',
+  errorText: {
+    color: 'red',
     textAlign: 'center',
+    fontSize: 16,
+    marginVertical: 10,
   },
   productCard: {
     width: '48%',

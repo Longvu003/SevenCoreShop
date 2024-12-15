@@ -15,7 +15,7 @@ const cartsRouter = require("./routes/carts");
 const Order = require("./routes/Order");
 const commentRoutes = require("./routes/cmt.js");
 const resetPass = require("./routes/repass.js");
-
+const PayOnline = require("./routes/payonline.js");
 var app = express();
 
 // View engine setup
@@ -64,7 +64,9 @@ app.use("/Orders", Order);
 app.use("/resetpass", resetPass);
 app.use("/api/comments", commentRoutes);
 
-// catch 404 and forward to error handler
+// http://localhost:7777/payonline
+app.use("/payonline", PayOnline);
+// Catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
