@@ -13,7 +13,8 @@ import {
 import axios from 'axios';
 import API_URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import PaymentAddressStyle from '../../StyleSheets/PaymentAddressStyle';
+import {useCart} from '../Cart/CartProdvider';
 const PaymentAddressScreen = ({navigation, route}) => {
   const [addresses, setAddresses] = useState([]);
   const [phone, setPhoneUser] = useState([]);
@@ -27,7 +28,8 @@ const PaymentAddressScreen = ({navigation, route}) => {
     (total, item) => total + item.price * item.quantity,
     0,
   );
-
+  const userID = route.params?.userID;
+  const {resetCart} = useCart();
   useEffect(() => {
     const fetchAddresses = async () => {
       const userEmail = await AsyncStorage.getItem('userEmail');
@@ -127,7 +129,8 @@ const PaymentAddressScreen = ({navigation, route}) => {
       );
 
       if (response.status === 201) {
-        await resetCartOnServer(cartItems);
+        // await resetCartOnServer(cartItems);
+        resetCart();
         Alert.alert('Thông báo', 'Đặt hàng thành công!');
       } else {
         throw new Error('Checkout failed');
@@ -144,13 +147,13 @@ const PaymentAddressScreen = ({navigation, route}) => {
   const resetCartOnServer = async cartItems => {
     try {
       for (const item of cartItems) {
-        await axios.delete(`${API_URL}/carts/deleteItemCart, {
+        await axios.delete(`${API_URL}/carts/deleteItemCart`, {
           data: {
             userId: userID,
             productId: item.productId,
             quantity: item.quantity,
           },
-        }`);
+        });
       }
       console.log('Giỏ hàng đã được reset trên server!');
     } catch (error) {

@@ -12,7 +12,6 @@ const checkout = async (req, res) => {
     if (!userId || !items || !totalAmount || !address || !paymentMethod) {
       return res.status(400).json({ message: "Thiếu dữ liệu" });
     }
-
     // Kiểm tra và thêm ảnh cho từng sản phẩm
     const populatedItems = await Promise.all(
       items.map(async (item) => {
