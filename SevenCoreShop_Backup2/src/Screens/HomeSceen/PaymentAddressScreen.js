@@ -12,10 +12,11 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import API_URL from '../../../config';
-import {useCart} from '../Cart/CartProdvider';
-import PaymentAddressStyle from '../../StyleSheets/PaymentAddressStyle';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const PaymentAddressScreen = ({navigation, route}) => {
   const [addresses, setAddresses] = useState([]);
+  const [phone, setPhoneUser] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
@@ -26,24 +27,24 @@ const PaymentAddressScreen = ({navigation, route}) => {
     (total, item) => total + item.price * item.quantity,
     0,
   );
-  const userID = route.params?.userID;
-  const {resetCart} = useCart();
+
   useEffect(() => {
     const fetchAddresses = async () => {
+      const userEmail = await AsyncStorage.getItem('userEmail');
+      const newUserEmail = JSON.parse(userEmail);
       try {
-        if (!userID) throw new Error('UserID is required');
-        const response = await axios.get(`${API_URL}/users/${userID}/address`);
-        const data = response.data?.address;
-
+        const response = await axios.get(
+          `${API_URL}/users/getUserEmail/?email=${newUserEmail}`,
+        );
+        // const data = response.data.result;
+        const data = response.data.result.address;
+        const phoneUser = response.data.result.numberphone;
+        setPhoneUser(phoneUser);
         const formattedData = Array.isArray(data)
           ? data
           : typeof data === 'string'
           ? [{_id: '1', name: 'Mặc định', address: data}]
           : [];
-
-        if (!formattedData.length) {
-          console.log('API trả về dữ liệu không hợp lệ:', response.data);
-        }
         setAddresses(formattedData);
       } catch (error) {
         console.log('Error fetching addresses:', error.message);
@@ -53,7 +54,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
       }
     };
     fetchAddresses();
-  }, [userID]);
+  }, []);
 
   const fetchBankDetails = async bankId => {
     try {
@@ -143,13 +144,13 @@ const PaymentAddressScreen = ({navigation, route}) => {
   const resetCartOnServer = async cartItems => {
     try {
       for (const item of cartItems) {
-        await axios.delete(`${API_URL}/carts/deleteItemCart`, {
+        await axios.delete(`${API_URL}/carts/deleteItemCart, {
           data: {
             userId: userID,
             productId: item.productId,
             quantity: item.quantity,
           },
-        });
+        }`);
       }
       console.log('Giỏ hàng đã được reset trên server!');
     } catch (error) {
@@ -182,22 +183,21 @@ const PaymentAddressScreen = ({navigation, route}) => {
         <TouchableOpacity
           key={address._id}
           style={[
-            PaymentAddressStyle.addressCard,
-            selectedAddress?._id === address._id &&
-              PaymentAddressStyle.selectedCard,
+            styles.addressCard,
+            selectedAddress?._id === address._id && styles.selectedCard,
           ]}
           onPress={() => setSelectedAddress(address)}>
-          <View style={PaymentAddressStyle.addressContent}>
-            <View style={PaymentAddressStyle.addressDetails}>
-              {/* <Text style={PaymentAddressStyle.addressName}>
-                {address.name || 'Không có tên'}
-              </Text> */}
-              <Text style={PaymentAddressStyle.addressText}>
+          <View style={styles.addressContent}>
+            <View style={styles.addressDetails}>
+              <Text style={styles.addressText}>
                 {address.address || 'Không có địa chỉ'}
+              </Text>
+              <Text style={styles.phoneText}>
+                SĐT: {phone || 'Không có số điện thoại'}
               </Text>
             </View>
           </View>
-          <Text style={PaymentAddressStyle.selectText}>
+          <Text style={styles.selectText}>
             {selectedAddress?._id === address._id ? 'Đã chọn' : 'Chọn'}
           </Text>
         </TouchableOpacity>
@@ -231,8 +231,8 @@ const PaymentAddressScreen = ({navigation, route}) => {
         <View>
           <Text style={styles.sectionHeader}>Chọn Ngân Hàng</Text>
           {[
-            {id: '675e6a75344d8008e4f65899', name: 'TP BANK'},
-            {id: '675e6ab7344d8008e4f6589d', name: 'VietComBank'},
+            // { id: '675e6a75344d8008e4f65899', name: 'TP BANK' },
+            // { id: '675e6ab7344d8008e4f6589d', name: 'VietComBank' },
             {id: '675e6ad4344d8008e4f658a3', name: 'MBBank'},
           ].map(bank => (
             <TouchableOpacity
