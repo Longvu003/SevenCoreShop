@@ -81,7 +81,7 @@ const login = async (email, password) => {
 
 
 // Cập nhật thông tin người dùng
-const update = async (email, password, name, phone, address) => {
+const update = async (email, password, username, numberphone, address) => {
   try {
     const user = await userModel.findOne({ email: email });
     if (!user) {
@@ -94,8 +94,8 @@ const update = async (email, password, name, phone, address) => {
       user.password = password;
     }
 
-    user.name = name;
-    user.phone = phone;
+    user.username = username;
+    user.numberphone = numberphone;
     user.address = address;
     user.updatedAt = Date.now();
 
@@ -182,7 +182,7 @@ const deleteUserById = async (id) => {
 };
 
 // Cập nhật người dùng theo ID
-const updateUserById = async (id, email, password, name, phone, address, role) => {
+const updateUserById = async (id, email, password, username, numberphone, address, role) => {
   try {
       const user = await userModel.findById(id);
       if (!user) {
@@ -196,8 +196,8 @@ const updateUserById = async (id, email, password, name, phone, address, role) =
       }
 
       user.email = email;
-      user.name = name;
-      user.phone = phone;
+      user.username = username;
+      user.numberphone = numberphone;
       user.address = address;
       user.role = role;
       user.updatedAt = Date.now();
