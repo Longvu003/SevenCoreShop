@@ -15,6 +15,7 @@ import UserStyleSheet from '../../StyleSheets/UserStyleSheet';
 import {useFocusEffect} from '@react-navigation/native';
 import API__URL from '../../../config';
 const User = ({navigation}) => {
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState([]);
   const renderUser = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');

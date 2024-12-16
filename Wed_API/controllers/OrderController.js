@@ -201,7 +201,7 @@ const checkout = async (req, res) => {
       totalAmount,
       address,
       paymentMethod,
-      status: "Pending",
+      status: "Đang xử lý",
       numberphone,
       date: new Date(),
       orderCode,

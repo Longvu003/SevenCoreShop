@@ -71,7 +71,6 @@ const login = async (email, password) => {
   }
 };
 
-
 // Cập nhật thông tin người dùng
 const update = async (email, password, name, phone, address) => {
   try {
@@ -229,32 +228,40 @@ const deleteUserById = async (id) => {
 };
 
 // Cập nhật người dùng theo ID
-const updateUserById = async (id, email, password, username, numberphone, address, role) => {
+const updateUserById = async (
+  id,
+  email,
+  password,
+  username,
+  numberphone,
+  address,
+  role
+) => {
   try {
-      const user = await userModel.findById(id);
-      if (!user) {
-          throw new Error("User không tồn tại");
-      }
+    const user = await userModel.findById(id);
+    if (!user) {
+      throw new Error("User không tồn tại");
+    }
 
-      if (password) {
-          const salt = bcrypt.genSaltSync(10);
-          password = bcrypt.hashSync(password, salt);
-          user.password = password;
-      }
+    if (password) {
+      const salt = bcrypt.genSaltSync(10);
+      password = bcrypt.hashSync(password, salt);
+      user.password = password;
+    }
 
-      user.email = email;
-      user.username = username;
-      user.numberphone = numberphone;
-      user.address = address;
-      user.role = role;
-      user.updatedAt = Date.now();
+    user.email = email;
+    user.username = username;
+    user.numberphone = numberphone;
+    user.address = address;
+    user.role = role;
+    user.updatedAt = Date.now();
 
-      await user.save();
-      console.log("User updated successfully:", user); // Thêm log
-      return "Cập nhật người dùng thành công";
+    await user.save();
+    console.log("User updated successfully:", user); // Thêm log
+    return "Cập nhật người dùng thành công";
   } catch (error) {
-      console.log("Lỗi cập nhật user bằng id", error.message);
-      throw new Error("Lỗi cập nhật user bằng id");
+    console.log("Lỗi cập nhật user bằng id", error.message);
+    throw new Error("Lỗi cập nhật user bằng id");
   }
 };
 
@@ -322,5 +329,18 @@ const unlockUserById = async (id) => {
 };
 
 module.exports = {
-  register, login, update, verify, deleteUser, getAllUser, deleteUserById, updateUserById, lockUserById, unlockUserById, generateAndSaveOtp, forgotPassword, resetPassword,
+  register,
+  login,
+  update,
+  verify,
+  deleteUser,
+  getAllUser,
+  deleteUserById,
+  updateUserById,
+  lockUserById,
+  unlockUserById,
+  generateAndSaveOtp,
+  forgotPassword,
+  resetPassword,
+  getUserByEmail,
 };
