@@ -10,8 +10,12 @@ import IconMenuChat from '../Icon/Menu/IconMenuChat';
 import { IRootState } from '../../store';
 import IconMenuScrumboard from '../Icon/Menu/IconMenuScrumboard';
 import IconUser from '../Icon/IconUser';
-
-
+import IconHome from '../Icon/IconHome';
+import IconBank from '../Icon/IconBank';
+import IconBill from '../Icon/IconBill';
+import IconOrder from '../Icon/IconOrder';
+import IconCate from '../Icon/IconCate';
+import IconProduct from '../Icon/IconShoppingBag';
 
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState<string>('');
@@ -89,7 +93,7 @@ const Sidebar = () => {
                                                         <li className="nav-item">
                                                             <NavLink to="/" className="group">
                                                                 <div className="flex items-center">
-                                                                    <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                                    <IconHome className="group-hover:!text-primary shrink-0" />
                                                                     <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Trang chủ')}</span>
                                                                 </div>
                                                             </NavLink>
@@ -108,7 +112,7 @@ const Sidebar = () => {
                                                                 <li className="nav-item">
                                                                     <NavLink to="/product/product-managent" className="group">
                                                                         <div className="flex items-center">
-                                                                            <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                                            <IconProduct className="group-hover:!text-primary shrink-0" />
                                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Sản Phẩm')}</span>
                                                                         </div>
                                                                     </NavLink>
@@ -116,7 +120,7 @@ const Sidebar = () => {
                                                                 <li className="nav-item">
                                                                     <NavLink to="/categoriesmanagent" className="group">
                                                                         <div className="flex items-center">
-                                                                            <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                                            <IconCate className="group-hover:!text-primary shrink-0" />
                                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Danh mục sản phẩm')}</span>
                                                                         </div>
                                                                     </NavLink>
@@ -124,7 +128,7 @@ const Sidebar = () => {
                                                                 <li className="nav-item">
                                                                     <NavLink to="/orderManagent" className="group">
                                                                         <div className="flex items-center">
-                                                                            <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                                            <IconOrder className="group-hover:!text-primary shrink-0" />
                                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Đơn hàng')}</span>
                                                                         </div>
                                                                     </NavLink>
@@ -132,7 +136,7 @@ const Sidebar = () => {
                                                                 <li className="nav-item">
                                                                     <NavLink to="/payonlineManagent" className="group">
                                                                         <div className="flex items-center">
-                                                                            <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                                            <IconBank className="group-hover:!text-primary shrink-0" />
                                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Ngân hàng thanh toán')}</span>
                                                                         </div>
                                                                     </NavLink>
@@ -140,7 +144,7 @@ const Sidebar = () => {
                                                                 <li className="nav-item">
                                                                     <NavLink to="/transactionmanagement" className="group">
                                                                         <div className="flex items-center">
-                                                                            <IconMenuChat className="group-hover:!text-primary shrink-0" />
+                                                                            <IconBill className="group-hover:!text-primary shrink-0" />
                                                                             <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Hóa đơn trực tuyến')}</span>
                                                                         </div>
                                                                     </NavLink>

@@ -118,6 +118,14 @@ const routes = [
             </PrivateRoute>
         ),
     },
+    {
+        path: '/advertising-management',
+        element: (
+            <PrivateRoute>
+                <Advertisement />   
+            </PrivateRoute>
+        ),
+    },
     // Login page (public)
     {
         path: '/login',

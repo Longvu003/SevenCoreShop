@@ -95,7 +95,7 @@ export default function ProductCreateNew() {
                     title: "Thành công",
                     text: "Thêm sản phẩm thành công"
                 });
-                //location.href = "/product/product-managent";
+                location.href = "/product/product-managent";
             } else {
                 Swal.fire({
                     icon: "error",

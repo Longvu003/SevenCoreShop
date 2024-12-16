@@ -194,7 +194,7 @@ const UsersManagent = () => {
                                         <form>
                                             <div className="mb-5">
                                                 <label htmlFor="name">Tên</label>
-                                                <input id="name" type="text" placeholder="Nhập tên" className="form-input" value={params.username} onChange={handleChange} />
+                                                <input id="username" type="text" placeholder="Nhập tên" className="form-input" value={params.username} onChange={handleChange} />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="email">Email</label>
@@ -202,7 +202,7 @@ const UsersManagent = () => {
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="phone">Điện Thoại</label>
-                                                <input id="phone" type="text" placeholder="Nhập số điện thoại" className="form-input" value={params.numberphone} onChange={handleChange} />
+                                                <input id="numberphone" type="text" placeholder="Nhập số điện thoại" className="form-input" value={params.numberphone} onChange={handleChange} />
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="address">Địa Chỉ</label>
