@@ -20,6 +20,7 @@ const orderSchema = new mongoose.Schema({
   totalAmount: { type: Number, required: true },
   address: { type: String, required: true },
   paymentMethod: { type: String, required: true },
+  numberphone: { type: String, required: true },
   status: { type: String, default: "Đang xử lý" },
   date: { type: Date, default: Date.now },
 });

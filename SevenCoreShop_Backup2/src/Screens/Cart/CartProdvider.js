@@ -151,7 +151,6 @@ export const CartProdvider = ({children}) => {
       return null;
     }
   };
-
   useEffect(() => {
     getDataCart();
   }, []);

@@ -73,6 +73,7 @@ const DetailOrder = ({route}) => {
           }}>
           <View style={{marginHorizontal: 20}}>
             <Text>Địa chỉ: {DetailOrder.address}</Text>
+            <Text>Số điện thoại: {DetailOrder.numberphone}</Text>
             <Text>Trạng thái: {DetailOrder.status}</Text>
             <Text>Phương thức thanh toán: {DetailOrder.paymentMethod} </Text>
             <Text>Tổng tiền: {DetailOrder.totalAmount} </Text>

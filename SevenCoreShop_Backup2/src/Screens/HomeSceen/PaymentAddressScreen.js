@@ -119,6 +119,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
       totalAmount,
       address: selectedAddress.address,
       paymentMethod,
+      numberphone: phone,
       bankId: selectedBank.id,
     };
 

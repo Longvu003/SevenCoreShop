@@ -18,6 +18,7 @@ const CartSchema = new Schema({
         enum: ["Đang xác nhận", "Đang giao", "Đã hoàn thành", "Đã hủy"],
         default: "Đang xác nhận",
       },
+
       date: { type: Date, default: Date.now },
     },
   ],

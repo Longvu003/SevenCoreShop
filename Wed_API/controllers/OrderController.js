@@ -6,10 +6,17 @@ const OrderModel = require("../model/OrderModel");
 
 const checkout = async (req, res) => {
   try {
-    const { userId, items, totalAmount, address, paymentMethod } = req.body;
-
+    const { userId, items, totalAmount, address, paymentMethod, numberphone } =
+      req.body;
     // Kiểm tra dữ liệu đầu vào
-    if (!userId || !items || !totalAmount || !address || !paymentMethod) {
+    if (
+      !userId ||
+      !items ||
+      !totalAmount ||
+      !address ||
+      !paymentMethod ||
+      !numberphone
+    ) {
       return res.status(400).json({ message: "Thiếu dữ liệu" });
     }
     // Kiểm tra và thêm ảnh cho từng sản phẩm
@@ -32,10 +39,10 @@ const checkout = async (req, res) => {
       totalAmount,
       address,
       paymentMethod,
+      numberphone,
       status: "Đang xử lý",
       date: new Date(),
     });
-
     await newOrder.save();
     const cart = await CartModel.findOne({ userId });
     // if (cart) {
