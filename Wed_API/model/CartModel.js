@@ -13,12 +13,6 @@ const CartSchema = new Schema({
       price: { type: Number, required: true },
       quantity: { type: Number, default: 1 },
       images: { type: [String] },
-      statusProduct: {
-        type: String,
-        enum: ["Đang xác nhận", "Đang giao", "Đã hoàn thành", "Đã hủy"],
-        default: "Đang xác nhận",
-      },
-
       date: { type: Date, default: Date.now },
     },
   ],

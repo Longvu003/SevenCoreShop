@@ -22,13 +22,10 @@
     "mogoose": "^0.0.1-security",
     "mongoose": "^8.8.1",
     "morgan": "~1.9.1",
-<<<<<<< HEAD
+
     "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.16"
-=======
-    "node-fetch": "^3.3.2",
-    "nodemailer": "^6.9.13"
->>>>>>> 145a3b0c9680ab76d5ee19998eaf85ad948db9fc
+    "nodemailer": "^6.9.16"   
+
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

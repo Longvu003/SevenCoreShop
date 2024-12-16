@@ -1,20 +1,23 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const cors = require('cors')
-const mongoose = require('mongoose')
-require('./model/UserModel')
+var createError = require("http-errors");
+var express = require("express");
+var path = require("path");
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
+const cors = require("cors");
+const mongoose = require("mongoose");
+require("./model/UserModel");
 //okokok
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const productsRouter = require('./routes/products');
-const categoriesRouter = require('./routes/categories');
-const cartsRouter = require('./routes/carts')
+var indexRouter = require("./routes/index");
+var usersRouter = require("./routes/users");
+const productsRouter = require("./routes/products");
+const categoriesRouter = require("./routes/categories");
+const cartsRouter = require("./routes/carts");
 const Order = require("./routes/Order");
 const PayOnline = require("./routes/PayOnline");
 const Transaction = require("./routes/crontransaction");
+const resetPass = require("./routes/repass");
+const commentRoutes = require("./routes/cmt");
+const bestsellitem = require("./routes/bestsellitem.js");
 //okokok
 var app = express();
 
@@ -70,7 +73,7 @@ app.use("/payonline", PayOnline);
 app.use(function (req, res, next) {
   next(createError(404));
 });
-
+app.use("/bestsell", bestsellitem);
 // Error handler
 app.use(function (err, req, res, next) {
   // Set locals, only providing error in development
