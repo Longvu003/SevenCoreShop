@@ -17,8 +17,13 @@ const cartsRouter = require('./routes/carts')
 const Order = require("./routes/Order");
 const PayOnline = require("./routes/PayOnline");
 const Transaction = require("./routes/crontransaction");
-
-//okokok
+const multer = require('multer');
+const Ad = require('./model/AdModel');
+// Cấu hình multer để lưu ảnh
+const upload = require('./cloudpng/upload');
+const adsRouter = require('./routes/ads')(upload);
+const dotenv = require('dotenv');
+dotenv.config();
 
 var app = express();
 
@@ -55,9 +60,11 @@ app.use("/orders", Order);
 app.use("/payonline", PayOnline);
 // http://localhost:7777/cron
 app.use("/cron", Transaction);
+app.use('/ads', adsRouter); // Đăng ký router quảng cáo
+app.use("/images", express.static("images")); // Đăng ký router ảnh
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
@@ -68,8 +75,12 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+// app.use((err, req, res, next) => {
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+// >>>>>>> origin/tien1
+//   res.status(err.status || 500);
+//   res.render('error');
+ });
 
 module.exports = app;

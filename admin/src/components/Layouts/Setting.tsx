@@ -37,41 +37,40 @@ const Setting = () => {
                             <IconX className="w-5 h-5" />
                         </button>
 
-                        <h4 className="mb-1 dark:text-white">TEMPLATE CUSTOMIZER</h4>
-                        <p className="text-white-dark">Set preferences that will be cookied for your live preview demonstration.</p>
+                        <h4 className="mb-1 dark:text-white">TÙY CHỈNH GIAO DIỆN</h4>
                     </div>
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
-                        <h5 className="mb-1 text-base dark:text-white leading-none">Color Scheme</h5>
-                        <p className="text-white-dark text-xs">Overall light or dark presentation.</p>
+                        <h5 className="mb-1 text-base dark:text-white leading-none">Hiển Thị</h5>
+                        <p className="text-white-dark text-xs">Chỉnh Nền Sáng Tối.</p>
                         <div className="grid grid-cols-3 gap-2 mt-3">
                             <button type="button" className={`${themeConfig.theme === 'light' ? 'btn-primary' : 'btn-outline-primary'} btn`} onClick={() => dispatch(toggleTheme('light'))}>
                                 <IconSun className="w-5 h-5 shrink-0 ltr:mr-2 rtl:ml-2" />
-                                Light
+                                Sáng
                             </button>
 
                             <button type="button" className={`${themeConfig.theme === 'dark' ? 'btn-primary' : 'btn-outline-primary'} btn`} onClick={() => dispatch(toggleTheme('dark'))}>
                                 <IconMoon className="w-5 h-5 shrink-0 ltr:mr-2 rtl:ml-2" />
-                                Dark
+                                Tối
                             </button>
 
                             <button type="button" className={`${themeConfig.theme === 'system' ? 'btn-primary' : 'btn-outline-primary'} btn`} onClick={() => dispatch(toggleTheme('system'))}>
                                 <IconLaptop className="w-5 h-5 shrink-0 ltr:mr-2 rtl:ml-2" />
-                                System
+                                Hệ Thống
                             </button>
                         </div>
                     </div>
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
-                        <h5 className="mb-1 text-base dark:text-white leading-none">Navigation Position</h5>
-                        <p className="text-white-dark text-xs">Select the primary navigation paradigm for your app.</p>
+                        <h5 className="mb-1 text-base dark:text-white leading-none">Vị Trí Điều Hướng</h5>
+                        <p className="text-white-dark text-xs">Chọn vị trí điều hướng chính cho trang web của bạn.</p>
                         <div className="grid grid-cols-3 gap-2 mt-3">
                             <button type="button" className={`${themeConfig.menu === 'horizontal' ? 'btn-primary' : 'btn-outline-primary'} btn`} onClick={() => dispatch(toggleMenu('horizontal'))}>
-                                Horizontal
+                                Nằm Ngang
                             </button>
 
                             <button type="button" className={`${themeConfig.menu === 'vertical' ? 'btn-primary' : 'btn-outline-primary'} btn`} onClick={() => dispatch(toggleMenu('vertical'))}>
-                                Vertical
+                                Nằm Dọc
                             </button>
 
                             <button
@@ -79,7 +78,7 @@ const Setting = () => {
                                 className={`${themeConfig.menu === 'collapsible-vertical' ? 'btn-primary' : 'btn-outline-primary'} btn`}
                                 onClick={() => dispatch(toggleMenu('collapsible-vertical'))}
                             >
-                                Collapsible
+                                Thu Gọn
                             </button>
                         </div>
                         <div className="mt-5 text-primary">
@@ -90,46 +89,46 @@ const Setting = () => {
                                     checked={themeConfig.semidark === true || themeConfig.semidark === 'true'}
                                     onChange={(e) => dispatch(toggleSemidark(e.target.checked))}
                                 />
-                                <span>Semi Dark (Sidebar & Header)</span>
+                                <span>Nửa tối (Thanh bên & Tiêu đề)</span>
                             </label>
                         </div>
                     </div>
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
-                        <h5 className="mb-1 text-base dark:text-white leading-none">Layout Style</h5>
-                        <p className="text-white-dark text-xs">Select the primary layout style for your app.</p>
+                        <h5 className="mb-1 text-base dark:text-white leading-none">Bố Cục</h5>
+                        <p className="text-white-dark text-xs">Chọn bố cục cho trang web của bạn.</p>
                         <div className="flex gap-2 mt-3">
                             <button
                                 type="button"
                                 className={`${themeConfig.layout === 'boxed-layout' ? 'btn-primary' : 'btn-outline-primary'} btn flex-auto`}
                                 onClick={() => dispatch(toggleLayout('boxed-layout'))}
                             >
-                                Box
+                                Khối
                             </button>
 
                             <button type="button" className={`${themeConfig.layout === 'full' ? 'btn-primary' : 'btn-outline-primary'} btn flex-auto`} onClick={() => dispatch(toggleLayout('full'))}>
-                                Full
+                                Toàn Bộ
                             </button>
                         </div>
                     </div>
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
-                        <h5 className="mb-1 text-base dark:text-white leading-none">Direction</h5>
-                        <p className="text-white-dark text-xs">Select the direction for your app.</p>
+                        <h5 className="mb-1 text-base dark:text-white leading-none">Hướng Của Văn Bản</h5>
+                        <p className="text-white-dark text-xs">Chọn hướng cho văn bản.</p>
                         <div className="flex gap-2 mt-3">
                             <button type="button" className={`${themeConfig.rtlClass === 'ltr' ? 'btn-primary' : 'btn-outline-primary'} btn flex-auto`} onClick={() => dispatch(toggleRTL('ltr'))}>
-                                LTR
+                                Trái Sang Phải
                             </button>
 
                             <button type="button" className={`${themeConfig.rtlClass === 'rtl' ? 'btn-primary' : 'btn-outline-primary'} btn flex-auto`} onClick={() => dispatch(toggleRTL('rtl'))}>
-                                RTL
+                                Phải Sang Trái
                             </button>
                         </div>
                     </div>
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
-                        <h5 className="mb-1 text-base dark:text-white leading-none">Navbar Type</h5>
-                        <p className="text-white-dark text-xs">Sticky or Floating.</p>
+                        <h5 className="mb-1 text-base dark:text-white leading-none">Kiểu Thanh Điều Hướng</h5>
+                        <p className="text-white-dark text-xs">Dính hoặc Nổi.</p>
                         <div className="mt-3 flex items-center gap-3 text-primary">
                             <label className="inline-flex mb-0">
                                 <input
@@ -139,7 +138,7 @@ const Setting = () => {
                                     className="form-radio"
                                     onChange={() => dispatch(toggleNavbar('navbar-sticky'))}
                                 />
-                                <span>Sticky</span>
+                                <span>Dính</span>
                             </label>
                             <label className="inline-flex mb-0">
                                 <input
@@ -149,7 +148,7 @@ const Setting = () => {
                                     className="form-radio"
                                     onChange={() => dispatch(toggleNavbar('navbar-floating'))}
                                 />
-                                <span>Floating</span>
+                                <span>Nổi</span>
                             </label>
                             <label className="inline-flex mb-0">
                                 <input
@@ -159,26 +158,26 @@ const Setting = () => {
                                     className="form-radio"
                                     onChange={() => dispatch(toggleNavbar('navbar-static'))}
                                 />
-                                <span>Static</span>
+                                <span>Tĩnh</span>
                             </label>
                         </div>
                     </div>
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
-                        <h5 className="mb-1 text-base dark:text-white leading-none">Router Transition</h5>
-                        <p className="text-white-dark text-xs">Animation of main content.</p>
+                        <h5 className="mb-1 text-base dark:text-white leading-none">Hiệu Ứng Chuyển Đổi</h5>
+                        <p className="text-white-dark text-xs">Hoạt ảnh của nội dung chính.</p>
                         <div className="mt-3">
                             <select className="form-select border-primary text-primary" value={themeConfig.animation} onChange={(e) => dispatch(toggleAnimation(e.target.value))}>
-                                <option value=" ">None</option>
-                                <option value="animate__fadeIn">Fade</option>
-                                <option value="animate__fadeInDown">Fade Down</option>
-                                <option value="animate__fadeInUp">Fade Up</option>
-                                <option value="animate__fadeInLeft">Fade Left</option>
-                                <option value="animate__fadeInRight">Fade Right</option>
-                                <option value="animate__slideInDown">Slide Down</option>
-                                <option value="animate__slideInLeft">Slide Left</option>
-                                <option value="animate__slideInRight">Slide Right</option>
-                                <option value="animate__zoomIn">Zoom In</option>
+                                <option value=" ">Không Có</option>
+                                <option value="animate__fadeIn">Giảm</option>
+                                <option value="animate__fadeInDown">Giảm Dần</option>
+                                <option value="animate__fadeInUp">Mờ Dần</option>
+                                <option value="animate__fadeInLeft">Mờ Dần Sang Trái</option>
+                                <option value="animate__fadeInRight">Mờ Dần Sang Phải</option>
+                                <option value="animate__slideInDown">Trượt Xuống</option>
+                                <option value="animate__slideInLeft">Trượt Trái</option>
+                                <option value="animate__slideInRight">Trượt Phải</option>
+                                <option value="animate__zoomIn">Phóng To</option>
                             </select>
                         </div>
                     </div>

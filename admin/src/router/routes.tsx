@@ -1,5 +1,7 @@
 import { lazy } from 'react';
 import PrivateRoute from './PrivateRoute';  // Import the PrivateRoute component
+import Scrumboard from '../pages/AdvertisementManagent';
+import Advertisement from '../pages/AdvertisementManagent';
 
 const Index = lazy(() => import('../pages/Analytics'));
 const ProductManagent = lazy(() => import('../pages/ProductManagent'));
@@ -15,6 +17,8 @@ const OrderManagent = lazy(() => import('../pages/OrderManagement'));
 const PayOnlineManagement = lazy(() => import('../pages/PayOnlineManagement'));
 const PayOnlineNew = lazy(() => import('../pages/PayonlineNew'));
 const TransactionManagement = lazy(() => import('../pages/TransactionsManagement'));
+const Usermanagent = lazy(() => import('../pages/UsersManagent'));
+
 const routes = [
     // dashboard (protected)
     {
@@ -97,6 +101,15 @@ const routes = [
             </PrivateRoute>
         ),
     },
+        // user (protected)
+        {
+            path: '/usermanagent',
+            element: (
+                <PrivateRoute>
+                    <Usermanagent />
+                </PrivateRoute>
+            ),
+        },
     {
         path: '/product/product-update',
         element: (
