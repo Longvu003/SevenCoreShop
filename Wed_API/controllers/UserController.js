@@ -1,111 +1,103 @@
 const userModel = require("../model/UserModel");
-const bcrypt = require("bcrypt");
-const sendResetPasswordEmail = require("../helpers/EmailCofig");
+const bcrypt = require("bcryptjs");
 const httml = require("../helpers/MailContent");
 const OtpModel = require("../models/OtpModel");
 const crypto = require("crypto"); // Sử dụng để tạo OTP ngẫu nhiên
-const UserModel = require("../model/UserModel");
-
-// Hàm kiểm tra email hợp lệ
-const isValidEmail = (email) => {
-  const emailRegex = /\S+@\S+\.\S+/;
-  return emailRegex.test(email);
-};
-// Lấy tất cả người dùng
-const getAllUser = async () => {
-  try {
-    const users = await userModel.find();
-    return users;
-  } catch (error) {
-    console.log("Get all user error", error.message);
-    throw new Error("Get all user error");
-  }
-};
-
-// Tìm kiếm user bằng email
-const getUserByEmail = async (email) => {
-  try {
-    const user = await userModel.findOne({ email: email });
-    if (!user) {
-      throw new Error("User không tồn tại");
-    }
-    return user;
-  } catch (error) {
-    console.log("Get user error", error.message);
-    throw new Error("Get user error: " + error.message);
-  }
-};
+const sendResetPasswordEmail = require("../helpers/EmailCofig");
 
 // Đăng ký người dùng mới
 const register = async (email, password, username, numberphone, address) => {
   try {
-    // Kiểm tra email đã tồn tại trong cơ sở dữ liệu
+    // Tìm kiếm email trong database
     let user = await userModel.findOne({ email: email });
     if (user) {
       throw new Error("Email đã tồn tại");
     }
 
-    // Mã hóa mật khẩu
+    // Mã hóa password
     const salt = bcrypt.genSaltSync(10);
     password = bcrypt.hashSync(password, salt);
 
-    // Tạo người dùng mới
+    // Tạo mới user
     user = new userModel({
       email: email,
       password: password,
       username: username,
       numberphone: numberphone,
       address: address,
+      available: true, // Mặc định người dùng được kích hoạt
     });
 
-    // Lưu người dùng
+    // Lưu user
     await user.save();
 
-    return "Đăng kí thành công";
+    return "Đăng ký thành công";
   } catch (error) {
-    console.log("Register error", error.message);
-    throw new Error("Register error: " + error.message);
+    console.log("Lỗi Đăng ký", error.message);
+    throw new Error("Lỗi Đăng ký");
   }
 };
 
 // Đăng nhập
 const login = async (email, password) => {
   try {
-    // Tìm kiếm người dùng trong cơ sở dữ liệu theo email
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email: email });
+    console.log("User found:", user); // Thêm log để kiểm tra thông tin người dùng
     if (!user) {
       throw new Error("Email không tồn tại");
     }
-    const check = bcrypt.compareSync(password, user.password);
-    if (!check) {
-      throw new Error("Mật khẩu không đúng");
+
+    if (!user.available) {
+      throw new Error("Tài khoản của bạn đã bị khóa");
     }
-    // Trả về thông tin người dùng nhưng không bao gồm mật khẩu
-    return {
-      id: user._id,
-      email: user.email,
-      username: user.username,
-      role: user.role,
-    };
+
+    const check = bcrypt.compareSync(password, user.password);
+    console.log("Password check:", check); // Thêm log để kiểm tra kết quả so sánh mật khẩu
+    if (check) {
+      return {
+        _id: user._id,
+        email: user.email,
+        username: user.username,
+        numberphone: user.numberphone,
+        address: user.address,
+        role: user.role,
+      };
+    }
+
+    return null; // Nếu không tìm thấy user
   } catch (error) {
-    console.log("Login error", error.message);
+    console.log("Lỗi đăng nhập", error.message);
+    throw new Error("Lỗi đăng nhập");
   }
 };
-// Hàm tạo và lưu OTP
-async function generateAndSaveOtp(email) {
-  const otp = crypto.randomInt(100000, 999999).toString(); // Tạo OTP 6 chữ số
-  const otpExpiry = new Date(Date.now() + 1 * 60 * 1000); // Đặt thời gian hết hạn cho OTP
 
-  // Lưu OTP vào cơ sở dữ liệu
-  await OtpModel.create({
-    userEmail: email,
-    otp: otp,
-    otpExpiry: otpExpiry,
-    createdAt: new Date(),
-  });
 
-  return otp;
-}
+// Cập nhật thông tin người dùng
+const update = async (email, password, name, phone, address) => {
+  try {
+    const user = await userModel.findOne({ email: email });
+    if (!user) {
+      throw new Error("Email không tồn tại");
+    }
+
+    if (password) {
+      const salt = bcrypt.genSaltSync(10);
+      password = bcrypt.hashSync(password, salt);
+      user.password = password;
+    }
+
+    user.name = name;
+    user.phone = phone;
+    user.address = address;
+    user.updatedAt = Date.now();
+
+    await user.save();
+    return "Cập nhật thành công";
+  } catch (error) {
+    console.log("Lỗi cập nhật người dùng", error.message);
+    throw new Error("Lỗi cập nhật người dùng");
+  }
+};
 
 // Gửi OTP qua email
 async function sendOtpMail(email, otp) {
@@ -132,79 +124,26 @@ const forgotPassword = async (email) => {
   }
 };
 
-// Đặt lại mật khẩu với OTP hợp lệ
-// const resetPassword = async (email, otp, newPassword) => {
-//   try {
-//     // Tìm kiếm OTP trong cơ sở dữ liệu và xác minh nó có còn hiệu lực không
-//     const otpRecord = await OtpModel.findOne({ userEmail: email, otp: otp });
-//     if (!otpRecord || otpRecord.otpExpiry < Date.now()) {
-//       throw new Error("OTP không hợp lệ hoặc đã hết hạn");
-//     }
-
-//     // Mã hóa mật khẩu mới
-//     const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-//     // Cập nhật mật khẩu cho người dùng
-//     const user = await getUserByEmail(email);
-//     user.password = hashedPassword;
-//     await user.save();
-
-//     // Xóa OTP sau khi sử dụng
-//     await OtpModel.deleteOne({ userEmail: email, otp: otp });
-
-//     return "Mật khẩu đã được đặt lại thành công";
-//   } catch (error) {
-//     console.error("Reset password error:", error.message);
-//     throw new Error("Reset password error: " + error.message);
-//   }
-// };
-
-// Cập nhật thông tin người dùng
-const updateUser = async (email, username, numberphone, birthday, address) => {
-  try {
-    const user = await userModel.findOne({ email: email });
-    if (!user) {
-      throw new Error("Email không tồn tại");
-    }
-    user.username = username;
-    user.numberphone = numberphone;
-    user.birthday = birthday;
-    user.address = address;
-    user.updatedAt = Date.now();
-    await user.save();
-
-    return "Cập nhật thành công";
-  } catch (error) {
-    console.log("Update error", error.message);
-    throw new Error("Update error: " + error.message);
-  }
-};
-
 // Xác thực email
 const verify = async (email) => {
   try {
-    // Kiểm tra xem email có hợp lệ không
     if (!isValidEmail(email)) {
       throw new Error("Email không hợp lệ");
     }
 
-    // Tìm kiếm user trong db theo email
     const user = await userModel.findOne({ email: email });
     if (!user) {
       throw new Error("Email không tồn tại");
     }
 
-    // Kiểm tra xem user đã được xác thực chưa
     if (user.verify) {
       throw new Error("Email đã được xác thực trước đó");
     }
 
-    // Cập nhật user
     user.verify = true;
     user.updatedAt = Date.now();
 
-    // Lưu user
-    const result = await user.save();
+    await user.save();
     return "Xác thực thành công";
   } catch (error) {
     console.log("Verify error:", error.message);
@@ -212,52 +151,176 @@ const verify = async (email) => {
   }
 };
 
-const updateUserById = async (
-  id,
-  email,
-  password,
-  username,
-  numberphone,
-  address
-) => {
+// Hàm kiểm tra email hợp lệ
+const isValidEmail = (email) => {
+  const emailRegex = /\S+@\S+\.\S+/;
+  return emailRegex.test(email);
+};
+
+// Tìm kiếm user bằng email
+const getUserByEmail = async (email) => {
+  try {
+    const user = await userModel.findOne({ email: email });
+    if (!user) {
+      throw new Error("User không tồn tại");
+    }
+    return user;
+  } catch (error) {
+    console.log("Get user error", error.message);
+    throw new Error("Get user error: " + error.message);
+  }
+};
+
+// Hàm tạo và lưu OTP
+async function generateAndSaveOtp(email) {
+  const otp = crypto.randomInt(100000, 999999).toString(); // Tạo OTP 6 chữ số
+  const otpExpiry = new Date(Date.now() + 1 * 60 * 1000); // Đặt thời gian hết hạn cho OTP
+
+  // Lưu OTP vào cơ sở dữ liệu
+  await OtpModel.create({
+    userEmail: email,
+    otp: otp,
+    otpExpiry: otpExpiry,
+    createdAt: new Date(),
+  });
+
+  return otp;
+}
+
+// Xóa người dùng
+const deleteUser = async (email) => {
+  try {
+    const user = await userModel.findOne({ email: email });
+    if (!user) {
+      throw new Error("Email không tồn tại");
+    }
+
+    await userModel.deleteOne({ email: email });
+    return "Xóa người dùng thành công";
+  } catch (error) {
+    console.log("Xóa người dùng thất bại", error.message);
+    throw new Error("Xóa người dùng thất bại");
+  }
+};
+
+// Lấy tất cả người dùng
+const getAllUser = async () => {
+  try {
+    const users = await userModel.find({}, { password: 0 });
+    return users;
+  } catch (error) {
+    console.log("Lỗi lấy dữ liệu người dùng", error.message);
+    throw new Error("Lỗi lấy dữ liệu người dùng");
+  }
+};
+
+// Xóa người dùng theo ID
+const deleteUserById = async (id) => {
+  try {
+    const user = await userModel.findByIdAndDelete(id);
+    if (!user) {
+      throw new Error("User không tồn tại");
+    }
+    return "Xóa người dùng thành công";
+  } catch (error) {
+    console.log("Lỗi xóa người dùng bằng id", error.message);
+    throw new Error("Lỗi xóa người dùng bằng id");
+  }
+};
+
+// Cập nhật người dùng theo ID
+const updateUserById = async (id, email, password, username, numberphone, address, role) => {
+  try {
+      const user = await userModel.findById(id);
+      if (!user) {
+          throw new Error("User không tồn tại");
+      }
+
+      if (password) {
+          const salt = bcrypt.genSaltSync(10);
+          password = bcrypt.hashSync(password, salt);
+          user.password = password;
+      }
+
+      user.email = email;
+      user.username = username;
+      user.numberphone = numberphone;
+      user.address = address;
+      user.role = role;
+      user.updatedAt = Date.now();
+
+      await user.save();
+      console.log("User updated successfully:", user); // Thêm log
+      return "Cập nhật người dùng thành công";
+  } catch (error) {
+      console.log("Lỗi cập nhật user bằng id", error.message);
+      throw new Error("Lỗi cập nhật user bằng id");
+  }
+};
+
+// Đặt lại mật khẩu với OTP hợp lệ
+const resetPassword = async (email, otp, newPassword) => {
+  try {
+    // Tìm kiếm OTP trong cơ sở dữ liệu và xác minh nó có còn hiệu lực không
+    const otpRecord = await OtpModel.findOne({ userEmail: email, otp: otp });
+    if (!otpRecord || otpRecord.otpExpiry < Date.now()) {
+      throw new Error("OTP không hợp lệ hoặc đã hết hạn");
+    }
+
+    // Mã hóa mật khẩu mới
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Cập nhật mật khẩu cho người dùng
+    const user = await getUserByEmail(email);
+    user.password = hashedPassword;
+    await user.save();
+
+    // Xóa OTP sau khi sử dụng
+    await OtpModel.deleteOne({ userEmail: email, otp: otp });
+
+    return "Mật khẩu đã được đặt lại thành công";
+  } catch (error) {
+    console.error("Reset password error:", error.message);
+    throw new Error("Reset password error: " + error.message);
+  }
+};
+
+// Khóa người dùng theo ID
+const lockUserById = async (id) => {
   try {
     const user = await userModel.findById(id);
     if (!user) {
       throw new Error("User không tồn tại");
     }
 
-    // Cập nhật thông tin người dùng
-    user.email = email;
-    user.username = username;
-    user.numberphone = numberphone;
-    user.address = address;
+    user.available = false; // Khóa người dùng
     user.updatedAt = Date.now();
-
-    // Chỉ băm và cập nhật mật khẩu nếu có giá trị mật khẩu mới được cung cấp
-    if (password) {
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt); // Băm mật khẩu mới
-    }
-
     await user.save();
-    return "Cập nhật người dùng thành công";
+    return "Khóa người dùng thành công";
   } catch (error) {
-    console.log("Update user by id error", error.message);
-    throw new Error("Update user by id error");
+    console.log("Lỗi khóa người dùng bằng id", error.message);
+    throw new Error("Lỗi khóa người dùng bằng id");
   }
 };
 
-// Xuất khẩu các hàm
+// Mở khóa người dùng theo ID
+const unlockUserById = async (id) => {
+  try {
+    const user = await userModel.findById(id);
+    if (!user) {
+      throw new Error("User không tồn tại");
+    }
+
+    user.available = true; // Mở khóa người dùng
+    user.updatedAt = Date.now();
+    await user.save();
+    return "Mở khóa người dùng thành công";
+  } catch (error) {
+    console.log("Lỗi mở khóa người dùng bằng id", error.message);
+    throw new Error("Lỗi mở khóa người dùng bằng id");
+  }
+};
+
 module.exports = {
-  register,
-  login,
-  updateUser,
-  verify,
-  getUserByEmail,
-  generateAndSaveOtp,
-  forgotPassword,
-  // resetPassword,
-  sendOtpMail,
-  getAllUser,
-  updateUserById,
+  register, login, update, verify, deleteUser, getAllUser, deleteUserById, updateUserById, lockUserById, unlockUserById, generateAndSaveOtp, forgotPassword, resetPassword,
 };

@@ -19,6 +19,14 @@ const resetPass = require("./routes/repass");
 const commentRoutes = require("./routes/cmt");
 const bestsellitem = require("./routes/bestsellitem.js");
 //okokok
+const multer = require('multer');
+const Ad = require('./model/AdModel');
+// Cấu hình multer để lưu ảnh
+const upload = require('./cloudpng/upload');
+const adsRouter = require('./routes/ads')(upload);
+const dotenv = require('dotenv');
+dotenv.config();
+
 var app = express();
 
 // View engine setup
@@ -69,8 +77,13 @@ app.use("/api/comments", commentRoutes);
 app.use("/cron", Transaction);
 // http://localhost:7777/payonline
 app.use("/payonline", PayOnline);
-// Catch 404 and forward to error handler
-app.use(function (req, res, next) {
+// http://localhost:7777/cron
+app.use("/cron", Transaction);
+app.use('/ads', adsRouter); // Đăng ký router quảng cáo
+app.use("/images", express.static("images")); // Đăng ký router ảnh
+
+// catch 404 and forward to error handler
+app.use((req, res, next) => {
   next(createError(404));
 });
 app.use("/bestsell", bestsellitem);

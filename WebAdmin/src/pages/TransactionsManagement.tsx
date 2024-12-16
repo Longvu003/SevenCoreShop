@@ -36,7 +36,7 @@ const TransactionsManagement = () => {
 
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Transactions Management'));
+        dispatch(setPageTitle('Quản lý hóa đơn trực tuyến'));
     }, [dispatch]);
 
     return (

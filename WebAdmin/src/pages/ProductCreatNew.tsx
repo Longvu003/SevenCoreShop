@@ -14,7 +14,7 @@ export default function ProductCreateNew() {
         category: {
             category_name: ''
         },
-        images: [],
+        images: '',
     });
 
     useEffect(() => {
@@ -89,17 +89,13 @@ export default function ProductCreateNew() {
             };
             console.log("Payload being sent to server:", newProduct);
             const res: any = await createProduct(newProduct);
-    
             if (res.status) {
-                // Hiển thị thông báo thành công
                 Swal.fire({
                     icon: "success",
                     title: "Thành công",
                     text: "Thêm sản phẩm thành công"
-                }).then(() => {
-                    // Sau khi người dùng đóng thông báo, điều hướng sang trang quản lý sản phẩm
-                    window.location.href = "/product/product-managent";
                 });
+                location.href = "/product/product-managent";
             } else {
                 Swal.fire({
                     icon: "error",
@@ -115,8 +111,7 @@ export default function ProductCreateNew() {
                 text: "Thêm sản phẩm thất bại"
             });
         }
-    };    
-    
+    };
 
     return (
         <form className="space-y-5" onSubmit={clickCreateNew}>
