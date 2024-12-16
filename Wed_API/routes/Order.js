@@ -1,9 +1,34 @@
 const express = require("express");
 const OrderController = require("../controllers/OrderController");
 const router = express.Router();
+// cập nhật trạng thái thanh toán
+router.post("/updateStatusPay", async (req, res) => {
+  const { orderId, statuspay } = req.body;
+  try {
+    const order = await OrderController.updateStatusPay(req, res);
+    return res.status(200).json(order);
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái thanh toán:", error);
+    res.status(500).json({ message: "Lỗi khi cập nhật trạng thái thanh toán", error: error.message });
+  }
+});
+
+// cập nhật trạng thái đơn hàng 
+router.post("/updateStatus", async (req, res) => {
+  const { orderId, status } = req.body;
+  try {
+    const order = await OrderController.updateOrderStatus(req, res);
+    return res.status(200).json(order);
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
+    res.status(500).json({ message: "Lỗi khi cập nhật trạng thái đơn hàng", error: error.message });
+  }
+});
 
 // Endpoint thanh toán và tạo đơn hàng
 router.post("/checkout", OrderController.checkout);
+router.get("/cron", OrderController.checkAndUpdateAllOrders);
+
 
 // Endpoint lấy danh sách tất cả đơn hàng
 router.get("/getOrderUser", OrderController.getOrderUser);
@@ -23,6 +48,16 @@ router.get("/getOrderUserById", async (req, res) => {
 });
 
 router.post("/searchOrder", OrderController.searchOrder);
+
+//lấy danh sách tất cả đơn hàng
+router.get("/getOrder", async (req, res) => {
+  try {
+    const orders = await OrderController.getOrder();
+    return res.status(200).json(orders);
+  } catch (error) {
+    console.log("Lỗi nè", error);
+  }
+});
 
 // router.get("/getOrderUserById", OrderController.getOrderUserById);
 module.exports = router;

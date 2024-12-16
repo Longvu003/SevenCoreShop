@@ -1,6 +1,7 @@
-import { ex } from '@fullcalendar/core/internal-common';
 import { Products } from '../model/ProductModel';
 const API_URL = 'http://localhost:7777'; // Cập nhật URL chính xác
+
+
 export const GetProduct = async (): Promise<Products> => {
   const response = await fetch(`${API_URL}/products`, {
     method: "get",
@@ -61,12 +62,12 @@ export const GetProductById = async (id: string): Promise<Products> => {
   });
 
   if (!response.ok) {
-    const errorData = await response.json(); // Lấy dữ liệu lỗi
-    throw new Error(errorData.message || 'Failed to fetch product'); // Ném lỗi nếu không thành công
+    const errorData = await response.json(); 
+    throw new Error(errorData.message || 'Failed to fetch product'); 
   }
 
   const data: Products = await response.json();
-  return data; // Trả về dữ liệu sản phẩm
+  return data; 
 }
 
 
@@ -115,3 +116,21 @@ export const GetProductByCategoryId = async (id: string): Promise<Products[]> =>
       return []; 
   }
 }
+
+// Update product availability
+export const UpdateProductAvailability = async (id: string, avaialble: boolean): Promise<Products> => {
+  const response = await fetch(`${API_URL}/products/${id}/availability`, {
+    method: "post",
+    body: JSON.stringify({ avaialble }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data: any = await response.json();
+
+  if (!response.ok) {
+    return data;
+  }
+
+  return data;
+};

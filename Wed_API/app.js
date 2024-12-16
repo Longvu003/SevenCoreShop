@@ -1,21 +1,21 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-const cors = require("cors");
-const mongoose = require("mongoose");
-require("./model/UserModel.js");
-
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-const productsRouter = require("./routes/products");
-const categoriesRouter = require("./routes/categories");
-const cartsRouter = require("./routes/carts");
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+const cors = require('cors')
+const mongoose = require('mongoose')
+require('./model/UserModel')
+//okokok
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+const productsRouter = require('./routes/products');
+const categoriesRouter = require('./routes/categories');
+const cartsRouter = require('./routes/carts')
 const Order = require("./routes/Order");
-const commentRoutes = require("./routes/cmt.js");
-const resetPass = require("./routes/repass.js");
-const PayOnline = require("./routes/payonline.js");
+const PayOnline = require("./routes/PayOnline");
+const Transaction = require("./routes/crontransaction");
+//okokok
 var app = express();
 
 // View engine setup
@@ -63,7 +63,7 @@ app.use("/carts", cartsRouter);
 app.use("/Orders", Order);
 app.use("/resetpass", resetPass);
 app.use("/api/comments", commentRoutes);
-
+app.use("/cron", Transaction);
 // http://localhost:7777/payonline
 app.use("/payonline", PayOnline);
 // Catch 404 and forward to error handler

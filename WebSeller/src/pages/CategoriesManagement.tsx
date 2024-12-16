@@ -2,47 +2,45 @@ import { useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../store';
 import { setPageTitle } from '../store/themeConfigSlice';
 import { Category } from '../model/CategoriesModel';
 import { categoryController } from '../controller/CategoryController';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-const MySwal = withReactContent(Swal);
 
 
 const Tables = () => {
     const { getCategories, deleteCategoriesById } = categoryController();
     const [dataCategorie, setDataCategorie] = useState<Category[]>([]);
+    const MySwal = withReactContent(Swal);
 
 
     const handleDelete = async (id: string) => {
         MySwal.fire({
             title: 'Bạn có chắc chắn muốn xóa?',
-            text: 'Bạn sẽ không thể hoàn tác hành động này!',
+            text: 'Bạn sẽ không thể hoàn tác hành động này! việc xóa sẽ thất bại nếu danh mục này đang chứa sản phẩm',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Vâng, xóa nó!',
+            confirmButtonText: 'Xóa !',
             cancelButtonText: 'Hủy'
         }).then(async (result) => {
             if (result.isConfirmed) {
                 const response: any = await deleteCategoriesById(id);
-                console.log("gia tri "+response);
+                console.log("gia tri " + response);
                 if (response.status === true) {
                     const data: any = await getCategories();
                     console.log(data);
                     setDataCategorie(data.data);
-                    MySwal.fire(
+                    await MySwal.fire(
                         'Đã xóa!',
                         'Danh mục đã được xóa.',
                         'success'
-                    )
-
+                    );
                 } else {
-                    MySwal.fire(
+                    await MySwal.fire(
                         'Lỗi!',
                         'Xóa danh mục thất bại.',
                         'error'
@@ -53,7 +51,6 @@ const Tables = () => {
     };
 
 
-
     // Hàm showData lấy dữ liệu từ API và lưu vào state
     const showData = async () => {
         const data: any = await getCategories();
@@ -61,18 +58,15 @@ const Tables = () => {
         setDataCategorie(data.data);
     };
 
-    const dispatch = useDispatch();
-
-
     useEffect(() => {
         showData();
     }, []);
 
+    const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Tables'));
     });
 
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
     return (
         <div className="grid xl:grid-cols-1 gap-12 grid-cols-1">
@@ -86,6 +80,7 @@ const Tables = () => {
                     <table>
                         <thead>
                             <tr>
+                                <th>Hình ảnh</th>
                                 <th>Tên danh mục sản phẩm</th>
                                 <th>Mô tả</th>
                                 <th className="text-center">Hành động</th>
@@ -95,6 +90,17 @@ const Tables = () => {
                             {/* Hiển thị dữ liệu từ cate */}
                             {dataCategorie.map((Category) => (
                                 <tr key={Category._id}>
+                                    <td>
+                                        {Array.isArray(Category.images) && Category.images.length > 0 ? (
+                                            <img
+                                            src={Category.images[0]} // Hiển thị URL đầu tiên trong mảng images
+                                            alt={Category.name} // Thêm alt để mô tả
+                                            style={{ width: '50px', height: '60px', objectFit: 'cover' }} // Đảm bảo kích thước và tỷ lệ ảnh đẹp
+                                             />
+                                            ) : (
+                                            <span>Không có ảnh</span> // Hiển thị thông báo khi không có ảnh
+                                            )}
+                                    </td>
                                     <td>{Category.name}</td>
                                     <td>{Category.description}</td>
                                     <td>

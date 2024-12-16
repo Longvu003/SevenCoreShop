@@ -1,6 +1,10 @@
 import React from 'react';
 import { Category } from '../model/CategoriesModel';
 const API_URL = 'http://localhost:7777';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 export const GetCategories = async (): Promise<Category> => {
   const response = await fetch(`${API_URL}/categories`, {
@@ -20,24 +24,34 @@ export const GetCategories = async (): Promise<Category> => {
 
 export const DeleteCategoriesByid = async (id: string): Promise<void> => {
   try {
-      const response = await fetch(`${API_URL}/categories/${id}/delete`, {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json",
-          },
-      });
+    const response = await fetch(`${API_URL}/categories/${id}/delete`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-      if (!response.ok) {
-          const errorData = await response.json();
-          console.error('Error deleting category:', errorData);
-          alert('Xóa Thất Bại: ' + (errorData.message || 'Lỗi không xác định'));
-          return;
-      }
-      return response.json();
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error deleting category:', errorData);
+      MySwal.fire({
+        title: 'Xóa Thất Bại',
+        text: errorData.message || 'Lỗi không xác định',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+    return response.json();
   } catch (error) {
-      console.error('Unexpected error during delete:', error);
-      alert('Đã xảy ra lỗi. Vui lòng thử lại.');
-  }
+    console.error('Unexpected error during delete:', error);
+    MySwal.fire({
+      title: 'Xóa Thất Bại',
+      text: error instanceof Error ? error.message : 'Lỗi không xác định',
+      icon: 'error',
+      confirmButtonText: 'OK',
+    });
+}
 };
 
 export const UpdateCategoriesByid = async (id: string | undefined, category: Category): Promise<Category> => {
