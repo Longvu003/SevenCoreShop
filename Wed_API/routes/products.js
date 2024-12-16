@@ -14,9 +14,9 @@ const ProductController = require('../controllers/ProductController')
 router.post('/:id/availability', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { avaialble } = req.body;
-        console.log(id, avaialble)    
-        const product = await ProductController.updateProductAvailability(id, avaialble);
+        const { available } = req.body;
+        console.log(id, available)    
+        const product = await ProductController.updateProductAvailability(id, available);
         return res.status(200).json({ status: true, data: product });
     } catch (error) {
         return res.status(500).json({ status: false, data: error.message });

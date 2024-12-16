@@ -102,43 +102,41 @@ const Tables = () => {
                                     <td>{product.quantity}</td>
                                     <td>{product.category.category_name}</td>
                                     {/* <td className="text-center">
-                                        {product.avaialble ? "Đang hoạt động" : "Chưa hoạt động"}
+                                        {product.available ? "Đang hoạt động" : "Chưa hoạt động"}
                                     </td> */}
                                     <td className="text-center">
-                                        <select
-                                            className={`btn dropdown-toggle btn-dark ${product.avaialble ? "bg-success text-white" : "bg-danger text-white"
-                                                }`}
-                                            value={product.avaialble.toString()} // Chuyển giá trị boolean thành chuỗi
-                                            onChange={async (e) => {
-                                                const newAvailability = e.target.value === "true"; // Chuyển chuỗi "true"/"false" thành boolean
-                                                console.log("Thay đổi trạng thái hoạt động:", newAvailability, "cho sản phẩm:", product._id);
-                                                try {
-                                                    const res = await updateProductAvailability(product._id, newAvailability);
-                                                    console.log("Kết quả từ API:", res);
-                                                    if (res) {
-                                                        showData(); // Cập nhật lại danh sách sản phẩm
-                                                        MySwal.fire({
-                                                            title: "Thành công",
-                                                            text: `Trạng thái hoạt động của sản phẩm đã được cập nhật thành ${newAvailability ? "Đang hoạt động" : "Ngưng hoạt động"
-                                                                }`,
-                                                            icon: "success",
-                                                            confirmButtonText: "OK",
-                                                        });
-                                                    }
-                                                } catch (error) {
-                                                    console.error("Lỗi cập nhật trạng thái:", error);
-                                                    MySwal.fire({
-                                                        title: "Thất bại",
-                                                        text: "Không thể cập nhật trạng thái hoạt động của sản phẩm",
-                                                        icon: "error",
-                                                        confirmButtonText: "OK",
-                                                    });
-                                                }
-                                            }}
-                                        >
-                                            <option value="true">Đang hoạt động</option>
-                                            <option value="false">Ngưng hoạt động</option>
-                                        </select>
+                                    <select
+    className={`btn dropdown-toggle btn-dark ${product.available ? "bg-success text-white" : "bg-danger text-white"}`}
+    value={product.available ? product.available.toString() : "false"} // Add a default value if undefined
+    onChange={async (e) => {
+        const newAvailability = e.target.value === "true"; // Chuyển chuỗi "true"/"false" thành boolean
+        console.log("Thay đổi trạng thái hoạt động:", newAvailability, "cho sản phẩm:", product._id);
+        try {
+            const res = await updateProductAvailability(product._id, newAvailability);
+            console.log("Kết quả từ API:", res);
+            if (res) {
+                showData(); // Cập nhật lại danh sách sản phẩm
+                MySwal.fire({
+                    title: "Thành công",
+                    text: `Trạng thái hoạt động của sản phẩm đã được cập nhật thành ${newAvailability ? "Đang hoạt động" : "Ngưng hoạt động"}`,
+                    icon: "success",
+                    confirmButtonText: "OK",
+                });
+            }
+        } catch (error) {
+            console.error("Lỗi cập nhật trạng thái:", error);
+            MySwal.fire({
+                title: "Thất bại",
+                text: "Không thể cập nhật trạng thái hoạt động của sản phẩm",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
+        }
+    }}
+>
+    <option value="true">Đang hoạt động</option>
+    <option value="false">Ngưng hoạt động</option>
+</select>
                                     </td>
 
                                     <td>

@@ -108,10 +108,10 @@ export const GetProductByCategoryId = async (id: string): Promise<Products[]> =>
 }
 
 // Update product availability
-export const UpdateProductAvailability = async (id: string, avaialble: boolean): Promise<Products> => {
+export const UpdateProductAvailability = async (id: string, available: boolean): Promise<Products> => {
   const response = await fetch(`${API_URL}/products/${id}/availability`, {
     method: "post",
-    body: JSON.stringify({ avaialble }),
+    body: JSON.stringify({ available }),
     headers: {
       "Content-Type": "application/json",
     },

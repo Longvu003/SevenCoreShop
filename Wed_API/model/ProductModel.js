@@ -1,5 +1,5 @@
 //khai báo 1 schema cho product
-//(_id, email, password, name, role, carts, creatAt, updateAt, avaialble)
+//(_id, email, password, name, role, carts, creatAt, updateAt, available)
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
