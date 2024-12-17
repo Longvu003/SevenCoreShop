@@ -56,6 +56,7 @@ const LoginBoxed = () => {
                 text: 'Đăng Nhập Thất Bại',
                 icon: 'error',
             });
+            navigate('/');
         }
     };
 
