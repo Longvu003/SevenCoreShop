@@ -89,7 +89,7 @@ const OrderManagement = () => {
             fetchAllOrders();
 
             // Chuyển hướng đến đường link thanh toán
-            // window.location.href = order.payUrl;
+            window.location.href = order.payUrl;
         } catch (error) {
             console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
             Swal.fire("Không thể cập nhật trạng thái!", "Vui lòng thử lại sau.", "error");
@@ -144,10 +144,15 @@ const OrderManagement = () => {
 
                                         {/* Hiển thị tên sản phẩm */}
                                         <td>
-                                            {order.products.map((product: any) => (
-                                                <p key={product._id}>{product.productId.name}</p>
-                                            ))}
+                                            {order.products ? (
+                                                order.products.map((product: any) => (
+                                                    <p key={product.id}>{product.productId.name}</p>
+                                                ))
+                                            ) : (
+                                                <p>Đang load...</p>
+                                            )}
                                         </td>
+
 
                                         <td>{new Date(order.orderDate).toLocaleDateString()}</td>
                                         <td>{order.totalAmount}</td>
@@ -158,9 +163,9 @@ const OrderManagement = () => {
                                                 <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteOrder(order._id)}>
                                                     Xóa
                                                 </button>
-                                                <button type="button" className="btn btn-sm btn-outline-success" onClick={() => handleEditOrder(order)}>
+                                                {/* <button type="button" className="btn btn-sm btn-outline-success" onClick={() => handleEditOrder(order)}>
                                                     Cập nhật trạng thái
-                                                </button>
+                                                </button> */}
                                                 <button
                                                     type="button"
                                                     className="btn btn-sm btn-outline-warning"

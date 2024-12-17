@@ -83,7 +83,7 @@ const Tables = () => {
                                                 Chỉnh sửa Danh mục
                                             </a>
 
-                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteCategoriesById(Category._id)}>
+                                            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => deleteCategories(Category._id)}>
                                                 Delete
                                             </button>
                                         </div>

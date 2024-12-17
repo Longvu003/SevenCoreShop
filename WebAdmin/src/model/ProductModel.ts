@@ -1,7 +1,9 @@
-export interface Category {
-    category_id: string
-    category_name: string
-}
+// export interface Category {
+//     category_id: string
+//     category_name: string
+// }
+
+import { Category } from "./CategoriesModel"
 
 export interface Product {
     _id: string

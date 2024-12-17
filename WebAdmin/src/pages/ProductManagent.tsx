@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import { setPageTitle } from '../store/themeConfigSlice';
 import { userProducts } from '../controller/ProductController';
-import { Product, Category } from '../model/ProductModel';
+import { Product } from '../model/ProductModel';
+
 import IconTrashLines from '../components/Icon/IconTrashLines';
 
 
@@ -63,8 +64,8 @@ const Tables = () => {
                                 <th>Price</th>
                                 <th>Quantity</th>
                                 <th>Category</th>
-                                <th className="text-center">Available</th>
-                                <th className="text-center">Actions</th>
+                                {/* <th className="text-center">Available</th> */}
+                                {/* <th className="text-center">Actions</th> */}
                             </tr>
                         </thead>
                         <tbody>
@@ -74,10 +75,10 @@ const Tables = () => {
                                     <td>{product.name}</td>
                                     <td>{product.price}</td>
                                     <td>{product.quantity}</td>
-                                    <td>{product.category.category_name}</td>
-                                    <td className="text-center">
+                                    {/* <td>{product.category.name}</td> */}
+                                    {/* <td className="text-center">
                                         {product.available ? "Yes" : "No"}
-                                    </td>
+                                    </td> */}
                                     <td className="text-center">
                                         <button type="button" onClick={() => deleteProductById(product._id)}>
                                             <IconTrashLines className="m-auto" />
@@ -87,7 +88,7 @@ const Tables = () => {
 
                                     <td>
                                         <div className="flex gap-4 items-center justify-center">
-                                            <a href={`/categoriesmanagent/categories-edit?id=${product._id}`} className="btn btn-sm btn-outline-primary">
+                                            <a href={`/product/product-update?id=${product._id}`} className="btn btn-sm btn-outline-primary">
                                                 Chỉnh sửa
                                             </a>
 

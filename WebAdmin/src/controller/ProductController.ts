@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Products } from '../model/ProductModel';
-import { GetProduct, DeleteProduct,EditProductByid,CreateProduct } from '../service/ProducService';
+import { Product } from '../model/ProductModel';
+import { GetProduct, DeleteProduct,EditProductByid,CreateProduct, GetProductById } from '../service/ProducService';
 
 export const userProducts = () => {
 
@@ -25,7 +25,7 @@ export const userProducts = () => {
         }
     };
 
-    const editProduct = async (id: string,product:Products) => {
+    const editProduct = async (id: string, product:Product) => {
         try {
             const updateProduct = await EditProductByid(id,product);
             return updateProduct;
@@ -35,7 +35,7 @@ export const userProducts = () => {
         }
     }
 
-    const createProduct = async (product: Products) => {
+    const createProduct = async (product: Product) => {
         try {
             const createProducts = await CreateProduct(product);
             return createProducts;
@@ -45,8 +45,18 @@ export const userProducts = () => {
         }
     }
 
+    const getProductById = async (id: string) => {
+        try {
+            const getProductById = await GetProductById(id);
+            return getProductById;
+        } catch (error) {
+            console.error('Failed to get id products', error);
+            return error
+        }
+    }
+
 
     return {
-        getProduct, deleteProduct, editProduct,createProduct
+        getProduct, deleteProduct, editProduct,createProduct, getProductById
     };
 };

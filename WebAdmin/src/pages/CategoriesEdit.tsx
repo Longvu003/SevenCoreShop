@@ -66,7 +66,7 @@ export default function CategoryEdit() {
         <form className="space-y-5" onSubmit={clickUpdate}>
             <div>
                 <label htmlFor="productName">Categories Name</label>
-                <input id="Name" type="text" name="name" className="form-input"value={dataCategories.name} required onChange={handleChange} />
+                <input id="Name" type="text" name="name" className="form-input" value={dataCategories.name} required onChange={handleChange} />
             </div>
 
             <div>
