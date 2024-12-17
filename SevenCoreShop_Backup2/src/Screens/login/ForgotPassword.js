@@ -47,7 +47,7 @@ const ForgotPassword = ({ navigation }) => {
           style={styles.back}
         />
       </TouchableOpacity>
-      <Text style={styles.title}>Forgot Password</Text>
+      <Text style={styles.title}>Quên Mật Khẩu</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter Email Address"
@@ -57,7 +57,7 @@ const ForgotPassword = ({ navigation }) => {
         autoCapitalize="none" // Không tự động viết hoa
       />
       <TouchableOpacity style={styles.loginButton} onPress={handleForgotPassword}>
-        <Text style={styles.loginText}>Continue</Text>
+        <Text style={styles.loginText}>Tiếp Tục</Text>
       </TouchableOpacity>
     </View>
   );

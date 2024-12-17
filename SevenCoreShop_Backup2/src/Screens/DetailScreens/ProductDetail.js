@@ -71,7 +71,7 @@ const ProductDetail = ({ navigation, route }) => {
     };
     try {
       const response = await axios.post(
-        `${API__URL}/carts/addItemcart`,
+        `${API__URL}/carts/addItemcart`,  
         product,
         {
           headers: { 'Content-Type': 'application/json' },

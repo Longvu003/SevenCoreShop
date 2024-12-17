@@ -64,7 +64,7 @@ const Resetpass = ({ navigation }) => {
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Image source={require('../../../assets/imgs/back2.png')} />
       </TouchableOpacity>
-      <Text style={styles.title}>Reset Password</Text>
+      <Text style={styles.title}>Đặt Lại Mật Khẩu</Text>
 
       <TextInput
         style={styles.input}

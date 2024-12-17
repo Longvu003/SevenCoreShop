@@ -19,13 +19,13 @@ const Welcome2 = ({navigation}) => {
           <TouchableOpacity
             style={styles.login}
             onPress={() => navigation.navigate('LoginScreen')}>
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Đăng Nhập</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.signup}
             onPress={() => navigation.navigate('SignupScreen')}>
-            <Text style={styles.buttonText1}>Sign Up</Text>
+            <Text style={styles.buttonText1}>Đăng Kí</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>

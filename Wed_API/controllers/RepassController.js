@@ -1,3 +1,4 @@
+const OtpModel = require('../models/OtpModel');
 exports.resetPassword = async (req, res) => {
   const { email, otp, newPassword, confirmPassword } = req.body;
 
