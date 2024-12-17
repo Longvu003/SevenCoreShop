@@ -82,9 +82,14 @@ export const EditProductByid = async (id: string, product: Products): Promise<Pr
 
     // Kiểm tra nếu response không thành công
     if (!response.ok) {
-      const data = await response.json();
-      console.error('Error updating product:', data);
-      throw new Error(data.message || 'Unknown error');
+      const contentType = response.headers.get("Content-Type");
+      let errorMessage = 'Unknown error';
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        errorMessage = data.message || 'Unknown error';
+      }
+      console.error('Error updating product:', errorMessage);
+      throw new Error(errorMessage);
     }
 
     // Trả về kết quả nếu update thành công
@@ -95,6 +100,7 @@ export const EditProductByid = async (id: string, product: Products): Promise<Pr
     throw error;  // Ném lại lỗi để có thể xử lý ở phía gọi hàm
   }
 };
+
 
 
 export const GetProductByCategoryId = async (id: string): Promise<Products[]> => {
