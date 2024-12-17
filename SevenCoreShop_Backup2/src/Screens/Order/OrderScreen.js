@@ -58,7 +58,7 @@ const OrderScreen = ({navigation}) => {
                       />
                       <View>
                         <Text style={styles.txt__Item}>
-                          Đơn hàng: {item._id}
+                          Trạng thái đơn hàng: {item.status}
                         </Text>
                         <Text numberOfLines={1} style={styles.txt__Item}>
                           {item.items[0].name}

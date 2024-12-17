@@ -320,7 +320,6 @@ const getAllProducts = async () => {
   try {
     const products = await ProductModel.find();
     return products;
-    log(products);
   } catch (error) {
     console.log("Lỗi", error);
   }

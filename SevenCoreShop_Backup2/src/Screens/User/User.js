@@ -20,7 +20,7 @@ const User = ({navigation}) => {
   const renderUser = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     const newUserEmail = JSON.parse(userEmail);
-    const url = `${API__URL}/users/getUserEmail?email=${newUserEmail}`;
+    const url = `${API__URL}/users/getUserEmail/?email=${newUserEmail}`;
     try {
       if (newUserEmail) {
         const response = await axios.get(url);

@@ -16,7 +16,7 @@ const CategoryScreen = ({navigation}) => {
 
   useEffect(() => {
     axios
-      .get(`${API__URL}/categories/getAllCategory`)
+      .get(`${API__URL}/categories/`)
       .then(response => {
         const fixResponse = response.data.data;
         setCategories(fixResponse);

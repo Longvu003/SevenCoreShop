@@ -41,14 +41,15 @@ const EditAddress = ({navigation}) => {
     }));
   };
   const updateUser = async e => {
-    const userEmail = await AsyncStorage.getItem('userEmail');
-    const newUserEmail = JSON.parse(userEmail);
-    const url2 = `${API__URL}/users/updateUser?email=${newUserEmail}`;
+    const userId = await AsyncStorage.getItem('userId');
+    const newUserId = JSON.parse(userId);
+    const url2 = `${API__URL}/users/${newUserId}/updateuserbyid`;
+
     try {
       if (addressInformation.address.length < 5) {
         setErrorMessage('Địa chỉ phải có ít nhất 10 ký tự');
       } else {
-        await axios.put(url2, addressInformation, {
+        await axios.post(url2, addressInformation, {
           headers: 'application/x-www-form-urlencoded',
         });
         Alert.alert('Thông báo', 'Sửa thành công');

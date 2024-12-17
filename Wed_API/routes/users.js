@@ -137,42 +137,28 @@ router.post(
 // );
 
 // Cập nhật tài khoản
-router.put(
-  "/updateuser",
-  [
-    body("email").isEmail().withMessage("Email không hợp lệ"),
-    body("username")
-      .notEmpty()
-      .withMessage("Tên người dùng không được để trống"),
-    body("numberphone")
-      .isMobilePhone()
-      .withMessage("Số điện thoại không hợp lệ"),
-    body("birthday").notEmpty().withMessage("Ngày sinh không được để trống"),
-  ],
-  validateRequest,
-  async (req, res) => {
-    const { email, username, numberphone, address } = req.body;
+router.put("/updateuser", async (req, res) => {
+  const { email, username, numberphone, address } = req.body;
 
-    try {
-      const result = await userController.updateUser(
-        email,
-        username,
-        numberphone,
-        address
-      );
+  try {
+    const result = await userController.updateUser(
+      email,
+      username,
+      numberphone,
+      address
+    );
 
-      return res.status(200).json({ status: true, data: result });
-    } catch (error) {
-      console.log("Update error", error.message);
-      res.status(500).json({ message: error.message });
-    }
+    return res.status(200).json({ status: true, data: result });
+  } catch (error) {
+    console.log("Update error", error.message);
+    res.status(500).json({ message: error.message });
   }
-);
+});
 // Cập nhật người dùng theo ID
 router.post("/:id/updateuserbyid", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { email, password, username, numberphone, address, role } = req.body;
+    const { email, username, numberphone, address, role } = req.body;
     const result = await userController.updateUserById(
       id,
       email,

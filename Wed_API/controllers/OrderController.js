@@ -171,7 +171,14 @@ const checkout = async (req, res) => {
       req.body;
 
     // Kiểm tra dữ liệu đầu vào
-    if (!userId || !items || !totalAmount || !address || !paymentMethod) {
+    if (
+      !userId ||
+      !items ||
+      !totalAmount ||
+      !address ||
+      !paymentMethod ||
+      !numberphone
+    ) {
       return res.status(400).json({ message: "Thiếu dữ liệu" });
     }
 
@@ -229,10 +236,13 @@ const getOrderUserById = async (userId) => {
 };
 
 const searchOrder = async (req, res) => {
-  const { query } = req.body;
+  const { query, userId } = req.body;
+  console.log(req.body);
+
   try {
     const searchRegex = new RegExp(query, "i");
     const conditions = {
+      userId,
       $or: [{ "items.name": searchRegex }, { status: searchRegex }],
     };
     const results = await OrderModel.find(conditions);

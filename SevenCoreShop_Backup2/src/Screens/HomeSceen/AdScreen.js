@@ -20,7 +20,7 @@ const AdScreen = ({navigation}) => {
     index: index,
   });
   const getAd = async () => {
-    const response = await axios.get(`${API__URL}/ads/getad`);
+    const response = await axios.get(`${API__URL}/ads/`);
     if (response.status === 200) {
       setListAd(response.data);
     } else {

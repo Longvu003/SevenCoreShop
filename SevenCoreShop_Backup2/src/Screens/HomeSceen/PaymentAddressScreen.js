@@ -4,16 +4,14 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  StyleSheet,
   Image,
   ActivityIndicator,
   Alert,
-  FlatList,
-  StyleSheet,
 } from 'react-native';
 import axios from 'axios';
 import API_URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PaymentAddressStyle from '../../StyleSheets/PaymentAddressStyle';
 import {useCart} from '../Cart/CartProdvider';
 const PaymentAddressScreen = ({navigation, route}) => {
   const [addresses, setAddresses] = useState([]);
@@ -23,13 +21,14 @@ const PaymentAddressScreen = ({navigation, route}) => {
   const [selectedBank, setSelectedBank] = useState(null);
   const [bankDetails, setBankDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const {resetCart} = useCart();
+
   const cartItems = route.params?.cartItems || [];
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
   );
   const userID = route.params?.userID;
-  const {resetCart} = useCart();
   useEffect(() => {
     const fetchAddresses = async () => {
       const userEmail = await AsyncStorage.getItem('userEmail');
@@ -49,12 +48,13 @@ const PaymentAddressScreen = ({navigation, route}) => {
           : [];
         setAddresses(formattedData);
       } catch (error) {
-        console.log('Error fetching addresses:', error.message);
+        console.error('Error fetching addresses:', error.message);
         Alert.alert('Lỗi', 'Không thể tải địa chỉ giao hàng.');
       } finally {
         setLoading(false);
       }
     };
+
     fetchAddresses();
   }, []);
 
@@ -74,11 +74,14 @@ const PaymentAddressScreen = ({navigation, route}) => {
       ) {
         setBankDetails(bankData); // Cập nhật thông tin ngân hàng
       } else {
-        console.log('Định dạng dữ liệu ngân hàng không hợp lệ:', response.data);
+        console.error(
+          'Định dạng dữ liệu ngân hàng không hợp lệ:',
+          response.data,
+        );
         throw new Error('Dữ liệu trả về không đúng định dạng');
       }
     } catch (error) {
-      console.log('Lỗi khi gọi API ngân hàng:', error.message);
+      console.error('Lỗi khi gọi API ngân hàng:', error.message);
       Alert.alert(
         'Lỗi',
         'Không thể tải thông tin ngân hàng. Kiểm tra lại API hoặc dữ liệu.',
@@ -101,7 +104,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
       Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán!');
       return;
     }
-
     if (paymentMethod === 'Ngân Hàng' && !selectedBank) {
       Alert.alert('Thông báo', 'Vui lòng chọn ngân hàng!');
       return;
@@ -120,7 +122,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
       address: selectedAddress.address,
       paymentMethod,
       numberphone: phone,
-      bankId: selectedBank.id,
+      bankId: selectedBank?.id,
     };
 
     try {
@@ -134,14 +136,23 @@ const PaymentAddressScreen = ({navigation, route}) => {
         resetCart();
         Alert.alert('Thông báo', 'Đặt hàng thành công!');
       } else {
-        throw new Error('Checkout failed');
+        throw new Error('Thanh toán không thành công.');
       }
     } catch (error) {
-      console.log('Lỗi khi thanh toán:', error);
-      Alert.alert(
-        'Lỗi',
-        'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.',
-      );
+      // Kiểm tra và log chi tiết lỗi
+      if (error.response) {
+        console.log('Chi tiết lỗi từ server:', error.response.data);
+        Alert.alert(
+          'Lỗi',
+          error.response.data?.message || 'Không thể hoàn tất thanh toán.',
+        );
+      } else {
+        console.error('Lỗi không xác định:', error.message);
+        Alert.alert(
+          'Lỗi',
+          'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.',
+        );
+      }
     }
   };
 
@@ -158,19 +169,20 @@ const PaymentAddressScreen = ({navigation, route}) => {
       }
       console.log('Giỏ hàng đã được reset trên server!');
     } catch (error) {
-      console.log('Lỗi khi reset giỏ hàng:', error);
+      console.error('Lỗi khi reset giỏ hàng:', error);
       Alert.alert('Lỗi', 'Không thể reset giỏ hàng. Vui lòng thử lại.');
     }
   };
 
   if (loading) {
     return (
-      <View style={PaymentAddressStyle.loaderContainer}>
+      <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#000" />
-        <Text style={PaymentAddressStyle.loadingText}>Đang tải dữ liệu...</Text>
+        <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
       </View>
     );
   }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity
@@ -211,11 +223,11 @@ const PaymentAddressScreen = ({navigation, route}) => {
       <View style={styles.paymentOptions}>
         <TouchableOpacity
           style={[
-            PaymentAddressStyle.paymentOption,
-            paymentMethod === 'Tiền mặt' && PaymentAddressStyle.selectedPayment,
+            styles.paymentOption,
+            paymentMethod === 'Tiền mặt' && styles.selectedPayment,
           ]}
           onPress={() => setPaymentMethod('Tiền mặt')}>
-          <Text style={PaymentAddressStyle.paymentOptionText}>
+          <Text style={styles.paymentOptionText}>
             {paymentMethod === 'Tiền mặt' ? '✅ Tiền mặt' : 'Tiền mặt'}
           </Text>
         </TouchableOpacity>
@@ -283,11 +295,8 @@ const PaymentAddressScreen = ({navigation, route}) => {
           </View>
         </View>
       ))}
-
-      <View style={PaymentAddressStyle.totalAmountContainer}>
-        <Text style={PaymentAddressStyle.totalAmountText}>
-          Tổng Tiền: {totalAmount} VNĐ
-        </Text>
+      <View style={styles.totalAmountContainer}>
+        <Text style={styles.totalAmountText}>Tổng Tiền: {totalAmount} VNĐ</Text>
       </View>
 
       <TouchableOpacity style={styles.checkoutButton} onPress={handlePayment}>

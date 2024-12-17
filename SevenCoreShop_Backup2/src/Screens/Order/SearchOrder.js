@@ -17,15 +17,18 @@ import axios from 'axios';
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
 import Customheader from '../../CustomHeader/Customheader';
+import {useCart} from '../Cart/CartProdvider';
 import {useState, useEffect} from 'react';
 const SearchOrder = ({navigation}) => {
   const [dataOrder, setDataOrder] = useState([]);
   const [seacrh, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
+  const userId = useCart();
   const handleSearch = async query => {
     setSearch(query);
     const respone = await axios.post(`${API__URL}/orders/searchOrder`, {
       query,
+      userId: userId.userId,
     });
     if (respone.status === 200) {
       setDataOrder(respone.data);

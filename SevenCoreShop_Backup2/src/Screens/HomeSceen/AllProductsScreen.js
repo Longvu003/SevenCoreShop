@@ -17,11 +17,12 @@ const WITH__Screen = Dimensions.get('screen').width;
 const AllProductsScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [searchKey, setSearchKey] = useState('');
-  const handleSearch = async query => {
-    setSearchKey(query);
-    if (!searchKey) {
+
+  const handleSearch = async key => {
+    setSearchKey(key);
+    if (!key) {
       await axios
-        .get(`${API__URL}/products/all`)
+        .get(`${API__URL}/products/`)
         .then(response => {
           setProducts(response.data.data);
         })
@@ -31,7 +32,7 @@ const AllProductsScreen = ({navigation}) => {
     }
 
     await axios
-      .get(`${API__URL}/products/tim-kiem?key=${searchKey}`)
+      .post(`${API__URL}/products/tim-kiem`, {key})
       .then(response => {
         setProducts(response.data.data);
       })

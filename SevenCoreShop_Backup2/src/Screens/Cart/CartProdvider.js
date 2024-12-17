@@ -142,6 +142,7 @@ export const CartProdvider = ({children}) => {
       const response = await axios.get(
         `${API__URL}/Orders/getOrderUserById?userId=${newUserId}`,
       );
+
       setLoading(false);
       setDataOrder(response.data);
     } catch (error) {

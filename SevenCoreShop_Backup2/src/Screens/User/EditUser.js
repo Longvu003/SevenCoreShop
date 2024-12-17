@@ -40,9 +40,10 @@ const EditUser = ({navigation}) => {
     setUserData(oldData => ({...oldData, [dataInput]: value}));
   };
   const updateUserInformation = async () => {
-    const userEmail_2 = await AsyncStorage.getItem('userEmail');
-    const userString = JSON.parse(userEmail_2);
-    const url = `${API__URL}/users/updateUser?email=${userString}`;
+    const userId = await AsyncStorage.getItem('userId');
+    const newUserId = JSON.parse(userId);
+    const url = `${API__URL}/users/${newUserId}/updateuserbyid`;
+
     try {
       let chekError = true;
       if (userData.username.length < 6) {
@@ -58,7 +59,7 @@ const EditUser = ({navigation}) => {
         setErrorPhone('');
       }
       if (chekError) {
-        await axios.put(url, userData, {
+        await axios.post(url, userData, {
           headers: 'application/x-www-form-urlencoded',
         });
         Alert.alert('Thông báo', 'Cập nhật thành công');

@@ -86,40 +86,6 @@ const LoginScreen = ({navigation}) => {
             onPress={handleSubmit}>
             <Text style={LoginStyle.loginText}>Đăng nhập</Text>
           </TouchableOpacity>
-
-          <Text style={LoginStyle.orText}>Hoặc </Text>
-
-          <View style={LoginStyle.socialButtons}>
-            <TouchableOpacity style={LoginStyle.socialButton}>
-              <Image
-                source={require('../../../assets/imgs/apple.png')}
-                style={LoginStyle.icon1}
-              />
-              <Text style={LoginStyle.socialButtonText}>
-                Tiếp tục với Apple
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={LoginStyle.socialButton}>
-              <Image
-                source={require('../../../assets/imgs/google.png')}
-                style={LoginStyle.icon2}
-              />
-              <Text style={LoginStyle.socialButtonText}>
-                Tiếp tục với Google
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={LoginStyle.socialButton}>
-              <Image
-                source={require('../../../assets/imgs/facebook.png')}
-                style={LoginStyle.icon3}
-              />
-              <Text style={LoginStyle.socialButtonText}>
-                Tiếp tục với Facebook
-              </Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
     </ScrollView>

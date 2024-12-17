@@ -14,8 +14,7 @@
 //   color: String,
 //   size: String,
 //   available: { type: Boolean, default: true },
-//   userEmail: { type: String, required: true }, // Thêm trường userEmail
-//   viewedAt: { type: Date, default: Date.now }, // Thêm trường viewedAt
+
 // });
 
 // const Product = mongoose.model("Product", productSchema);
@@ -40,7 +39,8 @@ const ProductSchema = new Schema({
   updateAt: { type: Date, default: Date.now },
   // tài khoản còn hoạt động hay không
   available: { type: Boolean, default: true },
-  //true là còn hoạt động, false là không hoạt động
+  // userEmail: { type: String, required: true }, // Thêm trường userEmail
+  // viewedAt: { type: Date, default: Date.now }, // Thêm trường viewedAt
 });
 // tiếng anh, số ít, chữ thường, không dấu, không cách
 //  //tạo model user từ schema UserSchema chưa có thì tạo mới, có rồi thì sử dụng lại

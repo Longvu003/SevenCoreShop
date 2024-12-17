@@ -6,55 +6,57 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   FlatList,
-  Dimensions,
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdScreen from './AdScreen';
-import AdDetail from './AdDetail';
 import HomeStyle from '../../StyleSheets/HomeStyle';
 const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState('');
   useEffect(() => {
-    axios
-      .get(`${API__URL}/products/all`)
-      .then(response => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${API__URL}/products/`);
         const ArrayProduct = response.data.data;
         setProducts(ArrayProduct);
-      })
-      .catch(error => {
+      } catch (error) {
         console.log('Error fetching products:', error);
-      });
-    axios
-      .get(`${API__URL}/categories/getAllCategory`)
-      .then(response => {
+      }
+    };
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${API__URL}/categories/`);
         const fixResponse = response.data.data;
         setCategories(fixResponse);
-      })
-      .catch(error => {
+      } catch (error) {
         console.log('Error fetching categories:', error);
-      });
+      }
+    };
+    fetchProducts();
+    fetchCategories();
   }, []);
 
   const getInforUser = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
-    const newUserEmail = JSON.parse(userEmail);
-    try {
-      const respone = await axios.get(
-        `${API__URL}/users/getUserEmail?email=${newUserEmail}`,
-      );
-      if (respone.status === 200) {
-        setUser(respone.data.result.username);
+    if (userEmail) {
+      const newUserEmail = JSON.parse(userEmail);
+      try {
+        const response = await axios.get(
+          `${API__URL}/users/getUserEmail?email=${newUserEmail}`,
+        );
+        if (response.status === 200) {
+          setUser(response.data.result.username);
+        }
+      } catch (error) {
+        console.log('Error fetching user info:', error);
       }
-    } catch (error) {
-      console.log(error);
     }
   };
+
   useEffect(() => {
     getInforUser();
   }, []);
@@ -74,7 +76,7 @@ const HomeScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* <AdScreen navigation={navigation} /> */}
+        <AdScreen navigation={navigation} />
         <View style={HomeStyle.categoryHeader}>
           <Text style={HomeStyle.sectionTitle}>Loại Sản Phẩm</Text>
           <TouchableOpacity
@@ -148,4 +150,5 @@ const HomeScreen = ({navigation}) => {
     </View>
   );
 };
+
 export default HomeScreen;

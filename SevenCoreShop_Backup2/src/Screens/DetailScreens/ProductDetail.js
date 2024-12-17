@@ -170,19 +170,6 @@ const ProductDetail = ({navigation, route}) => {
       <View style={{flexDirection: 'column'}}>
         <TouchableOpacity disabled style={ProductDetailStyle.btn__container}>
           <View style={ProductDetailStyle.quantity__Container}>
-            <Text>Kích cỡ</Text>
-          </View>
-          <Text style={ProductDetailStyle.txt__nameProduct}>{item.size}</Text>
-          <TouchableOpacity>
-            <Image
-              style={{marginHorizontal: 30}}
-              source={require('../../../assets/imgs/arrowdown2.png')}
-            />
-          </TouchableOpacity>
-        </TouchableOpacity>
-
-        <TouchableOpacity disabled style={ProductDetailStyle.btn__container}>
-          <View style={ProductDetailStyle.quantity__Container}>
             <Text>Số lượng</Text>
           </View>
           <TouchableOpacity onPress={increaseQuantity}>
