@@ -75,9 +75,9 @@ router.get('/user/:userId', async (req, res) => {
 router.put('/:id/update', async (req, res) => {
     try {
         const { id } = req.params;
-        const { statusDelivery, statusPay, payUrl } = req.body;  // Nhận `payUrl` từ body
+        const { deliveryStatus, paymentStatus, payUrl } = req.body;  // Nhận `payUrl` từ body
 
-        const updatedOrder = await OrderController.updateOrder(id, { statusDelivery, statusPay, payUrl });
+        const updatedOrder = await OrderController.updateOrder(id, { deliveryStatus, paymentStatus, payUrl });
         
         // Trả về thông tin đơn hàng đã cập nhật, bao gồm `payUrl` nếu có
         return res.status(200).json({ status: true, data: updatedOrder });
