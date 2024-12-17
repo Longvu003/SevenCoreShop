@@ -2,21 +2,37 @@ const mongoose = require("mongoose");
 const ProductModel = require("../model/ProductModel");
 const CategoryModel = require("../model/CategoryModel");
 
-// Lấy danh sách sản phẩm (có thể lọc theo danh mục)
+// code của huy đổi lại bị trùng tên
+// // Lấy danh sách sản phẩm (có thể lọc theo danh mục)
+// const getProducts = async (category = "") => {
+//   try {
+//     let products;
+//     if (category) {
+//       products = await ProductModel.find({
+//         category: mongoose.Types.ObjectId(category),
+//       });
+//     } else {
+//       products = await ProductModel.find();
+//     }
+//     return products;
+//   } catch (error) {
+//     console.log("Lỗi", error);
+//     throw new Error("Error while getting products");
+//   }
+// };
+
+// lấy danh sách sản phẩm
 const getProducts = async (category = "") => {
   try {
-    let products;
     if (category) {
-      products = await ProductModel.find({
-        category: mongoose.Types.ObjectId(category),
-      });
+      const products = await ProductModel.find({ category });
+      return products;
     } else {
-      products = await ProductModel.find();
+      const products = await ProductModel.find();
+      return products;
     }
-    return products;
   } catch (error) {
     console.log("Lỗi", error);
-    throw new Error("Error while getting products");
   }
 };
 

@@ -1,0 +1,2 @@
+http://localhost:7777/cron
+http://localhost:7777/orders/cron

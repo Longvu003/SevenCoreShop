@@ -22,11 +22,10 @@ const orderSchema = new mongoose.Schema({
   paymentMethod: { type: String, required: true },
   numberphone: { type: String, required: true },
   status: { type: String, default: "Đang xử lý" },
-  statuspay : { type: String, default: 'Đang xử lý' },
+  statuspay: { type: String, default: "Đang xử lý" },
   orderCode: { type: String, required: true },
 
   date: { type: Date, default: Date.now },
-
 });
 
 const Order = mongoose.model("Order", orderSchema);

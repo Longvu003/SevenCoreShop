@@ -11,7 +11,7 @@ function generateOTP() {
 
 async function generateAndSaveOtp(email) {
   const otp = generateOTP();
-  const otpExpiry = new Date(Date.now() + 1 * 60 * 1000);
+  const otpExpiry = new Date(Date.now() + 2 * 60 * 1000);
 
   await OtpModel.create({
     userEmail: email,
@@ -25,7 +25,7 @@ async function generateAndSaveOtp(email) {
 
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
-
+  console.log(email);
   try {
     const user = await UserModel.findOne({ email: email });
     if (!user) {
@@ -36,11 +36,9 @@ exports.forgotPassword = async (req, res) => {
 
     await sendOtpMail(email, otp);
 
-    res
-      .status(200)
-      .send({
-        message: "Mã xác thực đặt lại mật khẩu đã được gửi đến email của bạn.",
-      });
+    res.status(200).send({
+      message: "Mã xác thực đặt lại mật khẩu đã được gửi đến email của bạn.",
+    });
   } catch (error) {
     console.error("Lỗi khi gửi mã OTP:", error);
     res.status(500).send({ message: "Gửi mã OTP thất bại." });

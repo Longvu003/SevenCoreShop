@@ -6,23 +6,14 @@ const ObjectId = Schema.ObjectId;
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  price: { type: Number, required: true, min: 0 },
-  quantity: { type: Number, required: true, min: 0 },
-  images: [String],
-  description: String,
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
-    required: true,
-  },
+  price: { type: Number, required: true, default: 0 },
+  quantity: { type: Number, default: 0 },
+  images: { type: Array, default: [] },
+  description: { type: String, default: "" },
+  category: { type: Object, default: {} },
   color: String,
   size: String,
-  status: {
-    type: String,
-    enum: ["Available", "Out of stock", "Discontinued"],
-    default: "Available",
-  },
-  inventory: { type: Number, default: 0, min: 0 },
+  available: { type: Boolean, default: true },
   userEmail: { type: String, required: true }, // Thêm trường userEmail
   viewedAt: { type: Date, default: Date.now }, // Thêm trường viewedAt
 });

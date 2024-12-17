@@ -4,6 +4,7 @@ const { body, query, validationResult } = require("express-validator");
 const userController = require("../controllers/UserController");
 const OtpModel = require("../models/OtpModel");
 const UserModel = require("../model/UserModel");
+const { sendOtpMail } = require("../controllers/UserController");
 
 // Hàm kiểm tra dữ liệu đầu vào
 const validateRequest = (req, res, next) => {
@@ -50,26 +51,24 @@ router.post(
 );
 
 // Đăng nhập
-router.post(
-  "/login",
-  [
-    body("email").isEmail().withMessage("Email không hợp lệ"),
-    body("password").notEmpty().withMessage("Mật khẩu không được để trống"),
-  ],
-  validateRequest,
-  async (req, res) => {
+router.post("/login", async (req, res, next) => {
+  try {
     const { email, password } = req.body;
-    console.log(req.body);
     const result = await userController.login(email, password);
     if (result) {
-      return res.status(200).json({ status: true, data: result });
+      return res
+        .status(200)
+        .json({ status: true, message: "Đăng nhập thành công", data: result });
     } else {
       return res
         .status(400)
-        .json({ message: "Mật khẩu và xác nhận mật khẩu không khớp." });
+        .json({ status: false, message: "Email hoặc mật khẩu không đúng" });
     }
+  } catch (error) {
+    console.log("Login error", error.message);
+    res.status(500).json({ status: false, message: error.message });
   }
-);
+});
 
 // Gửi OTP khi quên mật khẩu
 router.post(
@@ -169,17 +168,18 @@ router.put(
     }
   }
 );
+// Cập nhật người dùng theo ID
 router.post("/:id/updateuserbyid", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { email, password, username, numberphone, address } = req.body;
+    const { email, password, username, numberphone, address, role } = req.body;
     const result = await userController.updateUserById(
       id,
       email,
-      password,
       username,
       numberphone,
-      address
+      address,
+      role
     );
     return res.status(200).json({
       status: true,
@@ -279,6 +279,150 @@ router.post("/updateuser", async (req, res, next) => {
 //lấy địa chỉ theo ID
 // Lấy địa chỉ của người dùng dựa trên userID
 const mongoose = require("mongoose");
+router.get("/getalluser", async (req, res, next) => {
+  try {
+    const result = await userController.getAllUser();
+    return res.status(200).json({
+      status: true,
+      message: "Lấy thông tin tất cả tài khoản thành công",
+      data: result,
+    });
+  } catch (error) {
+    console.log("Get all user error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
+router.get("/verify", async (req, res, next) => {
+  try {
+    const { email } = req.query;
+    const result = await userController.verify(email);
+    return res
+      .status(200)
+      .json({ status: true, message: "Xác thực thành công", data: result });
+  } catch (error) {
+    console.log("Verify error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
+
+// Xóa người dùng theo email
+router.get("/delete", async (req, res, next) => {
+  try {
+    const { email } = req.query;
+    const result = await userController.delete(email);
+    return res.status(200).json({
+      status: true,
+      message: "Xóa tài khoản thành công",
+      data: result,
+    });
+  } catch (error) {
+    console.log("Delete error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
+
+// Lấy người dùng theo ID
+router.get("/getuserbyid", async (req, res, next) => {
+  try {
+    const { id } = req.query;
+    const result = await userController.getUserById(id);
+    return res.status(200).json({
+      status: true,
+      message: "Lấy thông tin tài khoản thành công",
+      data: result,
+    });
+  } catch (error) {
+    console.log("Get user by id error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
+
+// Xóa người dùng theo ID
+router.post("/:id/deleteuserbyid", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await userController.deleteUserById(id);
+    return res.status(200).json({
+      status: true,
+      message: "Xóa tài khoản thành công",
+      data: result,
+    });
+  } catch (error) {
+    console.log("Delete user by id error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
+
+// Cập nhật người dùng theo ID
+router.post("/:id/updateuserbyid", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { email, username, numberphone, address, role } = req.body;
+    const result = await userController.updateUserById(
+      id,
+      email,
+      username,
+      numberphone,
+      address,
+      role
+    );
+    return res.status(200).json({
+      status: true,
+      message: "Cập nhật tài khoản thành công",
+      data: result,
+    });
+  } catch (error) {
+    console.log("Update user by id error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
+
+// Khóa người dùng theo ID
+router.post("/:id/lockuserbyid", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await userController.lockUserById(id);
+    return res.status(200).json({
+      status: true,
+      message: "Khóa tài khoản thành công",
+      data: result,
+    });
+  } catch (error) {
+    console.log("Lock user by id error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
+
+// Mở khóa người dùng theo ID
+router.post("/:id/unlockuserbyid", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await userController.unlockUserById(id);
+    return res.status(200).json({
+      status: true,
+      message: "Mở khóa tài khoản thành công",
+      data: result,
+    });
+  } catch (error) {
+    console.log("Unlock user by id error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
+// Mở khóa người dùng theo ID
+router.post("/:id/unlockuserbyid", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await userController.unlockUserById(id);
+    return res.status(200).json({
+      status: true,
+      message: "Mở khóa tài khoản thành công",
+      data: result,
+    });
+  } catch (error) {
+    console.log("Unlock user by id error", error.message);
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
 
 router.get("/:id/address", async (req, res) => {
   const { id } = req.params;
@@ -302,139 +446,6 @@ router.get("/:id/address", async (req, res) => {
     // method: GET
     // url: http://localhost:7777/users/verify?email=taitan1922004@gmail.com
     // response: xác thực thành công hoặc thất bại
-    router.get("/verify", async (req, res, next) => {
-      try {
-        const { email } = req.query;
-        const result = await userController.verify(email);
-        return res
-          .status(200)
-          .json({ status: true, message: "Xác thực thành công", data: result });
-      } catch (error) {
-        console.log("Verify error", error.message);
-        res.status(500).json({ status: false, message: error.message });
-      }
-    });
-
-    // Xóa người dùng theo email
-    router.get("/delete", async (req, res, next) => {
-      try {
-        const { email } = req.query;
-        const result = await userController.delete(email);
-        return res.status(200).json({
-          status: true,
-          message: "Xóa tài khoản thành công",
-          data: result,
-        });
-      } catch (error) {
-        console.log("Delete error", error.message);
-        res.status(500).json({ status: false, message: error.message });
-      }
-    });
-
-    // Lấy người dùng theo ID
-    router.get("/getuserbyid", async (req, res, next) => {
-      try {
-        const { id } = req.query;
-        const result = await userController.getUserById(id);
-        return res.status(200).json({
-          status: true,
-          message: "Lấy thông tin tài khoản thành công",
-          data: result,
-        });
-      } catch (error) {
-        console.log("Get user by id error", error.message);
-        res.status(500).json({ status: false, message: error.message });
-      }
-    });
-
-    // Lấy tất cả người dùng
-    router.get("/getalluser", async (req, res, next) => {
-      try {
-        const result = await userController.getAllUser();
-        return res.status(200).json({
-          status: true,
-          message: "Lấy thông tin tất cả tài khoản thành công",
-          data: result,
-        });
-      } catch (error) {
-        console.log("Get all user error", error.message);
-        res.status(500).json({ status: false, message: error.message });
-      }
-    });
-
-    // Xóa người dùng theo ID
-    router.post("/:id/deleteuserbyid", async (req, res, next) => {
-      try {
-        const { id } = req.params;
-        const result = await userController.deleteUserById(id);
-        return res.status(200).json({
-          status: true,
-          message: "Xóa tài khoản thành công",
-          data: result,
-        });
-      } catch (error) {
-        console.log("Delete user by id error", error.message);
-        res.status(500).json({ status: false, message: error.message });
-      }
-    });
-
-    // Cập nhật người dùng theo ID
-    router.post("/:id/updateuserbyid", async (req, res, next) => {
-      try {
-        const { id } = req.params;
-        const { email, password, username, numberphone, address, role } =
-          req.body;
-        const result = await userController.updateUserById(
-          id,
-          email,
-          password,
-          username,
-          numberphone,
-          address,
-          role
-        );
-        return res.status(200).json({
-          status: true,
-          message: "Cập nhật tài khoản thành công",
-          data: result,
-        });
-      } catch (error) {
-        console.log("Update user by id error", error.message);
-        res.status(500).json({ status: false, message: error.message });
-      }
-    });
-
-    // Khóa người dùng theo ID
-    router.post("/:id/lockuserbyid", async (req, res, next) => {
-      try {
-        const { id } = req.params;
-        const result = await userController.lockUserById(id);
-        return res.status(200).json({
-          status: true,
-          message: "Khóa tài khoản thành công",
-          data: result,
-        });
-      } catch (error) {
-        console.log("Lock user by id error", error.message);
-        res.status(500).json({ status: false, message: error.message });
-      }
-    });
-
-    // Mở khóa người dùng theo ID
-    router.post("/:id/unlockuserbyid", async (req, res, next) => {
-      try {
-        const { id } = req.params;
-        const result = await userController.unlockUserById(id);
-        return res.status(200).json({
-          status: true,
-          message: "Mở khóa tài khoản thành công",
-          data: result,
-        });
-      } catch (error) {
-        console.log("Unlock user by id error", error.message);
-        res.status(500).json({ status: false, message: error.message });
-      }
-    });
 
     res.status(200).json({ address: user.address });
   } catch (error) {

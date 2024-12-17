@@ -1,67 +1,74 @@
-import { Products } from "../model/ProductModel"
-import { GetProduct, DeleteProduct, EditProductByid, CreateProduct, GetProductById } from "../service/ProducService"
-// import { handleApiError } from "../utils/errorHandler"
+import { useEffect, useState } from 'react';
+import { Products } from '../model/ProductModel';
+import { GetProduct, DeleteProduct,EditProductByid,CreateProduct, GetProductById, UpdateProductAvailability } from '../service/ProducService';
 
 export const userProducts = () => {
+
+
     const getProduct = async () => {
         try {
-            const products = await GetProduct()
-            return products
+            const getProducts = await GetProduct();
+            return getProducts;
         } catch (error) {
-            console.error("Failed to get product", error)
+            console.error('Failed to get product', error);
             return error
         }
-    }
+    };
 
     const deleteProduct = async (id: string) => {
         try {
-            const result = await DeleteProduct(id)
-            return result
+            const deleteProducts = await DeleteProduct(id);
+            return deleteProducts;
         } catch (error) {
-            console.error("Failed to delete produc", error)
+            console.error('Failed to delete produc', error);
             return error
         }
-    }
+    };
 
-    const editProduct = async (id: string, product: Products) => {
+    const editProduct = async (id: string,product:Products) => {
         try {
-            if (!product.category) {
-                throw new Error("Category is required")
-            }
-
-            const updatedProduct = await EditProductByid(id, product)
-            return updatedProduct
+            const updateProduct = await EditProductByid(id,product);
+            return updateProduct;
         } catch (error) {
-            console.error("Failed to update product", error)
+            console.error('Failed to update product', error);
             return error
         }
     }
 
     const createProduct = async (product: Products) => {
         try {
-            const createdProduct = await CreateProduct(product)
-            return createdProduct
+            const createProducts = await CreateProduct(product);
+            return createProducts;
         } catch (error) {
-            console.error("Failed to create product", error)
+            console.error('Failed to create product', error);
             return error
         }
     }
 
     const getProductById = async (id: string) => {
         try {
-            const product = await GetProductById(id)
-            return product
+            const getProducts = await GetProductById(id);
+            return getProducts;
         } catch (error) {
-            console.error("Failed to get product", error)
+            console.error('Failed to get product', error);
             return error
         }
     }
 
-    return {
-        getProduct,
-        deleteProduct,
-        editProduct,
-        createProduct,
-        getProductById,
+    
+    const updateProductAvailability = async (id: string, available: boolean) => {
+    try {
+      const updatedProduct = await UpdateProductAvailability(id, available);
+      return updatedProduct;
+    } catch (error) {
+      console.error('Failed to update product availability', error);
+      return error;
     }
-}
+    };
+
+
+
+    return {
+        getProduct, deleteProduct, editProduct,createProduct,getProductById,updateProductAvailability
+    };
+};

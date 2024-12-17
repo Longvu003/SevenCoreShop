@@ -19,12 +19,12 @@ const resetPass = require("./routes/repass");
 const commentRoutes = require("./routes/cmt");
 const bestsellitem = require("./routes/bestsellitem.js");
 //okokok
-const multer = require('multer');
-const Ad = require('./model/AdModel');
+const multer = require("multer");
+const Ad = require("./model/AdModel");
 // Cấu hình multer để lưu ảnh
-const upload = require('./cloudpng/upload');
-const adsRouter = require('./routes/ads')(upload);
-const dotenv = require('dotenv');
+const upload = require("./cloudpng/upload");
+const adsRouter = require("./routes/ads")(upload);
+const dotenv = require("dotenv");
 dotenv.config();
 
 var app = express();
@@ -38,15 +38,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Thay đổi địa chỉ này nếu cần thiết
-  })
-); // kết nối database mongodb
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"], // Thêm domain của web app vào
+    origin: ["http://localhost:5173", "http://localhost:7777"], // Thêm domain của web app vào
     methods: ["GET", "POST", "PUT", "DELETE"], // Các phương thức HTTP được phép
     credentials: true, // Cho phép truyền cookie nếu cần
   })
@@ -57,7 +52,6 @@ mongoose
   .connect("mongodb://localhost:27017/TonsTai")
   .then(() => console.log("Connected to MongoDB..."))
   .catch((err) => console.error("Could not connect to MongoDB...", err));
-
 // Định nghĩa các router
 // http://localhost:7777/
 app.use("/", indexRouter);
@@ -78,15 +72,14 @@ app.use("/cron", Transaction);
 // http://localhost:7777/payonline
 app.use("/payonline", PayOnline);
 // http://localhost:7777/cron
-app.use("/cron", Transaction);
-app.use('/ads', adsRouter); // Đăng ký router quảng cáo
+app.use("/ads", adsRouter); // Đăng ký router quảng cáo
 app.use("/images", express.static("images")); // Đăng ký router ảnh
-
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
 app.use("/bestsell", bestsellitem);
+// catch 404 and forward to error handler
+// app.use((req, res, next) => {
+//   next(createError(404));
+// });
+
 // Error handler
 app.use(function (err, req, res, next) {
   // Set locals, only providing error in development

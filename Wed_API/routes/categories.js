@@ -10,7 +10,7 @@ const CategoryController = require("../controllers/CategoryController");
  * url: http://localhost:7777/categories
  * response: trả về danh sách các danh mục
  */
-router.get("/getAllCategory", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const categories = await CategoryController.getCategoryList();
     return res.status(200).json({ status: true, data: categories });
@@ -65,15 +65,19 @@ router.post("/:id/delete", async (req, res, next) => {
   }
 });
 
-router.post('/:id/update', async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        const { name, description, images } = req.body;
-        console.log(images);
-        const category = await CategoryController.updateCategory(id, name, description, images);
-        return res.status(200).json({ status: true, data: category });
-    }
-    catch (error) {
+router.post("/:id/update", async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const { name, description, images } = req.body;
+    console.log(images);
+    const category = await CategoryController.updateCategory(
+      id,
+      name,
+      description,
+      images
+    );
+    return res.status(200).json({ status: true, data: category });
+  } catch (error) {
     console.log("Update category error", error.message);
     res.status(500).json({ status: false, data: error.message });
   }

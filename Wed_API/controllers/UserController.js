@@ -2,7 +2,7 @@ const userModel = require("../model/UserModel");
 const bcrypt = require("bcryptjs");
 const httml = require("../helpers/MailContent");
 const OtpModel = require("../models/OtpModel");
-const crypto = require("crypto"); // Sử dụng để tạo OTP ngẫu nhiên
+const crypto = require("crypto");
 const sendResetPasswordEmail = require("../helpers/EmailCofig");
 
 // Đăng ký người dùng mới
@@ -97,6 +97,21 @@ const update = async (email, password, username, numberphone, address) => {
     throw new Error("Lỗi cập nhật người dùng");
   }
 };
+
+async function generateAndSaveOtp(email) {
+  const otp = crypto.randomInt(100000, 999999).toString(); // Tạo OTP 6 chữ số
+  const otpExpiry = new Date(Date.now() + 1 * 60 * 1000); // Đặt thời gian hết hạn cho OTP
+
+  // Lưu OTP vào cơ sở dữ liệu
+  await OtpModel.create({
+    userEmail: email,
+    otp: otp,
+    otpExpiry: otpExpiry,
+    createdAt: new Date(),
+  });
+
+  return otp;
+}
 
 // Gửi OTP qua email
 async function sendOtpMail(email, otp) {
@@ -205,7 +220,7 @@ const deleteUser = async (email) => {
 // Lấy tất cả người dùng
 const getAllUser = async () => {
   try {
-    const users = await userModel.find({}, { password: 0 });
+    const users = await userModel.find({});
     return users;
   } catch (error) {
     console.log("Lỗi lấy dữ liệu người dùng", error.message);
@@ -231,7 +246,6 @@ const deleteUserById = async (id) => {
 const updateUserById = async (
   id,
   email,
-  password,
   username,
   numberphone,
   address,
@@ -241,12 +255,6 @@ const updateUserById = async (
     const user = await userModel.findById(id);
     if (!user) {
       throw new Error("User không tồn tại");
-    }
-
-    if (password) {
-      const salt = bcrypt.genSaltSync(10);
-      password = bcrypt.hashSync(password, salt);
-      user.password = password;
     }
 
     user.email = email;
@@ -343,4 +351,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   getUserByEmail,
+  sendOtpMail,
+  generateAndSaveOtp,
 };
