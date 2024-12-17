@@ -289,17 +289,19 @@ const ProductModel = require("../model/ProductModel");
 const CategoryModel = require("../model/CategoryModel");
 
 // lấy danh sách sản phẩm
-const getProducts = async (category = "") => {
+const getProducts = async (categoryId = "") => {
   try {
-    if (category) {
-      const products = await ProductModel.find({ category });
-      return products;
-    } else {
-      const products = await ProductModel.find();
-      return products;
+    let query = {};
+
+    if (categoryId) {
+      // Truy vấn theo nested field category.category_id
+      query["category.category_id"] = categoryId;
     }
+    const products = await ProductModel.find(query);
+    return products;
   } catch (error) {
     console.log("Lỗi", error);
+    throw error;
   }
 };
 

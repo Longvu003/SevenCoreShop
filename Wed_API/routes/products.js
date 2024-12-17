@@ -295,6 +295,7 @@ router.get("/", async (req, res, next) => {
   console.log(category_id);
   try {
     const checkListProducts = await ProductController.getProducts(category_id);
+
     return res.status(200).json({ status: true, data: checkListProducts });
   } catch (error) {
     return res.status(500).json({ status: false, data: error.message });

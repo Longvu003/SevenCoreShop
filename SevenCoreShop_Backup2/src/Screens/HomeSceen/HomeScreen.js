@@ -139,7 +139,7 @@ const HomeScreen = ({navigation}) => {
                     <Text numberOfLines={2} style={HomeStyle.productName}>
                       {item.name}
                     </Text>
-                    <Text style={HomeStyle.productPrice}>${item.price}</Text>
+                    <Text style={HomeStyle.productPrice}>{item.price}Vnđ</Text>
                   </TouchableOpacity>
                 );
               }}

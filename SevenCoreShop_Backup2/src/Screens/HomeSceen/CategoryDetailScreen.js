@@ -13,10 +13,11 @@ import Customheader from '../../CustomHeader/Customheader';
 const CategoryDetailScreen = ({navigation, route}) => {
   const {category} = route.params;
   const [products, setProducts] = useState([]);
-  const id = category._id;
+  const category_id = category._id;
+
   const getProduct = () => {
     axios
-      .get(`${API__URL}/products/getProductBycategory/${id}`)
+      .get(`${API__URL}/products?category_id=${category_id}`)
       .then(response => {
         setProducts(response.data.data || []);
       })

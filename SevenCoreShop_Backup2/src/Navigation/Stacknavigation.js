@@ -31,7 +31,7 @@ const Stacknavigation = () => {
     <CartProdvider>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="LoginScreen"
+          initialRouteName="Tab"
           screenOptions={{headerShown: false}}>
           <Stack.Screen name="Welcome1" component={Welcome1} />
           <Stack.Screen name="Welcome2" component={Welcome2} />
