@@ -1,4 +1,8 @@
+//khai báo 1 schema cho product
+//(_id, email, password, name, role, carts, creatAt, updateAt, available)
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },

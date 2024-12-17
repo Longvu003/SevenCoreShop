@@ -220,6 +220,28 @@ const getById = async (id) => {
   }
 };
 
+const updateProductAvailability = async (id, available) => {
+  try {
+    // Find the product by ID
+    const product = await ProductModel.findById(id);
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    // Update the availability status
+    product.available = available;
+
+    // Save the changes
+    await product.save();
+
+    // Return the updated product
+    return product;
+  } catch (error) {
+    console.log("Update product availability error", error.message);
+    throw new Error("Server error! Cannot update product availability");
+  }
+};
+
 // Thống kê sản phẩm có số lượng lớn nhất
 const getTopProduct = async () => {
   try {
@@ -244,4 +266,5 @@ module.exports = {
   deleteProduct,
   getById,
   getTopProduct,
+  updateProductAvailability,
 };

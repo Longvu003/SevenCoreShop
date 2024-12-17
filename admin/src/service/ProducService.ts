@@ -104,3 +104,24 @@ export const GetProductByCategoryId = async (id: string): Promise<Products[]> =>
         return []
     }
 }
+<<<<<<< HEAD
+=======
+
+// Update product availability
+export const UpdateProductAvailability = async (id: string, available: boolean): Promise<Products> => {
+  const response = await fetch(`${API_URL}/products/${id}/availability`, {
+    method: "post",
+    body: JSON.stringify({ available }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data: any = await response.json();
+
+  if (!response.ok) {
+    return data;
+  }
+
+  return data;
+};
+>>>>>>> c80f2b0358a9614232bb6cf1c7de73bc2e28c092

@@ -72,7 +72,7 @@ const login = async (email, password) => {
 };
 
 // Cập nhật thông tin người dùng
-const update = async (email, password, name, phone, address) => {
+const update = async (email, password, username, numberphone, address) => {
   try {
     const user = await userModel.findOne({ email: email });
     if (!user) {
@@ -85,8 +85,8 @@ const update = async (email, password, name, phone, address) => {
       user.password = password;
     }
 
-    user.name = name;
-    user.phone = phone;
+    user.username = username;
+    user.numberphone = numberphone;
     user.address = address;
     user.updatedAt = Date.now();
 
