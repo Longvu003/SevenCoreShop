@@ -9,4 +9,4 @@ const CategorySchema = new Schema({
 });
 // tiếng anh, số ít, chữ thường, không dấu, không cách  
 //  //tạo model user từ schema UserSchema chưa có thì tạo mới, có rồi thì sử dụng lại
-module.exports = mongoose.model.category || mongoose.model('category', CategorySchema); 
+module.exports = mongoose.model.category || mongoose.model('Category', CategorySchema); 

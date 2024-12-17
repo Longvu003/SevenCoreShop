@@ -65,16 +65,26 @@ router.post('/', async (req, res, next) => {
  * body: name, price, quantity, images, description, category
  * response: trå về sån phåm vừa cập nhật
  */
-router.post('/:id/update', async (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
     try {
         const { id } = req.params
-        const { name, price, quantity, images, decription, category } = req.body;
-        const product = await ProductController.updateProduct(id, name, price, quantity, images, decription, category);
+        const { name, price, quantity, images, decription, categoryId } = req.body;
+        const product = await ProductController.updateProduct(id, name, price, quantity, images, decription, categoryId);
         return res.status(200).json({ status: true, data: product });
     } catch (error) {
         return res.status(500).json({ status: false, data: error.message });
     }
 })
+
+router.get("/:id", async (req, res) => {
+  const { id } = req.params; // Lấy ID từ URL params
+  try {
+    const product = await ProductController.getProductById(id);
+    res.status(200).json({ status: true, data: product });
+  } catch (error) {
+    res.status(404).json({ status: false, message: error.message }); // Trả về lỗi nếu không tìm thấy
+  }
+});
 
 //API tìm kiếm sản phẩm theo từ khóa
 // method: get
@@ -146,16 +156,16 @@ router.post('/:id/delete', async (req, res, next) => {
  * url: http://localhost:7777/products/:id
  * response: trå về sån phåm vừa cập nhật
  */
-router.get('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        console.log(id);
-        const products = await ProductController.getById(id);
-        return res.status(200).json({ status: true, data: products })
-    } catch (error) {
-        return res.status(500).json({ status: false, data: error.message })
-    }
-});
+// router.get('/:id', async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         console.log(id);
+//         const products = await ProductController.getById(id);
+//         return res.status(200).json({ status: true, data: products })
+//     } catch (error) {
+//         return res.status(500).json({ status: false, data: error.message })
+//     }
+// });
 
 /**
  * method: GET

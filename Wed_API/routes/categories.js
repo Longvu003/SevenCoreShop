@@ -31,4 +31,39 @@ router.post("/add", async (req, res, next) => {
   }
 });
 
+// Cập nhật danh mục
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+  try {
+    const updatedCategory = await CategoryController.updateCategory(id, name, description);
+    res.status(200).json({status: true, data: updatedCategory});
+  } catch (error) {
+    res.status(500).json({status: false, message: error.message });
+  }
+});
+
+// Xóa danh mục
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedCategory = await CategoryController.deleteCategory(id);
+    res.status(200).json({status: true , message: "Category deleted successfully", deletedCategory });
+  } catch (error) {
+    res.status(500).json({status: false, message: error.message });
+  }
+});
+
+// Lấy danh mục theo ID
+router.get("/:id", async (req, res) => {
+  const { id } = req.params; // Lấy ID từ URL params
+  try {
+    const category = await CategoryController.getCategoryById(id);
+    res.status(200).json({ status: true, data: category });
+  } catch (error) {
+    res.status(404).json({ status: false, message: error.message }); // Trả về lỗi nếu không tìm thấy
+  }
+});
+
+
 module.exports = router;
