@@ -86,7 +86,7 @@ export default function NewPayOnline() {
       if (res.status === true) {
         MySwal.fire({
           title: "Thành công",
-          text: "Thêm mới mục thanh toán thành công",
+          text: "Thêm mới ngân hàng thanh toán thành công",
           icon: "success",
         }).then(() => {
           location.href = "/payonlineManagent";
@@ -94,7 +94,7 @@ export default function NewPayOnline() {
       } else {
         MySwal.fire({
           title: "Thất bại",
-          text: "Thêm mới mục thanh toán thất bại",
+          text: "Thêm mới ngân hàng thanhthanh toán thất bại",
           icon: "error",
         });
       }
@@ -102,7 +102,7 @@ export default function NewPayOnline() {
       console.error("Error creating pay online entry:", error);
       MySwal.fire({
         title: "Lỗi",
-        text: "Thêm mới mục thanh toán thất bại",
+        text: "Thêm mới ngân hàng thanh toántoán toán thất bại",
         icon: "error",
       });
     }

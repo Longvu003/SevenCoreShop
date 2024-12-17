@@ -122,7 +122,7 @@ export default function ProductUpdate() {
             const res: any = await editProduct(id, dataProduct);
             if (res.status) {
                 MySwal.fire("Cập nhật sản phẩm thành công", "", "success").then(() => {
-                    window.location.href = '/productmanagement';
+                    window.location.href = '/product/product-managent';
                 });
             } else {
                 MySwal.fire("Cập nhật sản phẩm thất bại", "", "error");

@@ -34,13 +34,13 @@ const PayOnlineManagement = () => {
                     setDataPayOnline(data.data);
                     await MySwal.fire(
                         'Đã xóa!',
-                        'Mục thanh toán đã được xóa.',
+                        'Ngân hàng thanh toán đã được xóa.',
                         'success'
                     );
                 } else {
                     await MySwal.fire(
                         'Lỗi!',
-                        'Xóa mục thanh toán thất bại.',
+                        'Xóa ngân hànghàng thanh toán thất bại.',
                         'error'
                     );
                 }
