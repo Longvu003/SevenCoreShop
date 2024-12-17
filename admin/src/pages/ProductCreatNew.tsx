@@ -84,7 +84,7 @@ export default function ProductCreateNew() {
                 ...dataProduct,
                 price: Number(dataProduct.price),
                 quantity: Number(dataProduct.quantity),
-                category: dataProduct.category.category_name, // Assuming backend expects category ID
+                category: dataProduct.category.category_name,
                 images
             };
             console.log("Payload being sent to server:", newProduct);

@@ -99,8 +99,13 @@ export default function ProductUpdate() {
             const res: any = await editProduct(id, dataProduct)
             if (res.status) {
                 MySwal.fire("Cập nhật sản phẩm thành công", "", "success").then(() => {
+<<<<<<< HEAD
                     window.location.href = "/productmanagement"
                 })
+=======
+                    window.location.href = '/product/product-managent';
+                });
+>>>>>>> 15a17ea7cffcdc98d638f3ab71d5baf2f13c4c8f
             } else {
                 MySwal.fire("Cập nhật sản phẩm thất bại", "", "error")
             }
