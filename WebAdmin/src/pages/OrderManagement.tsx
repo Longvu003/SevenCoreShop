@@ -65,13 +65,37 @@ const OrderManagement = () => {
         setEditModal(true)
     }
 
-    const handlePayment = (payUrl?: string) => {
-        if (payUrl) {
-            window.location.href = payUrl // Chuyển hướng đến đường link thanh toán MOMO
-        } else {
-            alert("Link thanh toán không khả dụng!")
+    const handlePayment = async (order: OrderModel) => {
+        if (!order.payUrl) {
+            Swal.fire("Link thanh toán không khả dụng!", "", "error");
+            return;
         }
-    }
+
+        try {
+            // Tạo dữ liệu cập nhật
+            const updatedOrder = {
+                ...order,
+                deliveryStatus: "shipped" as const,
+                paymentStatus: "paid" as const,
+            };
+
+            // Gọi API cập nhật trạng thái đơn hàng
+            await updateOrder(order._id, updatedOrder);
+
+            // Hiển thị thông báo thành công
+            Swal.fire("Trạng thái đơn hàng đã được cập nhật!", "", "success");
+
+            // Cập nhật danh sách đơn hàng mới
+            fetchAllOrders();
+
+            // Chuyển hướng đến đường link thanh toán
+            // window.location.href = order.payUrl;
+        } catch (error) {
+            console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
+            Swal.fire("Không thể cập nhật trạng thái!", "Vui lòng thử lại sau.", "error");
+        }
+    };
+
 
     // const handleUpdateOrderStatus = async () => {
     //     if (selectedOrder) {
@@ -140,10 +164,11 @@ const OrderManagement = () => {
                                                 <button
                                                     type="button"
                                                     className="btn btn-sm btn-outline-warning"
-                                                    onClick={() => handlePayment(order.payUrl)} // Truyền `payUrl` vào hàm
+                                                    onClick={() => handlePayment(order)} // Truyền toàn bộ `order`
                                                 >
                                                     Thanh toán ngay
                                                 </button>
+
                                             </div>
                                         </td>
                                     </tr>
@@ -155,34 +180,7 @@ const OrderManagement = () => {
             </div>
 
             {/* Edit Modal */}
-            <Transition appear show={editModal} as={Fragment}>
-                <Dialog as="div" open={editModal} onClose={() => setEditModal(false)} className="relative z-[51]">
-                    <div className="fixed inset-0 bg-black/60" />
-                    <div className="fixed inset-0 overflow-y-auto">
-                        <div className="flex items-center justify-center min-h-full">
-                            <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
-                                <div className="text-lg font-medium bg-[#fbfbfb] dark:bg-[#121c2c] px-5 py-3">Cập Nhật Trạng Thái Đơn Hàng</div>
-                                <div className="p-5">
-                                    <form>
-                                        <div className="mb-5">
-                                            <label htmlFor="status">Trạng Thái Đơn Hàng</label>
-                                            <input id="status" type="text" placeholder="Nhập trạng thái mới" className="form-input" value={newStatus} onChange={(e) => setNewStatus(e.target.value)} />
-                                        </div>
-                                        <div className="flex justify-end items-center mt-8">
-                                            <button type="button" className="btn btn-outline-danger" onClick={() => setEditModal(false)}>
-                                                Hủy
-                                            </button>
-                                            <button type="button" className="btn btn-outline-success">
-                                                Cập nhật
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </Dialog.Panel>
-                        </div>
-                    </div>
-                </Dialog>
-            </Transition>
+
         </div>
     )
 }

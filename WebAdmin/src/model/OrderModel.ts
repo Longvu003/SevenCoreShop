@@ -23,8 +23,8 @@ export interface OrderModel {
   totalAmount: number;        // Tổng tiền của đơn hàng
   status: 'pending' | 'completed' | 'canceled';   // Trạng thái đơn hàng
   paymentMethod: 'credit_card' | 'paypal' | 'momo' | 'cash_on_delivery';  // Phương thức thanh toán
-  paymentStatus: 'unpaid' | 'paid' | 'failed';    // Trạng thái thanh toán
-  deliveryStatus: 'pending' | 'shipped' | 'delivered';  // Trạng thái giao hàng
+  deliveryStatus: "pending" | "shipped" | "delivered" | "canceled"; // cập nhật giá trị hợp lý cho `deliveryStatus`
+  paymentStatus: "paid" | "unpaid" | "failed"; // giá trị hợp lệ cho `paymentStatus`
   payUrl?: string;            // URL thanh toán (có thể có nếu phương thức thanh toán yêu cầu)
   orderDate: string;          // Ngày tạo đơn hàng (dạng ISO string)
   updatedAt: string;          // Thời gian cập nhật đơn hàng (dạng ISO string)
