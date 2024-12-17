@@ -14,14 +14,8 @@ const partnerName = "Test";
 const storeId = "MomoTestStore";
 
 // Tạo QR thanh toán MoMo
-const createPaymentQR = ({
-  userId,
-  orderId,
-  amount,
-  orderInfo,
-  paymentCode,
-}) => {
-  return new Promise((resolve, reject) => {
+const createPaymentQR = async ({ userId, orderId, amount, orderInfo, paymentCode }) => {
+  try {
     const requestId = partnerCode + new Date().getTime();
     const extraData = "";
     const autoCapture = true;
@@ -32,10 +26,7 @@ const createPaymentQR = ({
 
     // Tạo chữ ký (signature) theo định dạng yêu cầu
     const rawSignature = `accessKey=${accessKey}&amount=${amountStr}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
-    const signature = crypto
-      .createHmac("sha256", secretKey)
-      .update(rawSignature)
-      .digest("hex");
+    const signature = crypto.createHmac("sha256", secretKey).update(rawSignature).digest("hex");
 
     const requestBody = JSON.stringify({
       partnerCode,
@@ -67,38 +58,44 @@ const createPaymentQR = ({
       },
     };
 
-    // Gửi yêu cầu đến MoMo
-    const momoReq = https.request(options, (momoRes) => {
-      let data = "";
-      momoRes.on("data", (chunk) => {
-        data += chunk;
-      });
-      momoRes.on("end", () => {
-        try {
-          const response = JSON.parse(data);
-          if (response.resultCode === 0) {
-            resolve({ payUrl: response.payUrl });
-          } else {
-            resolve({
-              error: true,
-              message: response.message,
-              resultCode: response.resultCode,
-            });
+    return new Promise((resolve, reject) => {
+      // Gửi yêu cầu đến MoMo
+      const momoReq = https.request(options, (momoRes) => {
+        let data = "";
+        momoRes.on("data", (chunk) => {
+          data += chunk;
+        });
+        momoRes.on("end", () => {
+          try {
+            const response = JSON.parse(data);
+            if (response.resultCode === 0) {
+              resolve({ payUrl: response.payUrl });
+            } else {
+              console.error("MoMo Error:", response.message, response.resultCode);
+              resolve({
+                error: true,
+                message: response.message,
+                resultCode: response.resultCode,
+              });
+            }
+          } catch (err) {
+            console.error("Error parsing MoMo response:", err.message);
+            reject(new Error("Lỗi phân tích phản hồi từ MoMo."));
           }
-        } catch (err) {
-          reject(new Error("Lỗi phân tích phản hồi từ MoMo."));
-        }
+        });
       });
-    });
 
-    momoReq.on("error", (error) => {
-      console.error(`Problem with request: ${error.message}`);
-      reject(new Error("Error creating payment request."));
-    });
+      momoReq.on("error", (error) => {
+        console.error(`Problem with MoMo request: ${error.message}`);
+        reject(new Error("Error creating payment request."));
+      });
 
-    momoReq.write(requestBody);
-    momoReq.end();
-  });
+      momoReq.write(requestBody);
+      momoReq.end();
+    });
+  } catch (error) {
+    throw new Error("Error creating payment QR: " + error.message);
+  }
 };
 
 // Tạo đơn hàng mới
@@ -106,9 +103,7 @@ const createOrder = async (orderData) => {
   try {
     // Kiểm tra dữ liệu đầu vào
     if (!orderData.userId || !orderData.products || !orderData.paymentMethod) {
-      throw new Error(
-        "Thiếu thông tin cần thiết: userId, products, paymentMethod"
-      );
+      throw new Error("Thiếu thông tin cần thiết: userId, products, paymentMethod");
     }
 
     // Tính toán tổng tiền cho từng sản phẩm và tổng đơn hàng
@@ -164,10 +159,7 @@ const createOrder = async (orderData) => {
     const paymentResult = await createPaymentQR(paymentData);
 
     if (!paymentResult || paymentResult.error) {
-      console.log(
-        "Error creating payment QR:",
-        paymentResult?.message || "Unknown error"
-      );
+      console.error("Error creating payment QR:", paymentResult?.message || "Unknown error");
       throw new Error("Lỗi tạo QR thanh toán MoMo.");
     }
 
@@ -183,6 +175,8 @@ const createOrder = async (orderData) => {
     throw new Error("Không thể tạo đơn hàng, vui lòng thử lại sau.");
   }
 };
+
+
 
 // Lấy danh sách đơn hàng
 const getOrders = async () => {
@@ -465,44 +459,44 @@ const getTotalRevenue = async () => {
 };
 
 const getRevenueByDays = async (req) => {
-    try {
-      // Lấy tham số `days` từ query
-      const days = parseInt(req.query.days);
-      if (!days || days <= 0) {
-        throw new Error("Số ngày không hợp lệ");
-      }
-  
-      // Tính ngày bắt đầu và hiện tại
-      const now = new Date();
-      const startDate = new Date(now);
-      startDate.setDate(now.getDate() - days);
-  
-      // Query MongoDB
-      const totalRevenue = await OrderModel.aggregate([
-        {
-          $match: {
-            paymentStatus: "paid",
-            createdAt: { $gte: startDate, $lte: now },
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            totalRevenue: { $sum: "$totalAmount" },
-          },
-        },
-      ]);
-  
-      // Xử lý kết quả
-      return totalRevenue.length > 0 ? totalRevenue[0].totalRevenue : 0;
-    } catch (error) {
-      console.error("Lỗi khi tính tổng doanh thu:", error);
-      throw error;
+  try {
+    // Lấy tham số `days` từ query
+    const days = parseInt(req.query.days);
+    if (!days || days <= 0) {
+      throw new Error("Số ngày không hợp lệ");
     }
-  };
-  
-  module.exports = { getRevenueByDays };
-  
+
+    // Tính ngày bắt đầu và hiện tại
+    const now = new Date();
+    const startDate = new Date(now);
+    startDate.setDate(now.getDate() - days);
+
+    // Query MongoDB
+    const totalRevenue = await OrderModel.aggregate([
+      {
+        $match: {
+          paymentStatus: "paid",
+          createdAt: { $gte: startDate, $lte: now },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$totalAmount" },
+        },
+      },
+    ]);
+
+    // Xử lý kết quả
+    return totalRevenue.length > 0 ? totalRevenue[0].totalRevenue : 0;
+  } catch (error) {
+    console.error("Lỗi khi tính tổng doanh thu:", error);
+    throw error;
+  }
+};
+
+module.exports = { getRevenueByDays };
+
 
 // Xuất các hàm để sử dụng
 module.exports = {
