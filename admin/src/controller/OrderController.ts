@@ -1,51 +1,43 @@
-<<<<<<< HEAD:admin/src/controller/OrderController.ts
-import { Order } from '../model/OrderModel';
-import { GetOrder, UpdateOrderStatus, UpdateOrderStatusPay } from '../service/OrderSevice';
-
-export const orderController = () => {
-
-  const getOrder = async () => {
-    try {
-      const getOrders = await GetOrder();
-      return getOrders;
-    } catch (error) {
-      console.error('Failed to get order', error);
-      return error
-    }
-  };
-
-  const updateOrderStatus = async (orderId: string, status: string) => {
-    try {
-      const updatedOrder = await UpdateOrderStatus(orderId, status);
-      return updatedOrder;
-    } catch (error) {
-      console.error('Failed to update order status', error);
-      return error;
-    }
-  };
-
-  const updateOrderStatusPay = async (orderId: string, status: string) => {
-    try {
-      const updatedOrder = await UpdateOrderStatusPay(orderId, status);
-      return updatedOrder;
-    } catch (error) {
-      console.error('Failed to update order status', error);
-      return error;
-    }
-  }
-
-  return {
-    getOrder, updateOrderStatus, updateOrderStatusPay
-  };
-
-
-};
-=======
-import { GetBestOrders, GetTotalOrder } from './../service/OrderService';
+// import { Order } from "../model/OrderModel"
+import { GetOrder, UpdateOrderStatus, UpdateOrderStatusPay } from "../service/OrderSevice"
+import { GetBestOrders, GetTotalOrder } from "./../service/OrderService"
 import { Request, Response } from "express"
 import { OrderModel } from "../model/OrderModel"
 import { GetOrders, CreateOrder, UpdateOrder, DeleteOrder, GetTotalRevenue, GetTotalUnpaid } from "../service/OrderService"
 
+export const orderController = () => {
+    const getOrder = async () => {
+        try {
+            const getOrders = await GetOrder()
+            return getOrders
+        } catch (error) {
+            console.error("Failed to get order", error)
+            return error
+        }
+    }
+
+    const updateOrderStatus = async (orderId: string, status: string) => {
+        try {
+            const updatedOrder = await UpdateOrderStatus(orderId, status)
+            return updatedOrder
+        } catch (error) {
+            console.error("Failed to update order status", error)
+            return error
+        }
+    }
+
+    const updateOrderStatusPay = async (orderId: string, status: string) => {
+        try {
+            const updatedOrder = await UpdateOrderStatusPay(orderId, status)
+            return updatedOrder
+        } catch (error) {
+            console.error("Failed to update order status", error)
+            return error
+        }
+    }
+
+    return {}
+}
 export const useOrders = () => {
     const getOrders = async (): Promise<OrderModel[]> => {
         try {
@@ -83,31 +75,30 @@ export const useOrders = () => {
     // Lấy tổng doanh thu
     const getTotalRevenue = async (): Promise<number> => {
         try {
-            const revenue = await GetTotalRevenue();  // Gọi hàm GetTotalRevenue từ OrderService
-            return revenue;  // Trả về tổng doanh thu
+            const revenue = await GetTotalRevenue() // Gọi hàm GetTotalRevenue từ OrderService
+            return revenue // Trả về tổng doanh thu
         } catch (error) {
-            throw new Error("Failed to fetch total revenue");
+            throw new Error("Failed to fetch total revenue")
         }
-    };
+    }
 
     const getTotalOrder = async (): Promise<number> => {
         try {
-            const order = await GetTotalOrder();  // Gọi hàm GetTotalRevenue từ OrderService
-            return order;  // Trả về tổng doanh thu
+            const order = await GetTotalOrder() // Gọi hàm GetTotalRevenue từ OrderService
+            return order // Trả về tổng doanh thu
         } catch (error) {
-            throw new Error("Failed to fetch total order");
+            throw new Error("Failed to fetch total order")
         }
-    };
-    
+    }
+
     const getTotalUnpaid = async (): Promise<number> => {
         try {
-            const orderUnpaid = await GetTotalUnpaid();  // Gọi hàm GetTotalRevenue từ OrderService
-            return orderUnpaid;  // Trả về tổng doanh thu
+            const orderUnpaid = await GetTotalUnpaid() // Gọi hàm GetTotalRevenue từ OrderService
+            return orderUnpaid // Trả về tổng doanh thu
         } catch (error) {
-            throw new Error("Failed to fetch total unpaid");
+            throw new Error("Failed to fetch total unpaid")
         }
-    };
-    
+    }
 
     const getBestOrders = async (): Promise<OrderModel[]> => {
         try {
@@ -117,8 +108,18 @@ export const useOrders = () => {
             throw new Error("Failed to fetch best orders")
         }
     }
-    
 
-    return { getOrders, createOrder, updateOrder, deleteOrder, getTotalRevenue, getTotalOrder, getTotalUnpaid, getBestOrders } // Corrected: Return all functions
+    return {
+        getOrders,
+        createOrder,
+        updateOrder,
+        deleteOrder,
+        getTotalRevenue,
+        getTotalOrder,
+        getTotalUnpaid,
+        getBestOrders,
+        //  getOrder,
+        // updateOrderStatus,
+        // updateOrderStatusPay
+    }
 }
->>>>>>> e1d2a5e2f902e09d730113492608d135e8fb4d6b:WebSeller/src/controller/OrderController.ts

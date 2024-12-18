@@ -23,14 +23,9 @@
     "mongoose": "^8.8.1",
     "morgan": "~1.9.1",
     "multer": "^1.4.5-lts.1",
-<<<<<<< HEAD:Wed_API/package.json
     "multer-storage-cloudinary": "^4.0.0",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.13"
-=======
-    "nodemailer": "^6.9.13",
-    "uuid": "^11.0.3"
->>>>>>> e1d2a5e2f902e09d730113492608d135e8fb4d6b:Web_API/package.json
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

@@ -66,22 +66,13 @@ const login = async (email, password) => {
 
     return null; // Nếu không tìm thấy user
   } catch (error) {
-<<<<<<< HEAD:Wed_API/controllers/UserController.js
     console.log("Lỗi đăng nhập", error.message);
     throw new Error("Lỗi đăng nhập");
-=======
-    console.log("Login error", error.message);
-    throw new Error("Login error");
->>>>>>> e1d2a5e2f902e09d730113492608d135e8fb4d6b:Web_API/controllers/UserController.js
   }
 };
 
 // Cập nhật thông tin người dùng
-<<<<<<< HEAD:Wed_API/controllers/UserController.js
 const update = async (email, password, username, numberphone, address) => {
-=======
-const update = async (email, password, name, phone, address) => {
->>>>>>> e1d2a5e2f902e09d730113492608d135e8fb4d6b:Web_API/controllers/UserController.js
   try {
     const user = await userModel.findOne({ email: email });
     if (!user) {
@@ -107,7 +98,6 @@ const update = async (email, password, name, phone, address) => {
   }
 };
 
-<<<<<<< HEAD:Wed_API/controllers/UserController.js
 async function generateAndSaveOtp(email) {
   const otp = crypto.randomInt(100000, 999999).toString(); // Tạo OTP 6 chữ số
   const otpExpiry = new Date(Date.now() + 1 * 60 * 1000); // Đặt thời gian hết hạn cho OTP
@@ -148,8 +138,6 @@ const forgotPassword = async (email) => {
   }
 };
 
-=======
->>>>>>> e1d2a5e2f902e09d730113492608d135e8fb4d6b:Web_API/controllers/UserController.js
 // Xác thực email
 const verify = async (email) => {
   try {
@@ -264,7 +252,6 @@ const updateUserById = async (
   role
 ) => {
   try {
-<<<<<<< HEAD:Wed_API/controllers/UserController.js
     const user = await userModel.findById(id);
     if (!user) {
       throw new Error("User không tồn tại");
@@ -312,35 +299,6 @@ const resetPassword = async (email, otp, newPassword) => {
     throw new Error("Reset password error: " + error.message);
   }
 };
-=======
-      const user = await userModel.findById(id);
-      if (!user) {
-          throw new Error("User không tồn tại");
-      }
-
-      if (password) {
-          const salt = bcrypt.genSaltSync(10);
-          password = bcrypt.hashSync(password, salt);
-          user.password = password;
-      }
-
-      user.email = email;
-      user.name = name;
-      user.phone = phone;
-      user.address = address;
-      user.updatedAt = Date.now();
-
-      await user.save();
-      console.log("User updated successfully:", user); // Thêm log
-      return "Cập nhật người dùng thành công";
-  } catch (error) {
-      console.log("Update user by id error", error.message);
-      throw new Error("Update user by id error");
-  }
-};
-
-
->>>>>>> e1d2a5e2f902e09d730113492608d135e8fb4d6b:Web_API/controllers/UserController.js
 
 // Khóa người dùng theo ID
 const lockUserById = async (id) => {

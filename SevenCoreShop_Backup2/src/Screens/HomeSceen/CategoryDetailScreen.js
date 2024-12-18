@@ -17,7 +17,7 @@ const CategoryDetailScreen = ({navigation, route}) => {
 
   const getProduct = () => {
     axios
-      .get(`${API__URL}/products?category_id=${category_id}`)
+      .get(`${API__URL}/products/category?category_id=${category_id}`)
       .then(response => {
         setProducts(response.data.data || []);
       })

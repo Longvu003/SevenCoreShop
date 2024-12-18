@@ -32,7 +32,7 @@ const AllProductsScreen = ({navigation}) => {
     }
 
     await axios
-      .post(`${API__URL}/products/tim-kiem`, {key})
+      .post(`${API__URL}/products/tim-kiem?key=${key}`)
       .then(response => {
         setProducts(response.data.data);
       })
