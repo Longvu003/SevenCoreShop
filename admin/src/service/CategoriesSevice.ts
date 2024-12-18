@@ -24,6 +24,7 @@ export const GetCategories = async (): Promise<Category> => {
 
 export const DeleteCategoriesByid = async (id: string): Promise<void> => {
   try {
+<<<<<<< HEAD:admin/src/service/CategoriesSevice.ts
     const response = await fetch(`${API_URL}/categories/${id}/delete`, {
       method: "POST",
       headers: {
@@ -52,6 +53,26 @@ export const DeleteCategoriesByid = async (id: string): Promise<void> => {
       confirmButtonText: 'OK',
     });
 }
+=======
+      const response = await fetch(`${API_URL}/categories/${id}/delete`, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+      });
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Error deleting category:', errorData);
+          alert('Xóa Thất Bại: ' + (errorData.message || 'Lỗi không xác định'));
+          return;
+      }
+      return response.json();
+  } catch (error) {
+      console.error('Unexpected error during delete:', error);
+      alert('Đã xảy ra lỗi. Vui lòng thử lại.');
+  }
+>>>>>>> e1d2a5e2f902e09d730113492608d135e8fb4d6b:WebSeller/src/service/CategoriesSevice.ts
 };
 
 export const UpdateCategoriesByid = async (id: string | undefined, category: Category): Promise<Category> => {
