@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import { setPageTitle } from '../store/themeConfigSlice';
 import { userProducts } from '../controller/ProductController';
-import { Product } from '../model/ProductModel';
+import { Products } from '../model/ProductModel';
 
 import IconTrashLines from '../components/Icon/IconTrashLines';
 
@@ -27,7 +27,7 @@ const Tables = () => {
     };
 
     // Sử dụng useState để lưu trữ dữ liệu từ API
-    const [dataProduct, setDataProduct] = useState<Product[]>([]);
+    const [dataProduct, setDataProduct] = useState<Products[]>([]);
 
     // Hàm showData lấy dữ liệu từ API và lưu vào state
     const showData = async () => {
@@ -75,16 +75,16 @@ const Tables = () => {
                                     <td>{product.name}</td>
                                     <td>{product.price}</td>
                                     <td>{product.quantity}</td>
-                                    {/* <td>{product.category.name}</td> */}
+                                    <td>{product.categoryId?.name || "Đang tải..."}</td>
                                     {/* <td className="text-center">
                                         {product.available ? "Yes" : "No"}
                                     </td> */}
-                                    <td className="text-center">
+                                    {/* <td className="text-center">
                                         <button type="button" onClick={() => deleteProductById(product._id)}>
                                             <IconTrashLines className="m-auto" />
                                         </button>
 
-                                    </td>
+                                    </td> */}
 
                                     <td>
                                         <div className="flex gap-4 items-center justify-center">
