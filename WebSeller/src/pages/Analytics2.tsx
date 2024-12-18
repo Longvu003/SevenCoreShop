@@ -28,11 +28,11 @@ const Analytics = () => {
 
     // State lưu trữ dữ liệu từ API
     const [loading, setLoading] = useState<boolean>(true)
-    const [totalRevenue, setTotalRevenue] = useState<number | null>(null)
-    const [totalOrder, setTotalOrder] = useState<number | null>(null)
-    const [totalOrderUnpaid, setTotalOrderUnpaid] = useState<number | null>(null)
-    const [error, setError] = useState<string | null>(null)
-    const [products, setProducts] = useState<any[]>([])
+    const [totalRevenue, setTotalRevenue] = useState<number | null>(null) // State để lưu tổng doanh thu
+    const [totalOrder, setTotalOrder] = useState<number | null>(null) // State để lưu tổng doanh thu
+    const [totalOrderUnpaid, setTotalOrderUnpaid] = useState<number | null>(null) // State để lưu tổng doanh thu
+    const [error, setError] = useState<string | null>(null) // State để lưu lỗi (nếu có)
+    const [products, setProducts] = useState<any[]>([]) // State lưu danh sách sản phẩm
 
     // Gọi API lấy tổng doanh thu khi component mount
     useEffect(() => {
@@ -98,7 +98,6 @@ const Analytics = () => {
             },
         },
     }
-
     // paidVisitOptions
     const paidVisit: any = {
         series: [{ data: [22, 19, 30, 47, 32, 44, 34, 55, 41, 69] }],
@@ -193,11 +192,11 @@ const Analytics = () => {
                                     <div>Đã thanh toán</div>
                                     <div className="text-[#f8538d] text-lg">
                                         {error ? (
-                                            <p style={{ color: "red" }}>{error}</p>
+                                            <p style={{ color: "red" }}>{error}</p> // Nếu có lỗi, hiển thị thông báo lỗi
                                         ) : totalOrder !== null ? (
-                                            <p>{totalOrder}</p>
+                                            <p>{totalOrder}</p> // Hiển thị tổng doanh thu
                                         ) : (
-                                            <p>Đang tải tổng doanh thu...</p>
+                                            <p>Đang tải tổng doanh thu...</p> // Hiển thị khi chưa có dữ liệu
                                         )}
                                     </div>
                                 </div>
@@ -210,11 +209,11 @@ const Analytics = () => {
                                     <div>Chưa thanh toán</div>
                                     <div className="text-[#f8538d] text-lg">
                                         {error ? (
-                                            <p style={{ color: "red" }}>{error}</p>
+                                            <p style={{ color: "red" }}>{error}</p> // Nếu có lỗi, hiển thị thông báo lỗi
                                         ) : totalOrderUnpaid !== null ? (
-                                            <p>{totalOrderUnpaid}</p>
+                                            <p>{totalOrderUnpaid}</p> // Hiển thị tổng doanh thu
                                         ) : (
-                                            <p>Đang tải tổng doanh thu...</p>
+                                            <p>Đang tải tổng doanh thu...</p> // Hiển thị khi chưa có dữ liệu
                                         )}
                                     </div>
                                 </div>
@@ -240,14 +239,22 @@ const Analytics = () => {
                                             <button type="button">7 ngày qua</button>
                                         </li>
                                         <li>
+                                            <button type="button">7 ngày qua</button>
+                                        </li>
+                                        <li>
                                             <button type="button">30 ngày qua</button>
                                         </li>
+                                        {/* <li>
+                                            <button type="button">Last Month</button>
+                                        </li> */}
                                     </ul>
                                 </Dropdown>
                             </div>
                         </div>
                         <div className=" text-[#e95f2b] text-3xl font-bold my-10">
                             <span>$ 145,141 </span>
+                            {/* <span className="text-black text-sm dark:text-white-light ltr:mr-2 rtl:ml-2">this week</span>
+                            <IconTrendingUp className="text-success inline" /> */}
                         </div>
                         <div className="flex items-center justify-between">
                             <div className="w-full rounded-full h-5 p-1 bg-dark-light overflow-hidden shadow-3xl dark:shadow-none dark:bg-dark-light/10">
@@ -264,57 +271,115 @@ const Analytics = () => {
                         className="panel h-full overflow-hidden before:bg-[#1937cc] before:absolute before:-right-44 before:top-0 before:bottom-0 before:m-auto before:rounded-full before:w-96 before:h-96 grid grid-cols-1 content-between"
                         style={{ background: "linear-gradient(0deg,#00c6fb -227%,#005bea)" }}
                     >
-                        <div className="flex items-start justify-between text-white-light mb-16 z-10 pt-16 pr-10 pl-6">
-                            <div>
-                                <div className="text-xl font-bold mb-2">Lượt truy cập</div>
-                                <div className="font-bold text-3xl">5,021</div>
-                            </div>
-                            <div className="text-white-light/60 dark:text-white-light/70 self-end">
-                                <IconTrendingUp />
+                        <div className="flex items-start justify-between text-white-light mb-16 z-[7]">
+                            <h5 className="font-semibold text-lg">Total Balance</h5>
+
+                            <div className="relative text-xl whitespace-nowrap">
+                                {error ? (
+                                    <p style={{ color: "red" }}>{error}</p> // Nếu có lỗi, hiển thị thông báo lỗi
+                                ) : totalRevenue !== null ? (
+                                    <p>{totalRevenue} VND</p> // Hiển thị tổng doanh thu
+                                ) : (
+                                    <p>Đang tải tổng doanh thu...</p> // Hiển thị khi chưa có dữ liệu
+                                )}
+                                <span className="table text-[#d3d3d3] bg-[#4361ee] rounded p-1 text-xs mt-1 ltr:ml-auto rtl:mr-auto">+ 2453</span>
                             </div>
                         </div>
-
-                        <div className="px-5 pb-5">
-                            <ReactApexChart series={paidVisit.series} options={paidVisit.options} type="line" height={150} />
+                        <div className="flex items-center justify-between z-10">
+                            <div className="flex items-center justify-between">
+                                <button type="button" className="shadow-[0_0_2px_0_#bfc9d4] rounded p-1 text-white-light hover:bg-[#1937cc] place-content-center ltr:mr-2 rtl:ml-2">
+                                    <IconPlus />
+                                </button>
+                                <button type="button" className="shadow-[0_0_2px_0_#bfc9d4] rounded p-1 text-white-light hover:bg-[#1937cc] grid place-content-center">
+                                    <IconCreditCard />
+                                </button>
+                            </div>
+                            <button type="button" className="shadow-[0_0_2px_0_#bfc9d4] rounded p-1 text-white-light hover:bg-[#4361ee] z-10">
+                                Upgrade
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                {/* best selling */}
-                <div className="panel">
-                    <div className="flex justify-between dark:text-white-light mb-5">
-                        <h5 className="font-semibold text-lg">Sản phẩm bán chạy</h5>
+                <div className="grid lg:grid-cols-3 gap-6 mb-6">
+                    {/* Table */}
+                    <div className="col-span-2 bg-white shadow rounded-lg p-5">
+                        <h5 className="font-semibold text-lg mb-4">Bảng Chi Tiết</h5>
+                        <table className="w-full text-left">
+                            <thead>
+                                <tr className="bg-gray-100">
+                                    <th className="p-3">Đã bán</th>
+                                    <th className="p-3">Tên Sản Phẩm</th>
+                                    <th className="p-3">Giá</th>
+                                    <th className="p-3">Chiết Khấu</th>
+                                    <th className="p-3">Phí Giao Hàng</th>
+                                    <th className="p-3">Doanh Số</th>
+                                    <th className="p-3">Tồn Kho</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {products.map((product, index) => (
+                                    <tr key={product._id} className="border-t">
+                                        <td className="p-3">{product.totalSold}</td>
+                                        <td className="p-3">{product.productInfo.name || "Không rõ tên"}</td>
+                                        <td className="p-3">{product.productInfo.price}</td>
+                                        <td className="p-3">0</td>
+                                        <td className="p-3">0</td>
+                                        <td className="p-3">{product.totalRevenue}</td>
+                                        <td className="p-3">{product.productInfo.quantity}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
 
-                    <PerfectScrollbar
-                        style={{
-                            height: "300px",
-                            overflowX: "hidden",
-                        }}
-                    >
-                        <div>
-                            {products?.map((product, index) => (
-                                <div key={index} className="flex items-center justify-between mb-4">
-                                    <div className="flex items-center">
-                                        <div className="avatar w-10 h-10 rounded-full bg-light-gray">
-                                            <img
-                                                className="w-full h-full object-cover rounded-full"
-                                                src={product.productInfo?.image || "https://dummyimage.com/150x150"}
-                                                alt="product"
-                                            />
+                    <div className="panel h-full">
+                        <div className="flex items-start justify-between dark:text-white-light mb-5 -mx-5 p-5 pt-0 border-b  border-white-light dark:border-[#1b2e4b]">
+                            <h5 className="font-semibold text-lg ">Sản Phẩm Bán Chạy</h5>
+                            <div className="dropdown">
+                                <Dropdown
+                                    offset={[0, 5]}
+                                    placement={`${isRtl ? "bottom-start" : "bottom-end"}`}
+                                    btnClassName="hover:text-primary"
+                                    button={<IconHorizontalDots className="text-black/70 dark:text-white/70 hover:!text-primary" />}
+                                >
+                                    <ul>
+                                        <li>
+                                            <button type="button">View All</button>
+                                        </li>
+                                        <li>
+                                            <button type="button">Mark as Read</button>
+                                        </li>
+                                    </ul>
+                                </Dropdown>
+                            </div>
+                        </div>
+                        <PerfectScrollbar className="perfect-scrollbar relative h-[360px] ltr:pr-3 rtl:pl-3 ltr:-mr-3 rtl:-ml-3">
+                            <div className="space-y-7">
+                                {products.map((product, index) => (
+                                    <div className="flex" key={product._id}>
+                                        {/* Vòng tròn chỉ số */}
+                                        <div className="shrink-0 ltr:mr-2 rtl:ml-2 relative z-10 before:w-[2px] before:h-[calc(100%-24px)] before:bg-white-dark/30 before:absolute before:top-10 before:left-4">
+                                            <div
+                                                className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${
+                                                    ["bg-purple-500", "bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"][index % 5]
+                                                }`}
+                                            >
+                                                {index + 1}
+                                            </div>
                                         </div>
-                                        <div className="ml-3">
-                                            <p className="text-sm text-[#515365]">
-                                                {product.productInfo?.name || "Không rõ tên sản phẩm"}
-                                            </p>
-                                            <span className="text-xs text-[#e95f2b]">Sold: {product.totalSold}</span>
+                                        {/* Thông tin sản phẩm */}
+                                        <div>
+                                            <h5 className="font-semibold text-gray-800">
+                                                Top {index + 1} : <span className="text-green-600 font-medium">{product.productInfo.name || "Không rõ tên"}</span>
+                                            </h5>
                                         </div>
                                     </div>
-                                    <span className="text-sm text-[#515365]">{product.totalRevenue}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </PerfectScrollbar>
+                                ))}
+                            </div>
+                        </PerfectScrollbar>
+                    </div>
                 </div>
             </div>
         </div>

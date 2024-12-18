@@ -35,9 +35,6 @@ const PaymentPage = lazy(() => import('../pages/Payment'));
 const PaymentCallbackPage = lazy(() => import('../pages/PaymentCallbackPage'));
 const Time = lazy(() => import('../pages/Components/Timeline'));
 
-// Lấy vai trò người dùng từ localStorage
-const userRole = localStorage.getItem('userRole'); // Giả sử đã lưu vai trò khi đăng nhập
-console.log("User Role: ", userRole); // Kiểm tra giá trị vai trò
 
 const routes = [
     // dashboard (protected)
@@ -49,45 +46,20 @@ const routes = [
             </PrivateRoute>
         ),
     },
-    ...(userRole !== "3" ? [  // Nếu userRole không phải là "3" (seller)
-        {
-            path: '/usermanagent',
-            element: (
-                <PrivateRoute>
-                    <Usermanagent />
-                </PrivateRoute>
-            ),
-        },
-        {
-            path: '/advertising-management',
-            element: (
-                <PrivateRoute>
-                    <Scrumboard />
-                </PrivateRoute>
-            ),
-        },
-        {
-            path: '/analytics',
-            element: (
-                <PrivateRoute>
-                    <Index2 />
-                </PrivateRoute>
-            ),
-        },
-    ] : []), 
+    // user (protected)
+    {
+        path: '/usermanagent',
+        element: (
+            <PrivateRoute>
+                <Usermanagent />
+            </PrivateRoute>
+        ),
+    },
     {
         path: '/categoriesmanagent',
         element: (
             <PrivateRoute>
                 <CategoriesManagent />
-            </PrivateRoute>
-        ),
-    },
-    {
-        path: '/categoriesmanagent/categories-update',
-        element: (
-            <PrivateRoute>
-                <CategoriesUpdate />
             </PrivateRoute>
         ),
     },
@@ -135,7 +107,14 @@ const routes = [
         element: <Error />,
         layout: 'blank',
     },
-    
+    {
+        path: '/advertising-management',
+        element: (
+            <PrivateRoute>
+                <Scrumboard />
+            </PrivateRoute>
+        ),
+    },
     {
         path: '/order-management',
         element: (
@@ -144,7 +123,14 @@ const routes = [
             </PrivateRoute>
         ),
     },
-    
+    {
+        path: '/analytics',
+        element: (
+            <PrivateRoute>
+                <Index2 />
+            </PrivateRoute>
+        ),
+    },
     
    
 ];
