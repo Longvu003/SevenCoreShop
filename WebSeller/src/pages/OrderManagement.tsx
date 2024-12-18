@@ -89,12 +89,28 @@ const OrderManagement = () => {
             fetchAllOrders();
 
             // Chuyển hướng đến đường link thanh toán
-            // window.location.href = order.payUrl;
+            window.location.href = order.payUrl;
         } catch (error) {
             console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
             Swal.fire("Không thể cập nhật trạng thái!", "Vui lòng thử lại sau.", "error");
         }
     };
+
+
+    // const handleUpdateOrderStatus = async () => {
+    //     if (selectedOrder) {
+    //         try {
+    //             const updatedOrder = { ...selectedOrder, status: newStatus }
+    //             await updateOrder(selectedOrder._id, updatedOrder)
+    //             Swal.fire("Cập nhật trạng thái thành công!", "", "success")
+    //             fetchAllOrders()
+    //             setEditModal(false)
+    //         } catch (error) {
+    //             console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error)
+    //             Swal.fire("Không thể cập nhật trạng thái!", "Vui lòng thử lại sau.", "error")
+    //         }
+    //     }
+    // }
 
     return (
         <div>
@@ -124,15 +140,19 @@ const OrderManagement = () => {
                                 {orders.map((order) => (
                                     <tr key={order._id}>
                                         <td>{order._id}</td>
-                                        {/* Kiểm tra nếu userId tồn tại trước khi truy cập vào 'name' */}
-                                        <td>{order.userId ? order.userId.name : "Chưa có tên"}</td>
+                                        <td>{order.userId?.name || "Đang tải..."}</td>
 
                                         {/* Hiển thị tên sản phẩm */}
                                         <td>
-                                            {order.products.map((product: any) => (
-                                                <p key={product._id}>{product.productId?.name || "Chưa có tên sản phẩm"}</p>
-                                            ))}
+                                            {order.products ? (
+                                                order.products.map((product: any) => (
+                                                    <p key={product.id}>{product.productId.name}</p>
+                                                ))
+                                            ) : (
+                                                <p>Đang load...</p>
+                                            )}
                                         </td>
+
 
                                         <td>{new Date(order.orderDate).toLocaleDateString()}</td>
                                         <td>{order.totalAmount}</td>
@@ -143,9 +163,9 @@ const OrderManagement = () => {
                                                 <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteOrder(order._id)}>
                                                     Xóa
                                                 </button>
-                                                <button type="button" className="btn btn-sm btn-outline-success" onClick={() => handleEditOrder(order)}>
+                                                {/* <button type="button" className="btn btn-sm btn-outline-success" onClick={() => handleEditOrder(order)}>
                                                     Cập nhật trạng thái
-                                                </button>
+                                                </button> */}
                                                 <button
                                                     type="button"
                                                     className="btn btn-sm btn-outline-warning"
@@ -153,6 +173,7 @@ const OrderManagement = () => {
                                                 >
                                                     Thanh toán ngay
                                                 </button>
+
                                             </div>
                                         </td>
                                     </tr>
@@ -164,6 +185,7 @@ const OrderManagement = () => {
             </div>
 
             {/* Edit Modal */}
+
         </div>
     )
 }

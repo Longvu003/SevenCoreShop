@@ -42,9 +42,6 @@ const Sidebar = () => {
     const location = useLocation()
     const dispatch = useDispatch()
     const { t } = useTranslation()
-
-    const userRole = localStorage.getItem('userRole');  // Lấy vai trò của người dùng từ localStorage
-
     const toggleMenu = (value: string) => {
         setCurrentMenu((oldValue) => {
             return oldValue === value ? "" : value
@@ -96,30 +93,52 @@ const Sidebar = () => {
                     </div>
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
                         <ul className="relative font-semibold space-y-0.5 p-4 py-0">
-                                    {userRole !== "3" && (
-                                        <><h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
-                                    <IconMinus className="w-4 h-5 flex-none hidden" />
-                                    <span>{t("Tổng Quát")}</span>
-                                    </h2><li className="nav-item">
-                                        <ul>
-                                            <li className="nav-item">
-                                                <NavLink to="/" className="group">
-                                                    <div className="flex items-center">
-                                                        <IconHome className="group-hover:!text-primary shrink-0" />
-                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Trang Chủ")}</span>
-                                                    </div>
-                                                </NavLink>
-                                            </li>
-                                        </ul>
-                                    </li></>
-                                    )}
-                               
+                            <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
+                                <IconMinus className="w-4 h-5 flex-none hidden" />
+                                <span>{t("Tổng Quát")}</span>
+                            </h2>
+                            <li className="nav-item">
+                                <ul>
+                                    {/* <li className="nav-item">
+                                        <NavLink to="/" className="group">
+                                            <div className="flex items-center">
+                                                <IconHome className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Trang Chủ")}</span>
+                                            </div>
+                                        </NavLink>
+                                    </li> */}
+                                    <li className="nav-item">
+                                        <NavLink to="/analytics" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuWidgets className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Quản lý doanh thu")}</span>
+                                            </div>
+                                        </NavLink>
+                                    </li>
+                                </ul>
+                            </li>
                             <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <IconMinus className="w-4 h-5 flex-none hidden" />
                                 <span>{t("Danh Mục")}</span>
                             </h2>
                             <li className="nav-item">
                                 <ul>
+                                    {/* <li className="nav-item">
+                                        <NavLink to="/analytics" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuWidgets className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Quản lý doanh thu")}</span>
+                                            </div>
+                                        </NavLink>
+                                    </li> */}
+                                    <li className="nav-item">
+                                        <NavLink to="/order-management" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuWidgets className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Quản lý đơn hàng")}</span>
+                                            </div>
+                                        </NavLink>
+                                    </li>
                                     <li className="nav-item">
                                         <NavLink to="/product/product-managent" className="group">
                                             <div className="flex items-center">
@@ -136,43 +155,32 @@ const Sidebar = () => {
                                             </div>
                                         </NavLink>
                                     </li>
-                                    {userRole !== "3" && (
-                                        <><li className="nav-item">
-                                            <NavLink to="/usermanagent" className="group">
-                                                <div className="flex items-center">
-                                                    <IconUser className="group-hover:!text-primary shrink-0" />
-                                                    <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Tài Khoản Người Dùng')}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
-                                        <li className="nav-item">
-                                            <NavLink to="/advertising-management" className="group">
-                                                <div className="flex items-center">
-                                                        <IconMenuScrumboard className="group-hover:!text-primary shrink-0" />
-                                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Vocher Management")}</span>
-                                                    </div>
-                                                </NavLink>
-                                            </li>
-                                        <li className="nav-item">
-                                            <NavLink to="/analytics" className="group">
-                                                <div className="flex items-center">
-                                                    <IconMenuWidgets className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Revenue Management")}</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>    </>
-                                        
-                                    )}
                                     
-                                    <li className="nav-item">
-                                        <NavLink to="/order-management" className="group">
+                                    {/* <li className="nav-item">
+                                        <NavLink to="/usermanagent" className="group">
                                             <div className="flex items-center">
-                                                <IconMenuWidgets className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Quản Lý Đơn Hàng")}</span>
+                                                <IconUser className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Tài Khoản Người Dùng")}</span>
                                             </div>
                                         </NavLink>
-                                    </li>
-                                    
+                                    </li> */}
+                                    {/* <li className="nav-item">
+                                        <NavLink to="/advertising-management" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuScrumboard className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Vocher Management")}</span>
+                                            </div>
+                                        </NavLink>
+                                    </li> */}
+                    
+                                    {/* <li className="nav-item">
+                                        <NavLink to="/analytics" className="group">
+                                            <div className="flex items-center">
+                                                <IconMenuWidgets className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t("Revenue Management")}</span>
+                                            </div>
+                                        </NavLink>
+                                    </li> */}
                                 </ul>
                             </li>
                         </ul>
