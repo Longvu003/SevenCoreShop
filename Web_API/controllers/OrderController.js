@@ -694,14 +694,13 @@ const getOrderUserById = async (userId) => {
 
 const searchOrder = async (req, res) => {
   const { query, userId } = req.body;
-  console.log(req.body);
-
   try {
     const searchRegex = new RegExp(query, "i");
     const conditions = {
       userId,
       $or: [{ "items.name": searchRegex }, { status: searchRegex }],
     };
+
     const results = await OrderModel.find(conditions);
     res.json(results);
   } catch (error) {

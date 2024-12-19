@@ -29,25 +29,7 @@ const orderSchema = new mongoose.Schema({
   //   enum: ['credit_card', 'paypal', 'momo', 'cash_on_delivery'],
   //   required: true
   // },
-  paymentStatus: {
-    type: String,
-    enum: ['unpaid', 'paid', 'failed'],
-    default: 'unpaid'
-  },
-  deliveryStatus: {
-    type: String,
-    enum: ['pending', 'shipped', 'delivered'],
-    default: 'pending'
-  },
-  payUrl: {
-    type: String
-  },
-  orderDate: {
-    type: Date,
-    default: Date.now
-  },
   date: { type: Date, default: Date.now },
-  
 });
 
 const Order = mongoose.model("Order", orderSchema);

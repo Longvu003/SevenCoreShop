@@ -18,19 +18,19 @@ const AllProductsScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [searchKey, setSearchKey] = useState('');
 
+  const getProduct = async () => {
+    await axios
+      .get(`${API__URL}/products/`)
+      .then(response => {
+        setProducts(response.data.data);
+      })
+      .catch(error => {
+        console.log('Lỗi lấy sản phẩm:', error);
+      });
+  };
+
   const handleSearch = async key => {
     setSearchKey(key);
-    if (!key) {
-      await axios
-        .get(`${API__URL}/products/`)
-        .then(response => {
-          setProducts(response.data.data);
-        })
-        .catch(error => {
-          console.log('Lỗi lấy sản phẩm:', error);
-        });
-    }
-
     await axios
       .post(`${API__URL}/products/tim-kiem?key=${key}`)
       .then(response => {
@@ -40,8 +40,10 @@ const AllProductsScreen = ({navigation}) => {
         console.log('Lỗi khi tìm sản phẩm', error);
       });
   };
+
   useEffect(() => {
     handleSearch();
+    getProduct();
   }, []);
 
   return (
