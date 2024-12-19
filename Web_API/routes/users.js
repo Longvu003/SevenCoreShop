@@ -204,7 +204,6 @@ router.get(
 
     try {
       const result = await userController.getUserByEmail(email);
-      console.log(result);
       return res.status(200).json({ result });
     } catch (error) {
       console.log("Get user error", error.message);

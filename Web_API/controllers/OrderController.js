@@ -700,12 +700,12 @@ const searchOrder = async (req, res) => {
       userId,
       $or: [{ "items.name": searchRegex }, { status: searchRegex }],
     };
+    const results = await Order.find(conditions);
 
-    const results = await OrderModel.find(conditions);
     res.json(results);
   } catch (error) {
     console.log("Lỗi tìm đơn hàng:", error);
-    res.status(500).send("Lỗi trong lúc tìm  đơn hàng");
+    res.status(500).send("Lỗi trong lúc tìm đơn hàng");
   }
 };
 

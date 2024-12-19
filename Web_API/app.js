@@ -18,6 +18,7 @@ const Transaction = require("./routes/crontransaction");
 const resetPass = require("./routes/repass");
 const commentRoutes = require("./routes/cmt");
 const bestsellitem = require("./routes/bestsellitem.js");
+const Address = require("./routes/Address.js");
 //okokok
 const multer = require("multer");
 const Ad = require("./model/AdModel");
@@ -79,7 +80,7 @@ app.use("/bestsell", bestsellitem);
 // app.use((req, res, next) => {
 //   next(createError(404));
 // });
-
+app.use("/address", Address);
 // Error handler
 app.use(function (err, req, res, next) {
   // Set locals, only providing error in development

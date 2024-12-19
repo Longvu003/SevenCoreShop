@@ -2,9 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
-  Alert,
   FlatList,
   Image,
   TouchableOpacity,
@@ -13,17 +11,32 @@ import {
 import Customheader from '../../CustomHeader/Customheader';
 import {useFocusEffect} from '@react-navigation/native';
 import {useCart} from '../Cart/CartProdvider';
+import OrderScreenStyle from '../../StyleSheets/OrderScreenStyle';
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const WIDTH__SCREEN = Dimensions.get('screen').width;
 const OrderScreen = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const {getProductDetails, dataOrder} = useCart();
+  const [statusOrder, setStatusOrder] = useState('');
+  const [orderFilter, setOrderFilter] = useState([]);
+
+  const getOrderBystatus = () => {
+    if (statusOrder) {
+      const data = dataOrder.filter(item => item.status === statusOrder);
+      setOrderFilter(data);
+    } else {
+      setOrderFilter(dataOrder);
+    }
+  };
   useFocusEffect(
     useCallback(() => {
       setLoading(false);
       getProductDetails();
     }, []),
   );
+  useEffect(() => {
+    getOrderBystatus();
+  }, [statusOrder]);
   return (
     <View style={{flex: 1}}>
       <View style={{height: HEIGHT__SCREEN * 0.06}}>
@@ -39,28 +52,52 @@ const OrderScreen = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
-      {dataOrder.length > 0 ? (
+      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+        <TouchableOpacity
+          style={OrderScreenStyle.btn__status}
+          onPress={() => setStatusOrder('Đã hủy')}>
+          <Text>Đã hủy</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={OrderScreenStyle.btn__status}
+          onPress={() => setStatusOrder('Đang xử lý')}>
+          <Text>Đang xử lý</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={OrderScreenStyle.btn__status}
+          onPress={() => setStatusOrder('Đã giao hàng')}>
+          <Text>Đã giao hàng</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={OrderScreenStyle.btn__status}
+          onPress={() => setStatusOrder('Giao thành công')}>
+          <Text>Giao thành công</Text>
+        </TouchableOpacity>
+      </View>
+      {orderFilter.length > 0 ? (
         <ScrollView
           style={{flex: 4, marginHorizontal: 20}}
           showsVerticalScrollIndicator={false}>
           <FlatList
             scrollEnabled={false}
-            data={dataOrder}
+            data={orderFilter}
             renderItem={({item}) => {
               return (
                 <TouchableOpacity
                   onPress={() => navigation.navigate('DetailOrder', {item})}>
-                  <View style={styles.layout__container}>
-                    <View style={styles.item__container}>
+                  <View style={OrderScreenStyle.layout__container}>
+                    <View style={OrderScreenStyle.item__container}>
                       <Image
                         style={{width: 40, height: 60}}
                         source={{uri: item.items[0].image[0]}}
                       />
                       <View>
-                        <Text style={styles.txt__Item}>
+                        <Text style={OrderScreenStyle.txt__Item}>
                           Trạng thái đơn hàng: {item.status}
                         </Text>
-                        <Text numberOfLines={1} style={styles.txt__Item}>
+                        <Text
+                          numberOfLines={1}
+                          style={OrderScreenStyle.txt__Item}>
                           {item.items[0].name}
                         </Text>
                         <View
@@ -72,7 +109,6 @@ const OrderScreen = ({navigation}) => {
                           </Text>
                         </View>
                       </View>
-
                       <Image
                         source={require('../../../assets/imgs/Vector.png')}
                       />
@@ -85,65 +121,13 @@ const OrderScreen = ({navigation}) => {
           />
         </ScrollView>
       ) : (
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: HEIGHT__SCREEN * 0.8,
-          }}>
+        <View style={OrderScreenStyle.container__noOrder}>
           <Image source={require('../../../assets/imgs/cart3.png')} />
-          <Text
-            style={{
-              fontSize: 24,
-              color: 'Black',
-              fontWeight: '700',
-              marginTop: 24,
-            }}>
-            Không có đơn hàng
-          </Text>
+          <Text style={OrderScreenStyle.txt__noOder}>Không có đơn hàng</Text>
         </View>
       )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  input__search: {
-    borderColor: 'black',
-    borderWidth: 1,
-    width: WIDTH__SCREEN * 0.9,
-    marginHorizontal: 20,
-    borderRadius: 20,
-    marginVertical: 20,
-  },
-  container: {
-    backgroundColor: 'white',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  item__container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 10,
-    alignItems: 'center',
-  },
-  layout__container: {
-    backgroundColor: '#f4f4f4',
-    marginVertical: 12,
-    width: WIDTH__SCREEN * 0.9,
-    height: HEIGHT__SCREEN * 0.1,
-    justifyContent: 'center',
-  },
-  txt__Item: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: 'black',
-    marginHorizontal: 20,
-    width: WIDTH__SCREEN * 0.6,
-  },
-});
 
 export default OrderScreen;
