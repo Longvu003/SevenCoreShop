@@ -6,7 +6,7 @@ const AddressSchema = new Schema({
     ref: "User",
     require: true,
   },
-  nameAdress: {
+  nameAddress: {
     type: String,
     require: true,
   },

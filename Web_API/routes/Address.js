@@ -21,4 +21,39 @@ router.post("/addAddress", async (req, res) => {
   }
 });
 
+router.get("/getAddressbyid", async (req, res) => {
+  const { userId } = req.query;
+  try {
+    const result = await AddressController.getAddressById(userId);
+    if (!result) {
+      res.status(404).json({ message: "Có lỗi khi lấy" });
+    } else {
+      res.status(200).json({ message: "Lấy thành công", data: result });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.put("/updateAddressbyId", async (req, res) => {
+  const { userId, id, nameAddress, address } = req.body;
+  try {
+    const item = await AddressController.updateAddressById(
+      userId,
+      id,
+      nameAddress,
+      address
+    );
+    if (!item) {
+      res.status(404).json({ message: "Có lỗi khi lấy địa chỉ" });
+    } else {
+      res.status(200).json({ message: "Lấy thành công", data: item });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.delete("/deleteItem", async (req, res) => {});
+
 module.exports = router;
