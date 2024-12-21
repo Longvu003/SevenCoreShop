@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  FlatList,
 } from 'react-native';
 import React from 'react';
 import Customheader from '../../../CustomHeader/Customheader';
@@ -17,8 +18,9 @@ import {useFocusEffect} from '@react-navigation/native';
 const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const EditAddress = ({navigation}) => {
-  const [addressInformation, setAddressInformation] = useState('');
+  const [addressInformation, setAddressInformation] = useState([]);
   const [errorMessage, setErrorMessage] = useState(false);
+  // console.log(addressInformation);
   const getEmailUser = async () => {
     try {
       const userEmail = await AsyncStorage.getItem('userEmail');
@@ -26,9 +28,7 @@ const EditAddress = ({navigation}) => {
       const url = `${API__URL}/users/getUserEmail?email=${newUserEmail}`;
       if (newUserEmail) {
         const respone = await axios.get(url);
-        // ep vao data vao mang chua json
-        const userInfor = Object.values(respone.data);
-        setAddressInformation(userInfor[0]);
+        setAddressInformation(respone.data);
       }
     } catch (error) {
       console.log(error);
@@ -40,6 +40,7 @@ const EditAddress = ({navigation}) => {
       [inputData]: value,
     }));
   };
+
   const updateUser = async e => {
     const userId = await AsyncStorage.getItem('userId');
     const newUserId = JSON.parse(userId);
@@ -73,13 +74,22 @@ const EditAddress = ({navigation}) => {
         />
       </View>
       <View style={{flex: 8}}>
-        <TextInput
-          style={styles.input}
-          placeholder="phường, xã, huyện,TP "
-          onChangeText={text => changeAddress('address', text)}
-          value={addressInformation.address}
-          keyboardType="email-address"
+        <FlatList
+          data={addressInformation}
+          renderItem={({item}) => {
+            console.log(item);
+            return (
+              <TextInput
+                style={styles.input}
+                placeholder="phường, xã, huyện,TP "
+                onChangeText={text => changeAddress('address', text)}
+                value={item.address}
+                keyboardType="email-address"
+              />
+            );
+          }}
         />
+
         {errorMessage ? (
           <Text style={styles.txt__error}>{errorMessage}</Text>
         ) : null}

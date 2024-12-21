@@ -139,7 +139,6 @@ router.post(
 // Cập nhật tài khoản
 router.put("/updateuser", async (req, res) => {
   const { email, username, numberphone, address } = req.body;
-
   try {
     const result = await userController.updateUser(
       email,
@@ -158,13 +157,14 @@ router.put("/updateuser", async (req, res) => {
 router.post("/:id/updateuserbyid", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { email, username, numberphone, address, role } = req.body;
+
+    const { username, numberphone, role } = req.body;
     const result = await userController.updateUserById(
       id,
-      email,
+      // email,
       username,
       numberphone,
-      address,
+      // address,
       role
     );
     return res.status(200).json({
@@ -201,10 +201,9 @@ router.get(
   validateRequest,
   async (req, res) => {
     const { email } = req.query;
-
     try {
       const result = await userController.getUserByEmail(email);
-      return res.status(200).json({ result });
+      return res.status(200).json({ data: result });
     } catch (error) {
       console.log("Get user error", error.message);
       res.status(500).json({ message: error.message });

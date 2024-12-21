@@ -30,7 +30,7 @@ const DetailOrder = ({route}) => {
       <View style={{flex: 1}}>
         <Customheader
           leftIcon={require('../../../assets/imgs/back4.png')}
-          title={item._id}
+          title={item.items[0].name}
         />
       </View>
       <View style={{flex: 4}}>

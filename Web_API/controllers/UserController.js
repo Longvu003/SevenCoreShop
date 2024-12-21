@@ -4,6 +4,8 @@ const httml = require("../helpers/MailContent");
 const OtpModel = require("../models/OtpModel");
 const crypto = require("crypto");
 const sendResetPasswordEmail = require("../helpers/EmailCofig");
+const UserModel = require("../model/UserModel");
+const { default: mongoose } = require("mongoose");
 
 // Đăng ký người dùng mới
 const register = async (email, password, username, numberphone, address) => {
@@ -245,10 +247,10 @@ const deleteUserById = async (id) => {
 // Cập nhật người dùng theo ID
 const updateUserById = async (
   id,
-  email,
+  // email,
   username,
   numberphone,
-  address,
+  // address,
   role
 ) => {
   try {
@@ -256,15 +258,19 @@ const updateUserById = async (
     if (!user) {
       throw new Error("User không tồn tại");
     }
-
-    user.email = email;
+    // user.email = email;
     user.username = username;
     user.numberphone = numberphone;
-    user.address = address;
+    // user.address = address.map((item) => ({
+    //   nameAddress: item.nameAddress,
+    //   address: item.address,
+    //   isDefault: item.isDefault,
+    // }));
     user.role = role;
     user.updatedAt = Date.now();
 
     await user.save();
+    console.log(user);
     console.log("User updated successfully:", user); // Thêm log
     return "Cập nhật người dùng thành công";
   } catch (error) {
@@ -336,6 +342,16 @@ const unlockUserById = async (id) => {
   }
 };
 
+const getUserById = async (id) => {
+  // const ObjectId = new mongoose.Types.ObjectId(id);
+  const item = await UserModel.findOne({ id });
+  console.log(item);
+  if (!item) {
+    return null;
+  }
+  return item;
+};
+
 module.exports = {
   register,
   login,
@@ -353,4 +369,5 @@ module.exports = {
   getUserByEmail,
   sendOtpMail,
   generateAndSaveOtp,
+  getUserById,
 };

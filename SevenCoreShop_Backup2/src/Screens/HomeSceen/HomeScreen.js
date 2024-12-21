@@ -49,7 +49,7 @@ const HomeScreen = ({navigation}) => {
           `${API__URL}/users/getUserEmail?email=${newUserEmail}`,
         );
         if (response.status === 200) {
-          setUser(response.data.result.username);
+          setUser(response.data.data.username);
         }
       } catch (error) {
         console.log('Error fetching user info:', error);

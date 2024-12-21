@@ -10,27 +10,21 @@ const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 import API__URL from '../../../../config';
 const ListAddress = ({navigation}) => {
-  const [listAddress, setListAddress] = useState(null);
-  const getAddress = async () => {
+  const [listAddress, setListAddress] = useState([]);
+  console.log(listAddress);
+  const getListAddress = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
-    const newuserEmail = JSON.parse(userEmail);
-    const baseUrl = `${API__URL}/users/getUserEmail?email=${newuserEmail}`;
-    try {
-      if (newuserEmail) {
-        const response = await axios.get(baseUrl);
-        const newData = Object.values(response.data);
-        // console.log(newData[0].address);
-        setListAddress(newData[0].address);
-      } else {
-        console.log('Có lỗi nè :');
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    const newUserEmail = JSON.parse(userEmail);
+
+    const response = await axios.get(
+      `${API__URL}/users/getUserEmail?email=${newUserEmail}`,
+    );
+
+    setListAddress(response.data.data.address);
   };
   useFocusEffect(
     useCallback(() => {
-      getAddress();
+      getListAddress();
     }, []),
   );
   return (
@@ -41,20 +35,29 @@ const ListAddress = ({navigation}) => {
           title="Địa chỉ"
         />
       </View>
-      <View style={{flex: 1}}>
+      <View style={{flex: 7}}>
         {listAddress ? (
-          <TouchableOpacity
-            style={styles.btn__list}
-            onPress={() => navigation.navigate('EditAddress')}>
-            <Text style={styles.txt__list}>{listAddress}</Text>
-            {/* <Text style={[styles.txt__list, {marginRight: 20}]}>Sửa</Text> */}
-          </TouchableOpacity>
+          <FlatList
+            data={listAddress}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity
+                  style={styles.btn__list}
+                  onPress={() => navigation.navigate('EditAddress')}>
+                  <Text style={styles.txt__list}>{item.isDefault}</Text>
+                  <Text style={styles.txt__list}>{item.address}</Text>
+                  <Text style={[styles.txt__list, {marginRight: 20}]}>Sửa</Text>
+                </TouchableOpacity>
+              );
+            }}
+            keyExtractor={item => item._id}
+          />
         ) : (
           <TouchableOpacity
             style={styles.btn__list}
             onPress={() => navigation.navigate('EditAddress')}>
             <Text style={styles.txt__list}>Nhấp vào để thêm địa chỉ</Text>
-            {/* <Text style={[styles.txt__list, {marginRight: 20}]}>Thêm</Text> */}
+            <Text style={[styles.txt__list, {marginRight: 20}]}>Thêm</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -77,5 +80,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: WITH__Screen * 0.9,
     marginHorizontal: 20,
+    marginVertical: 20,
   },
 });

@@ -27,6 +27,7 @@ export const CartProdvider = ({children}) => {
         `${API__URL}/carts/getItemCartById?userId=${newUserId}`,
       );
       const clearData = response.data.result[0].cartItems;
+
       setCart(clearData);
       setTotalPriceCart(response.data.data);
     } catch (error) {
