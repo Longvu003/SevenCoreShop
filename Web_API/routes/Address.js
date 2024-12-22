@@ -4,11 +4,20 @@ const AddressController = require("../controllers/AddressController");
 const UserModel = require("../model/UserModel");
 
 router.post("/addAddress", async (req, res) => {
-  const { userId, nameAddress, addressDetail, isDefault } = req.body;
+  const {
+    userId,
+    userNameAddress,
+    phoneAddress,
+    nameAddress,
+    addressDetail,
+    isDefault,
+  } = req.body;
 
   try {
     const item = await AddressController.addAddress(
       userId,
+      userNameAddress,
+      phoneAddress,
       nameAddress,
       addressDetail,
       isDefault
@@ -25,10 +34,10 @@ router.post("/addAddress", async (req, res) => {
 });
 
 router.get("/getAddressbyid", async (req, res) => {
-  const { userId } = req.query;
+  const { userId, addressId } = req.query;
 
   try {
-    const result = await AddressController.getAddressById(userId);
+    const result = await AddressController.getAddressById(userId, addressId);
 
     if (!result) {
       res.status(404).json({ message: "Có lỗi khi lấy" });
@@ -41,16 +50,24 @@ router.get("/getAddressbyid", async (req, res) => {
 });
 
 router.put("/updateAddressbyId", async (req, res) => {
-  const { userId, addressId, nameAddress, addressDetail } = req.body;
-
+  const {
+    userId,
+    userNameAddress,
+    phoneAddress,
+    addressId,
+    nameAddress,
+    addressDetail,
+  } = req.body;
   try {
     const item = await AddressController.updateAddressById(
       userId,
+      userNameAddress,
+      phoneAddress,
       addressId,
       nameAddress,
       addressDetail
     );
-    console.log(item);
+
     if (!item) {
       res.status(404).json({ message: "Có lỗi khi lấy địa chỉ" });
     } else {
@@ -62,10 +79,10 @@ router.put("/updateAddressbyId", async (req, res) => {
 });
 
 router.delete("/deleteAddressById", async (req, res) => {
-  const { userId, addressId } = req.body;
-
+  const { userId, id } = req.query;
+  console.log(req.query);
   try {
-    const item = await AddressController.deleteAddressById(userId, addressId);
+    const item = await AddressController.deleteAddressById(userId, id);
     if (item) {
       res.status(200).json({ message: "Xóa thành công", data: item });
     } else {

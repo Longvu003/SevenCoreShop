@@ -10,10 +10,26 @@ const UserSchema = new Schema({
   numberphone: { type: String, required: true }, // Thêm trường số điện thoại
   address: [
     {
+      userNameAddress: {
+        type: String,
+        minlength: [3, "Tên phải có ít nhất 3 ký tự"],
+        maxlength: [15, "Tên không được vượt quá 15 ký tự"],
+      },
+      phoneAddress: {
+        type: String,
+        match: [/^\d{10,11}$/, "Số điện thoại phải có 10-11 chữ số"],
+      },
       nameAddress: {
         type: String,
+        minlength: 3,
+        maxlength: 15,
       },
-      addressDetail: { type: String, required: true },
+      addressDetail: {
+        type: String,
+        required: true,
+        minlength: [10, "Địa chỉ phải có ít nhất 10 ký tự"],
+        maxlength: [60, "Địa chỉ  không được vượt quá 60 ký tự"],
+      },
       isDefault: { type: Boolean, default: false },
     },
   ], // Thêm trường địa chỉ

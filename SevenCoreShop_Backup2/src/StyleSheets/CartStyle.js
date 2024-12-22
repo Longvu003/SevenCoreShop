@@ -26,8 +26,6 @@ const CartStyle = StyleSheet.create({
   cartItemContainer: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
-    padding: 15,
-    marginBottom: 15,
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
@@ -76,7 +74,7 @@ const CartStyle = StyleSheet.create({
     fontWeight: 'bold',
   },
   cartItemActions: {
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -84,6 +82,7 @@ const CartStyle = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     fontWeight: 'bold',
+    width: WIDTH__SCREEN * 0.2,
   },
   totalPriceContainer: {
     backgroundColor: '#FFFFFF',

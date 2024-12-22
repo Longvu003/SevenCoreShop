@@ -624,18 +624,10 @@ const isorderCodeUnique = async (orderCode) => {
 
 const checkout = async (req, res) => {
   try {
-    const { userId, items, totalAmount, address, paymentMethod, numberphone } =
-      req.body;
-
+    const { userId, items, totalAmount, address, paymentMethod } = req.body;
+    console.log(address);
     // Kiểm tra dữ liệu đầu vào
-    if (
-      !userId ||
-      !items ||
-      !totalAmount ||
-      !address ||
-      !paymentMethod ||
-      !numberphone
-    ) {
+    if (!userId || !items || !totalAmount || !address || !paymentMethod) {
       return res.status(400).json({ message: "Thiếu dữ liệu" });
     }
 
@@ -666,7 +658,6 @@ const checkout = async (req, res) => {
       address,
       paymentMethod,
       status: "Đang xử lý",
-      numberphone,
       date: new Date(),
       orderCode,
     });

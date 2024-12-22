@@ -203,6 +203,7 @@ router.get(
     const { email } = req.query;
     try {
       const result = await userController.getUserByEmail(email);
+
       return res.status(200).json({ data: result });
     } catch (error) {
       console.log("Get user error", error.message);

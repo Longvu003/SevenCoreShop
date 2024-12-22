@@ -128,9 +128,7 @@ const CartScreen = () => {
                       </View>
                     </View>
                     <View style={CartStyle.cartItemActions}>
-                      <Text style={CartStyle.productPrice}>
-                        {item.price} VND
-                      </Text>
+                      <Text style={CartStyle.productPrice}>{item.price}</Text>
                     </View>
                   </View>
                 );

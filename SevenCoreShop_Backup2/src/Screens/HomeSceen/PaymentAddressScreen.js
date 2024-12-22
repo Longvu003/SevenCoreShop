@@ -13,16 +13,16 @@ import axios from 'axios';
 import API_URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useCart} from '../Cart/CartProdvider';
+import API__URL from '../../../config';
 const PaymentAddressScreen = ({navigation, route}) => {
+  const [listAddress, setListAddress] = useState([]);
   const [addresses, setAddresses] = useState([]);
-  const [phone, setPhoneUser] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
   const [bankDetails, setBankDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const {resetCart} = useCart();
-
   const cartItems = route.params?.cartItems || [];
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -37,16 +37,8 @@ const PaymentAddressScreen = ({navigation, route}) => {
         const response = await axios.get(
           `${API_URL}/users/getUserEmail/?email=${newUserEmail}`,
         );
-        // const data = response.data.result;
-        const data = response.data.result.address;
-        const phoneUser = response.data.result.numberphone;
-        setPhoneUser(phoneUser);
-        const formattedData = Array.isArray(data)
-          ? data
-          : typeof data === 'string'
-          ? [{_id: '1', name: 'Mặc định', address: data}]
-          : [];
-        setAddresses(formattedData);
+        const data = response.data.data.address;
+        setAddresses(data);
       } catch (error) {
         console.error('Error fetching addresses:', error.message);
         Alert.alert('Lỗi', 'Không thể tải địa chỉ giao hàng.');
@@ -57,7 +49,18 @@ const PaymentAddressScreen = ({navigation, route}) => {
 
     fetchAddresses();
   }, []);
+  // const getInformationAddress = async addressId => {
+  //   const OldUserId = await AsyncStorage.getItem('userId');
+  //   const userId = JSON.parse(OldUserId);
+  //   const response = await axios.get(
+  //     `${API__URL}/address/getAddressbyid?userId=${userId}`,
+  //   );
+  //   setListAddress(response.data.data.address);
+  // };
 
+  // useEffect(() => {
+  //   getInformationAddress();
+  // }, []);
   const fetchBankDetails = async bankId => {
     try {
       const response = await axios.get(`${API_URL}/payonline/${bankId}`);
@@ -74,10 +77,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
       ) {
         setBankDetails(bankData); // Cập nhật thông tin ngân hàng
       } else {
-        console.error(
-          'Định dạng dữ liệu ngân hàng không hợp lệ:',
-          response.data,
-        );
+        console.log('Định dạng dữ liệu ngân hàng không hợp lệ:', response.data);
         throw new Error('Dữ liệu trả về không đúng định dạng');
       }
     } catch (error) {
@@ -119,9 +119,8 @@ const PaymentAddressScreen = ({navigation, route}) => {
         image: item.images[0],
       })),
       totalAmount,
-      address: selectedAddress.address,
+      address: selectedAddress,
       paymentMethod,
-      numberphone: phone,
       bankId: selectedBank?.id,
     };
 
@@ -195,26 +194,23 @@ const PaymentAddressScreen = ({navigation, route}) => {
       </TouchableOpacity>
 
       <Text style={styles.sectionHeader}>Chọn Địa Chỉ Giao Hàng</Text>
-      {addresses.map(address => (
+      {addresses.map(addressItem => (
         <TouchableOpacity
-          key={address._id}
+          key={addressItem._id}
           style={[
             styles.addressCard,
-            selectedAddress?._id === address._id && styles.selectedCard,
+            selectedAddress?._id === addressItem._id && styles.selectedCard,
           ]}
-          onPress={() => setSelectedAddress(address)}>
+          onPress={() => setSelectedAddress(addressItem)}>
           <View style={styles.addressContent}>
             <View style={styles.addressDetails}>
               <Text style={styles.addressText}>
-                {address.address || 'Không có địa chỉ'}
-              </Text>
-              <Text style={styles.phoneText}>
-                SĐT: {phone || 'Không có số điện thoại'}
+                {addressItem.addressDetail || 'Không có địa chỉ'}
               </Text>
             </View>
           </View>
           <Text style={styles.selectText}>
-            {selectedAddress?._id === address._id ? 'Đã chọn' : 'Chọn'}
+            {selectedAddress?._id === addressItem._id ? 'Đã chọn' : 'Chọn'}
           </Text>
         </TouchableOpacity>
       ))}

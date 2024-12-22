@@ -1,7 +1,15 @@
 const { default: mongoose } = require("mongoose");
 const AddressModel = require("../model/AddressModel");
 const userModel = require("../model/UserModel");
-const addAddress = async (userId, nameAddress, addressDetail, isDefault) => {
+const addAddress = async (
+  userId,
+
+  userNameAddress,
+  phoneAddress,
+  nameAddress,
+  addressDetail,
+  isDefault
+) => {
   try {
     const user = await userModel.findById(userId);
 
@@ -11,7 +19,13 @@ const addAddress = async (userId, nameAddress, addressDetail, isDefault) => {
     if (isDefault) {
       user.address.forEach((item) => (item.isDefault = false));
     }
-    user.address.push({ nameAddress, addressDetail, isDefault });
+    user.address.push({
+      userNameAddress,
+      phoneAddress,
+      nameAddress,
+      addressDetail,
+      isDefault,
+    });
 
     await user.save();
     return user;
@@ -20,15 +34,24 @@ const addAddress = async (userId, nameAddress, addressDetail, isDefault) => {
   }
 };
 
-const getAddressById = async (userId) => {
-  const item = await userModel.findById({ _id: userId });
+const getAddressById = async (userId, addressId) => {
+  const user = await userModel.findOne({ _id: userId });
 
-  if (!item) {
+  if (!user) {
     return null;
   }
-  return item;
+
+  const address = user.address.find(
+    (item) => item._id.toString() === addressId
+  );
+
+  if (!address) {
+    return null;
+  }
+
+  return address;
 };
-const deleteAddressById = async (userId, addressId) => {
+const deleteAddressById = async (userId, id) => {
   const user = await userModel.findById(userId);
 
   if (!user) {
@@ -36,7 +59,7 @@ const deleteAddressById = async (userId, addressId) => {
     return null;
   }
   const indexAddress = user.address.findIndex(
-    (item) => item._id.toString() === addressId
+    (item) => item._id.toString() === id
   );
   if (indexAddress === -1) {
     console.log("Không tìm thấy địa chỉ");
@@ -50,6 +73,8 @@ const deleteAddressById = async (userId, addressId) => {
 
 const updateAddressById = async (
   userId,
+  userNameAddress,
+  phoneAddress,
   addressId,
   nameAddress,
   addressDetail,
@@ -72,6 +97,8 @@ const updateAddressById = async (
     } else {
       indexAddress.nameAddress = nameAddress;
       indexAddress.addressDetail = addressDetail;
+      indexAddress.userNameAddress = userNameAddress;
+      indexAddress.phoneAddress = phoneAddress;
       indexAddress.isDefault = isDefault;
       await item.save();
     }

@@ -17,41 +17,18 @@ import API__URL from '../../../../config';
 import {useFocusEffect} from '@react-navigation/native';
 const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
-const EditAddress = ({navigation, route}) => {
+const AddAddress = ({navigation}) => {
   const [userNameAddress, setuserNameAddress] = useState('');
   const [phoneAddress, setPhoneAddress] = useState('');
   const [addressDetail, setAddressDetail] = useState('');
   const [nameAddress, setnameAddress] = useState('');
-  const [addressId, setaddressId] = useState('');
   const [isDefault, setisDefault] = useState(false);
   const [userNameError, setUserNameError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [addressDetailError, setAddressDetailError] = useState('');
-  const {item} = route.params;
-  const getEmailUser = async () => {
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-      const newUserId = JSON.parse(userId);
-      const url = `${API__URL}/address/getAddressbyid?userId=${newUserId}&&addressId=${item._id}`;
-      const respone = await axios.get(url);
-      if (respone.status === 200) {
-        setaddressId(respone.data.data._id);
-        setuserNameAddress(respone.data.data.userNameAddress);
-        setPhoneAddress(respone.data.data.phoneAddress);
-        setnameAddress(respone.data.data.nameAddress);
-        setAddressDetail(respone.data.data.addressDetail);
-      } else {
-        console.log('Có lối khi lấy địa chỉ');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const updateUser = async () => {
+  const AddAddressUser = async () => {
     const OldUserId = await AsyncStorage.getItem('userId');
     const userId = JSON.parse(OldUserId);
-    const url2 = `${API__URL}/address/updateAddressbyId`;
     try {
       if (
         userNameAddress.trim().length < 5 ||
@@ -61,7 +38,7 @@ const EditAddress = ({navigation, route}) => {
       } else {
         setUserNameError('');
       }
-      if (phoneAddress.trim().length < 10 || phoneAddress.trim().length > 11) {
+      if (phoneAddress.trim().length < 10 || phoneAddress.trim().length > 10) {
         setPhoneError('Số điện thoại phải có độ dài từ 10 đến 11 ký tự');
       } else {
         setPhoneError('');
@@ -78,31 +55,27 @@ const EditAddress = ({navigation, route}) => {
       }
       const addressInformation = {
         userId,
-        addressId: addressId,
         userNameAddress,
         phoneAddress,
         nameAddress,
         addressDetail,
       };
-      await axios.put(url2, addressInformation, {
+      const url2 = `${API__URL}/address/addAddress`;
+      await axios.post(url2, addressInformation, {
         headers: 'application/x-www-form-urlencoded',
       });
-      Alert.alert('Thông báo', 'Sửa thành công');
+      Alert.alert('Thông báo', 'Thêm thành công');
       navigation.navigate('ListAddress');
     } catch (error) {
       console.log(error);
     }
   };
-  useEffect(() => {
-    getEmailUser();
-  }, []);
-
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1}}>
         <Customheader
           leftIcon={require('../../../../assets/imgs/back.png')}
-          title="Sửa địa chỉ"
+          title="Thêm địa chỉ"
         />
       </View>
       <View style={{flex: 8}}>
@@ -144,14 +117,16 @@ const EditAddress = ({navigation, route}) => {
         </View>
       </View>
       <View style={{flex: 2, alignItems: 'center'}}>
-        <TouchableOpacity style={styles.btn__Save} onPress={() => updateUser()}>
-          <Text style={styles.txt__btn}>Lưu</Text>
+        <TouchableOpacity
+          style={styles.btn__Save}
+          onPress={() => AddAddressUser()}>
+          <Text style={styles.txt__btn}>Thêm</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
-export default EditAddress;
+export default AddAddress;
 const styles = StyleSheet.create({
   input: {
     borderRadius: 30,
