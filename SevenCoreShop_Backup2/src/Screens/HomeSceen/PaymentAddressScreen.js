@@ -38,7 +38,9 @@ const PaymentAddressScreen = ({navigation, route}) => {
           `${API_URL}/users/getUserEmail/?email=${newUserEmail}`,
         );
         const data = response.data.data.address;
-        setAddresses(data);
+        const newData = data.filter(item => item.isDefault === true);
+        setAddresses(newData);
+        console.log(newData);
       } catch (error) {
         console.error('Error fetching addresses:', error.message);
         Alert.alert('Lỗi', 'Không thể tải địa chỉ giao hàng.');
@@ -49,18 +51,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
 
     fetchAddresses();
   }, []);
-  // const getInformationAddress = async addressId => {
-  //   const OldUserId = await AsyncStorage.getItem('userId');
-  //   const userId = JSON.parse(OldUserId);
-  //   const response = await axios.get(
-  //     `${API__URL}/address/getAddressbyid?userId=${userId}`,
-  //   );
-  //   setListAddress(response.data.data.address);
-  // };
-
-  // useEffect(() => {
-  //   getInformationAddress();
-  // }, []);
   const fetchBankDetails = async bankId => {
     try {
       const response = await axios.get(`${API_URL}/payonline/${bankId}`);
@@ -134,6 +124,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
         // await resetCartOnServer(cartItems);
         resetCart();
         Alert.alert('Thông báo', 'Đặt hàng thành công!');
+        navigation.navigate('Tab');
       } else {
         throw new Error('Thanh toán không thành công.');
       }

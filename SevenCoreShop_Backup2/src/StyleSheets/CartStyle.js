@@ -25,6 +25,7 @@ const CartStyle = StyleSheet.create({
   },
   cartItemContainer: {
     flexDirection: 'row',
+    marginVertical: 10,
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
     shadowColor: '#000',
@@ -32,10 +33,15 @@ const CartStyle = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 4,
+    width: WIDTH__SCREEN * 0.9,
+    marginHorizontal: 20,
+    height: HEIGHT__SCREEN * 0.2,
   },
   productContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: WIDTH__SCREEN * 0.7,
+    marginLeft: 10,
   },
   imgProduct: {
     width: 100,
@@ -50,6 +56,7 @@ const CartStyle = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     width: WIDTH__SCREEN * 0.5,
+    height: HEIGHT__SCREEN * 0.05,
   },
   productQuantity: {
     fontSize: 14,

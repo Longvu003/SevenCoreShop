@@ -25,7 +25,7 @@ const getProducts = async (categoryId = "") => {
       query["category.category_id"] = categoryId;
     }
     const products = await ProductModel.find(query);
-    console.log("Products found:", products);
+
     return products;
   } catch (error) {
     console.log("Lỗi", error);

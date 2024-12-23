@@ -102,7 +102,7 @@ router.post("/:id/update", async (req, res) => {
 router.post("/tim-kiem", async (req, res) => {
   try {
     const { key } = req.query;
-    console.log(key);
+    
     const products = await ProductController.searchProduct(key);
     return res.status(200).json({ status: true, data: products });
   } catch (error) {

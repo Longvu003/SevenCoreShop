@@ -79,11 +79,11 @@ const CartScreen = () => {
 
   return (
     <View style={CartStyle.container}>
-      <View style={{flex: 1}}>
+      <View style={{flex: 0.5}}>
         <Customheader title="Giỏ hàng" />
       </View>
       {cart.length > 0 ? (
-        <View style={{flex: 7}}>
+        <View style={{flex: 9}}>
           <TouchableOpacity
             style={CartStyle.removeAllBtn}
             onPress={deleteAllItemcart}>

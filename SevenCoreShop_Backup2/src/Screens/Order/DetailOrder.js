@@ -20,6 +20,9 @@ const DetailOrder = ({route}) => {
   const getOrderDetail = () => {
     setDetailOrder(item);
   };
+  console.log(
+    DetailOrder?.address?.[0]?.addressDetail || 'No address detail found',
+  );
 
   useEffect(() => {
     getOrderDetail();
@@ -72,11 +75,18 @@ const DetailOrder = ({route}) => {
             marginHorizontal: 20,
           }}>
           <View style={{marginHorizontal: 20}}>
-            <Text>Địa chỉ: {DetailOrder.address}</Text>
-            <Text>Số điện thoại: {DetailOrder.numberphone}</Text>
+            <Text>
+              Địa chỉ:
+              {DetailOrder?.address?.[0]?.addressDetail || 'Không có địa chỉ'}
+            </Text>
+            <Text>
+              Số điện thoại:
+              {DetailOrder?.address?.[0].phoneAddress ||
+                'Không có số điện thoại'}
+            </Text>
             <Text>Trạng thái: {DetailOrder.status}</Text>
             <Text>Phương thức thanh toán: {DetailOrder.paymentMethod} </Text>
-            <Text>Tổng tiền: {DetailOrder.totalAmount} </Text>
+            <Text>Tổng tiền: {DetailOrder.totalAmount} VNĐ</Text>
           </View>
         </View>
       </View>
