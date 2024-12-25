@@ -46,11 +46,7 @@ const orderSchema = new mongoose.Schema({
   status: { type: String, default: "Đang xử lý" },
   statuspay: { type: String, default: "Đang xử lý" },
   orderCode: { type: String, required: true },
-  // paymentMethod: {
-  //   type: String,
-  //   enum: ['credit_card', 'paypal', 'momo', 'cash_on_delivery'],
-  //   required: true
-  // },
+  // paymentMethod: { type: String, required: true },
   date: { type: Date, default: Date.now },
 });
 
