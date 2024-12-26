@@ -63,7 +63,7 @@ const EditUser = ({navigation}) => {
           headers: 'application/x-www-form-urlencoded',
         });
         Alert.alert('Thông báo', 'Cập nhật thành công');
-        // navigation.navigate('User');
+        navigation.navigate('User');
       }
     } catch (error) {
       console.log('Lỗi cập nhật user', error);

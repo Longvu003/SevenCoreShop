@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -8,14 +8,17 @@ import {
   Image,
   ActivityIndicator,
   Alert,
+  Dimensions,
 } from 'react-native';
 import axios from 'axios';
 import API_URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useCart} from '../Cart/CartProdvider';
 import API__URL from '../../../config';
+import {useFocusEffect} from '@react-navigation/native';
+const WITH__Screen = Dimensions.get('screen').width;
+const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const PaymentAddressScreen = ({navigation, route}) => {
-  const [listAddress, setListAddress] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
@@ -29,33 +32,35 @@ const PaymentAddressScreen = ({navigation, route}) => {
     0,
   );
   const userID = route.params?.userID;
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      const userEmail = await AsyncStorage.getItem('userEmail');
-      const newUserEmail = JSON.parse(userEmail);
-      try {
-        const response = await axios.get(
-          `${API_URL}/users/getUserEmail/?email=${newUserEmail}`,
-        );
-        const data = response.data.data.address;
-        const newData = data.filter(item => item.isDefault === true);
-        setAddresses(newData);
-        console.log(newData);
-      } catch (error) {
-        console.error('Error fetching addresses:', error.message);
-        Alert.alert('Lỗi', 'Không thể tải địa chỉ giao hàng.');
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchAddresses();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchAddresses = async () => {
+        const userEmail = await AsyncStorage.getItem('userEmail');
+        const newUserEmail = JSON.parse(userEmail);
+        try {
+          const response = await axios.get(
+            `${API_URL}/users/getUserEmail/?email=${newUserEmail}`,
+          );
+          const data = response.data.data.address;
+          const newData = data.filter(item => item.isDefault === true);
+          setAddresses(newData);
+        } catch (error) {
+          console.error('Error fetching addresses:', error.message);
+          Alert.alert('Lỗi', 'Không thể tải địa chỉ giao hàng.');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchAddresses();
+    }, []),
+  );
   const fetchBankDetails = async bankId => {
     try {
       const response = await axios.get(`${API_URL}/payonline/${bankId}`);
       const {data: bankData} = response.data;
-      console.log('Dữ liệu ngân hàng:', bankData);
+      // console.log('Dữ liệu ngân hàng:', bankData);
 
       if (
         bankData &&
@@ -146,24 +151,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
     }
   };
 
-  const resetCartOnServer = async cartItems => {
-    try {
-      for (const item of cartItems) {
-        await axios.delete(`${API_URL}/carts/deleteItemCart`, {
-          data: {
-            userId: userID,
-            productId: item.productId,
-            quantity: item.quantity,
-          },
-        });
-      }
-      console.log('Giỏ hàng đã được reset trên server!');
-    } catch (error) {
-      console.error('Lỗi khi reset giỏ hàng:', error);
-      Alert.alert('Lỗi', 'Không thể reset giỏ hàng. Vui lòng thử lại.');
-    }
-  };
-
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -185,26 +172,37 @@ const PaymentAddressScreen = ({navigation, route}) => {
       </TouchableOpacity>
 
       <Text style={styles.sectionHeader}>Chọn Địa Chỉ Giao Hàng</Text>
-      {addresses.map(addressItem => (
-        <TouchableOpacity
-          key={addressItem._id}
-          style={[
-            styles.addressCard,
-            selectedAddress?._id === addressItem._id && styles.selectedCard,
-          ]}
-          onPress={() => setSelectedAddress(addressItem)}>
-          <View style={styles.addressContent}>
-            <View style={styles.addressDetails}>
-              <Text style={styles.addressText}>
-                {addressItem.addressDetail || 'Không có địa chỉ'}
-              </Text>
+
+      {addresses.length > 0 ? (
+        addresses.map(addressItem => (
+          <TouchableOpacity
+            key={addressItem._id}
+            style={[
+              styles.addressCard,
+              selectedAddress?._id === addressItem._id && styles.selectedCard,
+            ]}
+            onPress={() => setSelectedAddress(addressItem)}>
+            <View style={styles.addressContent}>
+              <View style={styles.addressDetails}>
+                <Text style={styles.addressText}>
+                  {addressItem.addressDetail || 'Không có địa chỉ'}
+                </Text>
+              </View>
             </View>
-          </View>
-          <Text style={styles.selectText}>
-            {selectedAddress?._id === addressItem._id ? 'Đã chọn' : 'Chọn'}
-          </Text>
-        </TouchableOpacity>
-      ))}
+            <Text style={styles.selectText}>
+              {selectedAddress?._id === addressItem._id ? 'Đã chọn' : 'Chọn'}
+            </Text>
+          </TouchableOpacity>
+        ))
+      ) : (
+        <View>
+          <TouchableOpacity onPress={() => navigation.navigate('AddAddress')}>
+            <Text style={{fontSize: 16, fontWeight: '800'}}>
+              Chưa có địa chỉ giao hàng, nhấn vào để thêm
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       <Text style={styles.sectionHeader}>Chọn Phương Thức Thanh Toán</Text>
       <View style={styles.paymentOptions}>
@@ -365,6 +363,7 @@ const styles = StyleSheet.create({
   addressText: {
     fontSize: 14,
     color: '#555',
+    width: WITH__Screen * 0.6,
   },
   selectText: {
     fontSize: 14,

@@ -38,8 +38,8 @@ const AddAddress = ({navigation}) => {
       } else {
         setUserNameError('');
       }
-      if (phoneAddress.trim().length < 10 || phoneAddress.trim().length > 10) {
-        setPhoneError('Số điện thoại phải có độ dài từ 10 đến 11 ký tự');
+      if (phoneAddress.trim().length < 10) {
+        setPhoneError('Số điện thoại phải có độ dài 10 ký tự');
       } else {
         setPhoneError('');
       }
@@ -51,7 +51,7 @@ const AddAddress = ({navigation}) => {
           'Địa chỉ phải có ít nhất 10 ký tự và tối đa 60 ký tự',
         );
       } else {
-        setAddressDetail('');
+        setAddressDetailError('');
       }
       const addressInformation = {
         userId,
@@ -59,6 +59,7 @@ const AddAddress = ({navigation}) => {
         phoneAddress,
         nameAddress,
         addressDetail,
+        isDefault: isDefault,
       };
       const url2 = `${API__URL}/address/addAddress`;
       await axios.post(url2, addressInformation, {
@@ -69,6 +70,15 @@ const AddAddress = ({navigation}) => {
     } catch (error) {
       console.log(error);
     }
+  };
+  const checkDefault = () => {
+    setisDefault(prevState => {
+      const newState = !prevState;
+      Alert.alert(
+        newState ? 'Đã chọn địa chỉ mặc định' : 'Đã hủy địa chỉ mặc định',
+      );
+      return newState;
+    });
   };
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -115,6 +125,11 @@ const AddAddress = ({navigation}) => {
             <Text style={styles.txt__error}>{addressDetailError}</Text>
           ) : null}
         </View>
+        <TouchableOpacity
+          onPress={checkDefault}
+          style={styles.btn__setIsDefault}>
+          <Text>Đặt làm địa chỉ mặc định</Text>
+        </TouchableOpacity>
       </View>
       <View style={{flex: 2, alignItems: 'center'}}>
         <TouchableOpacity
@@ -128,6 +143,16 @@ const AddAddress = ({navigation}) => {
 };
 export default AddAddress;
 const styles = StyleSheet.create({
+  btn__setIsDefault: {
+    backgroundColor: 'orange',
+    width: WITH__Screen * 0.9,
+    height: HEIGHT__SCREEN * 0.06,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 20,
+    borderRadius: 30,
+    marginTop: 30,
+  },
   input: {
     borderRadius: 30,
     width: WITH__Screen * 0.9,

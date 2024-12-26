@@ -40,6 +40,7 @@ const EditAddress = ({navigation, route}) => {
         setPhoneAddress(respone.data.data.phoneAddress);
         setnameAddress(respone.data.data.nameAddress);
         setAddressDetail(respone.data.data.addressDetail);
+        setisDefault(respone.data.data.isDefault);
       } else {
         console.log('Có lối khi lấy địa chỉ');
       }
@@ -58,11 +59,13 @@ const EditAddress = ({navigation, route}) => {
         userNameAddress.trim().length > 15
       ) {
         setUserNameError('Họ tên phải có ít nhất 5 ký tự và tối đa 15 ký tự');
+        return false;
       } else {
         setUserNameError('');
       }
-      if (phoneAddress.trim().length < 10 || phoneAddress.trim().length > 11) {
-        setPhoneError('Số điện thoại phải có độ dài từ 10 đến 11 ký tự');
+      if (phoneAddress.trim().length < 10) {
+        setPhoneError('Số điện thoại phải có độ dài 10 ký tự');
+        return false;
       } else {
         setPhoneError('');
       }
@@ -73,8 +76,9 @@ const EditAddress = ({navigation, route}) => {
         setAddressDetailError(
           'Địa chỉ phải có ít nhất 10 ký tự và tối đa 60 ký tự',
         );
+        return false;
       } else {
-        setAddressDetail('');
+        setAddressDetailError('');
       }
       const addressInformation = {
         userId,
@@ -83,20 +87,34 @@ const EditAddress = ({navigation, route}) => {
         phoneAddress,
         nameAddress,
         addressDetail,
+        isDefault: isDefault,
       };
-      await axios.put(url2, addressInformation, {
-        headers: 'application/x-www-form-urlencoded',
+
+      const response = await axios.put(url2, addressInformation, {
+        headers: {'Content-Type': 'application/json'},
       });
-      Alert.alert('Thông báo', 'Sửa thành công');
-      navigation.navigate('ListAddress');
+      if (response.status === 200) {
+        Alert.alert('Thông báo', 'Sửa thành công');
+        navigation.navigate('ListAddress');
+      } else {
+        Alert.alert('Lỗi', response.data?.message || 'Đã xảy ra lỗi.');
+      }
     } catch (error) {
-      console.log(error);
+      Alert.alert('Lỗi', response.data?.message || 'Đã xảy ra lỗi.');
     }
   };
   useEffect(() => {
     getEmailUser();
   }, []);
-
+  const checkDefault = () => {
+    setisDefault(prevState => {
+      const newState = !prevState;
+      Alert.alert(
+        newState ? 'Đã chọn địa chỉ mặc định' : 'Đã hủy địa chỉ mặc định',
+      );
+      return newState;
+    });
+  };
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1}}>
@@ -142,6 +160,11 @@ const EditAddress = ({navigation, route}) => {
             <Text style={styles.txt__error}>{addressDetailError}</Text>
           ) : null}
         </View>
+        <TouchableOpacity
+          onPress={checkDefault}
+          style={styles.btn__setIsDefault}>
+          <Text>Đặt làm địa chỉ mặc định</Text>
+        </TouchableOpacity>
       </View>
       <View style={{flex: 2, alignItems: 'center'}}>
         <TouchableOpacity style={styles.btn__Save} onPress={() => updateUser()}>
@@ -153,6 +176,16 @@ const EditAddress = ({navigation, route}) => {
 };
 export default EditAddress;
 const styles = StyleSheet.create({
+  btn__setIsDefault: {
+    backgroundColor: 'orange',
+    width: WITH__Screen * 0.9,
+    height: HEIGHT__SCREEN * 0.06,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 20,
+    borderRadius: 30,
+    marginTop: 30,
+  },
   input: {
     borderRadius: 30,
     width: WITH__Screen * 0.9,
