@@ -155,6 +155,7 @@ export const CartProdvider = ({children}) => {
   };
   useEffect(() => {
     getDataCart();
+    getProductDetails();
   }, []);
 
   return (

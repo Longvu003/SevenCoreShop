@@ -19,7 +19,6 @@ const OrderScreen = ({navigation}) => {
   const {getProductDetails, dataOrder} = useCart();
   const [statusOrder, setStatusOrder] = useState('');
   const [orderFilter, setOrderFilter] = useState([]);
-
   const getOrderBystatus = () => {
     if (statusOrder) {
       const data = dataOrder.filter(item => item.status === statusOrder);

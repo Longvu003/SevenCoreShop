@@ -16,7 +16,6 @@ const SignupScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [numberphone, setNumberphone] = useState('');
-  const [address, setAddress] = useState('');
 
   const validateInput = () => {
     if (!email) {
@@ -33,10 +32,6 @@ const SignupScreen = ({navigation}) => {
     }
     if (!numberphone) {
       Alert.alert('Lỗi', 'Số điện thoại không được để trống');
-      return false;
-    }
-    if (!address) {
-      Alert.alert('Lỗi', 'đại chỉ không được để trống');
       return false;
     }
 
@@ -57,7 +52,6 @@ const SignupScreen = ({navigation}) => {
       password,
       username,
       numberphone,
-      address,
     };
     try {
       const response = await axios.post(`${API__URL}/users/register`, formData);
@@ -122,12 +116,6 @@ const SignupScreen = ({navigation}) => {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Địa chỉ"
-            value={address}
-            onChangeText={setAddress}
           />
           <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
             <Text style={styles.loginText}>Tiếp tục</Text>

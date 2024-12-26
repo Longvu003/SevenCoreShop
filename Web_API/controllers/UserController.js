@@ -8,7 +8,7 @@ const UserModel = require("../model/UserModel");
 const { default: mongoose } = require("mongoose");
 
 // Đăng ký người dùng mới
-const register = async (email, password, username, numberphone, address) => {
+const register = async (email, password, username, numberphone) => {
   try {
     // Tìm kiếm email trong database
     let user = await userModel.findOne({ email: email });
@@ -26,7 +26,7 @@ const register = async (email, password, username, numberphone, address) => {
       password: password,
       username: username,
       numberphone: numberphone,
-      address: address,
+
       available: true, // Mặc định người dùng được kích hoạt
     });
 

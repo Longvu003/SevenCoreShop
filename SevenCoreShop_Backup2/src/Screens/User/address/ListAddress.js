@@ -59,7 +59,7 @@ const ListAddress = ({navigation}) => {
         />
       </View>
       <View style={{flex: 7}}>
-        {listAddress ? (
+        {listAddress.length > 0 ? (
           <FlatList
             data={listAddress}
             showsVerticalScrollIndicator={false}
@@ -91,17 +91,30 @@ const ListAddress = ({navigation}) => {
                       <Text style={styles.txt__list}>{item.addressDetail}</Text>
                     </View>
                   </TouchableOpacity>
-                  <Text style={styles.txt__list}>{item.nameAddress}</Text>
+                  <Text
+                    style={[styles.txt__list, {width: WITH__Screen * 0.15}]}>
+                    {item.nameAddress}
+                  </Text>
                 </View>
               );
             }}
             keyExtractor={item => item._id}
           />
         ) : (
-          <TouchableOpacity onPress={() => navigation.navigate('AddAddress')}>
-            <Text style={styles.txt__list}>Nhấp vào để thêm địa chỉ</Text>
-            <Text style={[styles.txt__list, {marginRight: 20}]}>Thêm</Text>
-          </TouchableOpacity>
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Image
+              style={{width: 100, height: 100, marginVertical: 20}}
+              source={require('../../../../assets/imgs/address-81-48.png')}
+            />
+            <Text style={styles.txt__list}>
+              Chưa có địa chỉ giao hàng, vui lòng thêm địa chỉ giao hàng !
+            </Text>
+          </View>
         )}
       </View>
       <View style={styles.container__add}>
@@ -118,15 +131,14 @@ export default ListAddress;
 
 const styles = StyleSheet.create({
   container__add: {
-    flex: 8,
-
+    flex: 3,
     flexDirection: 'row',
     justifyContent: 'center',
   },
 
   btn__add: {
-    width: WITH__Screen * 0.2,
-    height: HEIGHT__SCREEN * 0.06,
+    width: WITH__Screen * 0.4,
+    height: HEIGHT__SCREEN * 0.08,
     alignItems: 'center',
   },
 

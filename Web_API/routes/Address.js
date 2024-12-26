@@ -57,6 +57,7 @@ router.put("/updateAddressbyId", async (req, res) => {
     addressId,
     nameAddress,
     addressDetail,
+    isDefault,
   } = req.body;
   try {
     const item = await AddressController.updateAddressById(
@@ -65,7 +66,8 @@ router.put("/updateAddressbyId", async (req, res) => {
       phoneAddress,
       addressId,
       nameAddress,
-      addressDetail
+      addressDetail,
+      isDefault
     );
 
     if (!item) {
@@ -74,7 +76,9 @@ router.put("/updateAddressbyId", async (req, res) => {
       res.status(200).json({ message: "Lấy thành công", data: item });
     }
   } catch (error) {
-    console.log(error);
+    if (error.message === "Địa chỉ mặc định đã tồn tại.") {
+      return res.status(400).json({ message: error.message });
+    }
   }
 });
 

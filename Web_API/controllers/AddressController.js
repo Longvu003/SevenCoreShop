@@ -1,9 +1,10 @@
 const { default: mongoose } = require("mongoose");
 const AddressModel = require("../model/AddressModel");
 const userModel = require("../model/UserModel");
+const ObjectId = mongoose.Types.ObjectId;
+
 const addAddress = async (
   userId,
-
   userNameAddress,
   phoneAddress,
   nameAddress,
@@ -81,12 +82,28 @@ const updateAddressById = async (
   isDefault
 ) => {
   try {
-    const item = await userModel.findById(userId);
-    if (!item) {
-      console.log("Không tìm thấy user");
-      return null;
+    if (isDefault) {
+      const user = await userModel.findOne({
+        _id: userId,
+      });
+      if (!user) {
+        console.log("Không tìm thấy người dùng");
+        return null;
+      }
+      const defaultAddress = user.address.find(
+        (addr) => addr.isDefault && addr._id.toString() !== addressId
+      );
+
+      if (defaultAddress) {
+        throw new Error("Đã có địa chỉ mặc định khác tồn tại.");
+      }
     }
 
+    const item = await userModel.findById(userId);
+    if (!item) {
+      console.log("Không tìm thấy người dùng");
+      return null;
+    }
     const indexAddress = item.address.find(
       (item) => item._id.toString() === addressId
     );
@@ -105,8 +122,7 @@ const updateAddressById = async (
 
     return indexAddress;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw error;
   }
 };
 

@@ -17,7 +17,7 @@ const UserSchema = new Schema({
       },
       phoneAddress: {
         type: String,
-        match: [/^\d{10,11}$/, "Số điện thoại phải có 10-11 chữ số"],
+        match: [/^\d{10}$/, "Số điện thoại phải có 10 chữ số"],
       },
       nameAddress: {
         type: String,
