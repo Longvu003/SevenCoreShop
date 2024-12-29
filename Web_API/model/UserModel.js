@@ -19,20 +19,29 @@ const UserSchema = new Schema({
         type: String,
         match: [/^\d{10}$/, "Số điện thoại phải có 10 chữ số"],
       },
-      nameAddress: {
+      // nameAddress: {
+      //   type: String,
+      //   maxlength: 15,
+      // },
+      province: {
         type: String,
-        minlength: 3,
-        maxlength: 15,
+        required: true,
+      },
+      district: {
+        type: String,
+        required: true,
+      },
+      ward: {
+        type: String,
       },
       addressDetail: {
         type: String,
         required: true,
-        minlength: [10, "Địa chỉ phải có ít nhất 10 ký tự"],
-        maxlength: [60, "Địa chỉ  không được vượt quá 60 ký tự"],
       },
       isDefault: { type: Boolean, default: false },
     },
-  ], // Thêm trường địa chỉ
+  ],
+
   role: { type: Number, default: 1 }, // 1 là user, 2 là admin
   carts: { type: Array, default: [] }, // Lịch sử mua hàng
   isVerify: { type: Number, default: 1 }, // 1: chưa xác thực, 2: đã xác thực

@@ -44,7 +44,6 @@ const ListAddress = ({navigation}) => {
       console.log(error);
     }
   };
-
   useFocusEffect(
     useCallback(() => {
       getListAddress();
@@ -88,13 +87,16 @@ const ListAddress = ({navigation}) => {
                         {item.userNameAddress}
                       </Text>
                       <Text style={styles.txt__list}>{item.phoneAddress}</Text>
-                      <Text style={styles.txt__list}>{item.addressDetail}</Text>
+                      <Text
+                        style={[styles.txt__list, {width: WITH__Screen * 0.8}]}>
+                        {item.addressDetail}, xã {item.ward}, huyện
+                        {item.district}, {item.province}
+                      </Text>
+                      {item.isDefault && (
+                        <Text style={styles.txt__default}>Mặc định</Text>
+                      )}
                     </View>
                   </TouchableOpacity>
-                  <Text
-                    style={[styles.txt__list, {width: WITH__Screen * 0.15}]}>
-                    {item.nameAddress}
-                  </Text>
                 </View>
               );
             }}
@@ -130,6 +132,16 @@ const ListAddress = ({navigation}) => {
 export default ListAddress;
 
 const styles = StyleSheet.create({
+  txt__default: {
+    color: 'orange',
+    marginLeft: 20,
+    textAlign: 'center',
+    height: 30,
+    width: 100,
+    borderWidth: 1,
+    borderColor: 'orange',
+  },
+
   container__add: {
     flex: 3,
     flexDirection: 'row',
@@ -149,7 +161,7 @@ const styles = StyleSheet.create({
   },
   container__list: {
     backgroundColor: '#F4F4F4',
-    height: HEIGHT__SCREEN * 0.1,
+    height: HEIGHT__SCREEN * 0.13,
     width: WITH__Screen * 0.9,
     marginHorizontal: 20,
     marginVertical: 20,
