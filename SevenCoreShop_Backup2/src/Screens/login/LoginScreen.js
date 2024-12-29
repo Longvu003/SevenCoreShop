@@ -33,7 +33,6 @@ const LoginScreen = ({navigation}) => {
       if (response.status === 200) {
         const user = JSON.stringify(response.data.data.email);
         const userId = JSON.stringify(response.data.data._id);
-        console.log(response.data);
         await AsyncStorage.setItem('userEmail', user);
         await AsyncStorage.setItem('userId', userId);
         navigation.navigate('Tab');

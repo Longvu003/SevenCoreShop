@@ -8,7 +8,10 @@ router.post("/addAddress", async (req, res) => {
     userId,
     userNameAddress,
     phoneAddress,
-    nameAddress,
+    province,
+    district,
+    // nameAddress,
+    ward,
     addressDetail,
     isDefault,
   } = req.body;
@@ -18,7 +21,10 @@ router.post("/addAddress", async (req, res) => {
       userId,
       userNameAddress,
       phoneAddress,
-      nameAddress,
+      province,
+      district,
+      ward,
+      // nameAddress,
       addressDetail,
       isDefault
     );
@@ -55,7 +61,9 @@ router.put("/updateAddressbyId", async (req, res) => {
     userNameAddress,
     phoneAddress,
     addressId,
-    nameAddress,
+    province,
+    district,
+    ward,
     addressDetail,
     isDefault,
   } = req.body;
@@ -65,7 +73,10 @@ router.put("/updateAddressbyId", async (req, res) => {
       userNameAddress,
       phoneAddress,
       addressId,
-      nameAddress,
+      province,
+      district,
+      ward,
+      // nameAddress,
       addressDetail,
       isDefault
     );

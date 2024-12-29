@@ -56,6 +56,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
       fetchAddresses();
     }, []),
   );
+
   const fetchBankDetails = async bankId => {
     try {
       const response = await axios.get(`${API_URL}/payonline/${bankId}`);
@@ -185,7 +186,12 @@ const PaymentAddressScreen = ({navigation, route}) => {
             <View style={styles.addressContent}>
               <View style={styles.addressDetails}>
                 <Text style={styles.addressText}>
-                  {addressItem.addressDetail || 'Không có địa chỉ'}
+                  {addressItem.userNameAddress}| {addressItem.phoneAddress}
+                </Text>
+                <Text style={styles.addressText}>
+                  {addressItem.addressDetail || 'Không có địa chỉ'}, Xã
+                  {addressItem.ward}, Huyện {addressItem.district},
+                  {addressItem.province}
                 </Text>
               </View>
             </View>
