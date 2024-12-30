@@ -5,169 +5,223 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  FlatList,
+  KeyboardAvoidingView,
+  ActivityIndicator,
+  ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Customheader from '../../../CustomHeader/Customheader';
-import {useState, useEffect} from 'react';
 import {Dimensions} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API__URL from '../../../../config';
-import {useFocusEffect} from '@react-navigation/native';
+import RNPickerSelect from 'react-native-picker-select';
+
 const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
+
 const AddAddress = ({navigation}) => {
   const [userNameAddress, setuserNameAddress] = useState('');
   const [phoneAddress, setPhoneAddress] = useState('');
   const [addressDetail, setAddressDetail] = useState('');
-  const [nameAddress, setnameAddress] = useState('');
   const [isDefault, setisDefault] = useState(false);
-  const [userNameError, setUserNameError] = useState('');
-  const [phoneError, setPhoneError] = useState('');
-  const [addressDetailError, setAddressDetailError] = useState('');
+  const [listDataAddress, setListDataAddress] = useState([]);
+  const [listDataDistrict, setListDataDistrict] = useState([]);
+  const [listDataWard, setListDataWard] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedWard, setSelectedWard] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const getListDataAddressvietNam = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `https://esgoo.net/api-tinhthanh/4/0.htm`,
+      );
+      setListDataAddress(response.data.data);
+    } catch (error) {
+      Alert.alert('Lỗi', 'Không thể lấy danh sách tỉnh/thành phố');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleProvinceSelect = provinceId => {
+    const selectedProvinceObj = listDataAddress.find(
+      item => item.id === provinceId,
+    );
+    if (selectedProvinceObj && selectedProvinceObj.data2) {
+      setListDataDistrict(selectedProvinceObj.data2);
+      setSelectedProvince(provinceId);
+    } else {
+      setListDataDistrict([]);
+      setSelectedProvince(null);
+    }
+    setSelectedDistrict(null);
+    setListDataWard([]);
+  };
+
+  const handleDistrictSelect = districtId => {
+    const selectedDistrictObj = listDataDistrict.find(
+      item => item.id === districtId,
+    );
+    if (selectedDistrictObj && selectedDistrictObj.data3) {
+      setListDataWard(selectedDistrictObj.data3);
+      setSelectedDistrict(districtId);
+    } else {
+      setListDataWard([]);
+      setSelectedDistrict(null);
+    }
+    setSelectedWard(null);
+  };
+
   const AddAddressUser = async () => {
     const OldUserId = await AsyncStorage.getItem('userId');
     const userId = JSON.parse(OldUserId);
+
+    if (!userNameAddress.trim()) {
+      return Alert.alert('Lỗi', 'Họ và tên không được để trống');
+    }
+    if (!phoneAddress.trim() || phoneAddress.length !== 10) {
+      return Alert.alert('Lỗi', 'Số điện thoại phải có 10 ký tự');
+    }
+    if (!selectedProvince || !selectedDistrict || !selectedWard) {
+      return Alert.alert(
+        'Lỗi',
+        'Vui lòng chọn đầy đủ Tỉnh/Thành, Quận/Huyện, Xã/Phường',
+      );
+    }
+    if (!addressDetail.trim()) {
+      return Alert.alert('Lỗi', 'Địa chỉ chi tiết không được để trống');
+    }
+    const addressInformation = {
+      userId,
+      userNameAddress,
+      phoneAddress,
+      addressDetail,
+      isDefault: isDefault,
+      province: listDataAddress.find(item => item.id === selectedProvince)
+        ?.name,
+      district: listDataDistrict.find(item => item.id === selectedDistrict)
+        ?.name,
+      ward: listDataWard.find(item => item.id === selectedWard)?.name,
+    };
     try {
-      if (
-        userNameAddress.trim().length < 5 ||
-        userNameAddress.trim().length > 15
-      ) {
-        setUserNameError('Họ tên phải có ít nhất 5 ký tự và tối đa 15 ký tự');
-      } else {
-        setUserNameError('');
-      }
-      if (phoneAddress.trim().length < 10) {
-        setPhoneError('Số điện thoại phải có độ dài 10 ký tự');
-      } else {
-        setPhoneError('');
-      }
-      if (
-        addressDetail.trim().length < 10 ||
-        addressDetail.trim().length > 60
-      ) {
-        setAddressDetailError(
-          'Địa chỉ phải có ít nhất 10 ký tự và tối đa 60 ký tự',
-        );
-      } else {
-        setAddressDetailError('');
-      }
-      const addressInformation = {
-        userId,
-        userNameAddress,
-        phoneAddress,
-        nameAddress,
-        addressDetail,
-        isDefault: isDefault,
-      };
       const url2 = `${API__URL}/address/addAddress`;
       await axios.post(url2, addressInformation, {
-        headers: 'application/x-www-form-urlencoded',
+        headers: {'Content-Type': 'application/json'},
       });
-      Alert.alert('Thông báo', 'Thêm thành công');
+      Alert.alert('Thông báo', 'Thêm địa chỉ thành công');
       navigation.navigate('ListAddress');
     } catch (error) {
+      Alert.alert('Lỗi', 'Không thể thêm địa chỉ');
       console.log(error);
       
     }
 
   };
-  const checkDefault = () => {
-    setisDefault(prevState => {
-      const newState = !prevState;
-      Alert.alert(
-        newState ? 'Đã mặc định' : 'Đã hủy địa chỉ mặc định',
-      );
-      return newState;
-    });
-  };
+
+  useEffect(() => {
+    getListDataAddressvietNam();
+  }, []);
+
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-      <View style={{flex: 1}}>
-        <Customheader
-          leftIcon={require('../../../../assets/imgs/back.png')}
-          title="Thêm địa chỉ"
-        />
-      </View>
-      <View style={{flex: 8}}>
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder="Họ và tên"
-            value={userNameAddress}
-            onChangeText={text => setuserNameAddress(text)}
-          />
-          {userNameError ? (
-            <Text style={styles.txt__error}>{userNameError}</Text>
-          ) : null}
-          <TextInput
-            style={styles.input}
-            placeholder="Số điện thoại"
-            value={phoneAddress}
-            keyboardType="numeric"
-            onChangeText={text => setPhoneAddress(text)}
-          />
-          {phoneError ? (
-            <Text style={styles.txt__error}>{phoneError}</Text>
-          ) : null}
-          <TextInput
-            style={styles.input}
-            placeholder="Tên riêng địa chỉ"
-            value={nameAddress}
-            onChangeText={text => setnameAddress(text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Thông tin địa chỉ"
-            value={addressDetail}
-            onChangeText={text => setAddressDetail(text)}
-          />
-          {addressDetailError ? (
-            <Text style={styles.txt__error}>{addressDetailError}</Text>
-          ) : null}
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView>
+        <View style={{flex: 1, backgroundColor: 'white'}}>
+          <View style={{flex: 1}}>
+            <Customheader
+              leftIcon={require('../../../../assets/imgs/back.png')}
+              title="Thêm địa chỉ"
+            />
+          </View>
+
+          <View style={{flex: 8, paddingHorizontal: 20}}>
+            {loading && <ActivityIndicator size="large" color="blue" />}
+            <TextInput
+              style={styles.input}
+              placeholder="Họ và tên"
+              value={userNameAddress}
+              onChangeText={text => setuserNameAddress(text)}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Số điện thoại"
+              value={phoneAddress}
+              keyboardType="numeric"
+              onChangeText={text => setPhoneAddress(text)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Thông tin địa chỉ"
+              value={addressDetail}
+              onChangeText={text => setAddressDetail(text)}
+            />
+
+            <View style={{flex: 2}}>
+              <RNPickerSelect
+                onValueChange={value => handleProvinceSelect(value)}
+                items={listDataAddress.map(province => ({
+                  label: province.name,
+                  value: province.id,
+                }))}
+                placeholder={{label: 'Chọn Tỉnh/Thành phố', value: null}}
+              />
+
+              {selectedProvince && (
+                <RNPickerSelect
+                  onValueChange={value => handleDistrictSelect(value)}
+                  items={listDataDistrict.map(district => ({
+                    label: district.name,
+                    value: district.id,
+                  }))}
+                  placeholder={{label: 'Chọn Quận/Huyện', value: null}}
+                />
+              )}
+
+              {selectedDistrict && (
+                <RNPickerSelect
+                  onValueChange={value => setSelectedWard(value)}
+                  items={listDataWard.map(ward => ({
+                    label: ward.name,
+                    value: ward.id,
+                  }))}
+                  placeholder={{label: 'Chọn Xã/Phường', value: null}}
+                />
+              )}
+            </View>
+          </View>
+
+          <View style={{flex: 2, alignItems: 'center'}}>
+            <TouchableOpacity
+              style={styles.btn__Save}
+              onPress={() => AddAddressUser()}>
+              <Text style={styles.txt__btn}>Thêm</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity
-          onPress={checkDefault}
-          style={styles.btn__setIsDefault}>
-          <Text>Đặt làm địa chỉ mặc định</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={{flex: 2, alignItems: 'center'}}>
-        <TouchableOpacity
-          style={styles.btn__Save}
-          onPress={() => AddAddressUser()}>
-          <Text style={styles.txt__btn}>Thêm</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
-export default AddAddress;
+
 const styles = StyleSheet.create({
-  btn__setIsDefault: {
-    backgroundColor: 'orange',
-    width: WITH__Screen * 0.9,
-    height: HEIGHT__SCREEN * 0.06,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 20,
-    borderRadius: 30,
-    marginTop: 30,
-  },
   input: {
-    borderRadius: 30,
     width: WITH__Screen * 0.9,
-    marginHorizontal: 20,
-    height: HEIGHT__SCREEN * 0.1,
-  },
-  txt__error: {
-    marginHorizontal: 10,
-    color: 'red',
+    height: HEIGHT__SCREEN * 0.08,
+    backgroundColor: '#F4F4F4',
+    marginTop: 20,
+    borderRadius: 10,
+    paddingHorizontal: 10,
   },
   txt__btn: {
     color: 'white',
-    fontWeight: '800',
+    fontWeight: 'bold',
   },
   btn__Save: {
     alignItems: 'center',
@@ -176,12 +230,8 @@ const styles = StyleSheet.create({
     width: WITH__Screen * 0.9,
     height: HEIGHT__SCREEN * 0.07,
     borderRadius: 20,
-  },
-  input: {
-    width: WITH__Screen * 0.9,
-    height: HEIGHT__SCREEN * 0.08,
-    backgroundColor: '#F4F4F4',
     marginTop: 20,
-    marginHorizontal: 20,
   },
 });
+
+export default AddAddress;

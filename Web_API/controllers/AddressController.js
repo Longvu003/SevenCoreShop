@@ -7,7 +7,10 @@ const addAddress = async (
   userId,
   userNameAddress,
   phoneAddress,
-  nameAddress,
+  // nameAddress,
+  province,
+  district,
+  ward,
   addressDetail,
   isDefault
 ) => {
@@ -29,9 +32,12 @@ const addAddress = async (
     user.address.push({
       userNameAddress,
       phoneAddress,
-      nameAddress,
+      province,
+      district,
+      // nameAddress,
+      ward,
       addressDetail,
-      isDefault,
+      isDefault: user.address.length === 0 ? true : false,
     });
 
     await user.save();
@@ -43,7 +49,6 @@ const addAddress = async (
 
 const getAddressById = async (userId, addressId) => {
   const user = await userModel.findOne({ _id: userId });
-
   if (!user) {
     return null;
   }
@@ -83,7 +88,11 @@ const updateAddressById = async (
   userNameAddress,
   phoneAddress,
   addressId,
-  nameAddress,
+  province,
+  district,
+  ward,
+  // nameAddress,
+
   addressDetail,
   isDefault
 ) => {
@@ -118,7 +127,11 @@ const updateAddressById = async (
       console.log("Không tìm thấy địa chỉ");
       return null;
     } else {
-      indexAddress.nameAddress = nameAddress;
+      // indexAddress.nameAddress = nameAddress;
+
+      indexAddress.ward = ward;
+      indexAddress.province = province;
+      indexAddress.district = district;
       indexAddress.addressDetail = addressDetail;
       indexAddress.userNameAddress = userNameAddress;
       indexAddress.phoneAddress = phoneAddress;
