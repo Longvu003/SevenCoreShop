@@ -86,7 +86,6 @@ const updateAddressById = async (
   district,
   ward,
   // nameAddress,
-
   addressDetail,
   isDefault
 ) => {
@@ -102,7 +101,6 @@ const updateAddressById = async (
       const defaultAddress = user.address.find(
         (addr) => addr.isDefault && addr._id.toString() !== addressId
       );
-
       if (defaultAddress) {
         throw new Error("Đã có địa chỉ mặc định khác tồn tại.");
       }

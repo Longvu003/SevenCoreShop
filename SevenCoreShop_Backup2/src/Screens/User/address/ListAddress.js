@@ -92,9 +92,14 @@ const ListAddress = ({navigation}) => {
                         {item.addressDetail}, xã {item.ward}, huyện
                         {item.district}, {item.province}
                       </Text>
-                      {item.isDefault && (
-                        <Text style={styles.txt__default}>Mặc định</Text>
-                      )}
+                      <View
+                        style={{
+                          alignItems: 'center',
+                        }}>
+                        {item.isDefault && (
+                          <Text style={styles.txt__default}>Mặc định</Text>
+                        )}
+                      </View>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -124,6 +129,7 @@ const ListAddress = ({navigation}) => {
           style={styles.btn__add}
           onPress={() => navigation.navigate('AddAddress')}>
           <Image source={require('../../../../assets/imgs/add.png')} />
+          <Text> Thêm địa chỉ</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -152,6 +158,8 @@ const styles = StyleSheet.create({
     width: WITH__Screen * 0.4,
     height: HEIGHT__SCREEN * 0.08,
     alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
   },
 
   txt__list: {

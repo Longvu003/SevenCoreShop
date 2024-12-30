@@ -93,8 +93,11 @@ const AddAddress = ({navigation}) => {
         'Vui lòng chọn đầy đủ Tỉnh/Thành, Quận/Huyện, Xã/Phường',
       );
     }
-    if (!addressDetail.trim()) {
-      return Alert.alert('Lỗi', 'Địa chỉ chi tiết không được để trống');
+    if (!addressDetail.trim() || addressDetail.length > 50) {
+      return Alert.alert(
+        'Lỗi',
+        'Địa chỉ chi tiết không được để trống và ko lớn hơn 50 ký tự',
+      );
     }
     const addressInformation = {
       userId,
