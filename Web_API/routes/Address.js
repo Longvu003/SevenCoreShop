@@ -15,7 +15,7 @@ router.post("/addAddress", async (req, res) => {
     addressDetail,
     isDefault,
   } = req.body;
-
+  console.log(province, district, ward);
   try {
     const item = await AddressController.addAddress(
       userId,
@@ -67,6 +67,8 @@ router.put("/updateAddressbyId", async (req, res) => {
     addressDetail,
     isDefault,
   } = req.body;
+
+  
   try {
     const item = await AddressController.updateAddressById(
       userId,

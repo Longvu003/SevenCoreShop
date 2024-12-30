@@ -92,66 +92,66 @@ const PaymentAddressScreen = ({navigation, route}) => {
   };
 
   const handlePayment = async () => {
-    // if (!selectedAddress) {
-    //   Alert.alert('Thông báo', 'Vui lòng chọn một địa chỉ giao hàng!');
-    //   return;
-    // }
-    // if (!paymentMethod) {
-    //   Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán!');
-    //   return;
-    // }
-    // if (paymentMethod === 'Ngân Hàng' && !selectedBank) {
-    //   Alert.alert('Thông báo', 'Vui lòng chọn ngân hàng!');
-    //   return;
-    // }
+    if (!selectedAddress) {
+      Alert.alert('Thông báo', 'Vui lòng chọn một địa chỉ giao hàng!');
+      return;
+    }
+    if (!paymentMethod) {
+      Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán!');
+      return;
+    }
+    if (paymentMethod === 'Ngân Hàng' && !selectedBank) {
+      Alert.alert('Thông báo', 'Vui lòng chọn ngân hàng!');
+      return;
+    }
 
-    // const orderData = {
-    //   userId: userID,
-    //   items: cartItems.map(item => ({
-    //     productId: item.productId,
-    //     name: item.nameProduct,
-    //     quantity: item.quantity,
-    //     price: item.price,
-    //     image: item.images[0],
-    //   })),
-    //   totalAmount,
-    //   address: selectedAddress,
-    //   paymentMethod,
-    //   bankId: selectedBank?.id,
-    // };
+    const orderData = {
+      userId: userID,
+      items: cartItems.map(item => ({
+        productId: item.productId,
+        name: item.nameProduct,
+        quantity: item.quantity,
+        price: item.price,
+        image: item.images[0],
+      })),
+      totalAmount,
+      address: selectedAddress,
+      paymentMethod,
+      bankId: selectedBank?.id,
+    };
 
-    // try {
-    //   const response = await axios.post(
-    //     `${API_URL}/Orders/checkout`,
-    //     orderData,
-    //   );
+    try {
+      const response = await axios.post(
+        `${API_URL}/Orders/checkout`,
+        orderData,
+      );
 
-    //   if (response.status === 201) {
-    //     // await resetCartOnServer(cartItems);
-    //     resetCart();
-    //     Alert.alert('Thông báo', 'Đặt hàng thành công!');
-    //     navigation.navigate('Tab');
-    //   } else {
-    //     throw new Error('Thanh toán không thành công.');
-    //   }
-    // } catch (error) {
-    //   // Kiểm tra và log chi tiết lỗi
-    //   if (error.response) {
-    //     console.log('Chi tiết lỗi từ server:', error.response.data);
-    //     Alert.alert(
-    //       'Lỗi',
-    //       error.response.data?.message || 'Không thể hoàn tất thanh toán.',
-    //     );
-    //   } else {
-    //     console.error('Lỗi không xác định:', error.message);
-    //     Alert.alert(
-    //       'Lỗi',
-    //       'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.',
-    //     );
-    //   }
-    // }
+      if (response.status === 201) {
+        // await resetCartOnServer(cartItems);
+        resetCart();
+        Alert.alert('Thông báo', 'Đặt hàng thành công!');
+        navigation.navigate('Tab');
+      } else {
+        throw new Error('Thanh toán không thành công.');
+      }
+    } catch (error) {
+      // Kiểm tra và log chi tiết lỗi
+      if (error.response) {
+        console.log('Chi tiết lỗi từ server:', error.response.data);
+        Alert.alert(
+          'Lỗi',
+          error.response.data?.message || 'Không thể hoàn tất thanh toán.',
+        );
+      } else {
+        console.error('Lỗi không xác định:', error.message);
+        Alert.alert(
+          'Lỗi',
+          'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.',
+        );
+      }
+    }
     // chuyển về màn hình home
-    navigation.navigate('QRPay');
+    //navigation.navigate('QRPay');
   };
 
   if (loading) {

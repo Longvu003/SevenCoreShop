@@ -14,15 +14,11 @@ const addAddress = async (
   addressDetail,
   isDefault
 ) => {
-  try {
-        console.log("userId:", userId);
-        console.log("userNameAddress:", userNameAddress);
-        console.log("phoneAddress:", phoneAddress);
-        console.log("nameAddress:", nameAddress);
-        console.log("addressDetail:", addressDetail);
-        console.log("isDefault:", isDefault);
-    const user = await userModel.findById(userId);
 
+  try {
+
+    const user = await userModel.findById(userId);
+  
     if (!user) {
       throw new Error("Không tìm thấy người dùng");
     }
@@ -41,6 +37,7 @@ const addAddress = async (
     });
 
     await user.save();
+    console.log(user.address)
     return user;
   } catch (error) {
     console.error("Error adding address:", error.message);
