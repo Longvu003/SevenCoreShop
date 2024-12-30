@@ -69,13 +69,15 @@ const AddAddress = ({navigation}) => {
       navigation.navigate('ListAddress');
     } catch (error) {
       console.log(error);
+      
     }
+
   };
   const checkDefault = () => {
     setisDefault(prevState => {
       const newState = !prevState;
       Alert.alert(
-        newState ? 'Đã chọn địa chỉ mặc định' : 'Đã hủy địa chỉ mặc định',
+        newState ? 'Đã mặc định' : 'Đã hủy địa chỉ mặc định',
       );
       return newState;
     });

@@ -12,6 +12,12 @@ const addAddress = async (
   isDefault
 ) => {
   try {
+        console.log("userId:", userId);
+        console.log("userNameAddress:", userNameAddress);
+        console.log("phoneAddress:", phoneAddress);
+        console.log("nameAddress:", nameAddress);
+        console.log("addressDetail:", addressDetail);
+        console.log("isDefault:", isDefault);
     const user = await userModel.findById(userId);
 
     if (!user) {

@@ -11,14 +11,13 @@ import {
   Dimensions,
 } from 'react-native';
 import axios from 'axios';
-import API_URL from '../../../config';
+import API_URL from '../../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useCart} from '../Cart/CartProdvider';
-import API__URL from '../../../config';
+import {useCart} from '../../Cart/CartProdvider';
 import {useFocusEffect} from '@react-navigation/native';
 const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
-const PaymentAddressScreen = ({navigation, route}) => {
+const QRPay = ({navigation, route}) => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
@@ -168,56 +167,16 @@ const PaymentAddressScreen = ({navigation, route}) => {
         style={styles.backButton}
         onPress={() => navigation.goBack()}>
         <Image
-          source={require('../../../assets/imgs/back4.png')}
+          source={require('../../../../assets/imgs/back4.png')}
           style={styles.backIcon}
         />
       </TouchableOpacity>
 
-      <Text style={styles.sectionHeader}>Giao Hàng</Text>
 
-      {addresses.length > 0 ? (
-        addresses.map(addressItem => (
-          <TouchableOpacity
-            key={addressItem._id}
-            style={[
-              styles.addressCard,
-              selectedAddress?._id === addressItem._id && styles.selectedCard,
-            ]}
-            onPress={() => setSelectedAddress(addressItem)}>
-            <View style={styles.addressContent}>
-              <View style={styles.addressDetails}>
-                <Text style={styles.addressText}>
-                  {addressItem.addressDetail || 'Không có địa chỉ'}
-                </Text>
-              </View>
-            </View>
-            <Text style={styles.selectText}>
-              {selectedAddress?._id === addressItem._id ? 'Đã chọn' : 'Chọn'}
-            </Text>
-          </TouchableOpacity>
-        ))
-      ) : (
-        <View>
-          <TouchableOpacity onPress={() => navigation.navigate('AddAddress')}>
-            <Text style={{fontSize: 16, fontWeight: '800'}}>
-              Chưa có địa chỉ giao hàng, nhấn vào để thêm
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
-      <Text style={styles.sectionHeader}>Chọn Phương Thức Thanh Toán</Text>
+
+      <Text style={styles.sectionHeader}>Thanh toán Online</Text>
       <View style={styles.paymentOptions}>
-        <TouchableOpacity
-          style={[
-            styles.paymentOption,
-            paymentMethod === 'Tiền mặt' && styles.selectedPayment,
-          ]}
-          onPress={() => setPaymentMethod('Tiền mặt')}>
-          <Text style={styles.paymentOptionText}>
-            {paymentMethod === 'Tiền mặt' ? '✅ Tiền mặt' : 'Tiền mặt'}
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.paymentOption,
@@ -265,28 +224,8 @@ const PaymentAddressScreen = ({navigation, route}) => {
         </View>
       )}
 
-      <Text style={styles.sectionHeader}>Thông Tin Giỏ Hàng</Text>
-      {cartItems.map((item, index) => (
-        <View key={index} style={styles.cartItem}>
-          <Image source={{uri: item.images[0]}} style={styles.cartItemImage} />
-          <View style={styles.cartItemDetails}>
-            <Text style={styles.cartItemName}>{item.nameProduct}</Text>
-            <Text style={styles.cartItemQuantity}>
-              Số lượng: {item.quantity}
-            </Text>
-            <Text style={styles.cartItemPrice}>
-              {item.price * item.quantity} VNĐ
-            </Text>
-          </View>
-        </View>
-      ))}
-      <View style={styles.totalAmountContainer}>
-        <Text style={styles.totalAmountText}>Tổng Tiền: {totalAmount} VNĐ</Text>
-      </View>
 
-      <TouchableOpacity style={styles.checkoutButton} onPress={handlePayment}>
-        <Text style={styles.checkoutButtonText}>Thanh Toán</Text>
-        </TouchableOpacity>
+
     </ScrollView>
   );
 };
@@ -485,4 +424,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PaymentAddressScreen;
+export default QRPay;

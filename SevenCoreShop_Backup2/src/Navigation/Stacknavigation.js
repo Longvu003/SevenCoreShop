@@ -26,6 +26,7 @@ import PaymentAddressScreen from '../Screens/HomeSceen/PaymentAddressScreen';
 import CartProdvider from '../Screens/Cart/CartProdvider';
 import SearchOrder from '../Screens/Order/SearchOrder';
 import AddAddress from '../Screens/User/address/AddAddress';
+import QRPay from '../Screens/User/payment/QRPay';
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
@@ -48,6 +49,7 @@ const Stacknavigation = () => {
           <Stack.Screen name="EditUser" component={EditUser} />
           <Stack.Screen name="ProductDetail" component={ProductDetail} />
           <Stack.Screen name="CartScreen" component={CartScreen} />
+          <Stack.Screen name="QRPay" component={QRPay} />
           <Stack.Screen
             name="AllProductsScreen"
             component={AllProductsScreen}
