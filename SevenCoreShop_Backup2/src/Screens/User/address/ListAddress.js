@@ -89,8 +89,8 @@ const ListAddress = ({navigation}) => {
                       <Text style={styles.txt__list}>{item.phoneAddress}</Text>
                       <Text
                         style={[styles.txt__list, {width: WITH__Screen * 0.8}]}>
-                        {item.addressDetail}, xã {item.ward}, huyện
-                        {item.district}, {item.province}
+                        {item.addressDetail}, {item.ward}, {item.district},
+                        {item.province}
                       </Text>
                       <View
                         style={{

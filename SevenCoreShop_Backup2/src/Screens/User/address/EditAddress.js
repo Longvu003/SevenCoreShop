@@ -157,10 +157,10 @@ const EditAddress = ({navigation, route}) => {
         phoneAddress,
         addressDetail,
         province: listDataAddress.find(item => item.id === selectedProvince)
-          ?.name,
+          ?.full_name,
         district: listDataDistrict.find(item => item.id === selectedDistrict)
-          ?.name,
-        ward: listDataWard.find(item => item.id === selectedWard)?.name,
+          ?.full_name,
+        ward: listDataWard.find(item => item.id === selectedWard)?.full_name,
         isDefault,
       };
 
@@ -261,7 +261,7 @@ const EditAddress = ({navigation, route}) => {
             <RNPickerSelect
               onValueChange={value => handleProvinceSelect(value)}
               items={listDataAddress.map(province => ({
-                label: province.name,
+                label: province.full_name,
                 value: province.id,
               }))}
               placeholder={{
@@ -274,7 +274,7 @@ const EditAddress = ({navigation, route}) => {
             <RNPickerSelect
               onValueChange={value => handleDistrictSelect(value)}
               items={listDataDistrict.map(district => ({
-                label: district.name,
+                label: district.full_name,
                 value: district.id,
               }))}
               placeholder={{label: 'Chọn Quận/Huyện', value: null}}
@@ -284,7 +284,7 @@ const EditAddress = ({navigation, route}) => {
             <RNPickerSelect
               onValueChange={value => handleWardSelect(value)}
               items={listDataWard.map(ward => ({
-                label: ward.name,
+                label: ward.full_name,
                 value: ward.id,
               }))}
               placeholder={{label: 'Chọn Xã/Phường', value: null}}

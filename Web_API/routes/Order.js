@@ -9,12 +9,10 @@ router.post("/updateStatusPay", async (req, res) => {
     return res.status(200).json(order);
   } catch (error) {
     console.error("Lỗi khi cập nhật trạng thái thanh toán:", error);
-    res
-      .status(500)
-      .json({
-        message: "Lỗi khi cập nhật trạng thái thanh toán",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Lỗi khi cập nhật trạng thái thanh toán",
+      error: error.message,
+    });
   }
 });
 
@@ -26,12 +24,10 @@ router.post("/updateStatus", async (req, res) => {
     return res.status(200).json(order);
   } catch (error) {
     console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
-    res
-      .status(500)
-      .json({
-        message: "Lỗi khi cập nhật trạng thái đơn hàng",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Lỗi khi cập nhật trạng thái đơn hàng",
+      error: error.message,
+    });
   }
 });
 
@@ -46,6 +42,7 @@ router.get("/getOrderUserById", async (req, res) => {
   const { userId } = req.query;
   try {
     const itemOrder = await OrderController.getOrderUserById(userId);
+    // console.log(itemOrder[0].address);
     if (itemOrder) {
       return res.status(200).json(itemOrder);
     } else {

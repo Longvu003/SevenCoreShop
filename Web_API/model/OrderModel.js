@@ -29,16 +29,27 @@ const orderSchema = new mongoose.Schema({
         type: String,
         match: [/^\d{10,11}$/, "Số điện thoại phải có 10-11 chữ số"],
       },
-      nameAddress: {
+      addressDetail: {
         type: String,
-        minlength: 3,
-        maxlength: 15,
+        required: true,
+        minlength: [3, "Địa chỉ phải có ít nhất 3 ký tự"],
+        maxlength: [60, "Địa chỉ  không được vượt quá 60 ký tự"],
+      },
+      province: {
+        type: String,
+        required: true,
+      },
+      district: {
+        type: String,
+        required: true,
+      },
+      ward: {
+        type: String,
       },
       addressDetail: {
         type: String,
         required: true,
-        minlength: [10, "Địa chỉ phải có ít nhất 10 ký tự"],
-        maxlength: [60, "Địa chỉ  không được vượt quá 60 ký tự"],
+        maxlength: [50],
       },
     },
   ],

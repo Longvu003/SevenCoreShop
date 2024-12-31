@@ -18,6 +18,7 @@ export const CartProdvider = ({children}) => {
   const [dataOrder, setDataOrder] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const getDataCart = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');

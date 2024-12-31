@@ -1,5 +1,4 @@
 const { default: mongoose } = require("mongoose");
-const AddressModel = require("../model/AddressModel");
 const userModel = require("../model/UserModel");
 const ObjectId = mongoose.Types.ObjectId;
 
