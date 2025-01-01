@@ -1,5 +1,4 @@
 const { default: mongoose } = require("mongoose");
-const AddressModel = require("../model/AddressModel");
 const userModel = require("../model/UserModel");
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -86,7 +85,6 @@ const updateAddressById = async (
   district,
   ward,
   // nameAddress,
-
   addressDetail,
   isDefault
 ) => {
@@ -102,7 +100,6 @@ const updateAddressById = async (
       const defaultAddress = user.address.find(
         (addr) => addr.isDefault && addr._id.toString() !== addressId
       );
-
       if (defaultAddress) {
         throw new Error("Đã có địa chỉ mặc định khác tồn tại.");
       }

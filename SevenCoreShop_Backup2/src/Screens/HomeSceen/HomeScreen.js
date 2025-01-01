@@ -7,37 +7,48 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  RefreshControl,
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdScreen from './AdScreen';
 import HomeStyle from '../../StyleSheets/HomeStyle';
+import {useCallback} from 'react';
 const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [user, setUser] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(`${API__URL}/products/`);
+      const ArrayProduct = response.data.data;
+      setProducts(ArrayProduct);
+    } catch (error) {
+      console.log('Error fetching products:', error);
+    }
+  };
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(`${API__URL}/categories/`);
+      const fixResponse = response.data.data;
+      setCategories(fixResponse);
+    } catch (error) {
+      console.log('Error fetching categories:', error);
+    }
+  };
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(`${API__URL}/products/`);
-        const ArrayProduct = response.data.data;
-        setProducts(ArrayProduct);
-      } catch (error) {
-        console.log('Error fetching products:', error);
-      }
-    };
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(`${API__URL}/categories/`);
-        const fixResponse = response.data.data;
-        setCategories(fixResponse);
-      } catch (error) {
-        console.log('Error fetching categories:', error);
-      }
-    };
     fetchProducts();
     fetchCategories();
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    setTimeout(async () => {
+      await Promise.all([fetchProducts(), fetchCategories()]);
+      setRefreshing(false);
+    }, 1000);
   }, []);
 
   const getInforUser = async () => {
@@ -75,7 +86,11 @@ const HomeScreen = ({navigation}) => {
           <Image source={require('../../../assets/imgs/search.png')} />
         </TouchableOpacity>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        showsVerticalScrollIndicator={false}>
         <AdScreen navigation={navigation} />
         <View style={HomeStyle.categoryHeader}>
           <Text style={HomeStyle.sectionTitle}>Loại Sản Phẩm</Text>

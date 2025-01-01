@@ -36,7 +36,7 @@ const EditAddress = ({navigation, route}) => {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedWard, setSelectedWard] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [listIsDefault, setListIsDefault] = useState([]);
   const {item} = route.params;
   const getEmailUser = async () => {
     try {
@@ -136,16 +136,19 @@ const EditAddress = ({navigation, route}) => {
       } else {
         setPhoneError('');
       }
-      if (
-        addressDetail.trim().length < 10 ||
-        addressDetail.trim().length > 60
-      ) {
+      if (addressDetail.trim().length < 5) {
         setAddressDetailError(
           'Địa chỉ phải có ít nhất 10 ký tự và tối đa 60 ký tự',
         );
         return false;
       } else {
         setAddressDetailError('');
+      }
+      if (!selectedProvince || !selectedDistrict || !selectedWard) {
+        return Alert.alert(
+          'Lỗi',
+          'Vui lòng chọn đầy đủ Tỉnh/Thành, Quận/Huyện, Xã/Phường',
+        );
       }
       const addressInformation = {
         userId,
@@ -154,11 +157,11 @@ const EditAddress = ({navigation, route}) => {
         phoneAddress,
         addressDetail,
         province: listDataAddress.find(item => item.id === selectedProvince)
-          ?.name,
+          ?.full_name,
         district: listDataDistrict.find(item => item.id === selectedDistrict)
-          ?.name,
-        ward: listDataWard.find(item => item.id === selectedWard)?.name,
-        isDefault: isDefault,
+          ?.full_name,
+        ward: listDataWard.find(item => item.id === selectedWard)?.full_name,
+        isDefault,
       };
 
       const response = await axios.put(url2, addressInformation, {
@@ -171,11 +174,44 @@ const EditAddress = ({navigation, route}) => {
         Alert.alert('Lỗi', response.data?.message || 'Đã xảy ra lỗi.');
       }
     } catch (error) {
-      Alert.alert('Lỗi', response.data?.message || 'Đã xảy ra lỗi.');
+      console.log(error);
     }
   };
+
+  const onChangeIsdefault = async () => {
+    const checkIsDefault = listIsDefault.find(item => item.isDefault === true);
+    if (checkIsDefault) {
+      const otherAddresses = listIsDefault.filter(
+        item => item.isDefault !== true,
+      );
+      if (otherAddresses) {
+        Alert.alert(
+          'Thông báo',
+          'Bạn chưa chọn địa chỉ khác làm mặc định. Vui lòng chọn một địa chỉ khác để thay đổi mặc định.',
+        );
+        return null;
+      }
+    } else {
+      Alert.alert(
+        'Thông báo',
+        'Đã có địa chỉ mặc định, bạn vẫn muốn thay đổi?',
+      );
+    }
+    setisDefault(!isDefault);
+  };
+
+  const getListAddress = async () => {
+    const userEmail = await AsyncStorage.getItem('userEmail');
+    const newUserEmail = JSON.parse(userEmail);
+    const response = await axios.get(
+      `${API__URL}/users/getUserEmail?email=${newUserEmail}`,
+    );
+    setListIsDefault(response.data.data.address);
+  };
+
   useEffect(() => {
     getEmailUser();
+    getListAddress();
   }, []);
   useEffect(() => {
     getListDataAddressvietNam();
@@ -225,7 +261,7 @@ const EditAddress = ({navigation, route}) => {
             <RNPickerSelect
               onValueChange={value => handleProvinceSelect(value)}
               items={listDataAddress.map(province => ({
-                label: province.name,
+                label: province.full_name,
                 value: province.id,
               }))}
               placeholder={{
@@ -238,7 +274,7 @@ const EditAddress = ({navigation, route}) => {
             <RNPickerSelect
               onValueChange={value => handleDistrictSelect(value)}
               items={listDataDistrict.map(district => ({
-                label: district.name,
+                label: district.full_name,
                 value: district.id,
               }))}
               placeholder={{label: 'Chọn Quận/Huyện', value: null}}
@@ -248,12 +284,36 @@ const EditAddress = ({navigation, route}) => {
             <RNPickerSelect
               onValueChange={value => handleWardSelect(value)}
               items={listDataWard.map(ward => ({
-                label: ward.name,
+                label: ward.full_name,
                 value: ward.id,
               }))}
               placeholder={{label: 'Chọn Xã/Phường', value: null}}
               value={selectedWard}
             />
+
+            <View
+              style={{
+                width: WITH__Screen * 1,
+                height: 50,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <TouchableOpacity
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderWidth: 1,
+                  borderRadius: 50,
+                  borderColor: 'orange',
+                  marginHorizontal: 10,
+                }}
+                onPress={onChangeIsdefault}>
+                {isDefault && <View style={styles.innerCircle}></View>}
+              </TouchableOpacity>
+
+              <Text>{isDefault ? '  Bỏ mặc định' : 'Mặc định'}</Text>
+            </View>
           </View>
         </View>
         <View style={{flex: 2, alignItems: 'center'}}>
@@ -270,8 +330,14 @@ const EditAddress = ({navigation, route}) => {
 
 export default EditAddress;
 const styles = StyleSheet.create({
-  btn__setIsDefault: {
+  innerCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 50,
     backgroundColor: 'orange',
+  },
+  btn__setIsDefault: {
+    backgroundColor: 'black',
     width: WITH__Screen * 0.9,
     height: HEIGHT__SCREEN * 0.06,
     alignItems: 'center',

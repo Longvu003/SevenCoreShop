@@ -36,6 +36,7 @@ const OrderScreen = ({navigation}) => {
   useEffect(() => {
     getOrderBystatus();
   }, [statusOrder]);
+
   return (
     <View style={{flex: 1}}>
       <View style={{height: HEIGHT__SCREEN * 0.06}}>
@@ -53,22 +54,46 @@ const OrderScreen = ({navigation}) => {
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
         <TouchableOpacity
-          style={OrderScreenStyle.btn__status}
+          style={[
+            OrderScreenStyle.btn__status,
+            statusOrder === 'Đã hủy' && {
+              borderBottomWidth: 2,
+              borderBottomColor: 'orange',
+            },
+          ]}
           onPress={() => setStatusOrder('Đã hủy')}>
           <Text>Đã hủy</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={OrderScreenStyle.btn__status}
+          style={[
+            OrderScreenStyle.btn__status,
+            statusOrder === 'Đang xử lý' && {
+              borderBottomWidth: 2,
+              borderBottomColor: 'orange',
+            },
+          ]}
           onPress={() => setStatusOrder('Đang xử lý')}>
           <Text>Đang xử lý</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={OrderScreenStyle.btn__status}
+          style={[
+            OrderScreenStyle.btn__status,
+            statusOrder === 'Đã giao hàng' && {
+              borderBottomWidth: 2,
+              borderBottomColor: 'orange',
+            },
+          ]}
           onPress={() => setStatusOrder('Đã giao hàng')}>
           <Text>Đã giao hàng</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={OrderScreenStyle.btn__status}
+          style={[
+            OrderScreenStyle.btn__status,
+            statusOrder === 'Giao thành công' && {
+              borderBottomWidth: 2,
+              borderBottomColor: 'orange',
+            },
+          ]}
           onPress={() => setStatusOrder('Giao thành công')}>
           <Text>Giao thành công</Text>
         </TouchableOpacity>

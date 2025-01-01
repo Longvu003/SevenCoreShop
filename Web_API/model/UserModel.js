@@ -37,6 +37,7 @@ const UserSchema = new Schema({
       addressDetail: {
         type: String,
         required: true,
+        maxlength: [50],
       },
       isDefault: { type: Boolean, default: false },
     },

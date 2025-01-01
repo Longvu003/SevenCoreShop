@@ -93,8 +93,11 @@ const AddAddress = ({navigation}) => {
         'Vui lòng chọn đầy đủ Tỉnh/Thành, Quận/Huyện, Xã/Phường',
       );
     }
-    if (!addressDetail.trim()) {
-      return Alert.alert('Lỗi', 'Địa chỉ chi tiết không được để trống');
+    if (!addressDetail.trim() || addressDetail.length > 50) {
+      return Alert.alert(
+        'Lỗi',
+        'Địa chỉ chi tiết không được để trống và ko lớn hơn 50 ký tự',
+      );
     }
     const addressInformation = {
       userId,
@@ -103,10 +106,10 @@ const AddAddress = ({navigation}) => {
       addressDetail,
       isDefault: isDefault,
       province: listDataAddress.find(item => item.id === selectedProvince)
-        ?.name,
+        ?.full_name,
       district: listDataDistrict.find(item => item.id === selectedDistrict)
-        ?.name,
-      ward: listDataWard.find(item => item.id === selectedWard)?.name,
+        ?.full_name,
+      ward: listDataWard.find(item => item.id === selectedWard)?.full_name,
     };
     try {
       const url2 = `${API__URL}/address/addAddress`;
@@ -165,7 +168,7 @@ const AddAddress = ({navigation}) => {
               <RNPickerSelect
                 onValueChange={value => handleProvinceSelect(value)}
                 items={listDataAddress.map(province => ({
-                  label: province.name,
+                  label: province.full_name,
                   value: province.id,
                 }))}
                 placeholder={{label: 'Chọn Tỉnh/Thành phố', value: null}}
@@ -175,7 +178,7 @@ const AddAddress = ({navigation}) => {
                 <RNPickerSelect
                   onValueChange={value => handleDistrictSelect(value)}
                   items={listDataDistrict.map(district => ({
-                    label: district.name,
+                    label: district.full_name,
                     value: district.id,
                   }))}
                   placeholder={{label: 'Chọn Quận/Huyện', value: null}}
@@ -186,7 +189,7 @@ const AddAddress = ({navigation}) => {
                 <RNPickerSelect
                   onValueChange={value => setSelectedWard(value)}
                   items={listDataWard.map(ward => ({
-                    label: ward.name,
+                    label: ward.full_name,
                     value: ward.id,
                   }))}
                   placeholder={{label: 'Chọn Xã/Phường', value: null}}
