@@ -2,6 +2,7 @@
 export interface Category {
     category_id: string;
     category_name: string;
+    
 }
 
 export interface Products {
@@ -12,7 +13,7 @@ export interface Products {
     images: string;
     description: string;
     category: Category;
-    avaialble: boolean;
+    available: boolean;
     creatAt: string;
     updateAt: string;
 }

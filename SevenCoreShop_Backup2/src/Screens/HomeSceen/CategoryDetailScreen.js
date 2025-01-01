@@ -1,44 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
-
-const CategoryDetailScreen = ({ navigation, route }) => {
-  const { category } = route.params;
+import Customheader from '../../CustomHeader/Customheader';
+const CategoryDetailScreen = ({navigation, route}) => {
+  const {category} = route.params;
   const [products, setProducts] = useState([]);
+  const category_id = category._id;
 
-  useEffect(() => {
+  const getProduct = () => {
     axios
-      .get(`${API__URL}/products/category/${category._id}`)
+      .get(`${API__URL}/products/category?category_id=${category_id}`)
       .then(response => {
-        setProducts(response.data.data);
+        setProducts(response.data.data || []);
       })
-      .catch(error => console.error('Lỗi lấy sản phẩm:', error));
-  }, [category._id]);
-
+      .catch(error => {
+        console.log(
+          'Error fetching products:',
+          error.response?.data?.message || error.message,
+        );
+      });
+  };
+  useEffect(() => {
+    getProduct();
+  }, []);
   return (
     <View style={styles.container}>
-      {/* Back Button */}
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>Back</Text>
-      </TouchableOpacity>
+      <Customheader
+        leftIcon={require('../../../assets/imgs/back4.png')}
+        onLeftPress={() => navigation.goBack()}
+        title={category.name || 'Danh Mục'}
+        containerStyle={styles.customHeaderContainer}
+      />
 
-      {/* Category Title */}
-      <Text style={styles.title}>{category.name}</Text>
-
-      {/* Product List */}
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={products}
         keyExtractor={item => item._id}
-        numColumns={2} // This ensures two columns
-        renderItem={({ item }) => (
-          <View style={styles.productCard}>
-            <Image source={{ uri: item.images[0] }} style={styles.productImage} />
+        numColumns={2}
+        contentContainerStyle={{marginTop: 10}}
+        renderItem={({item}) => (
+          <TouchableOpacity
+            style={styles.productCard}
+            onPress={() => navigation.navigate('ProductDetail', {item})}>
+            <Image source={{uri: item.images[0]}} style={styles.productImage} />
             <Text style={styles.productName}>{item.name}</Text>
             <Text style={styles.productPrice}>${item.price}</Text>
-          </View>
+          </TouchableOpacity>
         )}
-        columnWrapperStyle={styles.columnWrapper} 
+        columnWrapperStyle={styles.columnWrapper}
       />
     </View>
   );
@@ -47,56 +64,46 @@ const CategoryDetailScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#fff',
   },
-  backButton: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    padding: 10,
-    backgroundColor: '#000',
-    borderRadius: 5,
+  customHeaderContainer: {
+    marginBottom: 10,
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 15,
   },
-  backButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  title: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'black',
+  errorText: {
+    color: 'red',
     textAlign: 'center',
-    marginTop: 50,
+    fontSize: 16,
+    marginVertical: 10,
   },
   productCard: {
-    width: '50%', 
+    width: '48%',
     backgroundColor: '#F4F4F4',
     borderRadius: 8,
     padding: 10,
-    alignItems: 'center', 
-    marginBottom: 20, 
+    alignItems: 'center',
+    marginBottom: 20,
   },
   productImage: {
-    width: 160,
-    height: 100,
+    width: 140,
+    height: 90,
     borderRadius: 8,
     marginBottom: 8,
   },
   productName: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
     color: '#000',
   },
   productPrice: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#ff5722',
     textAlign: 'center',
   },
   columnWrapper: {
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
   },
 });
 

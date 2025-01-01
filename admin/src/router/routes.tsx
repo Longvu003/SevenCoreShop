@@ -1,5 +1,7 @@
 import { lazy } from 'react';
 import PrivateRoute from './PrivateRoute';  // Import the PrivateRoute component
+import Scrumboard from '../pages/AdvertisementManagent';
+import Advertisement from '../pages/AdvertisementManagent';
 
 const Index = lazy(() => import('../pages/Analytics'));
 const ProductManagent = lazy(() => import('../pages/ProductManagent'));
@@ -11,6 +13,12 @@ const ProductCreateNew = lazy(() => import('../pages/ProductCreatNew'));
 const ProductUpdate = lazy(() => import('../pages/ProductEdit'));
 const CategoriesUpdate = lazy(() => import('../pages/CategoriesNew'));
 const CategoryEdit = lazy(() => import('../pages/CategoriesEdit'));
+const OrderManagent = lazy(() => import('../pages/OrderManagement'));
+const PayOnlineManagement = lazy(() => import('../pages/PayOnlineManagement'));
+const PayOnlineNew = lazy(() => import('../pages/PayonlineNew'));
+const TransactionManagement = lazy(() => import('../pages/TransactionsManagement'));
+const Usermanagent = lazy(() => import('../pages/UsersManagent'));
+
 const routes = [
     // dashboard (protected)
     {
@@ -18,6 +26,38 @@ const routes = [
         element: (
             <PrivateRoute>
                 <Index />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/transactionmanagement',
+        element: (
+            <PrivateRoute>
+                <TransactionManagement />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/payonline/new',
+        element: (
+            <PrivateRoute>
+                <PayOnlineNew />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/payonlineManagent',
+        element: (
+            <PrivateRoute>
+                <PayOnlineManagement />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/orderManagent',
+        element: (
+            <PrivateRoute>
+                <OrderManagent />
             </PrivateRoute>
         ),
     },
@@ -61,11 +101,28 @@ const routes = [
             </PrivateRoute>
         ),
     },
+        // user (protected)
+        {
+            path: '/usermanagent',
+            element: (
+                <PrivateRoute>
+                    <Usermanagent />
+                </PrivateRoute>
+            ),
+        },
     {
         path: '/product/product-update',
         element: (
             <PrivateRoute>
                 <ProductUpdate />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: '/advertising-management',
+        element: (
+            <PrivateRoute>
+                <Advertisement />   
             </PrivateRoute>
         ),
     },

@@ -62,15 +62,16 @@ export default function ProductCreateNew() {
                     method: 'POST',
                     body: data
                 });
-
+    
                 const result = await response.json();
                 console.log('Uploaded image:', result['url']);
                 setImages((prevImages) => [...prevImages, result['url']]);
             }
         } catch (error) {
-            console.error('Error uploading image:', error);
+            console.error('Error uploading images:', error);
         }
     };
+    
 
     const removeImage = (img: string) => {
         setImages((prevImages) => prevImages.filter(item => item !== img));
@@ -83,7 +84,7 @@ export default function ProductCreateNew() {
                 ...dataProduct,
                 price: Number(dataProduct.price),
                 quantity: Number(dataProduct.quantity),
-                category: dataProduct.category.category_name, // Assuming backend expects category ID
+                category: dataProduct.category.category_name,
                 images
             };
             console.log("Payload being sent to server:", newProduct);
@@ -115,7 +116,7 @@ export default function ProductCreateNew() {
     return (
         <form className="space-y-5" onSubmit={clickCreateNew}>
             <div>
-                <label htmlFor="productName">Product Name</label>
+                <label htmlFor="productName">Tên Sản Phẩm</label>
                 <input
                     id="productName"
                     type="text"
@@ -128,7 +129,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productPrice">Product Price</label>
+                <label htmlFor="productPrice">Giá bán</label>
                 <input
                     id="productPrice"
                     type="number"
@@ -141,7 +142,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productQuantity">Product Quantity</label>
+                <label htmlFor="productQuantity">Số lượng</label>
                 <input
                     id="productQuantity"
                     type="number"
@@ -154,7 +155,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productDescription">Product Description</label>
+                <label htmlFor="productDescription">Mô tả sản phẩm</label>
                 <input
                     id="productDescription"
                     type="text"
@@ -167,7 +168,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productCategory">Product Categories</label>
+                <label htmlFor="productCategory">Danh mục sản phẩm</label>
                 <select
                     id="productCategory"
                     name="category_name"
@@ -176,7 +177,7 @@ export default function ProductCreateNew() {
                     className="form-multiselect text-white-dark"
                     required
                 >
-                    <option value="">Select Category</option>
+                    <option value="">Nhấn để chọn danh mục của sản phẩm</option>
                     {categories.map((item, index) => (
                         <option key={index} value={item._id}>{item.name}</option>
                     ))}
@@ -184,7 +185,7 @@ export default function ProductCreateNew() {
             </div>
 
             <div>
-                <label htmlFor="productImages">Images</label>
+                <label htmlFor="productImages">Hình ảnh</label>
                 <input
                     id="productImages"
                     type="file"
@@ -220,7 +221,7 @@ export default function ProductCreateNew() {
             </div>
 
             <button type="submit" className="btn btn-primary !mt-6">
-                Submit
+                Lưu
             </button>
         </form>
     );

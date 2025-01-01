@@ -13,7 +13,7 @@ export const categoryController = () => {
           console.error('Failed to get categories', error);
           return error
       }
-  }
+  };
 
   const deleteCategoriesById = async (id: string) => {
       try {
@@ -23,7 +23,7 @@ export const categoryController = () => {
           console.error('Failed to delete categories', error);
           return error
       }
-  }
+  };
 
   const updateCategories = async (id: string | undefined,category:Category) => {
       try {
@@ -33,7 +33,7 @@ export const categoryController = () => {
           console.error('Failed to update categories', error);
           return error
       }
-  }
+  };
 
   const createCategories = async (category:Category) => {
       try {
@@ -43,7 +43,7 @@ export const categoryController = () => {
           console.error('Failed to create categories', error);
           return error
       }
-  }
+  };
 
   // getCategoriesbyId
   const getCategoriesById = async (id: string) => {
@@ -54,7 +54,7 @@ export const categoryController = () => {
         console.error('Failed to get id categories', error);
         return error
     }
-}
+  };
 
   return {
       getCategories, deleteCategoriesById, updateCategories, createCategories,getCategoriesById

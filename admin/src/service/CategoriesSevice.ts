@@ -1,10 +1,13 @@
 import React from "react"
 import { Category } from "../model/CategoriesModel"
-import { GetProductByCategoryId } from "./ProducService"
-const API_URL = "http://192.168.1.8:7777"
+const API_URL = "http://localhost:7777"
+import Swal from "sweetalert2"
+import withReactContent from "sweetalert2-react-content"
+
+const MySwal = withReactContent(Swal)
 
 export const GetCategories = async (): Promise<Category> => {
-    const response = await fetch(`${API_URL}/categories/getAllcategory`, {
+    const response = await fetch(`${API_URL}/categories`, {
         method: "get",
         headers: {
             "Content-Type": "application/json",
@@ -16,49 +19,38 @@ export const GetCategories = async (): Promise<Category> => {
         return data
     }
 
-    return data // Trả về đối tượng Hospital
+    return data
 }
 
 export const DeleteCategoriesByid = async (id: string): Promise<void> => {
     try {
-        // // Fetch products by category ID
-        // const products = await GetProductByCategoryId(id);
-
-        // // Handle undefined or null product response
-        // if (!products) {
-        //     console.error('Error fetching products for category:', id);
-        //     alert('Lỗi khi lấy sản phẩm. Vui lòng thử lại.');
-        //     return; // Stop further execution
-        // }
-
-        // // Check if category contains active products
-        // if (products.length > 0) {
-        //     alert("Không thể xóa danh mục có sản phẩm đang hoạt động");
-        //     return;  // Stop further execution
-        // }
-
-        // Proceed with delete request
         const response = await fetch(`${API_URL}/categories/${id}/delete`, {
-            method: "POST", // Use POST for delete operation
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
         })
 
-        // Check if response is okay
         if (!response.ok) {
-            const errorData = await response.json() // Parse the error response
+            const errorData = await response.json()
             console.error("Error deleting category:", errorData)
-            alert("Xóa Thất Bại: " + (errorData.message || "Lỗi không xác định"))
+            MySwal.fire({
+                title: "Xóa Thất Bại",
+                text: errorData.message || "Lỗi không xác định",
+                icon: "error",
+                confirmButtonText: "OK",
+            })
             return
         }
-
-        // If everything goes well, show success message
-        alert("Xóa danh mục thành công")
+        return response.json()
     } catch (error) {
-        // Handle unexpected errors (network issues, etc.)
         console.error("Unexpected error during delete:", error)
-        alert("Đã xảy ra lỗi. Vui lòng thử lại.")
+        MySwal.fire({
+            title: "Xóa Thất Bại",
+            text: error instanceof Error ? error.message : "Lỗi không xác định",
+            icon: "error",
+            confirmButtonText: "OK",
+        })
     }
 }
 
@@ -103,11 +95,12 @@ export const GetCategoriesById = async (id: string): Promise<Category> => {
             "Content-Type": "application/json",
         },
     })
-    const data: any = await response.json()
 
     if (!response.ok) {
-        return data
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch category")
     }
 
+    const data: Category = await response.json()
     return data
 }
