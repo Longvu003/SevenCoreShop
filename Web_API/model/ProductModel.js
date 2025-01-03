@@ -18,6 +18,5 @@ const ProductSchema = new Schema(
     timestamps: true, // Tự động tạo createdAt và updatedAt
   }
 );
-
 // Tạo model từ schema
 module.exports = mongoose.model("Product", ProductSchema);
