@@ -124,6 +124,11 @@ const OrderScreen = ({navigation}) => {
                           style={OrderScreenStyle.txt__Item}>
                           {item.items[0].name}
                         </Text>
+                        <Text
+                          numberOfLines={1}
+                          style={OrderScreenStyle.txt__Item}>
+                          {item.date}
+                        </Text>
                         <View
                           style={{
                             flexDirection: 'row',
