@@ -19,6 +19,8 @@ const resetPass = require("./routes/repass");
 const commentRoutes = require("./routes/cmt");
 const bestsellitem = require("./routes/bestsellitem.js");
 const Address = require("./routes/Address.js");
+const Notification = require("./routes/Notification.js");
+const Voucher = require("./routes/Voucher.js");
 //okokok
 const multer = require("multer");
 const Ad = require("./model/AdModel");
@@ -27,6 +29,18 @@ const upload = require("./cloudpng/upload");
 const adsRouter = require("./routes/ads")(upload);
 const dotenv = require("dotenv");
 dotenv.config();
+
+// cấu hình fire-base
+// const admin = require('firebase-admin');
+// const serviceAccount = require('./path/to/firebase-service-account.json');
+
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
+// ----
+
+
+
 
 var app = express();
 
@@ -76,6 +90,8 @@ app.use("/payonline", PayOnline);
 app.use("/ads", adsRouter); // Đăng ký router quảng cáo
 app.use("/images", express.static("images")); // Đăng ký router ảnh
 app.use("/bestsell", bestsellitem);
+app.use("/Notification", Notification);
+app.use("/Voucher", Voucher);
 // catch 404 and forward to error handler
 // app.use((req, res, next) => {
 //   next(createError(404));
