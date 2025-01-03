@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const moment = require("moment-timezone");
 const orderSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
   items: [
@@ -62,7 +62,14 @@ const orderSchema = new mongoose.Schema({
   //   enum: ['credit_card', 'paypal', 'momo', 'cash_on_delivery'],
   //   required: true
   // },
-  date: { type: Date, default: Date.now },
+  // date: { type: Date, default: Date.now },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+});
+orderSchema.virtual("createdAtVN").get(function () {
+  return moment(this.date).tz("Asia/Ho_Chi_Minh").format("YYYY-MM-DD HH:mm:ss");
 });
 
 const Order = mongoose.model("Order", orderSchema);

@@ -67,6 +67,7 @@ router.put("/updateAddressbyId", async (req, res) => {
     addressDetail,
     isDefault,
   } = req.body;
+
   try {
     const item = await AddressController.updateAddressById(
       userId,
@@ -87,15 +88,16 @@ router.put("/updateAddressbyId", async (req, res) => {
       res.status(200).json({ message: "Lấy thành công", data: item });
     }
   } catch (error) {
-    if (error.message === "Địa chỉ mặc định đã tồn tại.") {
-      return res.status(400).json({ message: error.message });
-    }
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 });
 
 router.delete("/deleteAddressById", async (req, res) => {
   const { userId, id } = req.query;
-  console.log(req.query);
+
   try {
     const item = await AddressController.deleteAddressById(userId, id);
     if (item) {

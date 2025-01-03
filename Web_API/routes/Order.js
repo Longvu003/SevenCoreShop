@@ -1,6 +1,8 @@
 const express = require("express");
 const OrderController = require("../controllers/OrderController");
 const router = express.Router();
+const { format } = require("date-fns");
+
 // cập nhật trạng thái thanh toán
 router.post("/updateStatusPay", async (req, res) => {
   const { orderId, statuspay } = req.body;
@@ -42,7 +44,7 @@ router.get("/getOrderUserById", async (req, res) => {
   const { userId } = req.query;
   try {
     const itemOrder = await OrderController.getOrderUserById(userId);
-    // console.log(itemOrder[0].address);
+
     if (itemOrder) {
       return res.status(200).json(itemOrder);
     } else {

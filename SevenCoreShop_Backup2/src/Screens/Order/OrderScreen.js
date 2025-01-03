@@ -19,6 +19,7 @@ const OrderScreen = ({navigation}) => {
   const {getProductDetails, dataOrder} = useCart();
   const [statusOrder, setStatusOrder] = useState('');
   const [orderFilter, setOrderFilter] = useState([]);
+
   const getOrderBystatus = () => {
     if (statusOrder) {
       const data = dataOrder.filter(item => item.status === statusOrder);
@@ -123,6 +124,11 @@ const OrderScreen = ({navigation}) => {
                           numberOfLines={1}
                           style={OrderScreenStyle.txt__Item}>
                           {item.items[0].name}
+                        </Text>
+                        <Text
+                          numberOfLines={1}
+                          style={OrderScreenStyle.txt__Item}>
+                          {item.date}
                         </Text>
                         <View
                           style={{
