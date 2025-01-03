@@ -76,6 +76,10 @@ const AddAddress = ({navigation}) => {
     }
     setSelectedWard(null);
   };
+  const onChangeIsdefault = async () => {
+    Alert.alert('Thông báo', 'Đã thay đổi thành công');
+    setisDefault(!isDefault);
+  };
 
   const AddAddressUser = async () => {
     const OldUserId = await AsyncStorage.getItem('userId');
@@ -104,7 +108,7 @@ const AddAddress = ({navigation}) => {
       userNameAddress,
       phoneAddress,
       addressDetail,
-      isDefault: isDefault,
+      isDefault,
       province: listDataAddress.find(item => item.id === selectedProvince)
         ?.full_name,
       district: listDataDistrict.find(item => item.id === selectedDistrict)
@@ -197,7 +201,29 @@ const AddAddress = ({navigation}) => {
               )}
             </View>
           </View>
+          <View
+            style={{
+              width: WITH__Screen * 1,
+              height: 50,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <TouchableOpacity
+              style={{
+                width: 30,
+                height: 30,
+                borderWidth: 1,
+                borderRadius: 50,
+                borderColor: 'orange',
+                marginHorizontal: 10,
+              }}
+              onPress={onChangeIsdefault}>
+              {isDefault && <View style={styles.innerCircle}></View>}
+            </TouchableOpacity>
 
+            <Text>{isDefault ? '  Bỏ mặc định' : 'Mặc định'}</Text>
+          </View>
           <View style={{flex: 2, alignItems: 'center'}}>
             <TouchableOpacity
               style={styles.btn__Save}
@@ -212,6 +238,12 @@ const AddAddress = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  innerCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 50,
+    backgroundColor: 'orange',
+  },
   input: {
     width: WITH__Screen * 0.9,
     height: HEIGHT__SCREEN * 0.08,

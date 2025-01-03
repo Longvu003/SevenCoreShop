@@ -171,7 +171,9 @@ const EditAddress = ({navigation, route}) => {
         Alert.alert('Thông báo', 'Sửa thành công');
         navigation.navigate('ListAddress');
       } else {
-        Alert.alert('Lỗi', response.data?.message || 'Đã xảy ra lỗi.');
+        const errorMessage =
+          error.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại.';
+        Alert.alert(errorMessage);
       }
     } catch (error) {
       console.log(error);
@@ -179,24 +181,7 @@ const EditAddress = ({navigation, route}) => {
   };
 
   const onChangeIsdefault = async () => {
-    const checkIsDefault = listIsDefault.find(item => item.isDefault === true);
-    if (checkIsDefault) {
-      const otherAddresses = listIsDefault.filter(
-        item => item.isDefault !== true,
-      );
-      if (otherAddresses) {
-        Alert.alert(
-          'Thông báo',
-          'Bạn chưa chọn địa chỉ khác làm mặc định. Vui lòng chọn một địa chỉ khác để thay đổi mặc định.',
-        );
-        return null;
-      }
-    } else {
-      Alert.alert(
-        'Thông báo',
-        'Đã có địa chỉ mặc định, bạn vẫn muốn thay đổi?',
-      );
-    }
+    Alert.alert('Thông báo', 'Đã thay đổi thành công');
     setisDefault(!isDefault);
   };
 
@@ -327,7 +312,6 @@ const EditAddress = ({navigation, route}) => {
     </ScrollView>
   );
 };
-
 export default EditAddress;
 const styles = StyleSheet.create({
   innerCircle: {
