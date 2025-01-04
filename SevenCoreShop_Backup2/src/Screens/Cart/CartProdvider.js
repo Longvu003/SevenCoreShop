@@ -2,6 +2,7 @@ import {StyleSheet, Text, View, Alert} from 'react-native';
 import React from 'react';
 import API__URL from '../../../config';
 import axios from 'axios';
+import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   useContext,
