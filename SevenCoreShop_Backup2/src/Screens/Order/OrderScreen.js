@@ -19,7 +19,7 @@ const OrderScreen = ({navigation}) => {
   const {getProductDetails, dataOrder} = useCart();
   const [statusOrder, setStatusOrder] = useState('');
   const [orderFilter, setOrderFilter] = useState([]);
-
+  // console.log(dataOrder);
   const getOrderBystatus = () => {
     if (statusOrder) {
       const data = dataOrder.filter(item => item.status === statusOrder);
@@ -79,13 +79,13 @@ const OrderScreen = ({navigation}) => {
         <TouchableOpacity
           style={[
             OrderScreenStyle.btn__status,
-            statusOrder === 'Đã giao hàng' && {
+            statusOrder === 'Đang giao hàng' && {
               borderBottomWidth: 2,
               borderBottomColor: 'orange',
             },
           ]}
-          onPress={() => setStatusOrder('Đã giao hàng')}>
-          <Text>Đã giao hàng</Text>
+          onPress={() => setStatusOrder('Đang giao hàng')}>
+          <Text style={{textAlign: 'center'}}>Đang giao hàng</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -96,7 +96,7 @@ const OrderScreen = ({navigation}) => {
             },
           ]}
           onPress={() => setStatusOrder('Giao thành công')}>
-          <Text>Giao thành công</Text>
+          <Text style={{textAlign: 'center'}}>Giao thành công</Text>
         </TouchableOpacity>
       </View>
       {orderFilter.length > 0 ? (

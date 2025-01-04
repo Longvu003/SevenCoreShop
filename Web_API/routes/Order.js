@@ -1,7 +1,7 @@
 const express = require("express");
 const OrderController = require("../controllers/OrderController");
 const router = express.Router();
-const { format } = require("date-fns");
+const moment = require("moment-timezone");
 
 // cập nhật trạng thái thanh toán
 router.post("/updateStatusPay", async (req, res) => {
@@ -33,18 +33,22 @@ router.post("/updateStatus", async (req, res) => {
   }
 });
 
-// Endpoint thanh toán và tạo đơn hàng
 router.post("/checkout", OrderController.checkout);
 router.get("/cron", OrderController.checkAndUpdateAllOrders);
 
-// Endpoint lấy danh sách tất cả đơn hàng
 router.get("/getOrderUser", OrderController.getOrderUser);
 
 router.get("/getOrderUserById", async (req, res) => {
   const { userId } = req.query;
   try {
-    const itemOrder = await OrderController.getOrderUserById(userId);
-
+    const orders = await OrderController.getOrderUserById(userId);
+    const itemOrder = orders.map((order) => ({
+      ...order._doc,
+      date: moment(order.date)
+        .tz("Asia/Ho_Chi_Minh")
+        .format("YYYY-MM-DD HH:mm:ss"),
+    }));
+    console.log(itemOrder);
     if (itemOrder) {
       return res.status(200).json(itemOrder);
     } else {

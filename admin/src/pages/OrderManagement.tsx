@@ -59,7 +59,15 @@ const Tables = () => {
                                     <tr key={index}>
                                         <td>{order._id}</td>
                                         <td>{order.totalAmount}</td>
-                                        <td>{order.address}</td>
+                                        <td>
+                                            {order.address.map((item) => (
+                                                <div>
+                                                    <p>
+                                                        {item.userNameAddress} ,{item.addressDetail},{item.ward},{item.province}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </td>
                                         <td>{order.orderCode}</td>
                                         <td>{format(new Date(order.date), "HH:mm - dd/MM/yyyy")}</td>
                                         <td className="text-center whitespace-nowrap">
@@ -137,7 +145,7 @@ const Tables = () => {
                                                     }
                                                 }}
                                             >
-                                                <option value="Đã giao hàng">Đã giao hàng</option>
+                                                <option value="Đang giao hàng">Đang giao hàng</option>
                                                 <option value="Giao thành công">Giao thành công</option>
                                                 <option value="Đang xử lý">Đang xử lý</option>
                                                 <option value="Đã hủy">Đã hủy</option>
