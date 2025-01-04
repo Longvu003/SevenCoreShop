@@ -9,7 +9,15 @@ export interface OrderModel {
         image: string[]
     }[]
     totalAmount: number
-    address: string
+    // address: string
+    address: Array<{
+        userNameAddress: string
+        phoneAddress: string
+        province: string
+        district: string
+        ward: string
+        addressDetail: string
+    }>
     orderCode: string
     paymentMethod: string
     status: string

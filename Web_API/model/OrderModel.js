@@ -68,9 +68,6 @@ const orderSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-orderSchema.virtual("createdAtVN").get(function () {
-  return moment(this.date).tz("Asia/Ho_Chi_Minh").format("YYYY-MM-DD HH:mm:ss");
-});
 
 const Order = mongoose.model("Order", orderSchema);
 
