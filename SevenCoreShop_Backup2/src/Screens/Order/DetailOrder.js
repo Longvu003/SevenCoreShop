@@ -20,14 +20,13 @@ const DetailOrder = ({route}) => {
   const getOrderDetail = () => {
     setDetailOrder(item);
   };
-  console.log(
-    DetailOrder?.address?.[0]?.addressDetail || 'No address detail found',
-  );
+  // console.log(
+  //   DetailOrder?.address?.[0]?.addressDetail || 'No address detail found',
+  // );
 
   useEffect(() => {
     getOrderDetail();
   }, []);
-
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1}}>
@@ -75,16 +74,26 @@ const DetailOrder = ({route}) => {
             marginHorizontal: 20,
           }}>
           <View style={{marginHorizontal: 20}}>
-            <Text>
-              Địa chỉ:
-              {DetailOrder?.address?.[0]?.addressDetail || 'Không có địa chỉ'}
-            </Text>
+            <Text> Thời gian giao hàng: {DetailOrder.date}</Text>
+            {DetailOrder?.address?.length > 0 && DetailOrder.address[0] ? (
+              <Text>
+                Địa chỉ:
+                <Text style={{fontSize: 15, color: 'black'}}>
+                  {DetailOrder.address[0].userNameAddress},
+                </Text>
+                {DetailOrder.address[0].addressDetail},
+                {DetailOrder.address[0].ward}, {DetailOrder.address[0].district}
+                , {DetailOrder.address[0].province}
+              </Text>
+            ) : (
+              <Text>Không có thông tin</Text>
+            )}
             <Text>
               Số điện thoại:
               {DetailOrder?.address?.[0].phoneAddress ||
                 'Không có số điện thoại'}
             </Text>
-            <Text>Trạng thái: {DetailOrder.status}</Text>
+            <Text>Trạng thái giao hàng: {DetailOrder.status}</Text>
             <Text>Phương thức thanh toán: {DetailOrder.paymentMethod} </Text>
             <Text>Tổng tiền: {DetailOrder.totalAmount} VNĐ</Text>
           </View>
@@ -93,7 +102,6 @@ const DetailOrder = ({route}) => {
     </View>
   );
 };
-
 export default DetailOrder;
 
 const styles = StyleSheet.create({

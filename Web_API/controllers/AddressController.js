@@ -1,41 +1,35 @@
 const { default: mongoose } = require("mongoose");
-const AddressModel = require("../model/AddressModel");
 const userModel = require("../model/UserModel");
-const ObjectId = mongoose.Types.ObjectId;
 
 const addAddress = async (
   userId,
   userNameAddress,
   phoneAddress,
-  // nameAddress,
   province,
   district,
   ward,
   addressDetail,
   isDefault
 ) => {
-
   try {
-
     const user = await userModel.findById(userId);
-  
     if (!user) {
       throw new Error("Không tìm thấy người dùng");
     }
     if (isDefault) {
       user.address.forEach((item) => (item.isDefault = false));
+    } else if (user.address.length === 0) {
+      isDefault = true;
     }
     user.address.push({
       userNameAddress,
       phoneAddress,
       province,
       district,
-      // nameAddress,
       ward,
       addressDetail,
-      isDefault: user.address.length === 0 ? true : false,
+      isDefault,
     });
-
     await user.save();
     console.log(user.address)
     return user;
@@ -88,29 +82,10 @@ const updateAddressById = async (
   province,
   district,
   ward,
-  // nameAddress,
-
   addressDetail,
   isDefault
 ) => {
   try {
-    if (isDefault) {
-      const user = await userModel.findOne({
-        _id: userId,
-      });
-      if (!user) {
-        console.log("Không tìm thấy người dùng");
-        return null;
-      }
-      const defaultAddress = user.address.find(
-        (addr) => addr.isDefault && addr._id.toString() !== addressId
-      );
-
-      if (defaultAddress) {
-        throw new Error("Đã có địa chỉ mặc định khác tồn tại.");
-      }
-    }
-
     const item = await userModel.findById(userId);
     if (!item) {
       console.log("Không tìm thấy người dùng");
@@ -121,11 +96,15 @@ const updateAddressById = async (
     );
 
     if (!indexAddress) {
-      console.log("Không tìm thấy địa chỉ");
-      return null;
+      throw new Error("Không tìm thấy địa chỉ.");
     } else {
-      // indexAddress.nameAddress = nameAddress;
-
+      if (isDefault) {
+        item.address.forEach((addr) => {
+          if (addr.isDefault) {
+            addr.isDefault = false;
+          }
+        });
+      }
       indexAddress.ward = ward;
       indexAddress.province = province;
       indexAddress.district = district;
@@ -138,7 +117,7 @@ const updateAddressById = async (
 
     return indexAddress;
   } catch (error) {
-    throw error;
+    return { success: false, message: error.message };
   }
 };
 

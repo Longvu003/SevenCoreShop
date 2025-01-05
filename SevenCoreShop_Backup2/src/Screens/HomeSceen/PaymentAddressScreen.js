@@ -119,7 +119,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
       paymentMethod,
       bankId: selectedBank?.id,
     };
-
     try {
       const response = await axios.post(
         `${API_URL}/Orders/checkout`,
@@ -164,7 +163,9 @@ const PaymentAddressScreen = ({navigation, route}) => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.container}>
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack()}>
@@ -188,11 +189,11 @@ const PaymentAddressScreen = ({navigation, route}) => {
             <View style={styles.addressContent}>
               <View style={styles.addressDetails}>
                 <Text style={styles.addressText}>
-                  {addressItem.userNameAddress}| {addressItem.phoneAddress}
+                  {addressItem.userNameAddress}|| {addressItem.phoneAddress}
                 </Text>
                 <Text style={styles.addressText}>
-                  {addressItem.addressDetail || 'Không có địa chỉ'}, Xã
-                  {addressItem.ward}, Huyện {addressItem.district},
+                  {addressItem.addressDetail || 'Không có địa chỉ'},
+                  {addressItem.ward},{addressItem.district},
                   {addressItem.province}
                 </Text>
               </View>

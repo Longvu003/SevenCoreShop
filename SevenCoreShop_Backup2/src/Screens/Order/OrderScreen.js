@@ -19,6 +19,7 @@ const OrderScreen = ({navigation}) => {
   const {getProductDetails, dataOrder} = useCart();
   const [statusOrder, setStatusOrder] = useState('');
   const [orderFilter, setOrderFilter] = useState([]);
+  // console.log(dataOrder);
   const getOrderBystatus = () => {
     if (statusOrder) {
       const data = dataOrder.filter(item => item.status === statusOrder);
@@ -36,6 +37,7 @@ const OrderScreen = ({navigation}) => {
   useEffect(() => {
     getOrderBystatus();
   }, [statusOrder]);
+
   return (
     <View style={{flex: 1}}>
       <View style={{height: HEIGHT__SCREEN * 0.06}}>
@@ -53,24 +55,48 @@ const OrderScreen = ({navigation}) => {
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
         <TouchableOpacity
-          style={OrderScreenStyle.btn__status}
+          style={[
+            OrderScreenStyle.btn__status,
+            statusOrder === 'Đã hủy' && {
+              borderBottomWidth: 2,
+              borderBottomColor: 'orange',
+            },
+          ]}
           onPress={() => setStatusOrder('Đã hủy')}>
           <Text>Đã hủy</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={OrderScreenStyle.btn__status}
+          style={[
+            OrderScreenStyle.btn__status,
+            statusOrder === 'Đang xử lý' && {
+              borderBottomWidth: 2,
+              borderBottomColor: 'orange',
+            },
+          ]}
           onPress={() => setStatusOrder('Đang xử lý')}>
           <Text>Đang xử lý</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={OrderScreenStyle.btn__status}
-          onPress={() => setStatusOrder('Đã giao hàng')}>
-          <Text>Đã giao hàng</Text>
+          style={[
+            OrderScreenStyle.btn__status,
+            statusOrder === 'Đang giao hàng' && {
+              borderBottomWidth: 2,
+              borderBottomColor: 'orange',
+            },
+          ]}
+          onPress={() => setStatusOrder('Đang giao hàng')}>
+          <Text style={{textAlign: 'center'}}>Đang giao hàng</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={OrderScreenStyle.btn__status}
+          style={[
+            OrderScreenStyle.btn__status,
+            statusOrder === 'Giao thành công' && {
+              borderBottomWidth: 2,
+              borderBottomColor: 'orange',
+            },
+          ]}
           onPress={() => setStatusOrder('Giao thành công')}>
-          <Text>Giao thành công</Text>
+          <Text style={{textAlign: 'center'}}>Giao thành công</Text>
         </TouchableOpacity>
       </View>
       {orderFilter.length > 0 ? (
@@ -98,6 +124,11 @@ const OrderScreen = ({navigation}) => {
                           numberOfLines={1}
                           style={OrderScreenStyle.txt__Item}>
                           {item.items[0].name}
+                        </Text>
+                        <Text
+                          numberOfLines={1}
+                          style={OrderScreenStyle.txt__Item}>
+                          {item.date}
                         </Text>
                         <View
                           style={{

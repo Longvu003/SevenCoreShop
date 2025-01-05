@@ -152,7 +152,6 @@ const UsersManagent = () => {
                             <tr>
                                 <th>Tên</th>
                                 <th>Email</th>
-                                <th>Địa Chỉ</th>
                                 <th>Điện Thoại</th>
                                 <th>Vai Trò</th>
                                 <th className="!text-center">Hoạt Động</th>
@@ -163,7 +162,6 @@ const UsersManagent = () => {
                                 <tr key={String(user._id)}>
                                     <td>{user.username}</td>
                                     <td>{user.email}</td>
-                                    <td>{user.address}</td>
                                     <td>{user.numberphone}</td>
                                     <td>
                                         {parseInt(user.role as string) === 1 ? 'Buyer' : parseInt(user.role as string) === 2 ? 'Admin' : parseInt(user.role as string) === 3 ? 'Seller' : 'Unknown'}
@@ -203,10 +201,6 @@ const UsersManagent = () => {
                                             <div className="mb-5">
                                                 <label htmlFor="phone">Điện Thoại</label>
                                                 <input id="numberphone" type="text" placeholder="Nhập số điện thoại" className="form-input" value={params.numberphone} onChange={handleChange} />
-                                            </div>
-                                            <div className="mb-5">
-                                                <label htmlFor="address">Địa Chỉ</label>
-                                                <textarea id="address" placeholder="Nhập địa chỉ" className="form-input" value={params.address} onChange={handleChange}></textarea>
                                             </div>
                                             <div className="mb-5">
                                                 <label htmlFor="role">Vai Trò</label>

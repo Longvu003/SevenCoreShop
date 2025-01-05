@@ -19,7 +19,7 @@ const OrderScreenStyle = StyleSheet.create({
     width: 90,
     height: 40,
     borderRadius: 30,
-    backgroundColor: 'orange',
+    // backgroundColor: 'orange',
     alignItems: 'center',
     justifyContent: 'center',
   },

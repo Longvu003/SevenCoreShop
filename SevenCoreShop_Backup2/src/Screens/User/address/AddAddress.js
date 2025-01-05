@@ -76,6 +76,10 @@ const AddAddress = ({navigation}) => {
     }
     setSelectedWard(null);
   };
+  const onChangeIsdefault = async () => {
+    Alert.alert('Thông báo', 'Đã thay đổi thành công');
+    setisDefault(!isDefault);
+  };
 
   const AddAddressUser = async () => {
     const OldUserId = await AsyncStorage.getItem('userId');
@@ -93,20 +97,23 @@ const AddAddress = ({navigation}) => {
         'Vui lòng chọn đầy đủ Tỉnh/Thành, Quận/Huyện, Xã/Phường',
       );
     }
-    if (!addressDetail.trim()) {
-      return Alert.alert('Lỗi', 'Địa chỉ chi tiết không được để trống');
+    if (!addressDetail.trim() || addressDetail.length > 50) {
+      return Alert.alert(
+        'Lỗi',
+        'Địa chỉ chi tiết không được để trống và ko lớn hơn 50 ký tự',
+      );
     }
     const addressInformation = {
       userId,
       userNameAddress,
       phoneAddress,
       addressDetail,
-      isDefault: isDefault,
+      isDefault,
       province: listDataAddress.find(item => item.id === selectedProvince)
-        ?.name,
+        ?.full_name,
       district: listDataDistrict.find(item => item.id === selectedDistrict)
-        ?.name,
-      ward: listDataWard.find(item => item.id === selectedWard)?.name,
+        ?.full_name,
+      ward: listDataWard.find(item => item.id === selectedWard)?.full_name,
     };
     try {
       const url2 = `${API__URL}/address/addAddress`;
@@ -167,7 +174,7 @@ const AddAddress = ({navigation}) => {
               <RNPickerSelect
                 onValueChange={value => handleProvinceSelect(value)}
                 items={listDataAddress.map(province => ({
-                  label: province.name,
+                  label: province.full_name,
                   value: province.id,
                 }))}
                 placeholder={{label: 'Chọn Tỉnh/Thành phố', value: null}}
@@ -177,7 +184,7 @@ const AddAddress = ({navigation}) => {
                 <RNPickerSelect
                   onValueChange={value => handleDistrictSelect(value)}
                   items={listDataDistrict.map(district => ({
-                    label: district.name,
+                    label: district.full_name,
                     value: district.id,
                   }))}
                   placeholder={{label: 'Chọn Quận/Huyện', value: null}}
@@ -188,7 +195,7 @@ const AddAddress = ({navigation}) => {
                 <RNPickerSelect
                   onValueChange={value => setSelectedWard(value)}
                   items={listDataWard.map(ward => ({
-                    label: ward.name,
+                    label: ward.full_name,
                     value: ward.id,
                   }))}
                   placeholder={{label: 'Chọn Xã/Phường', value: null}}
@@ -196,7 +203,29 @@ const AddAddress = ({navigation}) => {
               )}
             </View>
           </View>
+          <View
+            style={{
+              width: WITH__Screen * 1,
+              height: 50,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <TouchableOpacity
+              style={{
+                width: 30,
+                height: 30,
+                borderWidth: 1,
+                borderRadius: 50,
+                borderColor: 'orange',
+                marginHorizontal: 10,
+              }}
+              onPress={onChangeIsdefault}>
+              {isDefault && <View style={styles.innerCircle}></View>}
+            </TouchableOpacity>
 
+            <Text>{isDefault ? '  Bỏ mặc định' : 'Mặc định'}</Text>
+          </View>
           <View style={{flex: 2, alignItems: 'center'}}>
             <TouchableOpacity
               style={styles.btn__Save}
@@ -211,6 +240,12 @@ const AddAddress = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  innerCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 50,
+    backgroundColor: 'orange',
+  },
   input: {
     width: WITH__Screen * 0.9,
     height: HEIGHT__SCREEN * 0.08,
