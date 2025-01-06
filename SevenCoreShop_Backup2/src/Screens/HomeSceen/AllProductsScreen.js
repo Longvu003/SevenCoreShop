@@ -64,7 +64,7 @@ const AllProductsScreen = ({navigation}) => {
           onChangeText={text => handleSearch(text)}
         />
       </View>
-      <View style={{flex: 8}}>
+      <View style={{flex: 8, marginTop: 10}}>
         {products.length >= 1 ? (
           <FlatList
             showsVerticalScrollIndicator={false}
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: WITH__Screen * 0.9,
     marginHorizontal: 20,
-    height: HEIGHT__SCREEN * 0.07,
+    height: HEIGHT__SCREEN * 0.05,
   },
   container: {
     flex: 1,
