@@ -20,6 +20,7 @@ const HomeScreen = ({navigation}) => {
   const [categories, setCategories] = useState([]);
   const [user, setUser] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('');
 
   const fetchProducts = async () => {
     try {
@@ -77,7 +78,7 @@ const HomeScreen = ({navigation}) => {
     <View style={HomeStyle.container}>
       <View style={HomeStyle.header}>
         <View>
-          <Text style={HomeStyle.hello}>Xin Chào </Text>
+          <Text style={HomeStyle.hello}>Xin Chào</Text>
           <Text style={HomeStyle.txt__user}>{user}</Text>
         </View>
         <TouchableOpacity
@@ -93,21 +94,39 @@ const HomeScreen = ({navigation}) => {
         showsVerticalScrollIndicator={false}>
         <AdScreen navigation={navigation} />
 
-        {/* New Section for Buttons */}
+        {/* Updated Buttons Section */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('BestSellingScreen')}>
+            style={[
+              styles.button,
+              activeFilter === 'BestSelling' && styles.activeButton,
+            ]}
+            onPress={() => {
+              setActiveFilter('BestSelling');
+              navigation.navigate('BestSellingScreen');
+            }}>
             <Text style={styles.buttonText}>Bán Chạy</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('PopularScreen')}>
+            style={[
+              styles.button,
+              activeFilter === 'Popular' && styles.activeButton,
+            ]}
+            onPress={() => {
+              setActiveFilter('Popular');
+              navigation.navigate('PopularScreen');
+            }}>
             <Text style={styles.buttonText}>Phổ Biến</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('FilterByPriceScreen')}>
+            style={[
+              styles.button,
+              activeFilter === 'FilterByPrice' && styles.activeButton,
+            ]}
+            onPress={() => {
+              setActiveFilter('FilterByPrice');
+              navigation.navigate('FilterByPriceScreen');
+            }}>
             <Text style={styles.buttonText}>Lọc Theo Giá</Text>
           </TouchableOpacity>
         </View>
@@ -157,7 +176,7 @@ const HomeScreen = ({navigation}) => {
           <View style={HomeStyle.productSection}>
             <FlatList
               data={products}
-              keyExtractor={item => item._id}
+              keyExtractor={(item) => item._id}
               numColumns={2}
               scrollEnabled={false}
               renderItem={({item}) => {
@@ -194,13 +213,17 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   button: {
-    backgroundColor: 'white',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     alignItems: 'center',
     flex: 1,
     marginHorizontal: 5,
+    elevation: 3,
+  },
+  activeButton: {
+    backgroundColor: '#ff6f61',
   },
   buttonText: {
     color: 'black',
