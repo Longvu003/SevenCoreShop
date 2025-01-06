@@ -156,7 +156,6 @@ const Analytics = () => {
             </ul>
             <div className="pt-5">
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                        {/* statistics */}
                         <div className="panel h-full">
                         <div className="flex justify-between dark:text-white-light mb-5">
                             <h5 className="font-semibold text-lg ">Doanh Thu Tháng Này</h5>
