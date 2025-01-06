@@ -25,7 +25,6 @@ async function generateAndSaveOtp(email) {
 
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
-  console.log(email);
   try {
     const user = await UserModel.findOne({ email: email });
     if (!user) {

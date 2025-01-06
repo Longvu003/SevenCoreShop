@@ -136,9 +136,9 @@ const EditAddress = ({navigation, route}) => {
       } else {
         setPhoneError('');
       }
-      if (addressDetail.trim().length < 5) {
+      if (!addressDetail.trim() || addressDetail.length > 60) {
         setAddressDetailError(
-          'Địa chỉ phải có ít nhất 10 ký tự và tối đa 60 ký tự',
+          'Địa chỉ không được để trống và tối đa là 60 ký tự',
         );
         return false;
       } else {

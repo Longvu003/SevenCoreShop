@@ -48,7 +48,6 @@ router.get("/getOrderUserById", async (req, res) => {
         .tz("Asia/Ho_Chi_Minh")
         .format("YYYY-MM-DD HH:mm:ss"),
     }));
-    console.log(itemOrder);
     if (itemOrder) {
       return res.status(200).json(itemOrder);
     } else {
@@ -72,4 +71,9 @@ router.get("/getOrder", async (req, res) => {
 });
 
 // router.get("/getOrderUserById", OrderController.getOrderUserById);
+
+router.get("/top-order", OrderController.getBestSellingProducts);
+
+router.get("/pho-bien", OrderController.getPopularProducts);
+
 module.exports = router;

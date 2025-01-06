@@ -3,8 +3,8 @@ const Order = require("../model/OrderModel"); // Đường dẫn tới file mode
 
 const bestsellitem = async () => {
   try {
-    const startDate = new Date("2024-12-01T00:00:00.000Z");
-    const endDate = new Date("2024-12-31T23:59:59.999Z");
+    const startDate = new Date("2025-01-01T00:00:00.000Z");
+    const endDate = new Date("2025-01-31T23:59:59.999Z");
 
     const bestSellingProduct = await Order.aggregate([
       {
@@ -44,8 +44,8 @@ const tongtientheothang = async (year) => {
       {
         $match: {
           date: {
-            $gte: new Date(`${year}-12-01`),
-            $lte: new Date(`${year}-12-31`),
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-01-31`),
           },
         },
       },
@@ -60,7 +60,7 @@ const tongtientheothang = async (year) => {
     // Trả về tổng tiền hoặc 0 nếu không có đơn hàng
     return tongtienThang.length > 0 ? tongtienThang[0].TongTienThang : 0;
   } catch (error) {
-    console.error("Lỗi khi tính tổng tiền trong tháng 12:", error);
+    console.error("Lỗi khi tính tổng tiền trong tháng 1:", error);
     return 0;
   }
 
@@ -84,12 +84,12 @@ const tongtientheonam = async () => {
 const getTotals = async () => {
   try {
     // Tổng tiền theo tháng cho năm 2024
-    const TongTienThang = await tongtientheothang(2024);
-    console.log("Tổng tiền theo tháng:", TongTienThang);
+    const TongTienThang = await tongtientheothang(2025);
+    // console.log("Tổng tiền theo tháng:", TongTienThang);
 
     // Tổng tiền theo năm
     const tongTienNam = await tongtientheonam();
-    console.log("Tổng tiền theo năm:", tongTienNam);
+    // console.log("Tổng tiền theo năm:", tongTienNam);
   } catch (error) {
     console.error("Lỗi khi tính tổng tiền:", error);
   }

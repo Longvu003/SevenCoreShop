@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -14,12 +14,14 @@ import API__URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdScreen from './AdScreen';
 import HomeStyle from '../../StyleSheets/HomeStyle';
-import {useCallback} from 'react';
+
 const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [user, setUser] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('');
+
   const fetchProducts = async () => {
     try {
       const response = await axios.get(`${API__URL}/products/`);
@@ -29,6 +31,7 @@ const HomeScreen = ({navigation}) => {
       console.log('Error fetching products:', error);
     }
   };
+
   const fetchCategories = async () => {
     try {
       const response = await axios.get(`${API__URL}/categories/`);
@@ -38,6 +41,7 @@ const HomeScreen = ({navigation}) => {
       console.log('Error fetching categories:', error);
     }
   };
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -45,10 +49,8 @@ const HomeScreen = ({navigation}) => {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    setTimeout(async () => {
-      await Promise.all([fetchProducts(), fetchCategories()]);
-      setRefreshing(false);
-    }, 1000);
+    await Promise.all([fetchProducts(), fetchCategories()]);
+    setRefreshing(false);
   }, []);
 
   const getInforUser = async () => {
@@ -74,10 +76,9 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <View style={HomeStyle.container}>
-      {/* Header */}
       <View style={HomeStyle.header}>
         <View>
-          <Text style={HomeStyle.hello}>Xin Chào </Text>
+          <Text style={HomeStyle.hello}>Xin Chào</Text>
           <Text style={HomeStyle.txt__user}>{user}</Text>
         </View>
         <TouchableOpacity
@@ -92,6 +93,42 @@ const HomeScreen = ({navigation}) => {
         }
         showsVerticalScrollIndicator={false}>
         <AdScreen navigation={navigation} />
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              activeFilter === 'BestSelling' && styles.activeButton,
+            ]}
+            onPress={() => {
+              setActiveFilter('BestSelling');
+              navigation.navigate('BestSellingScreen');
+            }}>
+            <Text style={styles.buttonText}>Bán Chạy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              activeFilter === 'Popular' && styles.activeButton,
+            ]}
+            onPress={() => {
+              setActiveFilter('Popular');
+              navigation.navigate('PopularScreen');
+            }}>
+            <Text style={styles.buttonText}>Phổ Biến</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              activeFilter === 'FilterByPrice' && styles.activeButton,
+            ]}
+            onPress={() => {
+              setActiveFilter('FilterByPrice');
+              navigation.navigate('FilterByPriceScreen');
+            }}>
+            <Text style={styles.buttonText}>Lọc Theo Giá</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={HomeStyle.categoryHeader}>
           <Text style={HomeStyle.sectionTitle}>Loại Sản Phẩm</Text>
           <TouchableOpacity
@@ -165,5 +202,32 @@ const HomeScreen = ({navigation}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  button: {
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginHorizontal: 5,
+    elevation: 3,
+  },
+  activeButton: {
+    backgroundColor: 'orange',
+  },
+  buttonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});
 
 export default HomeScreen;

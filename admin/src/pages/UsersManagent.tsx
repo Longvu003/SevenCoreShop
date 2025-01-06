@@ -16,7 +16,6 @@ const UsersManagent = () => {
         email: '',
         numberphone: '',
         role: 1,  // Mặc định là Buyer
-        address: '',
     });
 
     const showData = async () => {

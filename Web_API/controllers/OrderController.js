@@ -199,6 +199,75 @@ const getOrder = async () => {
   }
 };
 
+//danh sách bán chạy
+// Lấy danh sách sản phẩm bán chạy nhất
+const getBestSellingProducts = async (req, res) => {
+  try {
+    // Aggregation pipeline để tính tổng số lượng bán cho từng sản phẩm
+    const topSellingProducts = await Order.aggregate([
+      { $unwind: "$items" }, // Phân rã mảng `items`
+      {
+        $group: {
+          _id: "$items.productId", // Nhóm theo `productId`
+          name: { $first: "$items.name" }, // Lấy tên sản phẩm
+          price: { $first: "$items.price" }, // Lấy giá sản phẩm
+          image: { $first: "$items.image" }, // Lấy hình ảnh sản phẩm
+          totalQuantity: { $sum: "$items.quantity" }, // Tính tổng số lượng bán
+        },
+      },
+      { $sort: { totalQuantity: -1 } }, // Sắp xếp giảm dần theo số lượng bán
+      { $limit: 5 }, // Giới hạn số lượng sản phẩm trả về
+    ]);
+
+    // Trả về dữ liệu thành công
+    res.status(200).json({
+      success: true,
+      data: topSellingProducts,
+    });
+  } catch (error) {
+    console.error("Error fetching top-selling products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi lấy danh sách sản phẩm bán chạy",
+    });
+  }
+};
+
+//Lấy danh sách phổ biến
+const getPopularProducts = async (req, res) => {
+  try {
+    // Aggregation pipeline để tính tổng số lượng bán cho từng sản phẩm
+    const popularProducts = await Order.aggregate([
+      { $unwind: "$items" }, // Phân rã mảng `items`
+      {
+        $group: {
+          _id: "$items.productId", // Nhóm theo `productId`
+          name: { $first: "$items.name" }, // Lấy tên sản phẩm
+          price: { $first: "$items.price" }, // Lấy giá sản phẩm
+          image: { $first: "$items.image" }, // Lấy hình ảnh sản phẩm
+          totalQuantity: { $sum: "$items.quantity" }, // Tính tổng số lượng bán
+        },
+      },
+      { $sort: { totalQuantity: -1 } }, // Sắp xếp giảm dần theo số lượng bán
+      { $limit: 10 }, // Giới hạn số lượng sản phẩm trả về là 10
+    ]);
+
+    // Trả về dữ liệu thành công
+    res.status(200).json({
+      success: true,
+      data: popularProducts,
+    });
+  } catch (error) {
+    console.error("Error fetching popular products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi lấy danh sách sản phẩm phổ biến",
+    });
+  }
+};
+
+
+
 // Xuất các hàm để sử dụng
 module.exports = {
   updateStatusPay,
@@ -209,4 +278,6 @@ module.exports = {
   updateOrderStatus,
   checkAndUpdateAllOrders,
   searchOrder,
+  getBestSellingProducts,
+  getPopularProducts,
 };

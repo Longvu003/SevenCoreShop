@@ -26,6 +26,10 @@ import PaymentAddressScreen from '../Screens/HomeSceen/PaymentAddressScreen';
 import CartProdvider from '../Screens/Cart/CartProdvider';
 import SearchOrder from '../Screens/Order/SearchOrder';
 import AddAddress from '../Screens/User/address/AddAddress';
+
+import BestSellingScreen from '../Screens/HomeSceen/BestSellingScreen';
+import PopularProductsScreen from '../Screens/HomeSceen/PopularProductsScreen';
+import FilterByPriceScreen from '../Screens/HomeSceen/FilterByPriceScreen';
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
@@ -67,6 +71,9 @@ const Stacknavigation = () => {
           <Stack.Screen name="AdDetail" component={AdDetail} />
           <Stack.Screen name="SearchOrder" component={SearchOrder} />
           <Stack.Screen name="AddAddress" component={AddAddress} />
+          <Stack.Screen name="BestSellingScreen" component={BestSellingScreen} />
+          <Stack.Screen name="PopularScreen" component={PopularProductsScreen} />
+          <Stack.Screen name="FilterByPriceScreen" component={FilterByPriceScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </CartProdvider>

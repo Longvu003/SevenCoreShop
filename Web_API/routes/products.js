@@ -132,15 +132,43 @@ router.get("/category", async (req, res) => {
  * url: http://localhost:7777/products/loc-theo-gia?min=1&max=10
  * response: danh sách sản phẩm trong khoảng giá
  */
+// router.get("/loc-theo-gia", async (req, res) => {
+//   try {
+//     console.log(req.query);
+//     const { min, max } = req.query;
+//     const products = await ProductController.getProductByPrice(min, max);
+//     return res.status(200).json({ status: true, data: products });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ status: false, message: error.message });
+//   }
+// });
+// Lọc sản phẩm theo giá
 router.get("/loc-theo-gia", async (req, res) => {
   try {
     const { min, max } = req.query;
+
+    if ((min && isNaN(min)) || (max && isNaN(max)) || min < 0 || max < 0) {
+      return res.status(400).json({
+        status: false,
+        message: "Tham số min hoặc max không hợp lệ",
+      });
+    }
+
     const products = await ProductController.getProductByPrice(min, max);
-    return res.status(200).json({ status: true, data: products });
+    return res.status(200).json({
+      status: true,
+      data: products,
+    });
   } catch (error) {
-    return res.status(500).json({ status: false, message: error.message });
+    return res.status(500).json({
+      status: false,
+      message: error.message,
+    });
   }
 });
+
+
 
 /**
  * API xóa sản phẩm
