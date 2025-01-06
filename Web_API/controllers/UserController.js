@@ -308,7 +308,6 @@ const lockUserById = async (id) => {
     if (!user) {
       throw new Error("User không tồn tại");
     }
-
     user.available = false; // Khóa người dùng
     user.updatedAt = Date.now();
     await user.save();

@@ -19,10 +19,6 @@ const UserSchema = new Schema({
         type: String,
         match: [/^\d{10}$/, "Số điện thoại phải có 10 chữ số"],
       },
-      // nameAddress: {
-      //   type: String,
-      //   maxlength: 15,
-      // },
       province: {
         type: String,
         required: true,
