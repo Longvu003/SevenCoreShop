@@ -220,7 +220,7 @@ const deleteUser = async (email) => {
 // Lấy tất cả người dùng
 const getAllUser = async () => {
   try {
-    const users = await userModel.find({});
+    const users = await userModel.find({}, { address: 0 });
     return users;
   } catch (error) {
     console.log("Lỗi lấy dữ liệu người dùng", error.message);
@@ -328,7 +328,7 @@ const unlockUserById = async (id) => {
 
     user.available = true; // Mở khóa người dùng
     user.updatedAt = Date.now();
-    await user.save();
+    await user.update();
     return "Mở khóa người dùng thành công";
   } catch (error) {
     console.log("Lỗi mở khóa người dùng bằng id", error.message);

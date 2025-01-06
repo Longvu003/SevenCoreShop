@@ -32,8 +32,8 @@ const UserSchema = new Schema({
       },
       addressDetail: {
         type: String,
-        required: true,
-        maxlength: [50],
+        minlength: [10, "Địa chỉ phải có ít nhất 10 ký tự"],
+        maxlength: [60, "Địa chỉ  không được vượt quá 60 ký tự"],
       },
       isDefault: { type: Boolean, default: false },
     },
