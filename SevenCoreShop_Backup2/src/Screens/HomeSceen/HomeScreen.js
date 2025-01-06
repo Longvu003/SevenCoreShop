@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -14,12 +14,13 @@ import API__URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdScreen from './AdScreen';
 import HomeStyle from '../../StyleSheets/HomeStyle';
-import {useCallback} from 'react';
+
 const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [user, setUser] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+
   const fetchProducts = async () => {
     try {
       const response = await axios.get(`${API__URL}/products/`);
@@ -29,6 +30,7 @@ const HomeScreen = ({navigation}) => {
       console.log('Error fetching products:', error);
     }
   };
+
   const fetchCategories = async () => {
     try {
       const response = await axios.get(`${API__URL}/categories/`);
@@ -38,6 +40,7 @@ const HomeScreen = ({navigation}) => {
       console.log('Error fetching categories:', error);
     }
   };
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -45,10 +48,8 @@ const HomeScreen = ({navigation}) => {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    setTimeout(async () => {
-      await Promise.all([fetchProducts(), fetchCategories()]);
-      setRefreshing(false);
-    }, 1000);
+    await Promise.all([fetchProducts(), fetchCategories()]);
+    setRefreshing(false);
   }, []);
 
   const getInforUser = async () => {
@@ -74,7 +75,6 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <View style={HomeStyle.container}>
-      {/* Header */}
       <View style={HomeStyle.header}>
         <View>
           <Text style={HomeStyle.hello}>Xin Chào </Text>
@@ -92,6 +92,26 @@ const HomeScreen = ({navigation}) => {
         }
         showsVerticalScrollIndicator={false}>
         <AdScreen navigation={navigation} />
+
+        {/* New Section for Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('BestSellingScreen')}>
+            <Text style={styles.buttonText}>Bán Chạy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('PopularScreen')}>
+            <Text style={styles.buttonText}>Phổ Biến</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('FilterByPriceScreen')}>
+            <Text style={styles.buttonText}>Lọc Theo Giá</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={HomeStyle.categoryHeader}>
           <Text style={HomeStyle.sectionTitle}>Loại Sản Phẩm</Text>
           <TouchableOpacity
@@ -165,5 +185,29 @@ const HomeScreen = ({navigation}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  button: {
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  buttonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});
 
 export default HomeScreen;
