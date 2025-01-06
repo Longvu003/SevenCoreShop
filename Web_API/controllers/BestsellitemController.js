@@ -85,11 +85,11 @@ const getTotals = async () => {
   try {
     // Tổng tiền theo tháng cho năm 2024
     const TongTienThang = await tongtientheothang(2025);
-    console.log("Tổng tiền theo tháng:", TongTienThang);
+    // console.log("Tổng tiền theo tháng:", TongTienThang);
 
     // Tổng tiền theo năm
     const tongTienNam = await tongtientheonam();
-    console.log("Tổng tiền theo năm:", tongTienNam);
+    // console.log("Tổng tiền theo năm:", tongTienNam);
   } catch (error) {
     console.error("Lỗi khi tính tổng tiền:", error);
   }

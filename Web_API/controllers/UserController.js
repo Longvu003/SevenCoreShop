@@ -44,7 +44,6 @@ const register = async (email, password, username, numberphone) => {
 const login = async (email, password) => {
   try {
     const user = await userModel.findOne({ email: email });
-    console.log("User found:", user); // Thêm log để kiểm tra thông tin người dùng
     if (!user) {
       throw new Error("Email không tồn tại");
     }
@@ -54,7 +53,6 @@ const login = async (email, password) => {
     }
 
     const check = bcrypt.compareSync(password, user.password);
-    console.log("Password check:", check); // Thêm log để kiểm tra kết quả so sánh mật khẩu
     if (check) {
       return {
         _id: user._id,
@@ -268,10 +266,7 @@ const updateUserById = async (
     // }));
     user.role = role;
     user.updatedAt = Date.now();
-
     await user.save();
-    console.log(user);
-    console.log("User updated successfully:", user); // Thêm log
     return "Cập nhật người dùng thành công";
   } catch (error) {
     console.log("Lỗi cập nhật user bằng id", error.message);
@@ -345,7 +340,7 @@ const unlockUserById = async (id) => {
 const getUserById = async (id) => {
   // const ObjectId = new mongoose.Types.ObjectId(id);
   const item = await UserModel.findOne({ id });
-  console.log(item);
+
   if (!item) {
     return null;
   }

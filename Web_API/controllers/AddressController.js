@@ -87,7 +87,6 @@ const updateAddressById = async (
   try {
     const item = await userModel.findById(userId);
     if (!item) {
-      console.log("Không tìm thấy người dùng");
       return null;
     }
     const indexAddress = item.address.find(

@@ -14,7 +14,6 @@ const cartController = require("../controllers/CartController");
  */
 router.post("/addItemcart", async (req, res) => {
   try {
-    // console.log("Dữ liệu nhận được từ client:", req.body);
     const { userId, productId, nameProduct, quantity, price, images } =
       req.body;
 
