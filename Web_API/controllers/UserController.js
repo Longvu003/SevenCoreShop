@@ -328,7 +328,7 @@ const unlockUserById = async (id) => {
 
     user.available = true; // Mở khóa người dùng
     user.updatedAt = Date.now();
-    await user.update();
+    await user.save();
     return "Mở khóa người dùng thành công";
   } catch (error) {
     console.log("Lỗi mở khóa người dùng bằng id", error.message);
