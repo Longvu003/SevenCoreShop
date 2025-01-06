@@ -107,7 +107,7 @@ const Sidebar = () => {
                                                 <li className="nav-item">
                                                     <ul>
                                                         {/* Show all items if role is 2 */}
-                                                        {role === '2' && (
+                                                        {role == 2 && (
                                                             <>
                                                                 <li className="nav-item">
                                                                     <NavLink to="/product/product-managent" className="group">
@@ -168,7 +168,7 @@ const Sidebar = () => {
                                                             </>
                                                         )}
                                                         {/* Show only 'Sản Phẩm' if role is 3 */}
-                                                        {role === '3' && (
+                                                        {role == '3' && (
                                                             <>
                                                                 <li className="nav-item">
                                                                     <NavLink to="/product/product-managent" className="group">

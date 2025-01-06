@@ -60,7 +60,7 @@ const tongtientheothang = async (year) => {
     // Trả về tổng tiền hoặc 0 nếu không có đơn hàng
     return tongtienThang.length > 0 ? tongtienThang[0].TongTienThang : 0;
   } catch (error) {
-    console.error("Lỗi khi tính tổng tiền trong tháng 12:", error);
+    console.error("Lỗi khi tính tổng tiền trong tháng 1:", error);
     return 0;
   }
 
