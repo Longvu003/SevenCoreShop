@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
+import Customheader from '../../CustomHeader/Customheader';
 
 const TopSellingProductsScreen = ({navigation}) => {
   const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
@@ -45,60 +46,66 @@ const TopSellingProductsScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <Text style={styles.header}>Sản Phẩm Bán Chạy</Text>
+      <View style={{flex: 0.7}}>
+        <Customheader leftIcon={require('../../../assets/imgs/back4.png')} />
+      </View>
 
-      {/* Trạng thái loading */}
       {loading ? (
         <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
       ) : (
-        <FlatList
-          data={products}
-          keyExtractor={item => item?._id || item.id} // Kiểm tra dữ liệu item
-          contentContainerStyle={styles.productListContainer}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              style={styles.productCard}
-              onPress={() => {
-                if (item && item._id) {
-                  const normalizedItem = {
-                    ...item,
-                    images: item.image || [], // Sử dụng `image` để tạo `images`
-                    description: item.description || 'Không có mô tả.', // Thêm mô tả mặc định nếu thiếu
-                  };
+        <View style={{flex: 8}}>
+          <FlatList
+            data={products}
+            keyExtractor={item => item?._id || item.id} // Kiểm tra dữ liệu item
+            contentContainerStyle={styles.productListContainer}
+            showsVerticalScrollIndicator={false}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                style={styles.productCard}
+                onPress={() => {
+                  if (item && item._id) {
+                    const normalizedItem = {
+                      ...item,
+                      images: item.image || [], // Sử dụng `image` để tạo `images`
+                      description: item.description || 'Không có mô tả.', // Thêm mô tả mặc định nếu thiếu
+                    };
 
-                  navigation.navigate('ProductDetail', {item: normalizedItem});
-                } else {
-                  Alert.alert('Lỗi', 'Dữ liệu sản phẩm không hợp lệ.');
-                }
-              }}>
-              {/* Hình ảnh sản phẩm */}
-              <Image
-                source={{
-                  uri: item?.image?.[0], // Sử dụng ảnh đầu tiên từ mảng `image`
-                }}
-                style={styles.productImage}
-              />
-              {/* Tên sản phẩm */}
-              <Text numberOfLines={2} style={styles.productName}>
-                {item?.name || 'Tên sản phẩm không có'}
+                    navigation.navigate('ProductDetail', {
+                      item: normalizedItem,
+                    });
+                  } else {
+                    Alert.alert('Lỗi', 'Dữ liệu sản phẩm không hợp lệ.');
+                  }
+                }}>
+                {/* Hình ảnh sản phẩm */}
+                <Image
+                  source={{
+                    uri: item?.image?.[0], // Sử dụng ảnh đầu tiên từ mảng `image`
+                  }}
+                  style={styles.productImage}
+                />
+                {/* Tên sản phẩm */}
+                <Text numberOfLines={2} style={styles.productName}>
+                  {item?.name || 'Tên sản phẩm không có'}
+                </Text>
+                {/* Giá sản phẩm */}
+                <Text style={styles.productPrice}>
+                  Giá: {item?.price?.toLocaleString() || 'Không có giá'} VND
+                </Text>
+                {/* Tổng số lượng bán */}
+                <Text style={styles.productQuantity}>
+                  Số lượng bán: {item?.totalQuantity || 0}
+                </Text>
+              </TouchableOpacity>
+            )}
+            ListEmptyComponent={() => (
+              <Text style={styles.emptyText}>
+                Hiện không có sản phẩm bán chạy.
               </Text>
-              {/* Giá sản phẩm */}
-              <Text style={styles.productPrice}>
-                Giá: {item?.price?.toLocaleString() || 'Không có giá'} VND
-              </Text>
-              {/* Tổng số lượng bán */}
-              <Text style={styles.productQuantity}>
-                Số lượng bán: {item?.totalQuantity || 0}
-              </Text>
-            </TouchableOpacity>
-          )}
-          ListEmptyComponent={() => (
-            <Text style={styles.emptyText}>
-              Hiện không có sản phẩm bán chạy.
-            </Text>
-          )}
-        />
+            )}
+          />
+        </View>
       )}
     </View>
   );
@@ -114,7 +121,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
-    marginVertical: 20,
+    marginTop: 10,
   },
   loadingText: {
     textAlign: 'center',

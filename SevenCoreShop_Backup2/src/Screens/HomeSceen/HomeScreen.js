@@ -93,8 +93,6 @@ const HomeScreen = ({navigation}) => {
         }
         showsVerticalScrollIndicator={false}>
         <AdScreen navigation={navigation} />
-
-        {/* Updated Buttons Section */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[
@@ -176,7 +174,7 @@ const HomeScreen = ({navigation}) => {
           <View style={HomeStyle.productSection}>
             <FlatList
               data={products}
-              keyExtractor={(item) => item._id}
+              keyExtractor={item => item._id}
               numColumns={2}
               scrollEnabled={false}
               renderItem={({item}) => {
@@ -218,12 +216,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 10,
     alignItems: 'center',
-    flex: 1,
     marginHorizontal: 5,
     elevation: 3,
   },
   activeButton: {
-    backgroundColor: '#ff6f61',
+    backgroundColor: 'orange',
   },
   buttonText: {
     color: 'black',

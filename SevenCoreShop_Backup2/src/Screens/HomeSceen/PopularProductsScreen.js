@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
-
+import Customheader from '../../CustomHeader/Customheader';
 const PopularProductsScreen = ({navigation}) => {
   const [products, setProducts] = useState([]); // Dữ liệu sản phẩm
   const [loading, setLoading] = useState(true); // Trạng thái tải dữ liệu
@@ -50,50 +50,55 @@ const PopularProductsScreen = ({navigation}) => {
     <View style={styles.container}>
       {/* Header */}
       <Text style={styles.header}>Sản Phẩm Phổ Biến</Text>
+      <View style={{flex: 0.7}}>
+        <Customheader leftIcon={require('../../../assets/imgs/back4.png')} />
+      </View>
 
       {/* Trạng thái loading */}
       {loading ? (
         <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
       ) : (
-        <FlatList
-          data={products}
-          keyExtractor={item => item._id}
-          contentContainerStyle={styles.productListContainer}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              style={styles.productCard}
-              onPress={() =>
-                navigation.navigate('ProductDetail', {
-                  item, // Truyền sản phẩm đã chuẩn hóa
-                })
-              }>
-              {/* Hình ảnh sản phẩm */}
-              <Image
-                source={{
-                  uri: item.images?.[0] || 'https://via.placeholder.com/150', // Sử dụng ảnh đầu tiên, hoặc ảnh mặc định
-                }}
-                style={styles.productImage}
-              />
-              {/* Tên sản phẩm */}
-              <Text numberOfLines={2} style={styles.productName}>
-                {item.name || 'Tên sản phẩm không có'}
+        <View style={{flex: 8}}>
+          <FlatList
+            data={products}
+            keyExtractor={item => item._id}
+            contentContainerStyle={styles.productListContainer}
+            showsVerticalScrollIndicator={false}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                style={styles.productCard}
+                onPress={() =>
+                  navigation.navigate('ProductDetail', {
+                    item, // Truyền sản phẩm đã chuẩn hóa
+                  })
+                }>
+                <Image
+                  source={{
+                    uri: item.images?.[0] || 'https://via.placeholder.com/150', // Sử dụng ảnh đầu tiên, hoặc ảnh mặc định
+                  }}
+                  style={styles.productImage}
+                />
+                {/* Tên sản phẩm */}
+                <Text numberOfLines={2} style={styles.productName}>
+                  {item.name || 'Tên sản phẩm không có'}
+                </Text>
+                {/* Giá sản phẩm */}
+                <Text style={styles.productPrice}>
+                  Giá: {item.price?.toLocaleString() || 'Không có giá'} VND
+                </Text>
+                {/* Tổng số lượng bán */}
+                <Text style={styles.productQuantity}>
+                  Số lượng bán: {item.totalQuantity || 0}
+                </Text>
+              </TouchableOpacity>
+            )}
+            ListEmptyComponent={() => (
+              <Text style={styles.emptyText}>
+                Hiện không có sản phẩm phổ biến.
               </Text>
-              {/* Giá sản phẩm */}
-              <Text style={styles.productPrice}>
-                Giá: {item.price?.toLocaleString() || 'Không có giá'} VND
-              </Text>
-              {/* Tổng số lượng bán */}
-              <Text style={styles.productQuantity}>
-                Số lượng bán: {item.totalQuantity || 0}
-              </Text>
-            </TouchableOpacity>
-          )}
-          ListEmptyComponent={() => (
-            <Text style={styles.emptyText}>
-              Hiện không có sản phẩm phổ biến.
-            </Text>
-          )}
-        />
+            )}
+          />
+        </View>
       )}
     </View>
   );
@@ -109,7 +114,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
-    marginVertical: 20,
+    marginTop: 10,
   },
   loadingText: {
     textAlign: 'center',
