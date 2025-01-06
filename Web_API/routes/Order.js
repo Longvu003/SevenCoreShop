@@ -71,4 +71,9 @@ router.get("/getOrder", async (req, res) => {
 });
 
 // router.get("/getOrderUserById", OrderController.getOrderUserById);
+
+router.get("/top-order", OrderController.getBestSellingProducts);
+
+router.get("/pho-bien", OrderController.getPopularProducts);
+
 module.exports = router;
