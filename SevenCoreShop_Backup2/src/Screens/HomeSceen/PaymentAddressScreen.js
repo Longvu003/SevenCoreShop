@@ -53,10 +53,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
 
   const userID = route.params?.userID;
 
-  useEffect(() => {
-    console.log('Danh sách voucher:', voucherList);
-    console.log('Voucher được chọn:', selectedVoucher);
-  }, [voucherList, selectedVoucher]);
+  useEffect(() => {}, [voucherList, selectedVoucher]);
 
   useFocusEffect(
     useCallback(() => {
@@ -197,28 +194,11 @@ const PaymentAddressScreen = ({navigation, route}) => {
       }
     }
   };
-
-  // if (loading) {
-  //   return (
-  //     <View style={styles.loaderContainer}>
-  //       <ActivityIndicator size="large" color="#000" />
-  //       <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
-  //     </View>
-  //   );
-  // }
-
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.container}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}>
-        <Image
-          source={require('../../../assets/imgs/back4.png')}
-          style={styles.backIcon}
-        />
-      </TouchableOpacity>
+      <Customheader leftIcon={require('../../../assets/imgs/back4.png')} />
       <Text style={styles.sectionHeader}>Chọn Địa Chỉ Giao Hàng</Text>
       {addresses.length > 0 ? (
         addresses.map(addressItem => (
@@ -459,28 +439,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     backgroundColor: 'white',
-  },
-  backButton: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    zIndex: 10,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  backIcon: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
   },
   loaderContainer: {
     flex: 1,
