@@ -266,8 +266,6 @@ const getPopularProducts = async (req, res) => {
   }
 };
 
-
-
 // Xuất các hàm để sử dụng
 module.exports = {
   updateStatusPay,

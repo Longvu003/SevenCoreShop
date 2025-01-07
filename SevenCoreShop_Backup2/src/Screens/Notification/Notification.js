@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
-
+import Customheader from '../../CustomHeader/Customheader';
 const NotificationScreen = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,6 @@ const NotificationScreen = () => {
         const response = await axios.get(`${API__URL}/Notification/`);
         if (response.data) {
           const ArrayNoti = response.data;
-          console.log('Notifications:', ArrayNoti); // Kiểm tra dữ liệu trả về
           setNotifications(ArrayNoti); // Cập nhật state với dữ liệu
         } else {
           console.error('Dữ liệu trả về không đúng định dạng.');
@@ -39,7 +38,6 @@ const NotificationScreen = () => {
   }, []);
 
   const renderNotificationItem = ({item}) => {
-    console.log('Rendering item:', item); // Kiểm tra item
     return (
       <View style={styles.notificationItem}>
         <Text style={styles.icon}>{item.icon || '🔔'}</Text>
@@ -68,7 +66,6 @@ const NotificationScreen = () => {
     );
   }
 
-  // Kiểm tra nếu notifications có dữ liệu
   if (!Array.isArray(notifications) || notifications.length === 0) {
     return (
       <View style={styles.emptyContainer}>
@@ -79,14 +76,11 @@ const NotificationScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity>
-          <Text style={styles.backButton}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Thông báo</Text>
+      <View>
+        <Customheader title="Thông báo" />
       </View>
       <FlatList
-        data={notifications || []} // Đảm bảo data là một mảng (tránh lỗi khi notifications undefined)
+        data={notifications || []}
         keyExtractor={item => item._id}
         renderItem={renderNotificationItem}
       />
@@ -98,21 +92,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  backButton: {
-    fontSize: 24,
-    marginRight: 16,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   list: {
     paddingHorizontal: 16,
