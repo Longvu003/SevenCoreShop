@@ -19,6 +19,8 @@ const resetPass = require("./routes/repass");
 const commentRoutes = require("./routes/cmt");
 const bestsellitem = require("./routes/bestsellitem.js");
 const Address = require("./routes/Address.js");
+const favoriteProducts = require("./routes/favoriteproduct");
+
 //okokok
 const multer = require("multer");
 const Ad = require("./model/AdModel");
@@ -76,6 +78,7 @@ app.use("/payonline", PayOnline);
 app.use("/ads", adsRouter); // Đăng ký router quảng cáo
 app.use("/images", express.static("images")); // Đăng ký router ảnh
 app.use("/bestsell", bestsellitem);
+app.use("/favorite", favoriteProducts);
 // catch 404 and forward to error handler
 // app.use((req, res, next) => {
 //   next(createError(404));

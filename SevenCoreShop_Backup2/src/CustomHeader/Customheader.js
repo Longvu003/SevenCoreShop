@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
   iconSize: {
     width: 20,
-    height: 30,
+    height: 45,
   },
   container: {
     flexDirection: 'row',

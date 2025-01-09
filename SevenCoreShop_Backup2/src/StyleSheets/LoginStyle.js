@@ -43,16 +43,16 @@ const LoginStyle = StyleSheet.create({
   },
   loginButton: {
     height: 50,
-    backgroundColor: '#000',
+    backgroundColor: '#F4F4F4',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
     marginBottom: 20,
   },
   loginText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 18,
-    fontWeight: 'regular',
+    fontWeight: 'bold',
   },
   orText: {
     textAlign: 'center',

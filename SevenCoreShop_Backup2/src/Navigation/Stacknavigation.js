@@ -26,6 +26,7 @@ import PaymentAddressScreen from '../Screens/HomeSceen/PaymentAddressScreen';
 import CartProdvider from '../Screens/Cart/CartProdvider';
 import SearchOrder from '../Screens/Order/SearchOrder';
 import AddAddress from '../Screens/User/address/AddAddress';
+import Favorite from '../Screens/User/Favorite';
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
@@ -43,6 +44,7 @@ const Stacknavigation = () => {
           <Stack.Screen name="Tab" component={TabNavigation} />
           <Stack.Screen name="ListAddress" component={ListAddress} />
           <Stack.Screen name="EditAddress" component={EditAddress} />
+          <Stack.Screen name="Favorite" component={Favorite} />
           <Stack.Screen name="EditPayment" component={EditPayment} />
           <Stack.Screen name="ListPayment" component={ListPayment} />
           <Stack.Screen name="EditUser" component={EditUser} />

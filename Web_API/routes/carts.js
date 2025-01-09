@@ -14,10 +14,17 @@ const cartController = require("../controllers/CartController");
  */
 router.post("/addItemcart", async (req, res) => {
   try {
-    // console.log("Dữ liệu nhận được từ client:", req.body);
-    const { userId, productId, nameProduct, quantity, price, images } =
-      req.body;
+    const { userId, productId, nameProduct, quantity, price, images } = req.body;
 
+    // Kiểm tra xem có đủ thông tin trong body không
+    if (!userId || !productId || !nameProduct || !quantity || !price || !images) {
+      return res.status(400).json({
+        status: false,
+        message: "Thiếu thông tin cần thiết. Vui lòng cung cấp đầy đủ thông tin.",
+      });
+    }
+
+    // Gọi controller add để thêm sản phẩm vào giỏ hàng
     const result = await cartController.add(
       userId,
       productId,
@@ -27,12 +34,29 @@ router.post("/addItemcart", async (req, res) => {
       images
     );
 
-    return res.status(200).json({ message: "Thêm thành công", result });
+    // Kiểm tra kết quả trả về từ controller
+    if (result.status) {
+      return res.status(200).json({
+        status: true,
+        message: "Thêm thành công vào giỏ hàng",
+        result: result,
+      });
+    } else {
+      return res.status(400).json({
+        status: false,
+        message: result.message || "Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.",
+      });
+    }
   } catch (error) {
     console.error("Lỗi trong route /addItemcart:", error.stack);
-    return res.status(500).json({ status: false, data: error.message });
+    return res.status(500).json({
+      status: false,
+      message: "Đã xảy ra lỗi khi thực hiện yêu cầu.",
+      error: error.message,
+    });
   }
 });
+
 
 /**
  * Lấy toàn bộ sản phẩm trong giỏ hàng của người dùng

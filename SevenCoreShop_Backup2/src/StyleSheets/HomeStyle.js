@@ -100,6 +100,7 @@ const HomeStyle = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     marginTop: 20,
+    position: 'relative',
   },
   productImage: {
     width: 160,
@@ -118,6 +119,15 @@ const HomeStyle = StyleSheet.create({
     color: '#ff5722',
     textAlign: 'center',
   },
+  heartIcon: {
+    top: 8, 
+    right: 8, 
+    zIndex: 10, 
+    width: 24, 
+    height: 24,
+    position: 'absolute',
+  },
+
 });
 
 export default HomeStyle;
