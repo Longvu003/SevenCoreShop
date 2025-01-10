@@ -1,4 +1,3 @@
-
 import {
   View,
   Text,
@@ -23,7 +22,6 @@ import {useState, useEffect} from 'react';
 const SearchOrder = ({navigation}) => {
   const [dataOrder, setDataOrder] = useState([]);
   const [seacrh, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
   const userId = useCart();
   const handleSearch = async query => {
     setSearch(query);

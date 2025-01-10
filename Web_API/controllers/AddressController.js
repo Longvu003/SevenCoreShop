@@ -112,7 +112,6 @@ const updateAddressById = async (
       indexAddress.isDefault = isDefault;
       await item.save();
     }
-
     return indexAddress;
   } catch (error) {
     return { success: false, message: error.message };

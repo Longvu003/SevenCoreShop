@@ -93,39 +93,39 @@ const HomeScreen = ({navigation}) => {
         }
         showsVerticalScrollIndicator={false}>
         <AdScreen navigation={navigation} />
-        <View style={styles.buttonContainer}>
+        <View style={HomeStyle.buttonContainer}>
           <TouchableOpacity
             style={[
-              styles.button,
-              activeFilter === 'BestSelling' && styles.activeButton,
+              HomeStyle.button,
+              activeFilter === 'BestSelling' && HomeStyle.activeButton,
             ]}
             onPress={() => {
               setActiveFilter('BestSelling');
               navigation.navigate('BestSellingScreen');
             }}>
-            <Text style={styles.buttonText}>Bán Chạy</Text>
+            <Text style={HomeStyle.buttonText}>Bán Chạy</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.button,
-              activeFilter === 'Popular' && styles.activeButton,
+              HomeStyle.button,
+              activeFilter === 'Popular' && HomeStyle.activeButton,
             ]}
             onPress={() => {
               setActiveFilter('Popular');
               navigation.navigate('PopularScreen');
             }}>
-            <Text style={styles.buttonText}>Phổ Biến</Text>
+            <Text style={HomeStyle.buttonText}>Phổ Biến</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.button,
-              activeFilter === 'FilterByPrice' && styles.activeButton,
+              HomeStyle.button,
+              activeFilter === 'FilterByPrice' && HomeStyle.activeButton,
             ]}
             onPress={() => {
               setActiveFilter('FilterByPrice');
               navigation.navigate('FilterByPriceScreen');
             }}>
-            <Text style={styles.buttonText}>Lọc Theo Giá</Text>
+            <Text style={HomeStyle.buttonText}>Lọc Theo Giá</Text>
           </TouchableOpacity>
         </View>
 
@@ -202,32 +202,5 @@ const HomeScreen = ({navigation}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 20,
-    marginVertical: 10,
-  },
-  button: {
-    backgroundColor: '#f0f0f0',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginHorizontal: 5,
-    elevation: 3,
-  },
-  activeButton: {
-    backgroundColor: 'orange',
-  },
-  buttonText: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-});
 
 export default HomeScreen;

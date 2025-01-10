@@ -67,7 +67,6 @@ router.put("/updateAddressbyId", async (req, res) => {
     addressDetail,
     isDefault,
   } = req.body;
-
   try {
     const item = await AddressController.updateAddressById(
       userId,
@@ -81,7 +80,6 @@ router.put("/updateAddressbyId", async (req, res) => {
       addressDetail,
       isDefault
     );
-
     if (!item) {
       res.status(404).json({ message: "Có lỗi khi lấy địa chỉ" });
     } else {
