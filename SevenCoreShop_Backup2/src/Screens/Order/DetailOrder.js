@@ -20,10 +20,6 @@ const DetailOrder = ({route}) => {
   const getOrderDetail = () => {
     setDetailOrder(item);
   };
-  // console.log(
-  //   DetailOrder?.address?.[0]?.addressDetail || 'No address detail found',
-  // );
-
   useEffect(() => {
     getOrderDetail();
   }, []);

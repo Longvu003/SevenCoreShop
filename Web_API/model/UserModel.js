@@ -21,11 +21,9 @@ const UserSchema = new Schema({
       },
       province: {
         type: String,
-        required: true,
       },
       district: {
         type: String,
-        required: true,
       },
       ward: {
         type: String,

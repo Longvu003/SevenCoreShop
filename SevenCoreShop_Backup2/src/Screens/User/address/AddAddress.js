@@ -146,7 +146,7 @@ const AddAddress = ({navigation}) => {
           </View>
 
           <View style={{flex: 8, paddingHorizontal: 20}}>
-            {loading && <ActivityIndicator size="large" color="blue" />}
+            {loading && <ActivityIndicator size="large" color="orange" />}
             <TextInput
               style={styles.input}
               placeholder="Họ và tên"
@@ -201,23 +201,9 @@ const AddAddress = ({navigation}) => {
               )}
             </View>
           </View>
-          <View
-            style={{
-              width: WITH__Screen * 1,
-              height: 50,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
+          <View style={styles.container__radiobutton}>
             <TouchableOpacity
-              style={{
-                width: 30,
-                height: 30,
-                borderWidth: 1,
-                borderRadius: 50,
-                borderColor: 'orange',
-                marginHorizontal: 10,
-              }}
+              style={styles.btn__radioCheck}
               onPress={onChangeIsdefault}>
               {isDefault && <View style={styles.innerCircle}></View>}
             </TouchableOpacity>
@@ -238,6 +224,22 @@ const AddAddress = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  btn__radioCheck: {
+    width: 30,
+    height: 30,
+    borderWidth: 1,
+    borderRadius: 50,
+    borderColor: 'orange',
+    marginHorizontal: 10,
+  },
+
+  container__radiobutton: {
+    width: WITH__Screen * 1,
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   innerCircle: {
     width: 28,
     height: 28,

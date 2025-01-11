@@ -18,15 +18,26 @@ const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 import API__URL from '../../../../config';
 const ListAddress = ({navigation}) => {
+  const [userEmail, setUseEmail] = useState();
   const [listAddress, setListAddress] = useState([]);
+
   const getListAddress = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
     const newUserEmail = JSON.parse(userEmail);
+    setUseEmail(newUserEmail);
+    if (!newUserEmail) {
+      Alert.alert('Yêu cầu đăng nhập', 'Bạn cần đăng nhập để chỉnh sửa.', [
+        {text: 'Hủy', style: 'cancel'},
+        {text: 'Đăng nhập', onPress: () => navigation.replace('LoginScreen')},
+      ]);
+      return;
+    }
     const response = await axios.get(
       `${API__URL}/users/getUserEmail?email=${newUserEmail}`,
     );
     setListAddress(response.data.data.address);
   };
+
   const deleteAddress = async id => {
     const OldUserId = await AsyncStorage.getItem('userId');
     const userId = JSON.parse(OldUserId);
@@ -124,13 +135,22 @@ const ListAddress = ({navigation}) => {
           </View>
         )}
       </View>
+
       <View style={styles.container__add}>
-        <TouchableOpacity
-          style={styles.btn__add}
-          onPress={() => navigation.navigate('AddAddress')}>
-          <Image source={require('../../../../assets/imgs/add.png')} />
-          <Text> Thêm địa chỉ</Text>
-        </TouchableOpacity>
+        {userEmail ? (
+          <TouchableOpacity
+            style={styles.btn__add}
+            onPress={() => navigation.navigate('AddAddress')}>
+            <Image source={require('../../../../assets/imgs/add.png')} />
+            <Text> Thêm địa chỉ</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.btn__add}
+            onPress={() => navigation.navigate('LoginScreen')}>
+            <Text style={styles.txt__list}> Đăng nhập để sửa</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

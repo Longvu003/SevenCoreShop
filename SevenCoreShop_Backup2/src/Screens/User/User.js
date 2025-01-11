@@ -7,41 +7,51 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import React, {useCallback} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import axios from 'axios';
-import {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserStyleSheet from '../../StyleSheets/UserStyleSheet';
 import {useFocusEffect} from '@react-navigation/native';
 import API__URL from '../../../config';
+
 const User = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const renderUser = async () => {
     const userEmail = await AsyncStorage.getItem('userEmail');
-    const newUserEmail = JSON.parse(userEmail);
-    const url = `${API__URL}/users/getUserEmail/?email=${newUserEmail}`;
-    try {
-      if (newUserEmail) {
-        const response = await axios.get(url);
-        const newnew = Object.values(response.data);
-        setUser(newnew);
-      } else {
-        console.log('Lỗi không thấy email');
+    if (userEmail) {
+      const newUserEmail = JSON.parse(userEmail);
+      const url = `${API__URL}/users/getUserEmail/?email=${newUserEmail}`;
+      try {
+        if (newUserEmail) {
+          const response = await axios.get(url);
+          const newnew = Object.values(response.data);
+          setUser(newnew);
+          setIsLoggedIn(true);
+        } else {
+          console.log('Lỗi không thấy email');
+        }
+      } catch (error) {
+        console.log('Lỗi nè:', error);
+        setLoading(true);
       }
-    } catch (error) {
-      console.log('lỗi nè :', error);
-      setLoading(true);
+    } else {
+      setIsLoggedIn(false);
     }
   };
+
   const Logout = () => {
     Alert.alert('Đăng xuất', 'Bạn có muốn đăng xuất không ?', [
       {text: 'Trở lại ', onPress: () => console.log('Xác nhận trở lại')},
       {
-        text: 'xác nhận',
+        text: 'Xác nhận',
         onPress: async () => {
           try {
             await AsyncStorage.removeItem('userEmail');
+            await AsyncStorage.removeItem('userId');
+            setIsLoggedIn(false);
             navigation.replace('LoginScreen');
           } catch (error) {
             console.log(error);
@@ -50,11 +60,21 @@ const User = ({navigation}) => {
       },
     ]);
   };
+
+  const Login = async () => {
+    try {
+      navigation.replace('LoginScreen');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       renderUser();
     }, []),
   );
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={UserStyleSheet.layout__Img}>
@@ -106,13 +126,32 @@ const User = ({navigation}) => {
             source={require('../../../assets/imgs/Vector.png')}
           />
         </TouchableOpacity>
-      </View>
-      <View style={UserStyleSheet.container__btnLogout}>
-        <TouchableOpacity onPress={Logout}>
-          <Text style={UserStyleSheet.txt__Signout}>Đăng xuất</Text>
+        <TouchableOpacity
+          style={UserStyleSheet.container__layout}
+          onPress={() => navigation.navigate('Favorite')}>
+          <Text style={UserStyleSheet.txt__container}>Sản phẩm yêu thích</Text>
+          <Image
+            style={UserStyleSheet.txt__container}
+            source={require('../../../assets/imgs/Vector.png')}
+          />
         </TouchableOpacity>
       </View>
+      {/* Hiển thị nút đăng nhập hoặc đăng xuất dựa trên trạng thái */}
+      {isLoggedIn ? (
+        <View style={UserStyleSheet.container__btnLogout}>
+          <TouchableOpacity onPress={Logout}>
+            <Text style={UserStyleSheet.txt__Signout}>Đăng Xuất</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={UserStyleSheet.container__btnLogout}>
+          <TouchableOpacity onPress={Login}>
+            <Text style={UserStyleSheet.txt__Signout}>Đăng Nhập</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
+
 export default User;

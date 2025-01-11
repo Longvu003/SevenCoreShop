@@ -1,6 +1,58 @@
-import {StyleSheet, Text, View} from 'react-native';
-
+import {StyleSheet, Text, View, Dimensions} from 'react-native';
+const WITH__Screen = Dimensions.get('screen').width;
+const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const HomeStyle = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  button: {
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginHorizontal: 5,
+    elevation: 3,
+  },
+  activeButton: {
+    backgroundColor: 'orange',
+  },
+  buttonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  innerCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 50,
+    backgroundColor: 'orange',
+  },
+  input: {
+    width: WITH__Screen * 0.9,
+    height: HEIGHT__SCREEN * 0.08,
+    backgroundColor: '#F4F4F4',
+    marginTop: 20,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+  },
+  txt__btn: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  btn__Save: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'black',
+    width: WITH__Screen * 0.9,
+    height: HEIGHT__SCREEN * 0.07,
+    borderRadius: 20,
+    marginTop: 20,
+  },
   txt__user: {
     fontSize: 15,
     fontWeight: '600',
@@ -90,7 +142,7 @@ const HomeStyle = StyleSheet.create({
     marginBottom: 10,
   },
   productSection: {
-    marginBottom: 40,
+    alignItems: 'center',
   },
   productCard: {
     height: 200,
@@ -100,6 +152,7 @@ const HomeStyle = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     marginTop: 20,
+    position: 'relative',
   },
   productImage: {
     width: 160,
@@ -118,6 +171,15 @@ const HomeStyle = StyleSheet.create({
     color: '#ff5722',
     textAlign: 'center',
   },
+  heartIcon: {
+    top: 8, 
+    right: 8, 
+    zIndex: 10, 
+    width: 24, 
+    height: 24,
+    position: 'absolute',
+  },
+
 });
 
 export default HomeStyle;

@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import API__URL from '../../../../config';
 import {useFocusEffect} from '@react-navigation/native';
 import RNPickerSelect from 'react-native-picker-select';
+import EditAddressStyle from '../../../StyleSheets/EditAddressStyle';
 const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const EditAddress = ({navigation, route}) => {
@@ -215,32 +216,34 @@ const EditAddress = ({navigation, route}) => {
         <View style={{flex: 8}}>
           <View>
             <TextInput
-              style={styles.input}
+              style={EditAddressStyle.input}
               placeholder="Họ và tên"
               value={userNameAddress}
               onChangeText={text => setuserNameAddress(text)}
             />
             {userNameError ? (
-              <Text style={styles.txt__error}>{userNameError}</Text>
+              <Text style={EditAddressStyle.txt__error}>{userNameError}</Text>
             ) : null}
             <TextInput
-              style={styles.input}
+              style={EditAddressStyle.input}
               placeholder="Số điện thoại"
               value={phoneAddress}
               keyboardType="numeric"
               onChangeText={text => setPhoneAddress(text)}
             />
             {phoneError ? (
-              <Text style={styles.txt__error}>{phoneError}</Text>
+              <Text style={EditAddressStyle.txt__error}>{phoneError}</Text>
             ) : null}
             <TextInput
-              style={styles.input}
+              style={EditAddressStyle.input}
               placeholder="Thông tin địa chỉ"
               value={addressDetail}
               onChangeText={text => setAddressDetail(text)}
             />
             {addressDetailError ? (
-              <Text style={styles.txt__error}>{addressDetailError}</Text>
+              <Text style={EditAddressStyle.txt__error}>
+                {addressDetailError}
+              </Text>
             ) : null}
 
             <RNPickerSelect
@@ -276,36 +279,23 @@ const EditAddress = ({navigation, route}) => {
               value={selectedWard}
             />
 
-            <View
-              style={{
-                width: WITH__Screen * 1,
-                height: 50,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
+            <View style={EditAddressStyle.container__radiobutton}>
               <TouchableOpacity
-                style={{
-                  width: 30,
-                  height: 30,
-                  borderWidth: 1,
-                  borderRadius: 50,
-                  borderColor: 'orange',
-                  marginHorizontal: 10,
-                }}
+                style={EditAddressStyle.btn__radioCheck}
                 onPress={onChangeIsdefault}>
-                {isDefault && <View style={styles.innerCircle}></View>}
+                {isDefault && (
+                  <View style={EditAddressStyle.innerCircle}></View>
+                )}
               </TouchableOpacity>
-
               <Text>{isDefault ? '  Bỏ mặc định' : 'Mặc định'}</Text>
             </View>
           </View>
         </View>
         <View style={{flex: 2, alignItems: 'center'}}>
           <TouchableOpacity
-            style={styles.btn__Save}
+            style={EditAddressStyle.btn__Save}
             onPress={() => updateUser()}>
-            <Text style={styles.txt__btn}>Lưu</Text>
+            <Text style={EditAddressStyle.txt__btn}>Lưu</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -313,50 +303,3 @@ const EditAddress = ({navigation, route}) => {
   );
 };
 export default EditAddress;
-const styles = StyleSheet.create({
-  innerCircle: {
-    width: 28,
-    height: 28,
-    borderRadius: 50,
-    backgroundColor: 'orange',
-  },
-  btn__setIsDefault: {
-    backgroundColor: 'black',
-    width: WITH__Screen * 0.9,
-    height: HEIGHT__SCREEN * 0.06,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 20,
-    borderRadius: 30,
-    marginTop: 30,
-  },
-  input: {
-    borderRadius: 30,
-    width: WITH__Screen * 0.9,
-    marginHorizontal: 20,
-    height: HEIGHT__SCREEN * 0.1,
-  },
-  txt__error: {
-    marginHorizontal: 10,
-    color: 'red',
-  },
-  txt__btn: {
-    color: 'white',
-    fontWeight: '800',
-  },
-  btn__Save: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'black',
-    width: WITH__Screen * 0.9,
-    height: HEIGHT__SCREEN * 0.07,
-    borderRadius: 20,
-  },
-  input: {
-    width: WITH__Screen * 0.9,
-    height: HEIGHT__SCREEN * 0.08,
-    backgroundColor: '#F4F4F4',
-    marginTop: 20,
-    marginHorizontal: 20,
-  },
-});

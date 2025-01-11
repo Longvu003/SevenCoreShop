@@ -3,48 +3,45 @@ const CartModel = require("../model/CartModel");
 const UserModel = require("../model/UserModel");
 const ProductModel = require("../model/ProductModel");
 // Hàm thêm sản phẩm vào giỏ hàng
-const add = async (
-  userId,
-  productId,
-  nameProduct,
-  quantity,
-  price,
-  images
-  // statusProduct
-) => {
+const add = async (userId, productId, nameProduct, quantity, price, images) => {
   try {
-    const item = await CartModel.findOne({
-      userId: userId,
-    });
+    // Kiểm tra đầu vào hợp lệ
+    if (!userId || !productId || !nameProduct || !quantity || !price || !images) {
+      throw new Error("Thông tin sản phẩm không đầy đủ");
+    }
+
+    // Tìm giỏ hàng của người dùng
+    const item = await CartModel.findOne({ userId: userId });
+
     if (item) {
+      // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
       const itemIndex = item.cartItems.findIndex(
         (item) => item.productId.toString() === productId.toString()
       );
+
       if (itemIndex !== -1) {
+        // Nếu sản phẩm đã có trong giỏ hàng, cập nhật số lượng
         item.cartItems[itemIndex].quantity += quantity;
         await item.save();
+        return { status: true, message: "Sản phẩm đã được cập nhật trong giỏ hàng" };
       } else {
-        item.cartItems.push({
-          productId,
-          nameProduct,
-          quantity,
-          price,
-          images,
-          // statusProduct,
-        });
+        // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
+        item.cartItems.push({ productId, nameProduct, quantity, price, images });
         await item.save();
+        return { status: true, message: "Sản phẩm đã được thêm vào giỏ hàng" };
       }
     } else {
-      // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
+      // Nếu giỏ hàng chưa tồn tại, tạo mới giỏ hàng
       const newItem = new CartModel({
         userId,
         cartItems: [{ productId, nameProduct, quantity, price, images }],
       });
-
       await newItem.save();
+      return { status: true, message: "Giỏ hàng đã được tạo và sản phẩm đã được thêm" };
     }
   } catch (error) {
     console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error.stack);
+    return { status: false, message: "Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng" };
   }
 };
 
