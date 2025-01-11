@@ -21,6 +21,8 @@ const bestsellitem = require("./routes/bestsellitem.js");
 const Address = require("./routes/Address.js");
 const Notification = require("./routes/Notification.js");
 const Voucher = require("./routes/Voucher.js");
+const favoriteProducts = require("./routes/favoriteproduct");
+
 //okokok
 const multer = require("multer");
 const Ad = require("./model/AdModel");
@@ -38,9 +40,6 @@ dotenv.config();
 //   credential: admin.credential.cert(serviceAccount),
 // });
 // ----
-
-
-
 
 var app = express();
 
@@ -92,6 +91,7 @@ app.use("/images", express.static("images")); // Đăng ký router ảnh
 app.use("/bestsell", bestsellitem);
 app.use("/Notification", Notification);
 app.use("/Voucher", Voucher);
+app.use("/favorite", favoriteProducts);
 // catch 404 and forward to error handler
 // app.use((req, res, next) => {
 //   next(createError(404));

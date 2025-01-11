@@ -8,8 +8,6 @@ import {
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import Customheader from '../../CustomHeader/Customheader';
-import axios from 'axios';
-import API__URL from '../../../config';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useCart} from './CartProdvider';
 import CartStyle from '../../StyleSheets/CartStyle';

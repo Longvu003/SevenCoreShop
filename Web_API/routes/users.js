@@ -5,12 +5,13 @@ const userController = require("../controllers/UserController");
 const OtpModel = require("../models/OtpModel");
 const UserModel = require("../model/UserModel");
 const { sendOtpMail } = require("../controllers/UserController");
-
+const mongoose = require("mongoose");
 // Hàm kiểm tra dữ liệu đầu vào
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    // return res.status(400).json({ errors: errors.array() });
+    console.log("Thông tin nhập không đúng định dạng", errors);
   }
   next();
 };
@@ -49,24 +50,24 @@ router.post(
 );
 
 // Đăng nhập
-router.post("/login", async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const result = await userController.login(email, password);
-    if (result) {
-      return res
-        .status(200)
-        .json({ status: true, message: "Đăng nhập thành công", data: result });
-    } else {
-      return res
-        .status(400)
-        .json({ status: false, message: "Email hoặc mật khẩu không đúng" });
-    }
-  } catch (error) {
-    console.log("Login error", error.message);
-    res.status(500).json({ status: false, message: error.message });
-  }
-});
+// router.post("/login", async (req, res, next) => {
+//   try {
+//     const { email, password } = req.body;
+//     const result = await userController.login(email, password);
+//     if (result) {
+//       return res
+//         .status(200)
+//         .json({ status: true, message: "Đăng nhập thành công", data: result });
+//     } else {
+//       return res
+//         .status(400)
+//         .json({ status: false, message: "Email hoặc mật khẩu không đúng" });
+//     }
+//   } catch (error) {
+//     console.log("Login error", error.message);
+//     res.status(500).json({ status: false, message: error.message });
+//   }
+// });
 
 // Gửi OTP khi quên mật khẩu
 router.post(
@@ -103,7 +104,7 @@ router.put("/updateuser", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-// Cập nhật người dùng theo ID
+
 router.post("/:id/updateuserbyid", async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -156,8 +157,8 @@ router.get(
 
       return res.status(200).json({ data: result });
     } catch (error) {
-      console.log("Get user error", error.message);
-      res.status(500).json({ message: error.message });
+      console.log("Get user error", error);
+      // res.status(500).json({ message: error.message });
     }
   }
 );
@@ -213,7 +214,7 @@ router.post("/updateuser", async (req, res, next) => {
 });
 //lấy địa chỉ theo ID
 // Lấy địa chỉ của người dùng dựa trên userID
-const mongoose = require("mongoose");
+
 router.get("/getalluser", async (req, res, next) => {
   try {
     const result = await userController.getAllUser();
@@ -356,36 +357,6 @@ router.post("/:id/unlockuserbyid", async (req, res, next) => {
   } catch (error) {
     console.log("Unlock user by id error", error.message);
     res.status(500).json({ status: false, message: error.message });
-  }
-});
-
-router.get("/:id/address", async (req, res) => {
-  const { id } = req.params;
-  console.log("Received ID:", id); // Kiểm tra ID nhận được
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    console.log("Invalid ID:", id);
-    return res.status(400).json({ message: "ID không hợp lệ" });
-  }
-
-  try {
-    const user = await UserModel.findById(id).select("address");
-    console.log("User fetched from database:", user); // Log kết quả truy vấn
-
-    if (!user) {
-      console.log("User not found with ID:", id);
-      return res.status(404).json({ message: "Người dùng không tồn tại" });
-    }
-
-    // API xác thực email
-    // method: GET
-    // url: http://localhost:7777/users/verify?email=taitan1922004@gmail.com
-    // response: xác thực thành công hoặc thất bại
-
-    res.status(200).json({ address: user.address });
-  } catch (error) {
-    console.error("Error fetching user address:", error.message); // Log lỗi
-    res.status(500).json({ message: "Lỗi khi lấy địa chỉ người dùng" });
   }
 });
 

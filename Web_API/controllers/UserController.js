@@ -181,7 +181,7 @@ const getUserByEmail = async (email) => {
     return user;
   } catch (error) {
     console.log("Get user error", error.message);
-    throw new Error("Get user error: " + error.message);
+    // throw new Error("Get user error: " + error.message);
   }
 };
 

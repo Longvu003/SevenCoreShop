@@ -146,7 +146,7 @@ const AddAddress = ({navigation}) => {
           </View>
 
           <View style={{flex: 8, paddingHorizontal: 20}}>
-            {loading && <ActivityIndicator size="large" color="blue" />}
+            {loading && <ActivityIndicator size="large" color="orange" />}
             <TextInput
               style={styles.input}
               placeholder="Họ và tên"

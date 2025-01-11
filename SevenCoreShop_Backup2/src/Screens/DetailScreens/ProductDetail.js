@@ -56,17 +56,42 @@ const ProductDetail = ({navigation, route}) => {
     }
   };
   const addProductCart = async () => {
-    const getuserId = await AsyncStorage.getItem('userId');
-    const userId = JSON.parse(getuserId);
-    const product = {
-      userId,
-      productId: item._id,
-      images: item.images[0],
-      nameProduct: item.name,
-      quantity: quantityProduct,
-      price: item.price,
-    };
     try {
+      const getUserId = await AsyncStorage.getItem('userId');
+      const userId = JSON.parse(getUserId);
+
+      if (!userId) {
+        Alert.alert(
+          'Yêu cầu đăng nhập',
+          'Bạn cần đăng nhập để thêm vào giỏ hàng.',
+          [
+            {text: 'Hủy', style: 'cancel'},
+            {
+              text: 'Đăng nhập',
+              onPress: () => navigation.replace('LoginScreen'),
+            },
+          ],
+        );
+        return;
+      }
+
+      // Kiểm tra số lượng sản phẩm hợp lệ
+      if (!quantityProduct || quantityProduct <= 0) {
+        Alert.alert('Lỗi', 'Số lượng sản phẩm không hợp lệ.');
+        return;
+      }
+
+      // Thông tin sản phẩm
+      const product = {
+        userId,
+        productId: item._id,
+        images: item.images[0],
+        nameProduct: item.name,
+        quantity: quantityProduct,
+        price: item.price,
+      };
+
+      // Gửi yêu cầu thêm sản phẩm vào giỏ hàng
       const response = await axios.post(
         `${API__URL}/carts/addItemcart`,
         product,
@@ -74,23 +99,101 @@ const ProductDetail = ({navigation, route}) => {
           headers: {'Content-Type': 'application/json'},
         },
       );
+
+      if (response.data && response.data.status === true) {
+        Alert.alert('Thông báo!', 'Thêm sản phẩm vào giỏ hàng thành công');
+      } else {
+        Alert.alert(
+          'Lỗi',
+          'Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.',
+        );
+      }
+    } catch (error) {
+      console.log('Lỗi:', error);
+      Alert.alert(
+        'Lỗi',
+        'Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.',
+      );
+    }
+  };
+
+  const addFavorite = async () => {
+    try {
+      const userEmail = await AsyncStorage.getItem('userEmail');
+      const getuserId = await AsyncStorage.getItem('userId');
+      const userId = JSON.parse(getuserId);
+
+      // Kiểm tra trạng thái đăng nhập
+      if (!userId) {
+        Alert.alert(
+          'Yêu cầu đăng nhập',
+          'Bạn cần đăng nhập để thêm vào yêu thích.',
+          [
+            {
+              text: 'Hủy',
+              style: 'cancel',
+            },
+            {
+              text: 'Đăng nhập',
+              onPress: () => navigation.replace('LoginScreen'),
+            },
+          ],
+        );
+        return; // Ngăn xử lý tiếp nếu chưa đăng nhập
+      }
+
+      // Thông tin sản phẩm
+      const product = {
+        userId,
+        productId: item._id,
+        images: item.images[0],
+        nameProduct: item.name,
+        quantity: quantityProduct,
+        price: item.price,
+      };
+
+      // Gửi yêu cầu thêm sản phẩm vào yêu thích
+      const response = await axios.post(
+        `${API__URL}/favorite/addFavorite`,
+        product,
+        {
+          headers: {'Content-Type': 'application/json'},
+        },
+      );
+
       if (response.data) {
         Alert.alert('Thông báo!', 'Thêm sản phẩm thành công');
       }
     } catch (error) {
       console.log('Lỗi:', error);
+      Alert.alert(
+        'Lỗi',
+        'Không thể thêm sản phẩm vào yêu thích. Vui lòng thử lại.',
+      );
     }
   };
 
   const addComment = async () => {
-    if (newComment.trim()) {
-      try {
-        const userEmail = await AsyncStorage.getItem('userEmail');
-        if (!userEmail) {
-          Alert.alert('Vui lòng đăng nhập trước khi bình luận');
-          return;
-        }
+    try {
+      const userEmail = await AsyncStorage.getItem('userEmail');
+      const userId = await AsyncStorage.getItem('userId');
 
+      // Kiểm tra trạng thái đăng nhập
+      if (!userEmail || !userId) {
+        Alert.alert('Yêu cầu đăng nhập', 'Bạn cần đăng nhập để bình luận.', [
+          {
+            text: 'Hủy',
+            style: 'cancel',
+          },
+          {
+            text: 'Đăng nhập',
+            onPress: () => navigation.replace('LoginScreen'),
+          },
+        ]);
+        return; // Ngăn xử lý tiếp nếu chưa đăng nhập
+      }
+
+      if (newComment.trim()) {
         const response = await axios.post(`${API__URL}/api/comments`, {
           commentText: newComment,
           productId: item._id,
@@ -99,16 +202,33 @@ const ProductDetail = ({navigation, route}) => {
 
         setComments([...comments, response.data]);
         setNewComment('');
-      } catch (error) {
-        console.log('Lỗi khi thêm bình luận', error);
-        Alert.alert('Có lỗi xảy ra, vui lòng thử lại!');
+      } else {
+        Alert.alert('Vui lòng nhập nội dung bình luận');
       }
-    } else {
-      Alert.alert('Vui lòng nhập nội dung bình luận');
+    } catch (error) {
+      console.log('Lỗi khi thêm bình luận', error);
+      Alert.alert('Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
 
   const updateComment = async commentId => {
+    const userEmail = await AsyncStorage.getItem('userEmail');
+
+    // Kiểm tra trạng thái đăng nhập
+    if (!userEmail) {
+      Alert.alert('Yêu cầu đăng nhập', 'Bạn cần đăng nhập để sửa bình luận.', [
+        {
+          text: 'Hủy',
+          style: 'cancel',
+        },
+        {
+          text: 'Đăng nhập',
+          onPress: () => navigation.replace('LoginScreen'),
+        },
+      ]);
+      return; // Ngăn xử lý tiếp nếu chưa đăng nhập
+    }
+
     setEditingCommentId(commentId);
     setDialogVisible(true);
   };
@@ -143,6 +263,23 @@ const ProductDetail = ({navigation, route}) => {
   };
 
   const deleteComment = async commentId => {
+    const userEmail = await AsyncStorage.getItem('userEmail');
+
+    // Kiểm tra trạng thái đăng nhập
+    if (!userEmail) {
+      Alert.alert('Yêu cầu đăng nhập', 'Bạn cần đăng nhập để xóa bình luận.', [
+        {
+          text: 'Hủy',
+          style: 'cancel',
+        },
+        {
+          text: 'Đăng nhập',
+          onPress: () => navigation.replace('LoginScreen'),
+        },
+      ]);
+      return; // Ngăn xử lý tiếp nếu chưa đăng nhập
+    }
+
     try {
       await axios.delete(`${API__URL}/api/comments/deleteComment/${commentId}`);
       setComments(comments.filter(comment => comment._id !== commentId));
@@ -155,8 +292,22 @@ const ProductDetail = ({navigation, route}) => {
 
   return (
     <ScrollView style={{backgroundColor: 'white'}}>
-      <View style={{height: HEIGHT__SCREEN * 0.08}}>
+      <View
+        style={{
+          height: HEIGHT__SCREEN * 0.08,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
         <Customheader leftIcon={require('../../../assets/imgs/back3.png')} />
+        <TouchableOpacity
+          style={{marginRight: 24, marginTop: 24}}
+          onPress={() => addFavorite(item)}>
+          <Image
+            source={require('../../../assets/imgs/heart.png')}
+            style={{width: 24, height: 24}}
+          />
+        </TouchableOpacity>
       </View>
 
       <View style={{flex: 3}}>

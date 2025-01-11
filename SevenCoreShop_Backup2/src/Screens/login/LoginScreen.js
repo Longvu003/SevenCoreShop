@@ -8,7 +8,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import axios from 'axios'; // Import axios
+import axios from 'axios'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API__URL from '../../../config';
 import LoginStyle from '../../StyleSheets/LoginStyle';
@@ -53,7 +53,7 @@ const LoginScreen = ({navigation}) => {
         <View style={{flex: 7}}>
           <TextInput
             style={LoginStyle.input}
-            placeholder="Email "
+            placeholder="Email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -84,6 +84,24 @@ const LoginScreen = ({navigation}) => {
             style={LoginStyle.loginButton}
             onPress={handleSubmit}>
             <Text style={LoginStyle.loginText}>Đăng nhập</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[LoginStyle.loginButton, {flexDirection: 'row', alignItems: 'center'}]}
+            >
+            <Image
+              source={require('../../../assets/imgs/google.png')}
+              style={{width: 20, height: 20, position: 'absolute', left: 30}}
+            />
+            <Text style={LoginStyle.loginText}>Đăng nhập với Googgle</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[LoginStyle.loginButton, {flexDirection: 'row', alignItems: 'center'}]}
+            >
+            <Image
+              source={require('../../../assets/imgs/facebook.png')}
+              style={{width: 20, height: 20, position: 'absolute', left: 30}}
+            />
+            <Text style={LoginStyle.loginText}>Đăng nhập với Facebook</Text>
           </TouchableOpacity>
         </View>
       </View>

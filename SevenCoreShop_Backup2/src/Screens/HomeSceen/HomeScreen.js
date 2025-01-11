@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,13 +8,15 @@ import {
   TouchableOpacity,
   FlatList,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import axios from 'axios';
 import API__URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdScreen from './AdScreen';
 import HomeStyle from '../../StyleSheets/HomeStyle';
-
+import {useCallback} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -70,10 +72,64 @@ const HomeScreen = ({navigation}) => {
     }
   };
 
-  useEffect(() => {
-    getInforUser();
-  }, []);
+  const addFavorite = async item => {
+    try {
+      const getuserId = await AsyncStorage.getItem('userId');
+      const userId = JSON.parse(getuserId);
 
+      if (!userId) {
+        Alert.alert(
+          'Yêu cầu đăng nhập',
+          'Bạn cần đăng nhập để thêm vào yêu thích.',
+          [
+            {
+              text: 'Hủy',
+              style: 'cancel',
+            },
+            {
+              text: 'Đăng nhập',
+              onPress: () => navigation.replace('LoginScreen'),
+            },
+          ],
+        );
+        return; // Ngừng xử lý nếu chưa đăng nhập
+      }
+
+      // Thông tin sản phẩm yêu thích
+      const product = {
+        userId,
+        productId: item._id,
+        images: item.images[0],
+        nameProduct: item.name,
+        price: item.price,
+      };
+
+      // Gửi yêu cầu thêm sản phẩm vào yêu thích
+      const response = await axios.post(
+        `${API__URL}/favorite/addFavorite`,
+        product,
+        {
+          headers: {'Content-Type': 'application/json'},
+        },
+      );
+
+      if (response.data) {
+        Alert.alert('Thông báo!', 'Thêm sản phẩm thành công');
+      }
+    } catch (error) {
+      console.log('Lỗi:', error);
+      Alert.alert(
+        'Lỗi',
+        'Không thể thêm sản phẩm vào yêu thích. Vui lòng thử lại.',
+      );
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getInforUser();
+    }, []),
+  );
   return (
     <View style={HomeStyle.container}>
       <View style={HomeStyle.header}>
@@ -184,6 +240,14 @@ const HomeScreen = ({navigation}) => {
                     onPress={() =>
                       navigation.navigate('ProductDetail', {item})
                     }>
+                    <TouchableOpacity
+                      style={HomeStyle.heartIcon}
+                      onPress={() => addFavorite(item)}>
+                      <Image
+                        source={require('../../../assets/imgs/heart.png')}
+                        style={{width: 24, height: 24}}
+                      />
+                    </TouchableOpacity>
                     <Image
                       source={{uri: item.images[0]}}
                       style={HomeStyle.productImage}
