@@ -105,6 +105,7 @@ const updateCategory = async (id, name, description, images) => {
            throw new Error('Get category by id error')
        }
    }
+   
    // check duplicate category
    const checkDuplicateCategory = async (name) => {
        try {
