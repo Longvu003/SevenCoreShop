@@ -19,8 +19,8 @@ const NotificationScreen = () => {
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(`${API__URL}/Notification/`);
-        if (response.data) {
-          const ArrayNoti = response.data;
+        if (response.data && response.data.data) {
+          const ArrayNoti = response.data.data; // Truy cập đúng trường `data`
           console.log('Notifications:', ArrayNoti); // Kiểm tra dữ liệu trả về
           setNotifications(ArrayNoti); // Cập nhật state với dữ liệu
         } else {
@@ -87,7 +87,7 @@ const NotificationScreen = () => {
       </View>
       <FlatList
         data={notifications || []} // Đảm bảo data là một mảng (tránh lỗi khi notifications undefined)
-        keyExtractor={item => item._id}
+        keyExtractor={item => item._id} // Sử dụng `_id` làm key
         renderItem={renderNotificationItem}
       />
     </View>
