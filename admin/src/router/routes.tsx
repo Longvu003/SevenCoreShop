@@ -10,14 +10,20 @@ const CategoriesNew = lazy(() => import('../pages/CategoriesNew'));
 const LoginBoxed = lazy(() => import('../pages/LoginBoxed'));
 const Error = lazy(() => import('../components/Error'));
 const ProductCreateNew = lazy(() => import('../pages/ProductCreatNew'));
+const NotificationNew = lazy(() => import('../pages/NotificationNew'));
+const VoucherNew = lazy(() => import('../pages/VoucherNew'));
+const VoucherEdit = lazy(() => import('../pages/VoucherEdit'));
 const ProductUpdate = lazy(() => import('../pages/ProductEdit'));
 const CategoriesUpdate = lazy(() => import('../pages/CategoriesNew'));
 const CategoryEdit = lazy(() => import('../pages/CategoriesEdit'));
+const NotificationEdit = lazy(() => import('../pages/NotificationEdit'));
 const OrderManagent = lazy(() => import('../pages/OrderManagement'));
 const PayOnlineManagement = lazy(() => import('../pages/PayOnlineManagement'));
 const PayOnlineNew = lazy(() => import('../pages/PayonlineNew'));
 const TransactionManagement = lazy(() => import('../pages/TransactionsManagement'));
 const Usermanagent = lazy(() => import('../pages/UsersManagent'));
+const NotificationManagement = lazy(() => import('../pages/NotificationManagement'));
+const VoucherManagement = lazy(() => import('../pages/VoucherManagement'));
 
 const routes = [
     // dashboard (protected)
@@ -137,6 +143,60 @@ const routes = [
         path: '*',
         element: <Error />,
         layout: 'blank',
+    },
+
+    {
+        path: '/notification-management',
+        element: (
+            <PrivateRoute>
+                <NotificationManagement />   
+            </PrivateRoute>
+        ),
+    },
+
+    {
+        path: '/notification/notification-new',
+        element: (
+            <PrivateRoute>
+                <NotificationNew />
+            </PrivateRoute>
+        ),
+    },
+
+    {
+        path: '/notification/notification-edit',
+        element: (
+            <PrivateRoute>
+                <NotificationEdit />
+            </PrivateRoute>
+        ),
+    },
+
+    {
+        path: '/voucher-management',
+        element: (
+            <PrivateRoute>
+                <VoucherManagement />   
+            </PrivateRoute>
+        ),
+    },
+
+    {
+        path: '/voucher/voucher-new',
+        element: (
+            <PrivateRoute>
+                <VoucherNew />
+            </PrivateRoute>
+        ),
+    },
+
+    {
+        path: '/voucher/voucher-edit',
+        element: (
+            <PrivateRoute>
+                <VoucherEdit />
+            </PrivateRoute>
+        ),
     },
 ];
 
