@@ -62,6 +62,7 @@ const updateOrderStatus = async (req, res) => {
 const checkAndUpdateAllOrders = async (req, res) => {
   try {
     const orders = await OrderModel.find();
+
     if (orders.length === 0) {
       return res.status(400).json({ message: "Không tìm thấy đơn hàng" });
     }
@@ -151,8 +152,7 @@ const checkout = async (req, res) => {
     });
 
     await newOrder.save();
-
-    res.status(201).json({ message: "Đặt hàng thành công", order: newOrder });
+    res.status(201).json({ message: "Đặt hàng thành công", code:orderCode });
   } catch (error) {
     console.error("Lỗi khi thanh toán:", error);
     res
@@ -167,7 +167,6 @@ const getOrderUser = async () => {
 };
 const getOrderUserById = async (userId) => {
   const itemOrder = await OrderModel.find({ userId });
-
   return itemOrder;
 };
 
@@ -198,6 +197,29 @@ const getOrder = async () => {
     throw new Error("Không thể lấy danh sách đơn hàng");
   }
 };
+//check statuspay
+const checkstatuspay = async (req, res) => {
+  try {
+    const { orderCode } = req.body;
+    console.log(orderCode);
+    const order = await OrderModel.findOne({ orderCode });
+
+    if (!order) {
+      return res.status(400).json({ message: "Không tìm thấy đơn hàng" });
+    }
+
+  
+    console.log(order.statuspay);
+    if (order.statuspay==="Completed") {
+      return res.status(200).json({ message: "Đã thanh toán" });
+    } else {
+      return res.status(200).json({ message: "Chưa thanh toán" });
+    }
+  } catch (error) {
+    console.error("Lỗi khi kiểm tra trạng thái thanh toán:", error);
+    return res.status(500).json({ message: "Lỗi server", error: error.message });
+  }
+};
 
 // Xuất các hàm để sử dụng
 module.exports = {
@@ -209,4 +231,5 @@ module.exports = {
   updateOrderStatus,
   checkAndUpdateAllOrders,
   searchOrder,
+  checkstatuspay,
 };

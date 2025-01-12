@@ -50,6 +50,7 @@ const Stacknavigation = () => {
           <Stack.Screen name="ProductDetail" component={ProductDetail} />
           <Stack.Screen name="CartScreen" component={CartScreen} />
           <Stack.Screen name="QRPay" component={QRPay} />
+          <Stack.Screen name="OrderScreen" component={OrderScreen} />
           <Stack.Screen
             name="AllProductsScreen"
             component={AllProductsScreen}

@@ -60,6 +60,7 @@ router.get("/getOrderUserById", async (req, res) => {
 });
 
 router.post("/searchOrder", OrderController.searchOrder);
+router.post("/checkStatusPay", OrderController.checkstatuspay);
 
 //lấy danh sách tất cả đơn hàng
 router.get("/getOrder", async (req, res) => {
