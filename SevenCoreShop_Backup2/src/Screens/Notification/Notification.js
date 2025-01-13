@@ -21,7 +21,6 @@ const NotificationScreen = () => {
         const response = await axios.get(`${API__URL}/Notification/`);
         if (response.data && response.data.data) {
           const ArrayNoti = response.data.data; // Truy cập đúng trường `data`
-          console.log('Notifications:', ArrayNoti); // Kiểm tra dữ liệu trả về
           setNotifications(ArrayNoti); // Cập nhật state với dữ liệu
         } else {
           console.error('Dữ liệu trả về không đúng định dạng.');

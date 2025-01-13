@@ -325,8 +325,9 @@ const PaymentAddressScreen = ({navigation, route}) => {
           <TouchableOpacity
             key={voucher._id}
             style={[
-              styles.voucherCard,
-              selectedVoucher?.id === voucher._id && styles.selectedVoucherCard,
+              PaymentMethobStyle.voucherCard,
+              selectedVoucher?.id === voucher._id &&
+                PaymentMethobStyle.selectedVoucherCard,
             ]}
             onPress={() => handleSelectVoucher(voucher)}>
             {/* Hình ảnh */}
@@ -335,17 +336,17 @@ const PaymentAddressScreen = ({navigation, route}) => {
               style={PaymentMethobStyle.voucherImage}
             />
 
-            <View style={styles.voucherInfo}>
-              <Text style={styles.voucherTitle} numberOfLines={1}>
+            <View style={PaymentMethobStyle.voucherInfo}>
+              <Text style={PaymentMethobStyle.voucherTitle} numberOfLines={1}>
                 {voucher.titleVoucher}
               </Text>
               <Text style={PaymentMethobStyle.voucherDiscount}>
                 Giảm giá: {voucher.discountValue} VNĐ
               </Text>
-              <Text style={styles.voucherExpiry}>
+              <Text style={PaymentMethobStyle.voucherExpiry}>
                 Hạn sử dụng: {new Date(voucher.expiryDate).toLocaleDateString()}
               </Text>
-              <Text style={styles.voucherQuantity}>
+              <Text style={PaymentMethobStyle.voucherQuantity}>
                 Số lượng: {voucher.quantity}
               </Text>
             </View>
