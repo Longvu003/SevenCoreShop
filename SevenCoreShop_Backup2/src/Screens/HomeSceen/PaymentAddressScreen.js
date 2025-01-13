@@ -72,7 +72,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
           const voucherResponse = await axios.get(
             `${API_URL}/Voucher/`, // Đường dẫn API lấy danh sách voucher
           );
-          setVoucherList(voucherResponse.data.vouchers || []);
+          setVoucherList(voucherResponse.data.data || []);
         } catch (error) {
           console.error('Error fetching data:', error.message);
           Alert.alert('Lỗi', 'Không thể tải dữ liệu.');
@@ -167,6 +167,30 @@ const PaymentAddressScreen = ({navigation, route}) => {
       );
 
       if (response.status === 201) {
+        // Nếu thanh toán thành công, giảm số lượng voucher
+        if (selectedVoucher) {
+          const voucherUpdateData = {
+            voucherId: selectedVoucher._id,
+            quantity: selectedVoucher.quantity - 1, // Giảm 1 quantity
+          };
+
+          // Gọi API giảm số lượng voucher
+          // Thay đổi từ id thành selectedVoucher._id
+          await axios.put(
+            `${API_URL}/Voucher/${selectedVoucher._id}/updateQuantity`,
+            voucherUpdateData,
+          );
+
+          // Cập nhật lại giao diện
+          setVoucherList(prevVoucherList =>
+            prevVoucherList.map(voucher =>
+              voucher._id === selectedVoucher._id
+                ? {...voucher, quantity: voucher.quantity - 1}
+                : voucher,
+            ),
+          );
+        }
+        // await resetCartOnServer(cartItems);
         resetCart();
         Alert.alert('Thông báo', 'Đặt hàng thành công!');
         navigation.navigate('Tab');
@@ -301,9 +325,8 @@ const PaymentAddressScreen = ({navigation, route}) => {
           <TouchableOpacity
             key={voucher._id}
             style={[
-              PaymentMethobStyle.voucherCard,
-              selectedVoucher?.id === voucher.id &&
-                PaymentMethobStyle.selectedVoucherCard,
+              styles.voucherCard,
+              selectedVoucher?.id === voucher._id && styles.selectedVoucherCard,
             ]}
             onPress={() => handleSelectVoucher(voucher)}>
             {/* Hình ảnh */}
@@ -312,15 +335,18 @@ const PaymentAddressScreen = ({navigation, route}) => {
               style={PaymentMethobStyle.voucherImage}
             />
 
-            <View style={PaymentMethobStyle.voucherInfo}>
-              <Text style={PaymentMethobStyle.voucherTitle} umberOfLines={1}>
+            <View style={styles.voucherInfo}>
+              <Text style={styles.voucherTitle} numberOfLines={1}>
                 {voucher.titleVoucher}
               </Text>
               <Text style={PaymentMethobStyle.voucherDiscount}>
                 Giảm giá: {voucher.discountValue} VNĐ
               </Text>
-              <Text style={PaymentMethobStyle.voucherExpiry}>
-                Hạn sử dụng: {voucher.expiryDate}
+              <Text style={styles.voucherExpiry}>
+                Hạn sử dụng: {new Date(voucher.expiryDate).toLocaleDateString()}
+              </Text>
+              <Text style={styles.voucherQuantity}>
+                Số lượng: {voucher.quantity}
               </Text>
             </View>
           </TouchableOpacity>

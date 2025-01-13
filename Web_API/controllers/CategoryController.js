@@ -119,3 +119,26 @@ module.exports = {
   getCategoryById,
   checkDuplicateCategory,
 };
+// get category by id
+//  const getCategoryById = async (id) => {
+//      try {
+//          const category = await CategoryModel.findById(id)
+//          return category
+//      } catch (error) {
+//          console.log('Get category by id error', error.message)
+//          throw new Error('Get category by id error')
+//      }
+//  }
+
+//  // check duplicate category
+//  const checkDuplicateCategory = async (name) => {
+//      try {
+//          const category = await CategoryModel.findOne({ name });
+//          return category !== null;
+//      } catch (error) {
+//          console.log('Check duplicate category error', error.message);
+//          throw new Error('Check duplicate category error');
+//      }
+//  }
+
+//  module.exports = { getCategoryList, createCategory, deleteCategory, updateCategory, getCategoryById, checkDuplicateCategory };
