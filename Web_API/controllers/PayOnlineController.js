@@ -65,7 +65,6 @@ const deletePayOnline = async (id) => {
 const getPayOnlineById = async (id) => {
   try {
     const payOnline = await PayOnlineModel.findById(id);
-
     return payOnline;
   } catch (error) {
     console.log("Get pay online by id error", error.message);

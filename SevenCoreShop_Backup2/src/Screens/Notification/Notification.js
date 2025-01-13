@@ -80,8 +80,8 @@ const NotificationScreen = () => {
         <Customheader title="Thông báo" />
       </View>
       <FlatList
-        data={notifications || []} // Đảm bảo data là một mảng (tránh lỗi khi notifications undefined)
-        keyExtractor={item => item._id} // Sử dụng `_id` làm key
+        data={notifications || []}
+        keyExtractor={item => item._id}
         renderItem={renderNotificationItem}
       />
     </View>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   notificationItem: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',

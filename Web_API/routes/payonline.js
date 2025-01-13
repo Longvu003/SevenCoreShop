@@ -64,7 +64,6 @@ router.post("/:id/delete", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
-
     const payOnline = await PayOnlineController.getPayOnlineById(id);
 
     return res.status(200).json({ status: true, data: payOnline });

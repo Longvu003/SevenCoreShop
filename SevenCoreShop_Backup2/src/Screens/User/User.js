@@ -84,28 +84,39 @@ const User = ({navigation}) => {
         />
       </View>
       <View style={UserStyleSheet.header__Information}>
-        <View style={UserStyleSheet.header__Layout}>
-          <FlatList
-            data={user}
-            renderItem={({item}) => (
-              <TouchableOpacity>
-                <Text style={UserStyleSheet.txt__header}>{item.username}</Text>
-                <Text style={[UserStyleSheet.txt__header, {fontWeight: '300'}]}>
-                  {item.email}
-                </Text>
-                <Text style={[UserStyleSheet.txt__header, {fontWeight: '300'}]}>
-                  {item.numberphone}
-                </Text>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-          <Text
-            onPress={() => navigation.navigate('EditUser')}
-            style={UserStyleSheet.btn__Edit}>
-            Sửa
-          </Text>
-        </View>
+        {isLoggedIn ? (
+          <View style={UserStyleSheet.header__Layout}>
+            <FlatList
+              data={user}
+              renderItem={({item}) => (
+                <TouchableOpacity>
+                  <Text style={UserStyleSheet.txt__header}>
+                    {item.username}
+                  </Text>
+                  <Text
+                    style={[UserStyleSheet.txt__header, {fontWeight: '300'}]}>
+                    {item.email}
+                  </Text>
+                  <Text
+                    style={[UserStyleSheet.txt__header, {fontWeight: '300'}]}>
+                    {item.numberphone}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+
+            <Text
+              onPress={() => navigation.navigate('EditUser')}
+              style={UserStyleSheet.btn__Edit}>
+              Sửa
+            </Text>
+          </View>
+        ) : (
+          <View style={{alignItems: 'center'}}>
+            <Text>Không có thông tin vui lòng đăng nhập</Text>
+          </View>
+        )}
       </View>
       <View style={{flex: 2}}>
         <TouchableOpacity
@@ -117,15 +128,29 @@ const User = ({navigation}) => {
             source={require('../../../assets/imgs/Vector.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={UserStyleSheet.container__layout}
-          onPress={() => navigation.navigate('ForgotPassword')}>
-          <Text style={UserStyleSheet.txt__container}>Đổi mật khẩu</Text>
-          <Image
-            style={UserStyleSheet.txt__container}
-            source={require('../../../assets/imgs/Vector.png')}
-          />
-        </TouchableOpacity>
+        {isLoggedIn ? (
+          <TouchableOpacity
+            style={UserStyleSheet.container__layout}
+            onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={UserStyleSheet.txt__container}>Đổi mật khẩu</Text>
+            <Image
+              style={UserStyleSheet.txt__container}
+              source={require('../../../assets/imgs/Vector.png')}
+            />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={UserStyleSheet.container__layout}
+            onPress={() =>
+              Alert.alert('Thông báo', 'Vui lòng đăng nhập để sử dụng')
+            }>
+            <Text style={UserStyleSheet.txt__container}>Đổi mật khẩu</Text>
+            <Image
+              style={UserStyleSheet.txt__container}
+              source={require('../../../assets/imgs/Vector.png')}
+            />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           style={UserStyleSheet.container__layout}
           onPress={() => navigation.navigate('Favorite')}>

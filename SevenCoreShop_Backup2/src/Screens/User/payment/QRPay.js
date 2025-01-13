@@ -13,63 +13,70 @@ import {
 import axios from 'axios';
 import API_URL from '../../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useCart} from '../../Cart/CartProdvider';
 import {useFocusEffect} from '@react-navigation/native';
+import {useCart} from '../../Cart/CartProdvider';
 const WITH__Screen = Dimensions.get('screen').width;
-const HEIGHT__SCREEN = Dimensions.get('screen').height;
+
 const QRPay = ({navigation, route}) => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
   const [bankDetails, setBankDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [isPaid, setIsPaid] = useState(false); // Theo dõi trạng thái thanh toán
+  const totalAmount = route.params?.totalAmount;
+  const dataCode = route.params?.codes;
   const {resetCart} = useCart();
-  const cartItems = route.params?.cartItems || [];
-  const totalAmount = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0,
-  );
-  const userID = route.params?.userID;
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const fetchAddresses = async () => {
+  //       const userEmail = await AsyncStorage.getItem('userEmail');
+  //       const newUserEmail = JSON.parse(userEmail);
+  //       try {
+  //         const response = await axios.get(
+  //           `${API_URL}/users/getUserEmail/?email=${newUserEmail}`,
+  //         );
+  //         const data = response.data.data.address;
+  //         const newData = data.filter(item => item.isDefault === true);
+  //         setAddresses(newData);
+  //       } catch (error) {
+  //         console.error('Error fetching addresses:', error.message);
+  //         Alert.alert('Lỗi', 'Không thể tải địa chỉ giao hàng.');
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     };
 
-  useFocusEffect(
-    useCallback(() => {
-      const fetchAddresses = async () => {
-        const userEmail = await AsyncStorage.getItem('userEmail');
-        const newUserEmail = JSON.parse(userEmail);
-        try {
-          const response = await axios.get(
-            `${API_URL}/users/getUserEmail/?email=${newUserEmail}`,
-          );
-          const data = response.data.data.address;
-          const newData = data.filter(item => item.isDefault === true);
-          setAddresses(newData);
-        } catch (error) {
-          console.error('Error fetching addresses:', error.message);
-          Alert.alert('Lỗi', 'Không thể tải địa chỉ giao hàng.');
-        } finally {
-          setLoading(false);
-        }
-      };
+  //     fetchAddresses();
+  //   }, []),
+  // );
 
-      fetchAddresses();
-    }, []),
-  );
+  // const handleSelectBank = (bankId, bankName) => {
+  //   setSelectedBank({id: bankId, name: bankName});
+  //   fetchBankDetails(bankId);
+  // };
+
+  useEffect(() => {
+    fetchBankDetails('675fc262980c81e33232aeb8');
+  }, []);
+
   const fetchBankDetails = async bankId => {
     try {
       const response = await axios.get(`${API_URL}/payonline/${bankId}`);
       const {data: bankData} = response.data;
-      // console.log('Dữ liệu ngân hàng:', bankData);
+      console.log('bankData', bankData);
 
       if (
         bankData &&
         typeof bankData === 'object' &&
+        typeof bankData._id === 'string' &&
+        typeof bankData.bank === 'string' &&
         typeof bankData.acc_holder === 'string' &&
         typeof bankData.acc_number === 'string' &&
         Array.isArray(bankData.images) &&
         bankData.images.length > 0
       ) {
-        setBankDetails(bankData); // Cập nhật thông tin ngân hàng
+        setBankDetails(bankData);
       } else {
         console.log('Định dạng dữ liệu ngân hàng không hợp lệ:', response.data);
         throw new Error('Dữ liệu trả về không đúng định dạng');
@@ -84,73 +91,38 @@ const QRPay = ({navigation, route}) => {
     }
   };
 
-  const handleSelectBank = (bankId, bankName) => {
-    setSelectedBank({id: bankId, name: bankName});
-    fetchBankDetails(bankId);
+  const fetchStatusPay = async () => {
+    try {
+      const response = await axios.post(`${API_URL}/Orders/checkStatusPay`, {
+        orderCode: dataCode,
+      });
+
+      console.log('response', response.data.message);
+
+      if (response.data.message === 'Đã thanh toán' && !isPaid) {
+        setIsPaid(true); // Đánh dấu đã thanh toán để không hiển thị lại Alert
+        Alert.alert('Thông báo', 'Thanh toán thành công', [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('Tab'),
+          },
+        ]);
+        resetCart();
+      }
+    } catch (error) {
+      console.log('Error checking payment status:', error.message);
+    }
   };
 
-  const handlePayment = async () => {
-    // if (!selectedAddress) {
-    //   Alert.alert('Thông báo', 'Vui lòng chọn một địa chỉ giao hàng!');
-    //   return;
-    // }
-    // if (!paymentMethod) {
-    //   Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán!');
-    //   return;
-    // }
-    // if (paymentMethod === 'Ngân Hàng' && !selectedBank) {
-    //   Alert.alert('Thông báo', 'Vui lòng chọn ngân hàng!');
-    //   return;
-    // }
+  useEffect(() => {
+    // Gọi API mỗi 20 giây
+    const interval = setInterval(() => {
+      fetchStatusPay();
+    }, 20000); // 20 giây
 
-    // const orderData = {
-    //   userId: userID,
-    //   items: cartItems.map(item => ({
-    //     productId: item.productId,
-    //     name: item.nameProduct,
-    //     quantity: item.quantity,
-    //     price: item.price,
-    //     image: item.images[0],
-    //   })),
-    //   totalAmount,
-    //   address: selectedAddress,
-    //   paymentMethod,
-    //   bankId: selectedBank?.id,
-    // };
-
-    // try {
-    //   const response = await axios.post(
-    //     `${API_URL}/Orders/checkout`,
-    //     orderData,
-    //   );
-
-    //   if (response.status === 201) {
-    //     // await resetCartOnServer(cartItems);
-    //     resetCart();
-    //     Alert.alert('Thông báo', 'Đặt hàng thành công!');
-    //     navigation.navigate('Tab');
-    //   } else {
-    //     throw new Error('Thanh toán không thành công.');
-    //   }
-    // } catch (error) {
-    //   // Kiểm tra và log chi tiết lỗi
-    //   if (error.response) {
-    //     console.log('Chi tiết lỗi từ server:', error.response.data);
-    //     Alert.alert(
-    //       'Lỗi',
-    //       error.response.data?.message || 'Không thể hoàn tất thanh toán.',
-    //     );
-    //   } else {
-    //     console.error('Lỗi không xác định:', error.message);
-    //     Alert.alert(
-    //       'Lỗi',
-    //       'Không thể hoàn tất thanh toán. Vui lòng thử lại sau.',
-    //     );
-    //   }
-    // }
-    // chuyển về màn hình home
-    navigation.navigate('QRPay');
-  };
+    // Cleanup khi component bị hủy
+    return () => clearInterval(interval);
+  }, []);
 
   if (loading) {
     return (
@@ -171,61 +143,48 @@ const QRPay = ({navigation, route}) => {
           style={styles.backIcon}
         />
       </TouchableOpacity>
+      <View>
+        <Text style={styles.sectionHeader}>Chọn Ngân Hàng</Text>
+        {[{id: '675fc262980c81e33232aeb8', name: 'MBBank'}].map(bank => (
+          <TouchableOpacity
+            key={bank.id}
+            style={[
+              styles.bankOption,
+              selectedBank?.id === bank.id && styles.selectedBankOption,
+            ]}
+            // onPress={() => handleSelectBank(bank.id, bank.name)}
+          >
+            <Text style={styles.bankOptionText}>{bank.name}</Text>
+          </TouchableOpacity>
+        ))}
 
-
-
-
-      <Text style={styles.sectionHeader}>Thanh toán Online</Text>
-      <View style={styles.paymentOptions}>
-        <TouchableOpacity
-          style={[
-            styles.paymentOption,
-            paymentMethod === 'Ngân Hàng' && styles.selectedPayment,
-          ]}
-          onPress={() => setPaymentMethod('Ngân Hàng')}>
-          <Text style={styles.paymentOptionText}>
-            {paymentMethod === 'Ngân Hàng' ? '✅ Ngân Hàng' : 'Ngân Hàng'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {paymentMethod === 'Ngân Hàng' && (
-        <View>
-          <Text style={styles.sectionHeader}>Chọn Ngân Hàng</Text>
-          {[
-            {id: '675fc262980c81e33232aeb8', name: 'MBBank'},
-          ].map(bank => (
-            <TouchableOpacity
-              key={bank.id}
-              style={[
-                styles.bankOption,
-                selectedBank?.id === bank.id && styles.selectedBankOption,
-              ]}
-              onPress={() => handleSelectBank(bank.id, bank.name)}>
-              <Text style={styles.bankOptionText}>{bank.name}</Text>
-            </TouchableOpacity>
+        {bankDetails &&
+          bankDetails.images &&
+          bankDetails.images.length > 0 &&
+          (console.log(bankDetails.bank),
+          (
+            <View style={styles.bankDetails}>
+              <Text style={styles.bankDetailsText}>
+                Tên tài khoản: {bankDetails.acc_holder}
+              </Text>
+              <Text style={styles.bankDetailsText}>
+                Số tài khoản: {bankDetails.acc_number}
+              </Text>
+              <Text style={styles.bankDetailsText}>
+                Mã chuyển tiền: {dataCode}
+              </Text>
+              <Text style={styles.totalAmountText}>
+                Tổng Tiền: đ{totalAmount}
+              </Text>
+              <Image
+                source={{
+                  uri: `https://api.vietqr.io/${bankDetails.bank}/${bankDetails.acc_number}/${totalAmount}/${dataCode}/vietqr_net_2.jpg?`,
+                }}
+                style={styles.bankImage}
+              />
+            </View>
           ))}
-          {bankDetails &&
-            bankDetails.images &&
-            bankDetails.images.length > 0 && (
-              <View style={styles.bankDetails}>
-                <Text style={styles.bankDetailsText}>
-                  Tên tài khoản: {bankDetails.acc_holder}
-                </Text>
-                <Text style={styles.bankDetailsText}>
-                  Số tài khoản: {bankDetails.acc_number}
-                </Text>
-                <Image
-                  source={{uri: bankDetails.images[0]}}
-                  style={styles.bankImage}
-                />
-              </View>
-            )}
-        </View>
-      )}
-
-
-
+      </View>
     </ScrollView>
   );
 };
@@ -367,8 +326,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   bankImage: {
-    width: 200,
-    height: 200,
+    width: 330,
+    height: 330,
     borderRadius: 8,
     resizeMode: 'contain',
     marginTop: 16,
