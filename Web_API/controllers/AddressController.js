@@ -31,6 +31,7 @@ const addAddress = async (
       isDefault,
     });
     await user.save();
+    console.log(user.address)
     return user;
   } catch (error) {
     console.error("Error adding address:", error.message);

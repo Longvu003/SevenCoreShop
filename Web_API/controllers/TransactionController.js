@@ -1,72 +1,77 @@
 const Transaction = require("../model/TransactionModel");
-
+const axios = require("axios");
+const HttpsProxyAgent = require("https-proxy-agent");
 const getAndSaveTransactions = async (req, res) => {
   try {
+    // Cấu hình proxy
+    const proxy = "http://user49073:6mpDNgvZ0r@42.96.5.118:49073";
+    const agent = new HttpsProxyAgent(proxy);
+
     // Gọi API lấy dữ liệu giao dịch
-    const response = await fetch(
-      "https://api.sieuthicode.net/historyapimbbank/3f023ef5cd400475ffff48d7b32dd53b"
-    );
+    const response = await axios.get("https://s.net.vn/fg3z", {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+        Accept: "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9",
+        Connection: "keep-alive",
+        DNT: "1", // Do Not Track header (optional)
+      },
+      httpsAgent: agent,
+    });
 
     // Kiểm tra trạng thái của response
-    if (!response.ok) {
+    if (response.status < 200 || response.status >= 300) {
       throw new Error(
         `Failed to fetch data from API. Status: ${response.status}`
       );
     }
 
-    // Chuyển dữ liệu từ API thành JSON
-    const data = await response.json();
-    //   console.log(data['status']);
-    //   console.log('API response data:', data);  // Log dữ liệu nhận được để kiểm tra
+    // Lấy dữ liệu từ API
+    const data = response.data;
 
-    // Kiểm tra xem data có hợp lệ không trước khi truy cập vào thuộc tính 'status'
+    // Kiểm tra dữ liệu API trả về
     if (data && data.TranList) {
-      const transactionsz = data.TranList; // Lấy danh sách giao dịch từ API
+      const transactionsz = data.TranList; // Danh sách giao dịch từ API
       const savedTransactions = []; // Mảng lưu các giao dịch đã lưu
 
-      // Duyệt qua từng giao dịch và lưu vào DB
+      // Lặp qua danh sách giao dịch
       for (const tran of transactionsz) {
-        //   console.log("Processing transaction refNo:", tran['refNo']);
-
         try {
           // Kiểm tra giao dịch đã tồn tại trong DB chưa
           const existingTransaction = await Transaction.findOne({
-            tranId: tran["tranId"],
+            tranId: tran.tranId,
           });
 
           if (!existingTransaction) {
             // Nếu chưa có thì lưu giao dịch vào DB
             const newTransaction = new Transaction({
-              refNo: tran["refNo"],
-              tranId: tran["tranId"],
+              refNo: tran.refNo,
+              tranId: tran.tranId,
               // Chuyển đổi định dạng ngày tháng
               postingDate: new Date(
-                tran["postingDate"]
-                  .split(" ")[0]
-                  .split("/")
-                  .reverse()
-                  .join("-") +
+                tran.postingDate.split(" ")[0].split("/").reverse().join("-") +
                   "T" +
-                  tran["postingDate"].split(" ")[1]
+                  tran.postingDate.split(" ")[1]
               ),
               transactionDate: new Date(
-                tran["transactionDate"]
+                tran.transactionDate
                   .split(" ")[0]
                   .split("/")
                   .reverse()
                   .join("-") +
                   "T" +
-                  tran["transactionDate"].split(" ")[1]
+                  tran.transactionDate.split(" ")[1]
               ),
-              accountNo: tran["accountNo"],
+              accountNo: tran.accountNo,
               // Chuyển đổi số từ chuỗi
-              creditAmount: parseFloat(tran["creditAmount"]),
-              debitAmount: parseFloat(tran["debitAmount"]),
-              currency: tran["currency"],
-              description: tran["description"],
-              availableBalance: parseFloat(tran["availableBalance"]),
+              creditAmount: parseFloat(tran.creditAmount),
+              debitAmount: parseFloat(tran.debitAmount),
+              currency: tran.currency,
+              description: tran.description,
+              availableBalance: parseFloat(tran.availableBalance),
               // Kiểm tra beneficiaryAccount có rỗng không
-              beneficiaryAccount: tran["beneficiaryAccount"] || null,
+              beneficiaryAccount: tran.beneficiaryAccount || null,
             });
 
             // Lưu giao dịch vào DB và thêm vào mảng savedTransactions
@@ -74,12 +79,12 @@ const getAndSaveTransactions = async (req, res) => {
             savedTransactions.push(savedTran);
           } else {
             console.log(
-              `Transaction with tranId ${tran["tranId"]} already exists. Skipping.`
+              `Transaction with tranId ${tran.tranId} already exists. Skipping.`
             );
           }
         } catch (err) {
           console.error(
-            `Error processing transaction refNo ${tran["refNo"]}:`,
+            `Error processing transaction refNo ${tran.refNo}:`,
             err
           );
         }

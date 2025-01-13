@@ -23,6 +23,7 @@ const DetailOrder = ({route}) => {
   useEffect(() => {
     getOrderDetail();
   }, []);
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1}}>
@@ -61,18 +62,13 @@ const DetailOrder = ({route}) => {
           }}>
           Thông tin đơn hàng:
         </Text>
-        <View
-          style={{
-            backgroundColor: '#f4f4f4',
-            justifyContent: 'center',
-            width: WIDTH__SCREEN * 0.9,
-            height: HEIGHT__SCREEN * 0.15,
-            marginHorizontal: 20,
-          }}>
+        <View style={styles.container__delivery}>
           <View style={{marginHorizontal: 20}}>
-            <Text> Thời gian giao hàng: {DetailOrder.date}</Text>
+            <Text style={styles.txt}>
+              Thời gian giao hàng: {DetailOrder.date}
+            </Text>
             {DetailOrder?.address?.length > 0 && DetailOrder.address[0] ? (
-              <Text>
+              <Text style={styles.txt}>
                 Địa chỉ:
                 <Text style={{fontSize: 15, color: 'black'}}>
                   {DetailOrder.address[0].userNameAddress},
@@ -82,16 +78,25 @@ const DetailOrder = ({route}) => {
                 , {DetailOrder.address[0].province}
               </Text>
             ) : (
-              <Text>Không có thông tin</Text>
+              <Text style={styles.txt}>Không có thông tin</Text>
             )}
-            <Text>
+            <Text style={styles.txt}>
               Số điện thoại:
               {DetailOrder?.address?.[0].phoneAddress ||
                 'Không có số điện thoại'}
             </Text>
-            <Text>Trạng thái giao hàng: {DetailOrder.status}</Text>
-            <Text>Phương thức thanh toán: {DetailOrder.paymentMethod} </Text>
-            <Text>Tổng tiền: {DetailOrder.totalAmount} VNĐ</Text>
+            <Text style={styles.txt}>
+              Trạng thái giao hàng: {DetailOrder.status}
+            </Text>
+            <Text style={styles.txt}>
+              Phương thức thanh toán: {DetailOrder.paymentMethod}{' '}
+            </Text>
+            <Text style={styles.txt}>
+              Trạng thái thanh toán:{DetailOrder.statuspay}
+            </Text>
+            <Text style={styles.txt}>
+              Tổng tiền: {DetailOrder.totalAmount} VNĐ
+            </Text>
           </View>
         </View>
       </View>
@@ -101,6 +106,17 @@ const DetailOrder = ({route}) => {
 export default DetailOrder;
 
 const styles = StyleSheet.create({
+  container__delivery: {
+    backgroundColor: '#f4f4f4',
+    justifyContent: 'center',
+    width: WIDTH__SCREEN * 0.9,
+    height: HEIGHT__SCREEN * 0.2,
+    marginHorizontal: 20,
+  },
+  txt: {
+    color: 'black',
+    fontSize: 14,
+  },
   item__container: {
     width: WIDTH__SCREEN * 0.9,
     height: HEIGHT__SCREEN * 0.14,

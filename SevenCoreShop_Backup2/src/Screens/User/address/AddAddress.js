@@ -125,7 +125,9 @@ const AddAddress = ({navigation}) => {
     } catch (error) {
       Alert.alert('Lỗi', 'Không thể thêm địa chỉ');
       console.log(error);
+      
     }
+
   };
 
   useEffect(() => {

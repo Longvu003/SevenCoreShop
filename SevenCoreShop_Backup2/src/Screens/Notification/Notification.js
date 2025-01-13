@@ -19,8 +19,8 @@ const NotificationScreen = () => {
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(`${API__URL}/Notification/`);
-        if (response.data) {
-          const ArrayNoti = response.data;
+        if (response.data && response.data.data) {
+          const ArrayNoti = response.data.data; // Truy cập đúng trường `data`
           setNotifications(ArrayNoti); // Cập nhật state với dữ liệu
         } else {
           console.error('Dữ liệu trả về không đúng định dạng.');
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   notificationItem: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',

@@ -94,8 +94,6 @@ const HomeScreen = ({navigation}) => {
         );
         return; // Ngừng xử lý nếu chưa đăng nhập
       }
-
-      // Thông tin sản phẩm yêu thích
       const product = {
         userId,
         productId: item._id,
@@ -103,7 +101,6 @@ const HomeScreen = ({navigation}) => {
         nameProduct: item.name,
         price: item.price,
       };
-
       // Gửi yêu cầu thêm sản phẩm vào yêu thích
       const response = await axios.post(
         `${API__URL}/favorite/addFavorite`,
@@ -124,7 +121,6 @@ const HomeScreen = ({navigation}) => {
       );
     }
   };
-
   useFocusEffect(
     useCallback(() => {
       getInforUser();
@@ -134,7 +130,7 @@ const HomeScreen = ({navigation}) => {
     <View style={HomeStyle.container}>
       <View style={HomeStyle.header}>
         <View>
-          <Text style={HomeStyle.hello}>Xin Chào</Text>
+          <Text style={HomeStyle.hello}>Xin chào</Text>
           <Text style={HomeStyle.txt__user}>{user}</Text>
         </View>
         <TouchableOpacity

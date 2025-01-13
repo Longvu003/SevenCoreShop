@@ -22,13 +22,11 @@ const PaymentAddressScreen = ({navigation, route}) => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
-  const [selectedBank, setSelectedBank] = useState(null);
-  const [bankDetails, setBankDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const {resetCart} = useCart();
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [voucherList, setVoucherList] = useState([]);
-
+  const [dataCode, setDataCode] = useState(null);
   const cartItems = route.params?.cartItems || [];
 
   const calculateTotalAmount = () => {
@@ -58,7 +56,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
         try {
           const userEmail = await AsyncStorage.getItem('userEmail');
           const parsedEmail = JSON.parse(userEmail);
-
           // Fetch addresses
           const addressResponse = await axios.get(
             `${API_URL}/users/getUserEmail/?email=${parsedEmail}`,
@@ -67,12 +64,10 @@ const PaymentAddressScreen = ({navigation, route}) => {
             item => item.isDefault === true,
           );
           setAddresses(addressData);
-
-          // Fetch vouchers
           const voucherResponse = await axios.get(
             `${API_URL}/Voucher/`, // Đường dẫn API lấy danh sách voucher
           );
-          setVoucherList(voucherResponse.data.vouchers || []);
+          setVoucherList(voucherResponse.data.data || []);
         } catch (error) {
           console.error('Error fetching data:', error.message);
           Alert.alert('Lỗi', 'Không thể tải dữ liệu.');
@@ -98,40 +93,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
     );
   }
 
-  const fetchBankDetails = async bankId => {
-    try {
-      const response = await axios.get(`${API_URL}/payonline/${bankId}`);
-      const {data: bankData} = response.data;
-      // console.log('Dữ liệu ngân hàng:', bankData);
-
-      if (
-        bankData &&
-        typeof bankData === 'object' &&
-        typeof bankData.acc_holder === 'string' &&
-        typeof bankData.acc_number === 'string' &&
-        Array.isArray(bankData.images) &&
-        bankData.images.length > 0
-      ) {
-        setBankDetails(bankData); // Cập nhật thông tin ngân hàng
-      } else {
-        console.log('Định dạng dữ liệu ngân hàng không hợp lệ:', response.data);
-        throw new Error('Dữ liệu trả về không đúng định dạng');
-      }
-    } catch (error) {
-      console.error('Lỗi khi gọi API ngân hàng:', error.message);
-      Alert.alert(
-        'Lỗi',
-        'Không thể tải thông tin ngân hàng. Kiểm tra lại API hoặc dữ liệu.',
-      );
-      setBankDetails(null);
-    }
-  };
-
-  const handleSelectBank = (bankId, bankName) => {
-    setSelectedBank({id: bankId, name: bankName});
-    fetchBankDetails(bankId);
-  };
-
   const handlePayment = async () => {
     if (!selectedAddress) {
       Alert.alert('Thông báo', 'Vui lòng chọn một địa chỉ giao hàng!');
@@ -141,11 +102,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
       Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán!');
       return;
     }
-    if (paymentMethod === 'Ngân Hàng' && !selectedBank) {
-      Alert.alert('Thông báo', 'Vui lòng chọn ngân hàng!');
-      return;
-    }
-
     const orderData = {
       userId: userID,
       items: cartItems.map(item => ({
@@ -158,18 +114,46 @@ const PaymentAddressScreen = ({navigation, route}) => {
       totalAmount,
       address: selectedAddress,
       paymentMethod,
-      bankId: selectedBank?.id,
     };
     try {
       const response = await axios.post(
         `${API_URL}/Orders/checkout`,
         orderData,
       );
-
+      console.clear();
+      let codes = response.data.code;
       if (response.status === 201) {
+        // Nếu thanh toán thành công, giảm số lượng voucher
+        if (selectedVoucher) {
+          const voucherUpdateData = {
+            voucherId: selectedVoucher._id,
+            quantity: selectedVoucher.quantity - 1, // Giảm 1 quantity
+          };
+
+          // Gọi API giảm số lượng voucher
+          // Thay đổi từ id thành selectedVoucher._id
+          await axios.put(
+            `${API_URL}/Voucher/${selectedVoucher._id}/updateQuantity`,
+            voucherUpdateData,
+          );
+
+          // Cập nhật lại giao diện
+          setVoucherList(prevVoucherList =>
+            prevVoucherList.map(voucher =>
+              voucher._id === selectedVoucher._id
+                ? {...voucher, quantity: voucher.quantity - 1}
+                : voucher,
+            ),
+          );
+        }
         resetCart();
+        setDataCode(response.data.code);
         Alert.alert('Thông báo', 'Đặt hàng thành công!');
         navigation.navigate('Tab');
+        if (paymentMethod === 'Ngân Hàng') {
+          navigation.navigate('QRPay', {totalAmount, codes});
+          return;
+        }
       } else {
         throw new Error('Thanh toán không thành công.');
       }
@@ -258,43 +242,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
           </Text>
         </TouchableOpacity>
       </View>
-      {paymentMethod === 'Ngân Hàng' && (
-        <View>
-          <Text style={PaymentMethobStyle.sectionHeader}>Chọn Ngân Hàng</Text>
-          {[
-            // { id: '675e6a75344d8008e4f65899', name: 'TP BANK' },
-            // { id: '675e6ab7344d8008e4f6589d', name: 'VietComBank' },
-            {id: '675e6ad4344d8008e4f658a3', name: 'MBBank'},
-          ].map(bank => (
-            <TouchableOpacity
-              key={bank.id}
-              style={[
-                PaymentMethobStyle.bankOption,
-                selectedBank?.id === bank.id &&
-                  PaymentMethobStyle.selectedBankOption,
-              ]}
-              onPress={() => handleSelectBank(bank.id, bank.name)}>
-              <Text style={PaymentMethobStyle.bankOptionText}>{bank.name}</Text>
-            </TouchableOpacity>
-          ))}
-          {bankDetails &&
-            bankDetails.images &&
-            bankDetails.images.length > 0 && (
-              <View style={PaymentMethobStyle.bankDetails}>
-                <Text style={PaymentMethobStyle.bankDetailsText}>
-                  Tên tài khoản: {bankDetails.acc_holder}
-                </Text>
-                <Text style={PaymentMethobStyle.bankDetailsText}>
-                  Số tài khoản: {bankDetails.acc_number}
-                </Text>
-                <Image
-                  source={{uri: bankDetails.images[0]}}
-                  style={PaymentMethobStyle.bankImage}
-                />
-              </View>
-            )}
-        </View>
-      )}
       <Text style={PaymentMethobStyle.sectionHeader}>Chọn Voucher</Text>
       {voucherList.length > 0 ? (
         voucherList.map(voucher => (
@@ -302,7 +249,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
             key={voucher._id}
             style={[
               PaymentMethobStyle.voucherCard,
-              selectedVoucher?.id === voucher.id &&
+              selectedVoucher?.id === voucher._id &&
                 PaymentMethobStyle.selectedVoucherCard,
             ]}
             onPress={() => handleSelectVoucher(voucher)}>
@@ -313,14 +260,17 @@ const PaymentAddressScreen = ({navigation, route}) => {
             />
 
             <View style={PaymentMethobStyle.voucherInfo}>
-              <Text style={PaymentMethobStyle.voucherTitle} umberOfLines={1}>
+              <Text style={PaymentMethobStyle.voucherTitle} numberOfLines={1}>
                 {voucher.titleVoucher}
               </Text>
               <Text style={PaymentMethobStyle.voucherDiscount}>
                 Giảm giá: {voucher.discountValue} VNĐ
               </Text>
               <Text style={PaymentMethobStyle.voucherExpiry}>
-                Hạn sử dụng: {voucher.expiryDate}
+                Hạn sử dụng: {new Date(voucher.expiryDate).toLocaleDateString()}
+              </Text>
+              <Text style={PaymentMethobStyle.voucherQuantity}>
+                Số lượng: {voucher.quantity}
               </Text>
             </View>
           </TouchableOpacity>
@@ -328,7 +278,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
       ) : (
         <Text>Không có voucher nào khả dụng.</Text>
       )}
-
       <Text style={PaymentMethobStyle.sectionHeader}>Thông Tin Giỏ Hàng</Text>
       {cartItems.map((item, index) => (
         <View key={index} style={PaymentMethobStyle.cartItem}>
@@ -349,6 +298,11 @@ const PaymentAddressScreen = ({navigation, route}) => {
           </View>
         </View>
       ))}
+      <View style={PaymentMethobStyle.totalAmountContainer}>
+        <Text style={PaymentMethobStyle.totalAmountText}>
+          Tổng Tiền: đ{totalAmount}
+        </Text>
+      </View>
 
       <Text style={PaymentMethobStyle.sectionHeader}>Chi tiết thanh toán</Text>
       {/* Hiển thị chi tiết thanh toán */}

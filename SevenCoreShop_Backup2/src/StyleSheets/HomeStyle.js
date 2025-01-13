@@ -5,7 +5,7 @@ const HomeStyle = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 20,
+
     marginVertical: 10,
   },
   button: {
@@ -146,16 +146,17 @@ const HomeStyle = StyleSheet.create({
   },
   productCard: {
     height: 200,
-    width: 190,
+    width: 180,
     backgroundColor: '#F4F4F4',
     borderRadius: 8,
     padding: 10,
     marginRight: 10,
     marginTop: 20,
     position: 'relative',
+    alignItems: 'center',
   },
   productImage: {
-    width: 160,
+    width: 140,
     height: 100,
     borderRadius: 8,
     marginBottom: 8,
@@ -172,14 +173,12 @@ const HomeStyle = StyleSheet.create({
     textAlign: 'center',
   },
   heartIcon: {
-    top: 8, 
-    right: 8, 
-    zIndex: 10, 
-    width: 24, 
+    right: 1,
+    zIndex: 10,
+    width: 24,
     height: 24,
     position: 'absolute',
   },
-
 });
 
 export default HomeStyle;

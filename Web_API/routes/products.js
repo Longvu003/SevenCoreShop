@@ -2,6 +2,26 @@ var express = require("express");
 var router = express.Router();
 const ProductController = require("../controllers/ProductController");
 
+
+/**
+ * API cập nhật trạng thái available của sản phẩm
+ * method: post
+ * url: http://localhost:7777/products/:id/availability
+ * body: { available }
+ * response: trả về sản phẩm vừa cập nhật
+ */
+router.post('/:id/availability', async (req, res, next) => {
+  try {
+      const { id } = req.params;
+      const { available } = req.body;
+      console.log(id, available)    
+      const product = await ProductController.updateProductAvailability(id, available);
+      return res.status(200).json({ status: true, data: product });
+  } catch (error) {
+      return res.status(500).json({ status: false, data: error.message });
+  }
+});
+
 /**
  * API lấy danh sách tất cả sản phẩm
  * method: GET
