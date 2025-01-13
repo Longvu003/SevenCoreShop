@@ -30,6 +30,7 @@ import BestSellingScreen from '../Screens/HomeSceen/BestSellingScreen';
 import PopularProductsScreen from '../Screens/HomeSceen/PopularProductsScreen';
 import FilterByPriceScreen from '../Screens/HomeSceen/FilterByPriceScreen';
 import Favorite from '../Screens/User/Favorite';
+import QRPay from '../Screens/User/payment/QRPay';
 const Stack = createStackNavigator();
 const Stacknavigation = () => {
   return (
@@ -53,6 +54,7 @@ const Stacknavigation = () => {
           <Stack.Screen name="EditUser" component={EditUser} />
           <Stack.Screen name="ProductDetail" component={ProductDetail} />
           <Stack.Screen name="CartScreen" component={CartScreen} />
+          <Stack.Screen name="QRPay" component={QRPay} />
           <Stack.Screen
             name="AllProductsScreen"
             component={AllProductsScreen}

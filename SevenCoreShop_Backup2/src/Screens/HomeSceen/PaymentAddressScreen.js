@@ -212,6 +212,8 @@ const PaymentAddressScreen = ({navigation, route}) => {
         );
       }
     }
+    // chuyển về màn hình home
+    //navigation.navigate('QRPay');
   };
   return (
     <ScrollView
@@ -285,11 +287,7 @@ const PaymentAddressScreen = ({navigation, route}) => {
       {paymentMethod === 'Ngân Hàng' && (
         <View>
           <Text style={PaymentMethobStyle.sectionHeader}>Chọn Ngân Hàng</Text>
-          {[
-            // { id: '675e6a75344d8008e4f65899', name: 'TP BANK' },
-            // { id: '675e6ab7344d8008e4f6589d', name: 'VietComBank' },
-            {id: '675e6ad4344d8008e4f658a3', name: 'MBBank'},
-          ].map(bank => (
+          {[{id: '675fc262980c81e33232aeb8', name: 'MBBank'}].map(bank => (
             <TouchableOpacity
               key={bank.id}
               style={[
@@ -395,11 +393,11 @@ const PaymentAddressScreen = ({navigation, route}) => {
           Tổng tiền thanh toán: {totalAmount} VNĐ
         </Text>
       </View>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={PaymentMethobStyle.checkoutButton}
         onPress={handlePayment}>
         <Text style={PaymentMethobStyle.checkoutButtonText}>Thanh Toán</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </ScrollView>
   );
 };
