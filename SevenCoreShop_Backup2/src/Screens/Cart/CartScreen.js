@@ -8,8 +8,6 @@ import {
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import Customheader from '../../CustomHeader/Customheader';
-import axios from 'axios';
-import API__URL from '../../../config';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useCart} from './CartProdvider';
 import CartStyle from '../../StyleSheets/CartStyle';
@@ -105,7 +103,7 @@ const CartScreen = () => {
                         <Text style={CartStyle.productName}>
                           {item.nameProduct}
                         </Text>
-                        <Text style={CartStyle.productQuantity}>
+<Text style={CartStyle.productQuantity}>
                           Quantity: {item.quantity}
                         </Text>
                         <View style={CartStyle.quantityControls}>

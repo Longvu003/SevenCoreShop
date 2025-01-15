@@ -17,6 +17,7 @@ export default function VoucherEdit() {
         code: '',
         titleVoucher: '',
         discountValue: '',
+        minValue: '',
         quantity: '',
         expiryDate: '',
         status: '',
@@ -40,6 +41,7 @@ export default function VoucherEdit() {
                         code: res.data.code || '',
                         titleVoucher: res.data.titleVoucher || '',
                         discountValue: res.data.discountValue || '',
+                        minValue: res.data.minValue || '',
                         quantity: res.data.quantity || '',
                         expiryDate: res.data.expiryDate || '',
                         status: res.data.status || '',
@@ -136,6 +138,19 @@ export default function VoucherEdit() {
                     name="discountValue"
                     className="form-input"
                     value={dataVoucher.discountValue}
+                    required
+                    onChange={handleChange}
+                />
+            </div>
+
+            <div>
+                <label htmlFor="Minvalue">Min value</label>
+                <input
+                    id="Minvalue"
+                    type="text"
+                    name="minValue"
+                    className="form-input"
+                    value={dataVoucher.minValue}
                     required
                     onChange={handleChange}
                 />

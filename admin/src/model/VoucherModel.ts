@@ -5,6 +5,7 @@ export interface Voucher {
     code: string; // Unique identifier for the voucher
     titleVoucher: string; // Title of the voucher
     discountValue: number; // Discount value in percentage or fixed amount
+    minValue: number;
     quantity: number; 
     expiryDate: Date; // Expiry date of the voucher
     status: "active" | "inactive"; // Current status of the voucher

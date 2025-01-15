@@ -26,40 +26,62 @@ const PaymentAddressScreen = ({navigation, route}) => {
   const [bankDetails, setBankDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const {resetCart} = useCart();
-  const [selectedVoucher, setSelectedVoucher] = useState(null);
-  const [voucherList, setVoucherList] = useState([]);
+  const {selectedVoucher, setSelectedVoucher} = route.params; // Nhận toàn bộ đối tượng voucher
+  const [cartItems, setCartItems] = useState([]);
+  const [userID, setUserID] = useState(null);
+  
 
-  const cartItems = route.params?.cartItems || [];
+  
+  // const userID = route.params?.userID;
 
+
+
+
+  // Sử dụng các trường từ voucher
+  // console.log('Voucher đã chọn:', selectedVoucher);
+
+  
   const calculateTotalAmount = () => {
+    // Kiểm tra nếu không có sản phẩm trong giỏ hàng
+    if (!cartItems || cartItems.length === 0) return 0;
+
     // Tính tổng tiền hàng
-    const total = cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
+    const subtotal = cartItems.reduce(
+      (sum, item) => sum + (item.price || 0) * (item.quantity || 0),
       0,
     );
 
-    // Kiểm tra nếu có voucher, áp dụng giá trị giảm giá
-    if (selectedVoucher) {
-      const discount = selectedVoucher.discountValue || 0; // Lấy giá trị giảm giá từ voucher
-      return Math.max(total - discount, 0); // Đảm bảo tổng tiền không âm
+    // Nếu không có voucher được chọn, trả về tổng tiền hàng
+    if (!selectedVoucher) {
+      return subtotal;
     }
 
-    // Nếu không có voucher, trả về tổng tiền hàng
-    return total;
+    // Nếu có voucher, áp dụng giá trị giảm giá
+    const discount = selectedVoucher.discountValue || 0; // Giảm giá từ voucher
+    return Math.max(subtotal - discount, 0); // Đảm bảo không trả về giá trị âm
   };
 
   const totalAmount = calculateTotalAmount();
 
-  const userID = route.params?.userID;
 
   useEffect(() => {
-    console.log('Danh sách voucher:', voucherList);
+    // console.log('Danh sách voucher:', voucherList);
     console.log('Voucher được chọn:', selectedVoucher);
-  }, [voucherList, selectedVoucher]);
+    console.log('Cart Items:', cartItems);
+    console.log('User ID:', userID);
+  }, [selectedVoucher, cartItems, userID]);
+  // }, [voucherList, selectedVoucher]);
 
   useFocusEffect(
     useCallback(() => {
       const fetchData = async () => {
+        const cartItems = route.params?.cartItems || [];
+        setCartItems(cartItems);
+        const userID = route.params?.userID || null;
+        setUserID(userID);
+
+
+        
         try {
           const userEmail = await AsyncStorage.getItem('userEmail');
           const parsedEmail = JSON.parse(userEmail);
@@ -74,10 +96,10 @@ const PaymentAddressScreen = ({navigation, route}) => {
           setAddresses(addressData);
 
           // Fetch vouchers
-          const voucherResponse = await axios.get(
-            `${API_URL}/Voucher/`, // Đường dẫn API lấy danh sách voucher
-          );
-          setVoucherList(voucherResponse.data.data || []);
+          // const voucherResponse = await axios.get(
+          //   `${API_URL}/Voucher/`, // Đường dẫn API lấy danh sách voucher
+          // );
+          // setVoucherList(voucherResponse.data.data || []);
         } catch (error) {
           console.error('Error fetching data:', error.message);
           Alert.alert('Lỗi', 'Không thể tải dữ liệu.');
@@ -90,9 +112,9 @@ const PaymentAddressScreen = ({navigation, route}) => {
     }, []),
   );
 
-  const handleSelectVoucher = voucher => {
-    setSelectedVoucher(voucher);
-  };
+  // const handleSelectVoucher = voucher => {
+  //   setSelectedVoucher(voucher);
+  // };
 
   if (loading) {
     return (
@@ -188,13 +210,13 @@ const PaymentAddressScreen = ({navigation, route}) => {
           );
 
           // Cập nhật lại giao diện
-          setVoucherList(prevVoucherList =>
-            prevVoucherList.map(voucher =>
-              voucher._id === selectedVoucher._id
-                ? {...voucher, quantity: voucher.quantity - 1}
-                : voucher,
-            ),
-          );
+          // setSelectedVoucher(prevVoucherList =>
+          //   prevVoucherList.map(voucher =>
+          //     voucher._id === selectedVoucher._id
+          //       ? {...voucher, quantity: voucher.quantity - 1}
+          //       : voucher,
+          //   ),
+          // );
         }
         // await resetCartOnServer(cartItems);
         resetCart();
@@ -335,40 +357,44 @@ const PaymentAddressScreen = ({navigation, route}) => {
             )}
         </View>
       )}
-      <Text style={styles.sectionHeader}>Chọn Voucher</Text>
-      {voucherList.length > 0 ? (
-        voucherList.map(voucher => (
-          <TouchableOpacity
-            key={voucher._id}
-            style={[
-              styles.voucherCard,
-              selectedVoucher?.id === voucher._id && styles.selectedVoucherCard,
-            ]}
-            onPress={() => handleSelectVoucher(voucher)}>
-            {/* Hình ảnh */}
-            <Image
-              source={require('../../../assets/imgs/logo.png')} // Thay thế với đường dẫn hình ảnh của bạn
-              style={styles.voucherImage}
-            />
+      <View style={styles.sectionRow}>
+        <Text style={styles.sectionHeader}>Chọn Voucher</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('VoucherListPage')}>
+          <Text style={styles.sectionHeader}>Mở rộng</Text>
+        </TouchableOpacity>
+      </View>
 
-            <View style={styles.voucherInfo}>
-              <Text style={styles.voucherTitle} numberOfLines={1}>
-                {voucher.titleVoucher}
-              </Text>
-              <Text style={styles.voucherDiscount}>
-                Giảm giá: {voucher.discountValue} VNĐ
-              </Text>
-              <Text style={styles.voucherExpiry}>
-                Hạn sử dụng: {new Date(voucher.expiryDate).toLocaleDateString()}
-              </Text>
-              <Text style={styles.voucherQuantity}>
-                Số lượng: {voucher.quantity}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))
+      {selectedVoucher ? (
+        <>
+        <View style={styles.voucherCard}>
+          <View style={styles.voucherInfo}>
+            <Text style={styles.voucherTitle}>
+              {selectedVoucher.titleVoucher || 'Không có tiêu đề'}
+            </Text>
+            <Text style={styles.voucherDiscount}>
+              Giảm giá: {selectedVoucher.discountValue || 0} VNĐ
+            </Text>
+            <Text style={styles.voucherExpiry}>
+              Hạn sử dụng:
+              {selectedVoucher.expiryDate
+                ? new Date(selectedVoucher.expiryDate).toLocaleDateString()
+                : 'Không xác định'}
+            </Text>
+
+            <Text style={styles.voucherQuantity}>
+              Số lượng còn lại: {selectedVoucher.quantity || 0}
+            </Text>
+
+            <Text style={styles.selectText}>
+              {selectedVoucher?._id === selectedVoucher._id ? 'Đã chọn' : 'Chọn'}
+            </Text>
+          </View>
+        </View>
+          
+        </>
       ) : (
-        <Text>Không có voucher nào khả dụng.</Text>
+        <Text>Không có voucher nào được chọn.</Text>
       )}
 
       <Text style={styles.sectionHeader}>Thông Tin Giỏ Hàng</Text>
@@ -413,12 +439,12 @@ const PaymentAddressScreen = ({navigation, route}) => {
 };
 
 const styles = StyleSheet.create({
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#D32F2F', // Màu đỏ
-    marginVertical: 20,
-  },
+  // sectionHeader: {
+  //   fontSize: 18,
+  //   fontWeight: 'bold',
+  //   color: '#D32F2F', // Màu đỏ
+  //   marginVertical: 20,
+  // },
   voucherCard: {
     flexDirection: 'row',
     backgroundColor: '#fff',
@@ -428,8 +454,8 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowRadius: 10,
+    elevation: 10,
   },
   selectedVoucherCard: {
     borderWidth: 2,
@@ -449,7 +475,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#D32F2F',
     flexWrap: 'wrap', // Đảm bảo chữ xuống dòng khi cần
-    width: '80%', // Hạn chế chiều rộng
+    maxWidth: '90%', // Hạn chế chiều rộng
     overflow: 'hidden', // Ẩn phần thừa
     textOverflow: 'ellipsis', // Hiển thị ba chấm nếu vượt quá
   },
@@ -521,6 +547,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#333',
+    marginTop: 30,
+  },
+
+  sectionRow: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginBottom: 10,
     marginTop: 30,
   },
   addressCard: {

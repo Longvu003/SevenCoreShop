@@ -96,6 +96,7 @@ const Tables = () => {
                                     <th>Code</th>
                                     <th>Title Voucher</th>
                                     <th>Giá trị giảm giá</th>
+                                    <th>Giá trị tối thiểu</th>
                                     <th>Số lượng giảm giá</th>
                                     {/* <th>Thời hạn giảm giá</th> */}
                                     <th>Trạng thái</th>
@@ -109,6 +110,7 @@ const Tables = () => {
                                             <td>{voucher.code}</td>
                                             <td>{voucher.titleVoucher}</td>
                                             <td>{voucher.discountValue}</td>
+                                            <td>{voucher.minValue}</td>
                                             <td>{voucher.quantity}</td>
                                             <td>{voucher.status}</td>
                                             <td>

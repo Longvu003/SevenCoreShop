@@ -1,7 +1,8 @@
-import {StyleSheet, Text, View, Alert} from 'react-native';
+import { StyleSheet, Text, View, Alert } from 'react-native';
 import React from 'react';
 import API__URL from '../../../config';
 import axios from 'axios';
+import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   useContext,
@@ -11,13 +12,14 @@ import {
   useCallback,
 } from 'react';
 const CartContext = createContext();
-export const CartProdvider = ({children}) => {
+export const CartProdvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [userId, setUserId] = useState(null);
   const [totalPriceCart, setTotalPriceCart] = useState(0);
   const [dataOrder, setDataOrder] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const getDataCart = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
@@ -38,7 +40,7 @@ export const CartProdvider = ({children}) => {
   const clearCart = async (productId, quantity) => {
     try {
       const respone = await axios.delete(`${API__URL}/carts/deleteItemCart`, {
-        data: {userId, productId, quantity},
+        data: { userId, productId, quantity },
       });
       if (respone.status === 200) {
         setCart(indexCart =>
@@ -85,14 +87,14 @@ export const CartProdvider = ({children}) => {
                   Alert.alert('Sản phẩm đã bị xóa khỏi giỏ hàng!');
                 } catch (error) {
                   console.log('Error removing item:', error);
-                }
+}
               },
             },
           ],
         );
       } else {
         const updatedCart = cart.map(item =>
-          item.productId === productId ? {...item, quantity} : item,
+          item.productId === productId ? { ...item, quantity } : item,
         );
         setCart(updatedCart);
         const totalCart = updatedCart.reduce(
@@ -114,7 +116,7 @@ export const CartProdvider = ({children}) => {
   const resetCart = async () => {
     try {
       const response = await axios.delete(`${API__URL}/carts/resetCart`, {
-        data: {userId},
+        data: { userId },
       });
       if (response.status === 200) {
         setCart([]);
@@ -126,12 +128,12 @@ export const CartProdvider = ({children}) => {
 
   const getProductDetails = async () => {
     if (loading) {
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator size={'large'} color="orange" />;
       </View>;
     }
     if (error) {
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>
           Có lỗi trong lúc lấy dữ liệu... Vui lòng kiểm tra lại kết nối !!
         </Text>
