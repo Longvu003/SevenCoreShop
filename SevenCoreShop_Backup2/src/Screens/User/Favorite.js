@@ -39,7 +39,7 @@ const Favorite = ({navigation}) => {
         setProducts([]); // Gán danh sách rỗng thay vì báo lỗi
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.log('Error fetching products:', error);
       setError('Đã xảy ra lỗi khi tải sản phẩm.');
     } finally {
       setLoading(false);

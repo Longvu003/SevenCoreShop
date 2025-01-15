@@ -59,9 +59,7 @@ const CartScreen = () => {
         {
           text: 'Có',
           onPress: () => {
-            cart.forEach(element =>
-              clearCart(element.productId, element.quantity),
-            );
+            cart.forEach(element => clearCart(element.productId));
           },
         },
       ],
