@@ -84,6 +84,7 @@ router.get("/getItemCartById", async (req, res) => {
     //     .status(404)
     //     .json({ status: false, message: "Có lỗi khi lấy result" });
     // }
+
     const newResult = result[0].cartItems;
 
     const totalPrice = newResult.reduce(
@@ -107,14 +108,12 @@ router.get("/getItemCartById", async (req, res) => {
  */
 router.delete("/deleteItemCart", async (req, res) => {
   const { userId, productId } = req.body;
-
   try {
     const itemDelete = await cartController.deleteItemcart(userId, productId);
     if (!itemDelete) {
       console.log("Lỗi khi xóa sản phẩm:");
       return res.status(404).json({ message: "có lỗi khi xóa" }); // Nếu không thành công, trả về 404
     }
-
     return res.status(200).json({ message: "Sản phẩm đã được xóa thành công" });
   } catch (error) {
     console.log("Lỗi xử lý yêu cầu:", error);

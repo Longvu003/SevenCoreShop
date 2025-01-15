@@ -64,7 +64,7 @@ const QRPay = ({navigation, route}) => {
     try {
       const response = await axios.get(`${API_URL}/payonline/${bankId}`);
       const {data: bankData} = response.data;
-      console.log('bankData', bankData);
+      // console.log('bankData', bankData);
 
       if (
         bankData &&
