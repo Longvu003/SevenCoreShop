@@ -4,32 +4,29 @@ const HttpsProxyAgent = require("https-proxy-agent");
 const getAndSaveTransactions = async (req, res) => {
   try {
     // Cấu hình proxy
-    // const proxy = "http://user49073:6mpDNgvZ0r@42.96.5.118:49073";
-    const proxy = "http://user49092:vpQ22hGF1u@42.96.15.247:49092";
-
+    const proxy = "http://user49073:6mpDNgvZ0r@42.96.5.118:49073";
     const agent = new HttpsProxyAgent(proxy);
 
     // Gọi API lấy dữ liệu giao dịch
-    // const response = await axios.get("https://s.net.vn/fg3z", {
-    //   headers: {
-    //     "User-Agent":
-    //       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-    //     Accept: "application/json, text/plain, */*",
-    //     "Accept-Language": "en-US,en;q=0.9",
-    //     Connection: "keep-alive",
-    //     DNT: "1", // Do Not Track header (optional)
-    //   },
-    //   httpsAgent: agent,
-    // });
-    const response = await axios.get(
-      "https://api.sieuthicode.net/historyapimbbank/3f023ef5cd400475ffff48d7b32dd53b"
-    );
+    const response = await axios.get("https://s.net.vn/fg3z", {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+        Accept: "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9",
+        Connection: "keep-alive",
+        DNT: "1", // Do Not Track header (optional)
+      },
+      httpsAgent: agent,
+    });
+
     // Kiểm tra trạng thái của response
     if (response.status < 200 || response.status >= 300) {
       throw new Error(
         `Failed to fetch data from API. Status: ${response.status}`
       );
     }
+
     // Lấy dữ liệu từ API
     const data = response.data;
 
@@ -37,7 +34,6 @@ const getAndSaveTransactions = async (req, res) => {
     if (data && data.TranList) {
       const transactionsz = data.TranList; // Danh sách giao dịch từ API
       const savedTransactions = []; // Mảng lưu các giao dịch đã lưu
-      console.log("Fetched transactions:", transactionsz);
 
       // Lặp qua danh sách giao dịch
       for (const tran of transactionsz) {
