@@ -23,6 +23,7 @@ import OrderScreen from '../Screens/Order/OrderScreen';
 import AdScreen from '../Screens/HomeSceen/AdScreen';
 import AdDetail from '../Screens/HomeSceen/AdDetail';
 import PaymentAddressScreen from '../Screens/HomeSceen/PaymentAddressScreen';
+import VoucherListPage from '../Screens/HomeSceen/VoucherListPage';
 import CartProdvider from '../Screens/Cart/CartProdvider';
 import SearchOrder from '../Screens/Order/SearchOrder';
 import AddAddress from '../Screens/User/address/AddAddress';
@@ -65,6 +66,12 @@ const Stacknavigation = () => {
             name="PaymentAddressScreen"
             component={PaymentAddressScreen}
             options={{title: 'Chọn địa chỉ và thanh toán'}}
+          />
+
+          <Stack.Screen
+            name="VoucherListPage"
+            component={VoucherListPage}
+            options={{title: 'Chọn voucher'}}
           />
           <Stack.Screen
             name="CategoryDetailScreen"

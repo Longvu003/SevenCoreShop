@@ -101,7 +101,7 @@ const CartScreen = () => {
                         <Text style={CartStyle.productName}>
                           {item.nameProduct}
                         </Text>
-                        <Text style={CartStyle.productQuantity}>
+<Text style={CartStyle.productQuantity}>
                           Quantity: {item.quantity}
                         </Text>
                         <View style={CartStyle.quantityControls}>

@@ -116,9 +116,19 @@ const isorderCodeUnique = async (orderCode) => {
 const checkout = async (req, res) => {
   try {
     const { userId, items, totalAmount, address, paymentMethod } = req.body;
+    console.log(address);
     // Kiểm tra dữ liệu đầu vào
     if (!userId || !items || !totalAmount || !address || !paymentMethod) {
-      return res.status(400).json({ message: "Thiếu dữ liệu" });
+      console.log("UserId:", userId);
+      console.log("Items:", items);
+      console.log("Total Amount:", totalAmount);
+      console.log("Address:", address);
+      console.log("Payment Method:", paymentMethod);
+
+      return res.status(400).json({
+        message: "Dữ liệu không hợp lệ hoặc thiếu",
+        receivedData: req.body, // Trả về dữ liệu đã nhận
+      });
     }
 
     // Kiểm tra và thêm ảnh cho từng sản phẩm

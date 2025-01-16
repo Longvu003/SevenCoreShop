@@ -23,10 +23,10 @@ const validateVoucher = async (req, res) => {
         });
     }
 
-    if (orderTotal < voucher.minOrderValue) {
+    if (orderTotal < voucher.minValue) { // Sử dụng minValue
       return res.status(400).json({
         success: false,
-        message: `Đơn hàng phải đạt tối thiểu ${voucher.minOrderValue} để áp dụng voucher`,
+        message: `Đơn hàng phải đạt tối thiểu ${voucher.minValue} để áp dụng voucher`,
       });
     }
 
@@ -43,44 +43,14 @@ const validateVoucher = async (req, res) => {
   }
 };
 
-// const createVoucher = async (req, res) => {
-//   const { code, discountValue, expiryDate, titleVoucher } = req.body;
 
-//   try {
-//     if (!code || !discountValue || !expiryDate || !titleVoucher) {
-//       return res.status(400).json({
-//           status: false,
-//           message: 'Code, discountValue, titleVoucher, and expiryDate are required',
-//       });
-//   }
-//     const existingVoucher = await Voucher.findOne({ code });
 
-//     if (existingVoucher) {
-//       return res.status(400).json({ success: false, message: "Voucher đã tồn tại" });
-//     }
-
-//     const newVoucher = new Voucher({
-//       code,
-//       discountValue,
-//       minOrderValue,
-//       expiryDate,
-//       titleVoucher,
-//       status: "active",
-//     });
-
-//     await newVoucher.save();
-//     res.status(201).json({ success: true, message: "Tạo voucher thành công", voucher: newVoucher });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-//   }
-// };
-
-const createVoucher = async (code, discountValue, quantity, expiryDate, titleVoucher) => {
+const createVoucher = async (code, discountValue, minValue ,quantity, expiryDate, titleVoucher) => {
   try {
     const voucherInfo = {
       code,
       discountValue,
+      minValue,
       quantity,
       expiryDate,
       titleVoucher,
@@ -134,7 +104,7 @@ const deleteVoucherById = async (id) => {
        }
    }
 
-const updateVoucher = async (id, code, discountValue, quantity, expiryDate, titleVoucher) => {
+const updateVoucher = async (id, code, discountValue, minValue, quantity, expiryDate, titleVoucher) => {
    try {
        // Kiểm tra ID hợp lệ
        if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -151,6 +121,7 @@ const updateVoucher = async (id, code, discountValue, quantity, expiryDate, titl
        voucher.code = code || voucher.code;
        voucher.titleVoucher = titleVoucher || voucher.titleVoucher;
        voucher.quantity = quantity || voucher.quantity;
+       voucher.minValue = minValue || voucher.minValue;
        voucher.discountValue = discountValue || voucher.discountValue;
        voucher.expiryDate = expiryDate || voucher.expiryDate;
        

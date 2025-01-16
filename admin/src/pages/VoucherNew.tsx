@@ -10,6 +10,7 @@ export default function NotificationNew() {
     code: "",
     titleVoucher: "",
     discountValue: "",
+    minValue: "",
     quantity: "",
     expiryDate: "",
    
@@ -27,7 +28,7 @@ export default function NotificationNew() {
   const clickCreateNew = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!dataVoucher?.code?.trim() || !dataVoucher?.titleVoucher?.trim() || !dataVoucher?.discountValue?.trim() || !dataVoucher?.expiryDate?.trim()) {
+    if (!dataVoucher?.code?.trim() || !dataVoucher?.titleVoucher?.trim() || !dataVoucher?.discountValue?.trim() || !dataVoucher?.minValue?.trim() || !dataVoucher?.quantity?.trim() || !dataVoucher?.expiryDate?.trim()) {
         MySwal.fire({
         title: "Lỗi",
         text: "Code, title Voucher, discount Value và expiry Date không được để trống!",
@@ -104,6 +105,19 @@ export default function NotificationNew() {
           name="discountValue"
           className="form-input"
           value={dataVoucher.discountValue}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="Minvalue">Min value</label>
+        <input
+          id="Minvalue"
+          type="number"
+          name="minValue"
+          className="form-input"
+          value={dataVoucher.minValue}
           onChange={handleChange}
           required
         />

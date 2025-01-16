@@ -4,6 +4,11 @@ const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 
 const PaymentMethobStyle = StyleSheet.create({
+    sectionRow:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+
+    },
   sectionHeader: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -137,7 +142,7 @@ const PaymentMethobStyle = StyleSheet.create({
     padding: 16,
     marginHorizontal: 4,
     borderWidth: 1,
-    borderColor: '#DDD',
+borderColor: '#DDD',
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -241,4 +246,5 @@ const PaymentMethobStyle = StyleSheet.create({
     color: '#fff',
   },
 });
+
 export default PaymentMethobStyle;

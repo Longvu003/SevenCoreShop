@@ -28,8 +28,8 @@ router.post('/validate', async (req, res, next) => {
 // Description: Allows admins to create a new voucher
 router.post('/', async (req, res, next) => {
     try {
-        const { code, discountValue, quantity, expiryDate, titleVoucher } = req.body;
-        const newVoucher = await VoucherController.createVoucher(code, discountValue, quantity, expiryDate, titleVoucher);
+        const { code, discountValue, minValue, quantity, expiryDate, titleVoucher } = req.body;
+        const newVoucher = await VoucherController.createVoucher(code, discountValue, minValue, quantity, expiryDate, titleVoucher);
         return res.status(201).json({ status: true, data: newVoucher });
     } catch (error) {
         console.error('Create voucher error:', error.message);
@@ -66,8 +66,8 @@ router.delete('/:id/', async (req, res, next) => {
 router.put('/:id/update', async (req, res, next) => {
     try {
         const id = req.params.id;
-        const { code, discountValue, quantity, expiryDate, titleVoucher } = req.body;
-        const voucher = await VoucherController.updateVoucher(id, code, discountValue, quantity, expiryDate, titleVoucher);
+        const { code, discountValue, minValue ,quantity, expiryDate, titleVoucher } = req.body;
+        const voucher = await VoucherController.updateVoucher(id, code, discountValue, minValue, quantity, expiryDate, titleVoucher);
         return res.status(200).json({ status: true, data: voucher });
     } catch (error) {
         console.log('Update voucher error', error.message);
