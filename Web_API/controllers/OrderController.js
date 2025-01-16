@@ -82,7 +82,7 @@ const checkAndUpdateAllOrders = async (req, res) => {
         ) {
           const order = await OrderModel.findOne({ orderCode: orderCode });
           if (order) {
-            order.statuspay = "Completed";
+            order.statuspay = "Đã thanh toán";
             await order.save();
           }
         }
@@ -210,7 +210,7 @@ const checkstatuspay = async (req, res) => {
 
   
     console.log(order.statuspay);
-    if (order.statuspay==="Completed") {
+    if (order.statuspay==="Đã thanh toán") {
       return res.status(200).json({ message: "Đã thanh toán" });
     } else {
       return res.status(200).json({ message: "Chưa thanh toán" });
