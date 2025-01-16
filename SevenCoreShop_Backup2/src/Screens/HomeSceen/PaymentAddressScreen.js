@@ -18,41 +18,55 @@ import API__URL from '../../../config';
 import Customheader from '../../CustomHeader/Customheader';
 import {useFocusEffect} from '@react-navigation/native';
 import PaymentMethobStyle from '../../StyleSheets/PaymentMethobStyle';
+const WITH__Screen = Dimensions.get('screen').width;
+const HEIGHT__SCREEN = Dimensions.get('screen').height;
 const PaymentAddressScreen = ({navigation, route}) => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [loading, setLoading] = useState(true);
   const {resetCart} = useCart();
-  const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [voucherList, setVoucherList] = useState([]);
   const [dataCode, setDataCode] = useState(null);
-  const cartItems = route.params?.cartItems || [];
+  const {selectedVoucher, setSelectedVoucher} = route.params; // Nhận toàn bộ đối tượng voucher
+  const [cartItems, setCartItems] = useState([]);
+  const [userID, setUserID] = useState(null);
+
+  // const userID = route.params?.userID;
+
+  // Sử dụng các trường từ voucher
+  // console.log('Voucher đã chọn:', selectedVoucher);
 
   const calculateTotalAmount = () => {
+    // Kiểm tra nếu không có sản phẩm trong giỏ hàng
+    if (!cartItems || cartItems.length === 0) return 0;
+
     // Tính tổng tiền hàng
-    const total = cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
+    const subtotal = cartItems.reduce(
+      (sum, item) => sum + (item.price || 0) * (item.quantity || 0),
       0,
     );
 
-    // Kiểm tra nếu có voucher, áp dụng giá trị giảm giá
-    if (selectedVoucher) {
-      const discount = selectedVoucher.discountValue || 0; // Lấy giá trị giảm giá từ voucher
-      return Math.max(total - discount, 0); // Đảm bảo tổng tiền không âm
+    // Nếu không có voucher được chọn, trả về tổng tiền hàng
+    if (!selectedVoucher) {
+      return subtotal;
     }
-    return total;
+    const discount = selectedVoucher.discountValue || 0; // Giảm giá từ voucher
+    return Math.max(subtotal - discount, 0); // Đảm bảo không trả về giá trị âm
   };
 
   const totalAmount = calculateTotalAmount();
 
-  const userID = route.params?.userID;
-
-  useEffect(() => {}, [voucherList, selectedVoucher]);
+  useEffect(() => {}, [selectedVoucher, cartItems, userID]);
 
   useFocusEffect(
     useCallback(() => {
       const fetchData = async () => {
+        const cartItems = route.params?.cartItems || [];
+        setCartItems(cartItems);
+        const userID = route.params?.userID || null;
+        setUserID(userID);
+
         try {
           const userEmail = await AsyncStorage.getItem('userEmail');
           const parsedEmail = JSON.parse(userEmail);
@@ -64,10 +78,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
             item => item.isDefault === true,
           );
           setAddresses(addressData);
-          const voucherResponse = await axios.get(
-            `${API_URL}/Voucher/`, // Đường dẫn API lấy danh sách voucher
-          );
-          setVoucherList(voucherResponse.data.data || []);
         } catch (error) {
           console.error('Error fetching data:', error.message);
           Alert.alert('Lỗi', 'Không thể tải dữ liệu.');
@@ -79,11 +89,6 @@ const PaymentAddressScreen = ({navigation, route}) => {
       fetchData();
     }, []),
   );
-
-  const handleSelectVoucher = voucher => {
-    setSelectedVoucher(voucher);
-  };
-
   if (loading) {
     return (
       <View style={PaymentMethobStyle.loaderContainer}>
@@ -138,13 +143,13 @@ const PaymentAddressScreen = ({navigation, route}) => {
           );
 
           // Cập nhật lại giao diện
-          setVoucherList(prevVoucherList =>
-            prevVoucherList.map(voucher =>
-              voucher._id === selectedVoucher._id
-                ? {...voucher, quantity: voucher.quantity - 1}
-                : voucher,
-            ),
-          );
+          // setSelectedVoucher(prevVoucherList =>
+          //   prevVoucherList.map(voucher =>
+          //     voucher._id === selectedVoucher._id
+          //       ? {...voucher, quantity: voucher.quantity - 1}
+          //       : voucher,
+          //   ),
+          // );
         }
         resetCart();
         setDataCode(response.data.code);
@@ -242,41 +247,46 @@ const PaymentAddressScreen = ({navigation, route}) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <Text style={PaymentMethobStyle.sectionHeader}>Chọn Voucher</Text>
-      {voucherList.length > 0 ? (
-        voucherList.map(voucher => (
-          <TouchableOpacity
-            key={voucher._id}
-            style={[
-              PaymentMethobStyle.voucherCard,
-              selectedVoucher?.id === voucher._id &&
-                PaymentMethobStyle.selectedVoucherCard,
-            ]}
-            onPress={() => handleSelectVoucher(voucher)}>
-            {/* Hình ảnh */}
-            <Image
-              source={require('../../../assets/imgs/logo.png')} // Thay thế với đường dẫn hình ảnh của bạn
-              style={PaymentMethobStyle.voucherImage}
-            />
 
-            <View style={PaymentMethobStyle.voucherInfo}>
-              <Text style={PaymentMethobStyle.voucherTitle} numberOfLines={1}>
-                {voucher.titleVoucher}
+      <View style={styles.sectionRow}>
+        <Text style={styles.sectionHeader}>Chọn Voucher</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('VoucherListPage')}>
+          <Text style={styles.sectionHeader}>Mở rộng</Text>
+        </TouchableOpacity>
+      </View>
+
+      {selectedVoucher ? (
+        <>
+          <View style={styles.voucherCard}>
+            <View style={styles.voucherInfo}>
+              <Text style={styles.voucherTitle}>
+                {selectedVoucher.titleVoucher || 'Không có tiêu đề'}
               </Text>
-              <Text style={PaymentMethobStyle.voucherDiscount}>
-                Giảm giá: {voucher.discountValue} VNĐ
+              <Text style={styles.voucherDiscount}>
+                Giảm giá: {selectedVoucher.discountValue || 0} VNĐ
               </Text>
-              <Text style={PaymentMethobStyle.voucherExpiry}>
-                Hạn sử dụng: {new Date(voucher.expiryDate).toLocaleDateString()}
+              <Text style={styles.voucherExpiry}>
+                Hạn sử dụng:
+                {selectedVoucher.expiryDate
+                  ? new Date(selectedVoucher.expiryDate).toLocaleDateString()
+                  : 'Không xác định'}
               </Text>
-              <Text style={PaymentMethobStyle.voucherQuantity}>
-                Số lượng: {voucher.quantity}
+
+              <Text style={styles.voucherQuantity}>
+                Số lượng còn lại: {selectedVoucher.quantity || 0}
+              </Text>
+
+              <Text style={styles.selectText}>
+                {selectedVoucher?._id === selectedVoucher._id
+                  ? 'Đã chọn'
+                  : 'Chọn'}
               </Text>
             </View>
-          </TouchableOpacity>
-        ))
+          </View>
+        </>
       ) : (
-        <Text>Không có voucher nào khả dụng.</Text>
+        <Text>Không có voucher nào được chọn.</Text>
       )}
       <Text style={PaymentMethobStyle.sectionHeader}>Thông Tin Giỏ Hàng</Text>
       {cartItems.map((item, index) => (
@@ -330,4 +340,273 @@ const PaymentAddressScreen = ({navigation, route}) => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  // sectionHeader: {
+  //   fontSize: 18,
+  //   fontWeight: 'bold',
+  //   color: '#D32F2F', // Màu đỏ
+  //   marginVertical: 20,
+  // },
+  voucherCard: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginBottom: 15,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  selectedVoucherCard: {
+    borderWidth: 2,
+    borderColor: '#D32F2F', // Màu đỏ
+  },
+  voucherImage: {
+    width: 50, // Kích thước hình vuông
+    height: 50,
+    borderRadius: 5, // Bo tròn một chút
+    marginRight: 15,
+  },
+  voucherInfo: {
+    justifyContent: 'center',
+  },
+  voucherTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#D32F2F',
+    flexWrap: 'wrap', // Đảm bảo chữ xuống dòng khi cần
+    maxWidth: '90%', // Hạn chế chiều rộng
+    overflow: 'hidden', // Ẩn phần thừa
+    textOverflow: 'ellipsis', // Hiển thị ba chấm nếu vượt quá
+  },
+
+  voucherDiscount: {
+    fontSize: 14,
+    color: '#616161',
+  },
+  voucherExpiry: {
+    fontSize: 12,
+    color: '#757575',
+    marginTop: 5,
+  },
+
+  paymentSummaryContainer: {
+    padding: 16,
+    backgroundColor: '#F9F9F9',
+    borderRadius: 8,
+  },
+  paymentSummaryText: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: '#333',
+  },
+  paymentTotalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FF5722',
+  },
+
+  container: {
+    padding: 16,
+    backgroundColor: 'white',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    zIndex: 10,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  backIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
+    marginTop: 30,
+  },
+
+  sectionRow: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginBottom: 10,
+    marginTop: 30,
+  },
+  addressCard: {
+    backgroundColor: '#FFF',
+    padding: 16,
+    marginBottom: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#DDD',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  selectedCard: {
+    borderColor: '#4CAF50',
+  },
+  addressContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  addressDetails: {
+    marginLeft: 10,
+  },
+  addressName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  addressText: {
+    fontSize: 14,
+    color: '#555',
+    width: WITH__Screen * 0.6,
+  },
+  selectText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#008001',
+  },
+  paymentOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  paymentOption: {
+    flex: 1,
+    padding: 16,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: '#DDD',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectedPayment: {
+    backgroundColor: '#DFF8E5',
+    borderColor: '#4CAF50',
+  },
+  paymentOptionText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  bankOption: {
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#DDD',
+    backgroundColor: '#F9F9F9',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  selectedBankOption: {
+    backgroundColor: '#DFF8E5',
+    borderColor: '#4CAF50',
+  },
+  bankOptionText: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  bankDetails: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#DDD',
+  },
+  bankDetailsText: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 8,
+  },
+  bankImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
+    resizeMode: 'contain',
+    marginTop: 16,
+  },
+  cartItem: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  cartItemImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+    marginRight: 16,
+  },
+  cartItemDetails: {
+    flex: 1,
+  },
+  cartItemName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  cartItemQuantity: {
+    fontSize: 14,
+    color: '#555',
+  },
+  cartItemPrice: {
+    fontSize: 16,
+    color: '#FF5722',
+  },
+  totalAmountContainer: {
+    marginVertical: 16,
+    paddingVertical: 8,
+    backgroundColor: '#F9F9F9',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  totalAmountText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  checkoutButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 14,
+    borderRadius: 8,
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  checkoutButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+});
+
 export default PaymentAddressScreen;

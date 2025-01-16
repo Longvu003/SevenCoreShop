@@ -4,6 +4,10 @@ const WITH__Screen = Dimensions.get('screen').width;
 const HEIGHT__SCREEN = Dimensions.get('screen').height;
 
 const PaymentMethobStyle = StyleSheet.create({
+  sectionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   sectionHeader: {
     fontSize: 18,
     fontWeight: 'bold',
